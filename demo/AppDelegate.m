@@ -7,6 +7,15 @@
 //
 
 #import "AppDelegate.h"
+#import "MainViewController.h"
+#import <imsdk/IMService.h>
+#import <imkit/PeerMessageHandler.h>
+#import <imkit/GroupMessageHandler.h>
+
+#define UIColorFromRGBHex(rgbValue) [UIColor \
+colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 \
+green:((float)((rgbValue & 0xFF00) >> 8))/255.0 \
+blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 
 @interface AppDelegate ()
 
@@ -17,6 +26,26 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+
+    [IMService instance].deviceID = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
+    [IMService instance].peerMessageHandler = [PeerMessageHandler instance];
+    [IMService instance].groupMessageHandler = [GroupMessageHandler instance];
+    [[IMService instance] startRechabilityNotifier];
+    
+    
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    // Override point for customization after application launch.
+    self.window.backgroundColor = [UIColor whiteColor];
+    [self.window makeKeyAndVisible];
+    
+    MainViewController *mainViewController = [[MainViewController alloc] init];
+    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:mainViewController];
+    if ([UIDevice currentDevice].systemVersion.floatValue >= 7.0) {
+        [[UINavigationBar appearance] setBarTintColor:UIColorFromRGBHex(0x00abf1)];
+        [[UINavigationBar appearance] setTitleTextAttributes:
+         [NSDictionary dictionaryWithObjectsAndKeys:[UIColor whiteColor], NSForegroundColorAttributeName, [UIFont systemFontOfSize:21], NSFontAttributeName, nil]];
+    }
+    
     return YES;
 }
 
@@ -28,10 +57,14 @@
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    
+    [[IMService instance] enterBackground];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+    
+    [[IMService instance] enterForeground];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
