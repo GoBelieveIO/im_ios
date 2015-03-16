@@ -19,7 +19,6 @@
 
 #import "IMHttpAPI.h"
 
-#import "ConversationHeadButtonView.h"
 #import "MessageTableSectionHeaderView.h"
 
 #import "MessageInputView.h"
@@ -49,7 +48,6 @@
 
 @interface MessageViewController()<MessageInputRecordDelegate, AudioDownloaderObserver, OutboxObserver, HPGrowingTextViewDelegate>
 
-@property (nonatomic) NSTimer  *inputStatusTimer;
 @property (strong, nonatomic) UITableView *tableView;
 @property (strong, nonatomic) MessageInputView *inputToolBarView;
 @property (assign, nonatomic, readonly) UIEdgeInsets originalTableViewContentInset;
@@ -60,7 +58,6 @@
 
 @property (nonatomic,strong) UIImage *willSendImage;
 
-@property (nonatomic) ConversationHeadButtonView *navigationBarButtonsView;
 @property (nonatomic) int  inputTimestamp;
 
 @property(nonatomic) AVAudioPlayer *player;
@@ -113,15 +110,8 @@
     [self setup];
 
     [self setNormalNavigationButtons];
-    
-    self.navigationBarButtonsView = [[[NSBundle mainBundle]loadNibNamed:@"ConversationHeadButtonView" owner:self options:nil] lastObject];
-    self.navigationBarButtonsView.center = self.navigationController.navigationBar.center;
-    self.navigationBarButtonsView.nameLabel.text = self.peerName;
-    [self.navigationBarButtonsView.conectInformationLabel setText: [self getRemoteUserLastOnlineTimestamp]];
-    [self.navigationBarButtonsView.conectInformationLabel setFont:[UIFont systemFontOfSize:11.0f]];
-    
-    self.navigationItem.titleView = self.navigationBarButtonsView;
 
+    self.navigationItem.title = self.peerName;
     [self processConversationData];
     //content scroll to bottom
     [self.tableView reloadData];
@@ -696,25 +686,7 @@
     if (uid != self.peerUID) {
         return;
     }
-  
-    [self.navigationBarButtonsView.conectInformationLabel setText:@"对方正在输入"];
-  
-    self.inputStatusTimer = [NSTimer scheduledTimerWithTimeInterval: 10
-                                           target:self
-                                         selector:@selector(changeStatusBack)
-                                         userInfo:nil
-                                        repeats:NO];
 }
-
--(void)changeStatusBack{
-    
-    [self.inputStatusTimer invalidate];
-    self.inputStatusTimer = nil;
-
-    [self.navigationBarButtonsView.conectInformationLabel setText:[self getRemoteUserLastOnlineTimestamp]];
-    [self.navigationBarButtonsView.conectInformationLabel setFont:[UIFont systemFontOfSize:11.0f]];
-}
-
 
 //同IM服务器连接的状态变更通知
 -(void)onConnectState:(int)state{
@@ -1490,30 +1462,6 @@
     return [t compare:date2] == NSOrderedAscending;
 }
 
--(NSString*) getRemoteUserLastOnlineTimestamp{
-    NSDate *lastDate =  [[NSDate alloc] initWithTimeIntervalSince1970:self.peerLastUpTimestamp];
-    NSDate *todayDate = [NSDate date];
-    
-    NSDateComponents *upDate = [self getComponentOfDate:lastDate];
-    
-    NSString *timeStr = nil;
-    if ([self isSameDay:lastDate other:todayDate])
-        timeStr = [NSString stringWithFormat:@"最后上线时间: 今天%02zd:%02zd", upDate.hour, upDate.minute];
-    else if ([self isYestoday:lastDate today:todayDate]) {
-        timeStr = [NSString stringWithFormat:@"最后上线时间: 昨天%02zd:%02zd", upDate.hour, upDate.minute];
-    } else if ([self isBeforeYestoday:lastDate today:todayDate]) {
-        timeStr = [NSString stringWithFormat:@"最后上线时间: 前天%02zd:%02zd", upDate.hour, upDate.minute];
-    } else if ([self isInWeek:lastDate today:todayDate]){
-        const char *t[8] = {"", "周日", "周一", "周二", "周三", "周四", "周五", "周六"};
-        timeStr = [NSString stringWithFormat:@"最后上线于%@的%02zd:%02zd", [NSString stringWithUTF8String:t[upDate.weekday]], upDate.hour, upDate.minute];
-    } else if ([self isInMonth:lastDate today:todayDate]){
-        timeStr = [NSString stringWithFormat:@"最后上线 %02zd-%02zd-%02zd %02zd:%02zd", upDate.year%100, upDate.month, upDate.day, upDate.hour, upDate.minute];
-    } else {
-        timeStr = [NSString stringWithFormat:@"最后上线%04zd年%02zd月%02zd日", upDate.year, upDate.month, upDate.day];
-    }
-    
-    return timeStr;
-}
 
 -(void) setNormalNavigationButtons{
     

@@ -27,7 +27,6 @@
 		6D03310B1AA9BDB8004AA39F /* wavreader.c in Sources */ = {isa = PBXBuildFile; fileRef = 6D0331051AA9BDB8004AA39F /* wavreader.c */; };
 		6D03310C1AA9BDB8004AA39F /* wavwriter.c in Sources */ = {isa = PBXBuildFile; fileRef = 6D0331071AA9BDB8004AA39F /* wavwriter.c */; };
 		6D0331311AA9E734004AA39F /* BubbleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D0331201AA9E734004AA39F /* BubbleView.m */; };
-		6D0331321AA9E734004AA39F /* ConversationHeadButtonView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D0331221AA9E734004AA39F /* ConversationHeadButtonView.m */; };
 		6D0331331AA9E734004AA39F /* MessageAudioView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D0331251AA9E734004AA39F /* MessageAudioView.m */; };
 		6D0331341AA9E734004AA39F /* MessageImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D0331271AA9E734004AA39F /* MessageImageView.m */; };
 		6D0331351AA9E734004AA39F /* MessageInputView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D0331291AA9E734004AA39F /* MessageInputView.m */; };
@@ -145,8 +144,6 @@
 		6D03311B1AA9E534004AA39F /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		6D03311F1AA9E734004AA39F /* BubbleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BubbleView.h; path = view/BubbleView.h; sourceTree = "<group>"; };
 		6D0331201AA9E734004AA39F /* BubbleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BubbleView.m; path = view/BubbleView.m; sourceTree = "<group>"; };
-		6D0331211AA9E734004AA39F /* ConversationHeadButtonView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ConversationHeadButtonView.h; path = view/ConversationHeadButtonView.h; sourceTree = "<group>"; };
-		6D0331221AA9E734004AA39F /* ConversationHeadButtonView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ConversationHeadButtonView.m; path = view/ConversationHeadButtonView.m; sourceTree = "<group>"; };
 		6D0331241AA9E734004AA39F /* MessageAudioView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MessageAudioView.h; path = view/MessageAudioView.h; sourceTree = "<group>"; };
 		6D0331251AA9E734004AA39F /* MessageAudioView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MessageAudioView.m; path = view/MessageAudioView.m; sourceTree = "<group>"; };
 		6D0331261AA9E734004AA39F /* MessageImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MessageImageView.h; path = view/MessageImageView.h; sourceTree = "<group>"; };
@@ -285,8 +282,6 @@
 			children = (
 				6D03311F1AA9E734004AA39F /* BubbleView.h */,
 				6D0331201AA9E734004AA39F /* BubbleView.m */,
-				6D0331211AA9E734004AA39F /* ConversationHeadButtonView.h */,
-				6D0331221AA9E734004AA39F /* ConversationHeadButtonView.m */,
 				6D0331241AA9E734004AA39F /* MessageAudioView.h */,
 				6D0331251AA9E734004AA39F /* MessageAudioView.m */,
 				6D0331261AA9E734004AA39F /* MessageImageView.h */,
@@ -505,7 +500,6 @@
 				6D032FF61AA9B41C004AA39F /* ReverseFile.m in Sources */,
 				6D032FFE1AA9B4D2004AA39F /* MessageViewController.m in Sources */,
 				6D0331351AA9E734004AA39F /* MessageInputView.m in Sources */,
-				6D0331321AA9E734004AA39F /* ConversationHeadButtonView.m in Sources */,
 				6D0330071AA9BBC7004AA39F /* IMHttpAPI.m in Sources */,
 				4875B1231AAC9362001D1435 /* MEESImageViewController.m in Sources */,
 				6D0330081AA9BBC7004AA39F /* Outbox.m in Sources */,

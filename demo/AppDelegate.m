@@ -41,6 +41,15 @@ blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
     MainViewController *mainViewController = [[MainViewController alloc] init];
     self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:mainViewController];
     self.mainViewController = mainViewController;
+    
+    if ([UIDevice currentDevice].systemVersion.floatValue >= 7.0) {
+        [[UINavigationBar appearance] setBarTintColor:UIColorFromRGBHex(0x00abf1)];
+        [[UINavigationBar appearance] setTitleTextAttributes:
+         [NSDictionary dictionaryWithObjectsAndKeys:[UIColor whiteColor],
+            NSForegroundColorAttributeName,
+            [UIFont systemFontOfSize:21],NSFontAttributeName, nil]];
+    }
+    
     [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeNewsstandContentAvailability)];
     return YES;
 }

@@ -111,7 +111,7 @@
             msgController.currentUID = [tfSender.text longLongValue];
             msgController.peerUID = [tfReceiver.text longLongValue];
 
-            msgController.peerName = @"";
+            msgController.peerName = @"测试";
 
             [IMHttpAPI instance].accessToken = token;
             [[IMService instance] setToken:token];
@@ -128,6 +128,7 @@
                                       }];
             }
             
+            self.navigationController.navigationBarHidden = NO;
             [self.navigationController pushViewController:msgController animated:YES];
         });
     });
