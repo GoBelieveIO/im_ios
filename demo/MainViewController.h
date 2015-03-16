@@ -12,4 +12,6 @@
 
 }
 
+@property(nonatomic) NSString *deviceToken;
+
 @end

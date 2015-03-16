@@ -117,6 +117,17 @@
             [[IMService instance] setToken:token];
             [[IMService instance] start];
             
+            if (self.deviceToken.length > 0) {
+                
+                [IMHttpAPI bindDeviceToken:self.deviceToken
+                                   success:^{
+                                       NSLog(@"bind device token success");
+                                   }
+                                      fail:^{
+                                          NSLog(@"bind device token fail");
+                                      }];
+            }
+            
             [self.navigationController pushViewController:msgController animated:YES];
         });
     });
