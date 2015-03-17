@@ -37,24 +37,16 @@
 
 #import "Constants.h"
 
-#define PAGE_COUNT 10
 
 #define INPUT_HEIGHT 52.0f
-
-#define navBarHeadButtonSize 35
 
 #define kTakePicActionSheetTag  101
 
 
-@interface MessageViewController()<MessageInputRecordDelegate, AudioDownloaderObserver, OutboxObserver, HPGrowingTextViewDelegate>
+@interface MessageViewController()<MessageInputRecordDelegate, HPGrowingTextViewDelegate>
 
-@property (strong, nonatomic) UITableView *tableView;
 @property (strong, nonatomic) MessageInputView *inputToolBarView;
 @property (assign, nonatomic, readonly) UIEdgeInsets originalTableViewContentInset;
-
-@property (strong, nonatomic) NSMutableArray *messageArray;
-@property (strong, nonatomic) NSMutableArray *timestamps;
-@property (strong, nonatomic) NSMutableArray *messages;
 
 @property (nonatomic,strong) UIImage *willSendImage;
 
@@ -69,8 +61,6 @@
 @property(nonatomic, assign) int seconds;
 @property(nonatomic) BOOL recordCanceled;
 
-@property(nonatomic) UIRefreshControl *refreshControl;
-
 @property(nonatomic) IMessage *selectedMessage;
 @property(nonatomic, weak) MessageViewCell *selectedCell;
 
@@ -79,8 +69,6 @@
 #pragma mark - Actions
 - (void)sendPressed:(UIButton *)sender;
 
-#pragma mark - Messages view controller
-- (void)scrollToBottomAnimated:(BOOL)animated;
 
 #pragma mark - Keyboard notifications
 - (void)handleWillShowKeyboard:(NSNotification *)notification;
@@ -91,16 +79,12 @@
 
 -(id) init {
     if (self = [super init]) {
-        self.messages = [NSMutableArray array];
+        self.textMode = NO;
     }
     return self;
 }
 
 
-- (void)loadView{
-    [super loadView];
-    
-}
 
 #pragma mark - View lifecycle
 - (void)viewDidLoad
@@ -116,19 +100,10 @@
     //content scroll to bottom
     [self.tableView reloadData];
     [self.tableView setContentOffset:CGPointMake(0, CGFLOAT_MAX)];
-    
-    [[IMService instance] addMessageObserver:self];
-    [[Outbox instance] addBoxObserver:self];
-    [[AudioDownloader instance] addDownloaderObserver:self];
+  
+    [self addObserver];
 }
 
--(void) viewDidAppear:(BOOL)animated{
-
-}
-
--(void) viewDidDisappear:(BOOL)animated{
-    
-}
 
 - (void)setup
 {
@@ -208,87 +183,6 @@
         self.inputToolBarView.recordButton.hidden = YES;
         self.inputToolBarView.textView.text = draft;
     }
-}
-
-
--(void)initTableData {
-    self.messageArray = [NSMutableArray array];
-    self.timestamps = [NSMutableArray array];
-    
-    int count = [self.messages count];
-    if (count == 0) {
-        return;
-    }
-    
-    NSDate *lastDate = nil;
-    NSDate *curtDate = nil;
-    NSMutableArray *msgBlockArray = nil;
-    
-    for (int i = count-1; i >= 0; i--) {
-        IMessage *msg = [self.messages objectAtIndex:i];
-        FileCache *cache = [FileCache instance];
-        AudioDownloader *downloader = [AudioDownloader instance];
-        if (msg.content.type == MESSAGE_AUDIO && msg.sender == self.peerUID) {
-            NSString *path = [cache queryCacheForKey:msg.content.audio.url];
-            if (!path && ![downloader isDownloading:msg]) {
-                [downloader downloadAudio:msg];
-            }
-        }
-        
-        curtDate = [NSDate dateWithTimeIntervalSince1970: msg.timestamp];
-        if ([self isSameDay:lastDate other:curtDate]) {
-            [msgBlockArray insertObject:msg atIndex:0];
-        } else {
-            msgBlockArray  = [NSMutableArray arrayWithObject:msg];
-            
-            [self.messageArray insertObject:msgBlockArray atIndex:0];
-            [self.timestamps insertObject:curtDate atIndex:0];
-            lastDate = curtDate;
-        }
-    }
-}
-
--(void)pullToRefresh {
-    NSLog(@"pull to refresh...");
-    [self.refreshControl endRefreshing];
-    
-    IMessage *last = [self.messages firstObject];
-    if (last == nil) {
-        return;
-    }
-    id<IMessageIterator> iterator =  [[PeerMessageDB instance] newPeerMessageIterator:self.peerUID last:last.msgLocalID];
-
-    int count = 0;
-    IMessage *msg = [iterator next];
-    while (msg) {
-        [self.messages insertObject:msg atIndex:0];
-        if (++count >= PAGE_COUNT) {
-            break;
-        }
-        msg = [iterator next];
-    }
-    if (count == 0) {
-        return;
-    }
-
-    [self initTableData];
-
-    [self.tableView reloadData];
-    
-    int section = 0;
-    int row = 0;
-    for (NSArray *block in self.messageArray) {
-        if (count < block.count) {
-            row = count;
-            break;
-        }
-        count -= [block count];
-        section++;
-    }
-    NSLog(@"scroll to row:%d section:%d", row, section);
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:section];
-    
-    [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:NO];
 }
 
 #pragma mark - View lifecycle
@@ -590,145 +484,32 @@
         NSLog(@"record time too short");
         return;
     }
-
-    IMessage *msg = [[IMessage alloc] init];
     
-    msg.sender = self.currentUID;
-    msg.receiver = self.peerUID;
-    
-    MessageContent *content = [[MessageContent alloc] init];
-    NSNumber *d = [NSNumber numberWithInt:self.seconds];
-    NSString *url = [self localAudioURL];
-    NSDictionary *dic = @{@"audio":@{@"url":url, @"duration":d}};
-    NSString* newStr = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:dic options:0 error:nil] encoding:NSUTF8StringEncoding];
-    content.raw =  newStr;
-    msg.content = content;
-    msg.timestamp = (int)time(NULL);
-
-    //todo 优化读文件次数
-    NSData *data = [NSData dataWithContentsOfFile:[recorder.url path]];
-    FileCache *fileCache = [FileCache instance];
-    [fileCache storeFile:data forKey:url];
-
-    [[PeerMessageDB instance] insertPeerMessage:msg uid:msg.receiver];
-    
-    [[Outbox instance] uploadAudio:msg];
-    
-    [[self class] playMessageSentSound];
-    
-    NSNotification* notification = [[NSNotification alloc] initWithName:SEND_FIRST_MESSAGE_OK object: msg userInfo:nil];
-    
-    [[NSNotificationCenter defaultCenter] postNotification:notification];
-    
-    [self insertMessage:msg];
+    [self sendAudioMessage:[recorder.url path] second:self.seconds];
 }
 
-#pragma mark - MessageObserver
-
--(void)onPeerMessage:(IMMessage*)im{
-    if (im.sender != self.peerUID) {
-        return;
-    }
-    [[self class] playMessageReceivedSound];
-    NSLog(@"receive msg:%@",im);
-    
-    IMessage *m = [[IMessage alloc] init];
-    m.sender = im.sender;
-    m.receiver = im.receiver;
-    m.msgLocalID = im.msgLocalID;
-    MessageContent *content = [[MessageContent alloc] init];
-    content.raw = im.content;
-    m.content = content;
-    m.timestamp = (int)time(NULL);
-
-    if (m.content.type == MESSAGE_AUDIO) {
-        AudioDownloader *downloader = [AudioDownloader instance];
-        [downloader downloadAudio:m];
-    }
-
-    [self insertMessage:m];
+- (void)disableSend {
+    self.inputToolBarView.sendButton.enabled = NO;
+    self.inputToolBarView.recordButton.enabled = NO;
+    self.inputToolBarView.mediaButton.enabled = NO;
+    self.inputToolBarView.userInteractionEnabled = NO;
 }
 
-//服务器ack
--(void)onPeerMessageACK:(int)msgLocalID uid:(int64_t)uid{
-    if (uid != self.peerUID) {
-        return;
-    }
-    IMessage *msg = [self getImMessageById:msgLocalID];
-    msg.flags = msg.flags|MESSAGE_FLAG_ACK;
-    [self reloadMessage:msgLocalID];
-}
-
-//接受方ack
--(void)onPeerMessageRemoteACK:(int)msgLocalID uid:(int64_t)uid{
-    if (uid != self.peerUID) {
-        return;
-    }
-    IMessage *msg = [self getImMessageById:msgLocalID];
-    msg.flags = msg.flags|MESSAGE_FLAG_PEER_ACK;
-    [self reloadMessage:msgLocalID];
-}
-
--(void)onPeerMessageFailure:(int)msgLocalID uid:(int64_t)uid{
-    if (uid != self.peerUID) {
-        return;
-    }
-    IMessage *msg = [self getImMessageById:msgLocalID];
-    msg.flags = msg.flags|MESSAGE_FLAG_FAILURE;
-    [self reloadMessage:msgLocalID];
-    
-    [[PeerMessageDB instance] markPeerMessageFailure:msgLocalID uid:uid];
-    
-}
-
-//对方正在输入
--(void)onPeerInputing:(int64_t)uid{
-    if (uid != self.peerUID) {
-        return;
-    }
+- (void)enableSend {
+    HPGrowingTextView *textView = self.inputToolBarView.textView;
+    self.inputToolBarView.sendButton.enabled = ([textView.text trimWhitespace].length > 0);
+    self.inputToolBarView.recordButton.enabled = YES;
+    self.inputToolBarView.mediaButton.enabled = YES;
+    self.inputToolBarView.userInteractionEnabled = YES;
 }
 
 //同IM服务器连接的状态变更通知
 -(void)onConnectState:(int)state{
-    
-    if (state == STATE_CONNECTING) {
-        self.inputToolBarView.sendButton.enabled = NO;
-        self.inputToolBarView.recordButton.enabled = NO;
-        self.inputToolBarView.mediaButton.enabled = NO;
-        self.inputToolBarView.userInteractionEnabled = NO;
-    } else if(state == STATE_CONNECTED){
-        HPGrowingTextView *textView = self.inputToolBarView.textView;
-        self.inputToolBarView.sendButton.enabled = ([textView.text trimWhitespace].length > 0);
-        self.inputToolBarView.recordButton.enabled = YES;
-        self.inputToolBarView.mediaButton.enabled = YES;
-        self.inputToolBarView.userInteractionEnabled = YES;
-    } else if(state == STATE_CONNECTFAIL){
-        self.inputToolBarView.sendButton.enabled = NO;
-        self.inputToolBarView.recordButton.enabled = NO;
-        self.inputToolBarView.mediaButton.enabled = NO;
-        self.inputToolBarView.userInteractionEnabled = NO;
-    } else if(state == STATE_UNCONNECTED){
-        self.inputToolBarView.sendButton.enabled = NO;
-        self.inputToolBarView.recordButton.enabled = NO;
-        self.inputToolBarView.mediaButton.enabled = NO;
-        self.inputToolBarView.userInteractionEnabled = NO;
+    if(state == STATE_CONNECTED){
+        [self enableSend];
+    } else {
+        [self disableSend];
     }
-}
-#pragma mark - UItableView cell process
-
-- (void)scrollToBottomAnimated:(BOOL)animated
-{
-    if([self.messageArray count] == 0){
-        return;
-    }
-    
-    long lastSection = [self.messageArray count] - 1;
-    NSMutableArray *array = [self.messageArray objectAtIndex: lastSection];
-    long lastRow = [array count]-1;
-    
-    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:lastRow inSection:lastSection]
-						  atScrollPosition:UITableViewScrollPositionBottom
-								  animated:animated];
 }
 
 -(void)extendInputViewHeight:(CGFloat)e {
@@ -1092,6 +873,12 @@
     return 44;
 }
 
+
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+}
+
 + (BOOL)isHeadphone
 {
     AVAudioSessionRouteDescription* route = [[AVAudioSession sharedInstance] currentRoute];
@@ -1102,10 +889,6 @@
     return NO;
 }
 
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    
-}
 
 #pragma mark - UIScrollViewDelegate
 
@@ -1160,83 +943,17 @@
     }
 }
 
-#pragma mark - Messages view data source
 
-- (IMessage*)messageForRowAtIndexPath:(NSIndexPath *)indexPath{
-
-    NSMutableArray *array = [self.messageArray objectAtIndex: indexPath.section];
-    IMessage *msg =  ((IMessage*)[array objectAtIndex:indexPath.row]);
-    if(msg){
-        return msg;
-    }
-    return nil;
-}
-
-
-- (NSDate *)timestampForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    return [self.timestamps objectAtIndex:indexPath.row];
-}
-
-
--(NSString*)guid {
-    CFUUIDRef    uuidObj = CFUUIDCreate(nil);
-    NSString    *uuidString = (__bridge NSString *)CFUUIDCreateString(nil, uuidObj);
-    CFRelease(uuidObj);
-    return uuidString;
-}
--(NSString*)localImageURL {
-    return [NSString stringWithFormat:@"http://localhost/images/%@.png", [self guid]];
-}
-
--(NSString*)localAudioURL {
-    return [NSString stringWithFormat:@"http://localhost/audios/%@.m4a", [self guid]];
-}
 
 #pragma mark - UIImagePickerControllerDelegate
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
 	NSLog(@"Chose image!  Details:  %@", info);
-    IMessage *msg = [[IMessage alloc] init];
-    
-    msg.sender = self.currentUID;
-    msg.receiver = self.peerUID;
-    
-    MessageContent *content = [[MessageContent alloc] init];
-    NSDictionary *dic = @{@"image":[self localImageURL]};
-    NSString* newStr = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:dic options:0 error:nil] encoding:NSUTF8StringEncoding];
-    content.raw =  newStr;
-    msg.content = content;
-    msg.timestamp = (int)time(NULL);
-
     UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
-    
-    if (image.size.height == 0) {
-        return;
-    }
-    
-    float newHeigth = 640;
-    float newWidth = newHeigth*image.size.width/image.size.height;
 
-    UIImage *sizeImage = [image resizedImage:CGSizeMake(128, 128) interpolationQuality:kCGInterpolationDefault];
-    image = [image resizedImage:CGSizeMake(newWidth, newHeigth) interpolationQuality:kCGInterpolationDefault];
-    
-    [[SDImageCache sharedImageCache] storeImage:image forKey:msg.content.imageURL];
-    NSString *littleUrl =  [msg.content littleImageURL];
-    [[SDImageCache sharedImageCache] storeImage:sizeImage forKey: littleUrl];
-    
-    [[PeerMessageDB instance] insertPeerMessage:msg uid:msg.receiver];
-    
-    [[Outbox instance] uploadImage:msg image:image];
-    
-    [[self class] playMessageSentSound];
-    
-    NSNotification* notification = [[NSNotification alloc] initWithName:SEND_FIRST_MESSAGE_OK object: msg userInfo:nil];
-    [[NSNotificationCenter defaultCenter] postNotification:notification];
-    
-    [self insertMessage:msg];
-	
+    [self sendImageMessage:image];
+ 
     [self dismissViewControllerAnimated:YES completion:NULL];
 }
 
@@ -1245,221 +962,6 @@
 {
     [self dismissViewControllerAnimated:YES completion:NULL];
     
-}
-
-
-- (void)sendMessage:(IMessage*)msg {
-    [[PeerMessageDB instance] insertPeerMessage:msg uid:msg.receiver];
-    
-    Message *m = [[Message alloc] init];
-    m.cmd = MSG_IM;
-    IMMessage *im = [[IMMessage alloc] init];
-    im.sender = msg.sender;
-    im.receiver = msg.receiver;
-    im.msgLocalID = msg.msgLocalID;
-    im.content = msg.content.raw;
-    m.body = im;
-    [[IMService instance] sendPeerMessage:im];
-    
-    [[self class] playMessageSentSound];
-    
-    NSNotification* notification = [[NSNotification alloc] initWithName:SEND_FIRST_MESSAGE_OK object: msg userInfo:nil];
-    
-    [[NSNotificationCenter defaultCenter] postNotification:notification];
-    
-    [self insertMessage:msg];
-}
-
--(void) sendTextMessage:(NSString*)text {
-    IMessage *msg = [[IMessage alloc] init];
-    
-    msg.sender = self.currentUID;
-    msg.receiver = self.peerUID;
-    
-    MessageContent *content = [[MessageContent alloc] init];
-    NSDictionary *dic = @{@"text":text};
-    NSString* newStr = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:dic options:0 error:nil] encoding:NSUTF8StringEncoding];
-    content.raw =  newStr;
-    msg.content = content;
-    msg.timestamp = (int)time(NULL);
-    
-    [self sendMessage:msg];
-}
-
-- (void) processConversationData{
-    int count = 0;
-    id<IMessageIterator> iterator =  [[PeerMessageDB instance] newPeerMessageIterator: self.peerUID];
-    IMessage *msg = [iterator next];
-    while (msg) {
-        [self.messages insertObject:msg atIndex:0];
-        if (++count >= PAGE_COUNT) {
-            break;
-        }
-        msg = [iterator next];
-    }
-    
-    [self initTableData];
-    
-}
-
--(void) insertMessage:(IMessage*)msg{
-    NSAssert(msg.msgLocalID, @"");
-    NSDate *curtDate = [NSDate dateWithTimeIntervalSince1970: msg.timestamp];
-    NSMutableArray *msgBlockArray = nil;
-    NSIndexPath *indexPath = nil;
-    //收到第一个消息
-    if ([self.messageArray count] == 0 ) {
-        
-        msgBlockArray = [[NSMutableArray alloc] init];
-        [self.messageArray addObject: msgBlockArray];
-        [msgBlockArray addObject:msg];
-        
-        [self.timestamps addObject: curtDate];
-        
-        indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-
-    }else{
-        NSDate *lastDate = [self.timestamps lastObject];
-        if ([self isSameDay:lastDate other:curtDate]) {
-            //same day
-            msgBlockArray = [self.messageArray lastObject];
-            [msgBlockArray addObject:msg];
-            
-            indexPath = [NSIndexPath indexPathForRow:[msgBlockArray count] - 1 inSection: [self.messageArray count] - 1];
-        }else{
-            //next day
-            msgBlockArray = [[NSMutableArray alloc] init];
-            [msgBlockArray addObject: msg];
-            [self.messageArray addObject: msgBlockArray];
-            [self.timestamps addObject:curtDate];
-            indexPath = [NSIndexPath indexPathForRow:[msgBlockArray count] - 1 inSection: [self.messageArray count] - 1];
-      
-        }
-    }
-    
-    [UIView beginAnimations:nil context:NULL];
-    if (indexPath.row == 0 ) {
-        
-        NSUInteger sectionCount = indexPath.section;
-        NSIndexSet *indices = [NSIndexSet indexSetWithIndex: sectionCount];
-        [self.tableView beginUpdates];
-        [self.tableView insertSections:indices withRowAnimation:UITableViewRowAnimationNone];
-        [self.tableView endUpdates];
-        
-    }else{
-        NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
-        [indexPaths addObject:indexPath];
-        [self.tableView beginUpdates];
-        [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
-        [self.tableView endUpdates];
-    }
-    
-    [self scrollToBottomAnimated:NO];
-    
-    [UIView commitAnimations];
-}
-
-#pragma mark - function
--(NSDateComponents*) getComponentOfDate:(NSDate *)date {
-    if (date == nil) {
-        return nil;
-    }
-    
-	NSCalendar *calendar = [NSCalendar currentCalendar];
-	[calendar setTimeZone:[NSTimeZone systemTimeZone]];
-	NSDateComponents *comps = [[NSDateComponents alloc] init];
-    NSInteger unitFlags = NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay|\
-        NSCalendarUnitWeekday|NSCalendarUnitHour|NSCalendarUnitMinute|NSCalendarUnitSecond;
-	comps = [calendar components:unitFlags fromDate:date];
-    return comps;
-}
-
--(NSString *) getConversationTimeString:(NSDate *)date{
-    
-    NSDateComponents *components = [self getComponentOfDate:date];
-    NSDateComponents *todayComponents = [self getComponentOfDate:[NSDate date]];
-    NSMutableString *outStr;
-    
-    if (components.year == todayComponents.year && components.day == todayComponents.day && components.month == todayComponents.month) {
-        
-        NSString *format = @"HH:mm";
-        NSDateFormatter *formatter = [[NSDateFormatter alloc] init] ;
-        [formatter setDateFormat:format];
-        [formatter setTimeZone:[NSTimeZone systemTimeZone]];
-        
-        NSString *timeStr = [formatter stringFromDate:date];
-        
-        if (components.hour > 11) {
-            //下午
-            outStr = [NSMutableString stringWithFormat:@"%@ %@",@"下午",timeStr];
-        }else{
-            //上午
-            outStr = [NSMutableString stringWithFormat:@"%@ %@",@"上午",timeStr];
-        }
-        return outStr;
-    }else{
-        NSString *format = @"MM-dd HH:mm";
-        NSDateFormatter *formatter = [[NSDateFormatter alloc] init] ;
-        [formatter setDateFormat:format];
-        [formatter setTimeZone:[NSTimeZone systemTimeZone]];
-        
-        return [formatter stringFromDate:date];
-    }
-}
-
-// 从数字获取对应的周时间字符串
--(NSString *) getWeekDayString:(int)iDay {
-    switch (iDay) {
-        case 1:
-            return @"周日";
-            break;
-        case 2:
-            return @"周一";
-            break;
-        case 3:
-            return @"周二";
-            break;
-        case 4:
-            return @"周三";
-            break;
-        case 5:
-            return @"周四";
-            break;
-        case 6:
-            return @"周五";
-            break;
-        case 7:
-            return @"周六";
-            break;
-        default:
-            return nil;
-    }
-    return nil;
-}
-
--(BOOL)isSameDay:(NSDate*)date1 other:(NSDate*)date2 {
-    NSDateComponents *c1 = [self getComponentOfDate:date1];
-    NSDateComponents *c2 = [self getComponentOfDate:date2];
-    return c1.year == c2.year && c1.month == c2.month && c1.day == c2.day;
-}
-
--(BOOL)isYestoday:(NSDate*)date1 today:(NSDate*)date2 {
-    NSDate *y = [date1 dateByAddingTimeInterval:-24*3600];
-    return [self isSameDay:y other:date2];
-}
--(BOOL)isBeforeYestoday:(NSDate*)date1 today:(NSDate*)date2 {
-    NSDate *y = [date1 dateByAddingTimeInterval:-2*24*3600];
-    return [self isSameDay:y other:date2];
-}
-
--(BOOL)isInWeek:(NSDate*)date1 today:(NSDate*)date2 {
-    NSDate *t = [date1 dateByAddingTimeInterval:-7*24*3600];
-    return [t compare:date2] == NSOrderedAscending && ![self isSameDay:t other:date2];
-}
-
--(BOOL)isInMonth:(NSDate*)date1 today:(NSDate*)date2 {
-    NSDate *t = [date1 dateByAddingTimeInterval:-30*24*3600];
-    return [t compare:date2] == NSOrderedAscending;
 }
 
 
@@ -1473,136 +975,19 @@
     self.navigationItem.leftBarButtonItem = item;
 }
 
-- (IMessage*) getImMessageById:(int)msgLocalID{
-    
-    for ( long sectionIndex = [self.messageArray count] - 1; sectionIndex >= 0; sectionIndex--) {
-        
-        NSMutableArray *rowArrays = [self.messageArray objectAtIndex:sectionIndex];
-        for (long rowindex = [rowArrays count ] - 1;rowindex >= 0 ; rowindex--) {
-            
-            IMessage *tmpMsg = (IMessage*) [rowArrays objectAtIndex:rowindex];
-            if (tmpMsg.msgLocalID == msgLocalID) {
-                return tmpMsg;
-            }
-        }
-    }
-    return nil;
-}
-
-- (NSIndexPath*) getIndexPathById:(int)msgLocalID{
-    for ( long sectionIndex = [self.messageArray count] - 1; sectionIndex >= 0; sectionIndex--) {
-        
-        NSMutableArray *rowArrays = [self.messageArray objectAtIndex:sectionIndex];
-        for (long rowindex = [rowArrays count ] - 1;rowindex >= 0 ; rowindex--) {
-            
-            IMMessage *tmpMsg = [rowArrays objectAtIndex:rowindex];
-            if (tmpMsg.msgLocalID == msgLocalID) {
-                
-                NSIndexPath *findpath = [NSIndexPath indexPathForRow:rowindex inSection: sectionIndex];
-                return findpath;
-            }
-        }
-    }
-    return nil;
-}
-
-- (void) reloadMessage:(int)msgLocalID{
-    
-    for ( long sectionIndex = [self.messageArray count] - 1; sectionIndex >= 0; sectionIndex--) {
-        
-        NSMutableArray *rowArrays = [self.messageArray objectAtIndex:sectionIndex];
-        for (long rowindex = [rowArrays count ] - 1;rowindex >= 0 ; rowindex--) {
-            
-            IMMessage *tmpMsg = [rowArrays objectAtIndex:rowindex];
-            if (tmpMsg.msgLocalID == msgLocalID) {
-                
-                NSIndexPath *findpath = [NSIndexPath indexPathForRow:rowindex inSection: sectionIndex];
-                NSArray *array = [NSArray arrayWithObject:findpath];
-                [self.tableView reloadRowsAtIndexPaths:array withRowAnimation:UITableViewRowAnimationNone];
-            }
-        }
-    }
-}
-
--(void)returnMainTableViewController {
+- (void)returnMainTableViewController {
     DraftDB *db = [DraftDB instance];
     [db setDraft:self.peerUID draft:self.inputToolBarView.textView.text];
+    
+    [self removeObserver];
 
-    [[IMService instance] removeMessageObserver:self];
-    [[Outbox instance] removeBoxObserver:self];
-    [[AudioDownloader instance] removeDownloaderObserver:self];
-//    AppDelegate *delegate = [[UIApplication sharedApplication] delegate];
-//    delegate.tabBarController.selectedIndex = 2;
     [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
-#pragma mark - Outbox Observer
--(void)onAudioUploadSuccess:(IMessage*)msg URL:(NSString*)url {
-    if (msg.receiver == self.peerUID) {
-        NSIndexPath *indexPath = [self getIndexPathById:msg.msgLocalID];
-        MessageViewCell *cell = (MessageViewCell*)[self.tableView cellForRowAtIndexPath:indexPath];
-        MessageAudioView *audioView = (MessageAudioView*)cell.bubbleView;
-        [audioView setUploading:NO];
-    }
-}
-
--(void)onAudioUploadFail:(IMessage*)msg {
-    if (msg.receiver == self.peerUID) {
-        NSIndexPath *indexPath = [self getIndexPathById:msg.msgLocalID];
-        MessageViewCell *cell = (MessageViewCell*)[self.tableView cellForRowAtIndexPath:indexPath];
-        MessageAudioView *audioView = (MessageAudioView*)cell.bubbleView;
-        [audioView setUploading:NO];
-        
-        msg.flags = msg.flags|MESSAGE_FLAG_FAILURE;
-        [self reloadMessage:msg.msgLocalID];
-    }
-}
-
--(void)onImageUploadSuccess:(IMessage*)msg URL:(NSString*)url {
-    if (msg.receiver == self.peerUID) {
-        NSIndexPath *indexPath = [self getIndexPathById:msg.msgLocalID];
-        MessageViewCell *cell = (MessageViewCell*)[self.tableView cellForRowAtIndexPath:indexPath];
-        MessageImageView *imageView = (MessageImageView*)cell.bubbleView;
-        [imageView setUploading:NO];
-    }
-}
-
--(void)onImageUploadFail:(IMessage*)msg {
-    if (msg.receiver == self.peerUID) {
-        NSIndexPath *indexPath = [self getIndexPathById:msg.msgLocalID];
-        MessageViewCell *cell = (MessageViewCell*)[self.tableView cellForRowAtIndexPath:indexPath];
-        MessageImageView *imageView = (MessageImageView*)cell.bubbleView;
-        [imageView setUploading:NO];
-        
-
-        msg.flags = msg.flags|MESSAGE_FLAG_FAILURE;
-        [self reloadMessage:msg.msgLocalID];
-
-    }
-}
-
-#pragma mark - Audio Downloader Observer
--(void)onAudioDownloadSuccess:(IMessage*)msg {
-    if (msg.sender == self.peerUID) {
-        NSIndexPath *indexPath = [self getIndexPathById:msg.msgLocalID];
-        MessageViewCell *cell = (MessageViewCell*)[self.tableView cellForRowAtIndexPath:indexPath];
-        MessageAudioView *audioView = (MessageAudioView*)cell.bubbleView;
-        [audioView setDownloading:NO];
-    }
-}
-
--(void)onAudioDownloadFail:(IMessage*)msg {
-    if (msg.sender == self.peerUID) {
-        NSIndexPath *indexPath = [self getIndexPathById:msg.msgLocalID];
-        MessageViewCell *cell = (MessageViewCell*)[self.tableView cellForRowAtIndexPath:indexPath];
-        MessageAudioView *audioView = (MessageAudioView*)cell.bubbleView;
-        [audioView setDownloading:NO];
-    }
-}
 /*
  * 复用ID区分来去类型
  */
--(NSString*) getMessageViewCellId:(IMessage*)msg{
+- (NSString*)getMessageViewCellId:(IMessage*)msg{
     if(msg.sender == self.currentUID){
         return [NSString stringWithFormat:@"MessageCell_%d%d", msg.content.type,BubbleMessageTypeOutgoing];
     }else{
@@ -1612,7 +997,7 @@
 
 #pragma mark - MessageInputRecordDelegate
 
--(void) recordStart{
+- (void)recordStart {
     if (self.recorder.recording) {
         return;
     }
@@ -1644,7 +1029,7 @@
     }];
 }
 
- -(void) recordCancel:(CGFloat)xMove{
+- (void)recordCancel:(CGFloat)xMove {
     NSLog(@"touch cancel");
    
      if (xMove < 0) {
@@ -1657,15 +1042,14 @@
      }
 }
 
--(void) recordEnd{
+-(void)recordEnd {
     if (self.recorder.recording) {
         NSLog(@"stop record...");
         [self stopRecord];
     }
 }
 
-- (void)resend:(id)sender
-{
+- (void)resend:(id)sender {
     
     [self resignFirstResponder];
     
@@ -1675,38 +1059,8 @@
     }
     
     IMessage *message = self.selectedMessage;
-    message.flags = message.flags & (~MESSAGE_FLAG_FAILURE);
-    PeerMessageDB *db = [PeerMessageDB instance];
-    [db erasePeerMessageFailure:message.msgLocalID uid:message.receiver];
-
-    if (message.content.type == MESSAGE_AUDIO) {
-        [[Outbox instance] uploadAudio:message];
-    } else if (message.content.type == MESSAGE_IMAGE) {
-        UIImage *image = [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:message.content.imageURL];
-        if (!image) {
-            return;
-        }
-        [[Outbox instance] uploadImage:message image:image];
-    } else {
-        Message *m = [[Message alloc] init];
-        m.cmd = MSG_IM;
-        IMMessage *im = [[IMMessage alloc] init];
-        im.sender = message.sender;
-        im.receiver = message.receiver;
-        im.msgLocalID = message.msgLocalID;
-        im.content = message.content.raw;
-        m.body = im;
-        [[IMService instance] sendPeerMessage:im];
-    }
-    
-    if (self.selectedCell == nil) {
-        return;
-    }
-    int row = self.selectedCell.tag & 0xffff;
-    int section = (int)(self.selectedCell.tag >> 16);
-    NSIndexPath *findpath = [NSIndexPath indexPathForRow:row inSection:section];
-    NSArray *array = [NSArray arrayWithObject:findpath];
-    [self.tableView reloadRowsAtIndexPaths:array withRowAnimation:UITableViewRowAnimationNone];
+    [self resendMessage:message];
+  
 }
 
 - (void)copyText:(id)sender
@@ -1770,25 +1124,5 @@
 }
 
 
-+ (void)playSoundWithName:(NSString *)name type:(NSString *)type {
-    NSString *path = [[NSBundle mainBundle] pathForResource:name ofType:type];
-    
-    if([[NSFileManager defaultManager] fileExistsAtPath:path]) {
-        SystemSoundID sound;
-        AudioServicesCreateSystemSoundID((__bridge CFURLRef)[NSURL fileURLWithPath:path], &sound);
-        AudioServicesPlaySystemSound(sound);
-    }
-    else {
-        NSLog(@"Error: audio file not found at path: %@", path);
-    }
-}
-
-+ (void)playMessageReceivedSound {
-    [self playSoundWithName:@"messageReceived" type:@"aiff"];
-}
-
-+ (void)playMessageSentSound {
-    [self playSoundWithName:@"messageSent" type:@"aiff"];
-}
 
 @end

@@ -47,6 +47,8 @@
 		6D0331651AAB6781004AA39F /* UIImage+JSMessagesView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D0331641AAB6781004AA39F /* UIImage+JSMessagesView.m */; };
 		6DF54F171AB6E58800197EBC /* TextMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54F161AB6E58800197EBC /* TextMessageViewController.m */; };
 		6DF54F181AB6EECA00197EBC /* TextMessageViewController.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6DF54F151AB6E58800197EBC /* TextMessageViewController.h */; };
+		6DF54F261AB816FB00197EBC /* BaseMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54F251AB816FB00197EBC /* BaseMessageViewController.m */; };
+		6DF54F281AB82E0000197EBC /* BaseMessageViewController.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6DF54F241AB816FB00197EBC /* BaseMessageViewController.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -87,6 +89,7 @@
 			dstPath = "include/$(PRODUCT_NAME)";
 			dstSubfolderSpec = 16;
 			files = (
+				6DF54F281AB82E0000197EBC /* BaseMessageViewController.h in CopyFiles */,
 				6DF54F181AB6EECA00197EBC /* TextMessageViewController.h in CopyFiles */,
 				6D0331561AAB53EC004AA39F /* IMessage.h in CopyFiles */,
 				6D0331541AAB53D3004AA39F /* GroupMessageDB.h in CopyFiles */,
@@ -169,6 +172,8 @@
 		6D0331641AAB6781004AA39F /* UIImage+JSMessagesView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+JSMessagesView.m"; sourceTree = "<group>"; };
 		6DF54F151AB6E58800197EBC /* TextMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TextMessageViewController.h; path = controller/TextMessageViewController.h; sourceTree = "<group>"; };
 		6DF54F161AB6E58800197EBC /* TextMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TextMessageViewController.m; path = controller/TextMessageViewController.m; sourceTree = "<group>"; };
+		6DF54F241AB816FB00197EBC /* BaseMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BaseMessageViewController.h; path = controller/BaseMessageViewController.h; sourceTree = "<group>"; };
+		6DF54F251AB816FB00197EBC /* BaseMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BaseMessageViewController.m; path = controller/BaseMessageViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -312,6 +317,8 @@
 				6D032FFD1AA9B4D2004AA39F /* MessageViewController.m */,
 				6DF54F151AB6E58800197EBC /* TextMessageViewController.h */,
 				6DF54F161AB6E58800197EBC /* TextMessageViewController.m */,
+				6DF54F241AB816FB00197EBC /* BaseMessageViewController.h */,
+				6DF54F251AB816FB00197EBC /* BaseMessageViewController.m */,
 			);
 			name = controller;
 			sourceTree = "<group>";
@@ -505,6 +512,7 @@
 				6D0330061AA9BBC7004AA39F /* AudioDownloader.m in Sources */,
 				6D032FF01AA9B41C004AA39F /* GroupMessageDB.m in Sources */,
 				6D0331341AA9E734004AA39F /* MessageImageView.m in Sources */,
+				6DF54F261AB816FB00197EBC /* BaseMessageViewController.m in Sources */,
 				6D032FF61AA9B41C004AA39F /* ReverseFile.m in Sources */,
 				6D032FFE1AA9B4D2004AA39F /* MessageViewController.m in Sources */,
 				6D0331351AA9E734004AA39F /* MessageInputView.m in Sources */,

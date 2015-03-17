@@ -10,11 +10,10 @@
 #import <UIKit/UIKit.h>
 #import <AVFoundation/AVFoundation.h>
 #import <imsdk/IMService.h>
+#import "BaseMessageViewController.h"
 
-@interface TextMessageViewController : UIViewController < UIImagePickerControllerDelegate, UINavigationControllerDelegate,UIScrollViewDelegate,UITableViewDataSource, UITableViewDelegate, UITextViewDelegate, UIGestureRecognizerDelegate, MessageObserver,  UIActionSheetDelegate>
+@interface TextMessageViewController : BaseMessageViewController < UIImagePickerControllerDelegate, UINavigationControllerDelegate,UIScrollViewDelegate,UITableViewDataSource, UITableViewDelegate, UITextViewDelegate, UIGestureRecognizerDelegate, UIActionSheetDelegate>
 
-@property(nonatomic, assign) int64_t currentUID;
-@property(nonatomic, assign) int64_t peerUID;
-@property(nonatomic, copy) NSString *peerName;
+
 
 @end
