@@ -4,13 +4,9 @@
 #import "IMessage.h"
 
 
-
 @interface MessageViewCell : UITableViewCell
-{
-    
-}
+
 @property (strong, nonatomic) BubbleView *bubbleView;
-@property (weak, nonatomic) UIViewController *dgtController;
 
 -(id)initWithType:(int)type reuseIdentifier:(NSString *)reuseIdentifier;
 

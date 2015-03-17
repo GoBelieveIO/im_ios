@@ -75,7 +75,6 @@
 		6DF54E4C1AB5883200197EBC /* save@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E081AB5883200197EBC /* save@2x.png */; };
 		6DF54E4D1AB5883200197EBC /* messageReceived.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E0A1AB5883200197EBC /* messageReceived.aiff */; };
 		6DF54E4E1AB5883200197EBC /* messageSent.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E0B1AB5883200197EBC /* messageSent.aiff */; };
-		6DF54E4F1AB5883200197EBC /* ConversationHeadButtonView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E0D1AB5883200197EBC /* ConversationHeadButtonView.xib */; };
 		6DF54E501AB5883200197EBC /* MessageTableSectionHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E0E1AB5883200197EBC /* MessageTableSectionHeaderView.xib */; };
 		6DF54E531AB5886B00197EBC /* libimkit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF54DC51AB587BF00197EBC /* libimkit.a */; };
 		6DF54E541AB5886B00197EBC /* libimsdk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF54DBB1AB587B700197EBC /* libimsdk.a */; };
@@ -272,7 +271,6 @@
 		6DF54E081AB5883200197EBC /* save@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "save@2x.png"; sourceTree = "<group>"; };
 		6DF54E0A1AB5883200197EBC /* messageReceived.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = messageReceived.aiff; sourceTree = "<group>"; };
 		6DF54E0B1AB5883200197EBC /* messageSent.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = messageSent.aiff; sourceTree = "<group>"; };
-		6DF54E0D1AB5883200197EBC /* ConversationHeadButtonView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ConversationHeadButtonView.xib; sourceTree = "<group>"; };
 		6DF54E0E1AB5883200197EBC /* MessageTableSectionHeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MessageTableSectionHeaderView.xib; sourceTree = "<group>"; };
 		6DF54E551AB588C700197EBC /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
 		6DF54E561AB588C700197EBC /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
@@ -585,7 +583,6 @@
 		6DF54E0C1AB5883200197EBC /* xibs */ = {
 			isa = PBXGroup;
 			children = (
-				6DF54E0D1AB5883200197EBC /* ConversationHeadButtonView.xib */,
 				6DF54E0E1AB5883200197EBC /* MessageTableSectionHeaderView.xib */,
 			);
 			path = xibs;
@@ -984,7 +981,6 @@
 				6DF54E351AB5883200197EBC /* MicNewIncoming@2x.png in Resources */,
 				6DF54E341AB5883200197EBC /* MicNewIncoming.png in Resources */,
 				6DF54E1A1AB5883200197EBC /* CheckDoubleLight.png in Resources */,
-				6DF54E4F1AB5883200197EBC /* ConversationHeadButtonView.xib in Resources */,
 				6DF54E101AB5883200197EBC /* BrdtCheck@2x.png in Resources */,
 				6DF54E251AB5883200197EBC /* input-bar-flat.png in Resources */,
 				6DF54EF41AB58DC500197EBC /* avater_you@2x.png in Resources */,

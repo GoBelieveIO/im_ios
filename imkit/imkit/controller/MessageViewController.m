@@ -96,7 +96,8 @@
     [self setNormalNavigationButtons];
 
     self.navigationItem.title = self.peerName;
-    [self processConversationData];
+    [self loadConversationData];
+    
     //content scroll to bottom
     [self.tableView reloadData];
     [self.tableView setContentOffset:CGPointMake(0, CGFLOAT_MAX)];
@@ -212,8 +213,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
     
-    NSNotification* notification = [[NSNotification alloc] initWithName:CLEAR_SINGLE_CONV_NEW_MESSAGE_NOTIFY object:[NSNumber numberWithLongLong:self.peerUID] userInfo:nil];
-    [[NSNotificationCenter defaultCenter] postNotification:notification];
+ 
 }
 
 - (void)didReceiveMemoryWarning
@@ -980,6 +980,11 @@
     [db setDraft:self.peerUID draft:self.inputToolBarView.textView.text];
     
     [self removeObserver];
+    
+    NSNotification* notification = [[NSNotification alloc] initWithName:CLEAR_SINGLE_CONV_NEW_MESSAGE_NOTIFY
+                                                                 object:[NSNumber numberWithLongLong:self.peerUID]
+                                                               userInfo:nil];
+    [[NSNotificationCenter defaultCenter] postNotification:notification];
 
     [self.navigationController popToRootViewControllerAnimated:YES];
 }

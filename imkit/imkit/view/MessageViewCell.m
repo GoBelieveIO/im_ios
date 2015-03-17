@@ -78,7 +78,6 @@
 #pragma mark - Message Cell
 
 - (void) setMessage:(IMessage *)message msgType:(BubbleMessageType)msgType {
-
     
     BubbleMessageReceiveStateType state;
     if(message.isACK){
@@ -123,13 +122,6 @@
         [self.bubbleView showSendErrorBtn:NO];
     }
 
-}
-
-
-#pragma mark - Touch events
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
-{
-    [super touchesEnded:touches withEvent:event];
 }
 
 @end

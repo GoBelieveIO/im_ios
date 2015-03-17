@@ -31,34 +31,34 @@
 
 
 //protected
--(void)addObserver;
--(void)removeObserver;
+- (void)addObserver;
+- (void)removeObserver;
 
--(void)resendMessage:(IMessage*)message;
+- (void)resendMessage:(IMessage*)message;
 - (void)sendAudioMessage:(NSString*)path second:(int)second;
 - (void)sendImageMessage:(UIImage*)image;
--(void) sendTextMessage:(NSString*)text;
+- (void) sendTextMessage:(NSString*)text;
 
 - (void)sendMessage:(IMessage*)msg;
--(void)processConversationData;
--(void)pullToRefresh;
+- (void)loadConversationData;
+- (void)pullToRefresh;
 
--(void)reloadMessage:(int)msgLocalID;
--(void)insertMessage:(IMessage*)msg;
+- (void)reloadMessage:(int)msgLocalID;
+- (void)insertMessage:(IMessage*)msg;
 - (void)scrollToBottomAnimated:(BOOL)animated;
 
--(IMessage*)messageForRowAtIndexPath:(NSIndexPath *)indexPath;
--(NSDate *)timestampForRowAtIndexPath:(NSIndexPath *)indexPath;
--(NSIndexPath*)getIndexPathById:(int)msgLocalID;
+- (IMessage*)messageForRowAtIndexPath:(NSIndexPath *)indexPath;
+- (NSDate *)timestampForRowAtIndexPath:(NSIndexPath *)indexPath;
+- (NSIndexPath*)getIndexPathById:(int)msgLocalID;
 
--(NSString *)getWeekDayString:(int)iDay;
--(BOOL)isSameDay:(NSDate*)date1 other:(NSDate*)date2 ;
--(BOOL)isYestoday:(NSDate*)date1 today:(NSDate*)date2 ;
--(BOOL)isBeforeYestoday:(NSDate*)date1 today:(NSDate*)date2;
--(BOOL)isInWeek:(NSDate*)date1 today:(NSDate*)date2;
--(BOOL)isInMonth:(NSDate*)date1 today:(NSDate*)date2;
--(NSDateComponents*)getComponentOfDate:(NSDate *)date ;
--(NSString *) getConversationTimeString:(NSDate *)date;
+- (NSString *)getWeekDayString:(NSInteger)iDay;
+- (BOOL)isSameDay:(NSDate*)date1 other:(NSDate*)date2 ;
+- (BOOL)isYestoday:(NSDate*)date1 today:(NSDate*)date2 ;
+- (BOOL)isBeforeYestoday:(NSDate*)date1 today:(NSDate*)date2;
+- (BOOL)isInWeek:(NSDate*)date1 today:(NSDate*)date2;
+- (BOOL)isInMonth:(NSDate*)date1 today:(NSDate*)date2;
+- (NSDateComponents*)getComponentOfDate:(NSDate *)date ;
+- (NSString *) getConversationTimeString:(NSDate *)date;
 
 + (void)playMessageReceivedSound;
 + (void)playMessageSentSound;

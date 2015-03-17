@@ -55,7 +55,7 @@
     [[AudioDownloader instance] removeDownloaderObserver:self];
 }
 
-- (void)processConversationData {
+- (void)loadConversationData {
     int count = 0;
     id<IMessageIterator> iterator =  [[PeerMessageDB instance] newPeerMessageIterator: self.peerUID];
     IMessage *msg = [iterator next];
@@ -76,15 +76,15 @@
         msg = [iterator next];
     }
     
-    [self initTableData];
+    [self initTableViewData];
 }
 
 
--(void)initTableData {
+-(void)initTableViewData {
     self.messageArray = [NSMutableArray array];
     self.timestamps = [NSMutableArray array];
     
-    int count = [self.messages count];
+    NSInteger count = [self.messages count];
     if (count == 0) {
         return;
     }
@@ -93,7 +93,7 @@
     NSDate *curtDate = nil;
     NSMutableArray *msgBlockArray = nil;
     
-    for (int i = count-1; i >= 0; i--) {
+    for (NSInteger i = count-1; i >= 0; i--) {
         IMessage *msg = [self.messages objectAtIndex:i];
         
         FileCache *cache = [FileCache instance];
@@ -142,7 +142,7 @@
         return;
     }
     
-    [self initTableData];
+    [self initTableViewData];
     
     [self.tableView reloadData];
     
@@ -618,7 +618,7 @@
 }
 
 // 从数字获取对应的周时间字符串
-- (NSString *) getWeekDayString:(int)iDay {
+- (NSString *) getWeekDayString:(NSInteger)iDay {
     switch (iDay) {
         case 1:
             return @"周日";
