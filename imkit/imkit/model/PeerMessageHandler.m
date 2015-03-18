@@ -32,7 +32,7 @@
     content.raw = im.content;
     m.content = content;
     m.timestamp = time(NULL);
-    BOOL r = [[PeerMessageDB instance] insertPeerMessage:m uid:im.sender];
+    BOOL r = [[PeerMessageDB instance] insertMessage:m uid:im.sender];
     if (r) {
         msg.msgLocalID = m.msgLocalID;
     }
@@ -40,17 +40,17 @@
 }
 
 -(BOOL)handleMessageACK:(int)msgLocalID uid:(int64_t)uid {
-    return [[PeerMessageDB instance] acknowledgePeerMessage:msgLocalID uid:uid];
+    return [[PeerMessageDB instance] acknowledgeMessage:msgLocalID uid:uid];
 }
 
 -(BOOL)handleMessageRemoteACK:(int)msgLocalID uid:(int64_t)uid {
     PeerMessageDB *db = [PeerMessageDB instance];
-    return [db acknowledgePeerMessageFromRemote:msgLocalID uid:uid];
+    return [db acknowledgeMessageFromRemote:msgLocalID uid:uid];
 }
 
 -(BOOL)handleMessageFailure:(int)msgLocalID uid:(int64_t)uid {
     PeerMessageDB *db = [PeerMessageDB instance];
-    return [db markPeerMessageFailure:msgLocalID uid:uid];
+    return [db markMessageFailure:msgLocalID uid:uid];
 }
 
 @end

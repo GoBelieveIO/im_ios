@@ -522,6 +522,10 @@
 }
 
 -(void)addMessageObserver:(id<MessageObserver>)ob {
+    if ([self.observers containsObject:ob]) {
+        NSLog(@"im service observer exist");
+        return;
+    }
     [self.observers addObject:ob];
 }
 -(void)removeMessageObserver:(id<MessageObserver>)ob {

@@ -12,7 +12,7 @@
 #import <imkit/TextMessageViewController.h>
 #import <imkit/MessageViewController.h>
 #import <imkit/IMHttpAPI.h>
-
+#import <imkit/PeerMessageViewController.h>
 
 
 @interface MainViewController (){
@@ -109,12 +109,8 @@
             
             NSLog(@"login success");
             
-#define TEXT1
-#ifdef TEXT
-            TextMessageViewController* msgController = [[TextMessageViewController alloc] init];
-#else
-            MessageViewController *msgController = [[MessageViewController alloc] init];
-#endif
+
+            PeerMessageViewController *msgController = [[PeerMessageViewController alloc] init];
             
             msgController.currentUID = [tfSender.text longLongValue];
             msgController.peerUID = [tfReceiver.text longLongValue];

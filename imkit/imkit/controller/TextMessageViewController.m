@@ -28,18 +28,15 @@
 @property (strong, nonatomic) UIButton *sendButton;
 @property (strong, nonatomic) UITextField *inputTextField;
 
-
-
 - (void)setup;
 
 #pragma mark - Actions
 - (void)sendPressed:(UIButton *)sender;
 
-
-
 #pragma mark - Keyboard notifications
 - (void)handleWillShowKeyboard:(NSNotification *)notification;
 - (void)handleWillHideKeyboard:(NSNotification *)notification;
+
 @end
 
 
@@ -53,15 +50,6 @@
     return self;
 }
 
--(void) setNormalNavigationButtons{
-    
-    UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"对话"
-                                                             style:UIBarButtonItemStyleDone
-                                                            target:self
-                                                            action:@selector(returnMainTableViewController)];
-    
-    self.navigationItem.leftBarButtonItem = item;
-}
 
 #pragma mark - View lifecycle
 - (void)viewDidLoad
@@ -69,16 +57,11 @@
     [super viewDidLoad];
     
     [self setup];
-    
-    [self setNormalNavigationButtons];
-    
-    self.navigationItem.title = self.peerName;
+
     [self loadConversationData];
     //content scroll to bottom
     [self.tableView reloadData];
     [self.tableView setContentOffset:CGPointMake(0, CGFLOAT_MAX)];
-    
-    [self addObserver];
 }
 
 - (void)setup
@@ -161,6 +144,11 @@
     tapRecognizer.delegate  = self;
 }
 
+- (void)pullToRefresh {
+    NSLog(@"pull to refresh...");
+    [self.refreshControl endRefreshing];
+    [self loadEarlierData];
+}
 
 #pragma mark - View lifecycle
 
@@ -281,6 +269,12 @@
     [UIView commitAnimations];
 }
 
+- (void)setDraft:(NSString*)text {
+    self.inputTextField.text = text;
+}
+- (NSString*)getDraft {
+    return self.inputTextField.text;
+}
 
 - (void)disableSend {
     self.sendButton.enabled = NO;
@@ -289,16 +283,6 @@
 - (void)enableSend {
     self.sendButton.enabled = YES;
 }
-
-//同IM服务器连接的状态变更通知
-- (void)onConnectState:(int)state {
-    if(state == STATE_CONNECTED) {
-        [self enableSend];
-    } else {
-        [self disableSend];
-    }
-}
-
 
 
 #pragma mark - Table view data source
@@ -318,7 +302,7 @@
     }
     BubbleMessageType msgType;
     
-    if(message.sender == self.currentUID) {
+    if(message.sender == self.sender) {
         msgType = BubbleMessageTypeOutgoing;
     }else{
         msgType = BubbleMessageTypeIncoming;
@@ -432,26 +416,15 @@
 
 
 
-
--(void)returnMainTableViewController {
-    [self removeObserver];
-    NSNotification* notification = [[NSNotification alloc] initWithName:CLEAR_SINGLE_CONV_NEW_MESSAGE_NOTIFY
-                                                                 object:[NSNumber numberWithLongLong:self.peerUID]
-                                                               userInfo:nil];
-    [[NSNotificationCenter defaultCenter] postNotification:notification];
-    [self.navigationController popToRootViewControllerAnimated:YES];
-}
-
 /*
  * 复用ID区分来去类型
  */
--(NSString*) getMessageViewCellId:(IMessage*)msg{
-    if(msg.sender == self.currentUID){
+- (NSString*)getMessageViewCellId:(IMessage*)msg{
+    if(msg.sender == self.sender){
         return [NSString stringWithFormat:@"MessageCell_%d%d", msg.content.type,BubbleMessageTypeOutgoing];
     }else{
         return [NSString stringWithFormat:@"MessageCell_%d%d", msg.content.type,BubbleMessageTypeIncoming];
     }
 }
-
 
 @end

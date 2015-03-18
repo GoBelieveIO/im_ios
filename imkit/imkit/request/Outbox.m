@@ -84,7 +84,7 @@
 }
 
 -(void)onUploadImageFail:(IMessage*)msg {
-    [[PeerMessageDB instance] markPeerMessageFailure:msg.msgLocalID uid:msg.receiver];
+    [[PeerMessageDB instance] markMessageFailure:msg.msgLocalID uid:msg.receiver];
     for (id<OutboxObserver> observer in self.observers) {
         [observer onImageUploadFail:msg];
     }
@@ -108,7 +108,7 @@
 }
 
 -(void)onUploadAudioFail:(IMessage*)msg {
-    [[PeerMessageDB instance] markPeerMessageFailure:msg.msgLocalID uid:msg.receiver];
+    [[PeerMessageDB instance] markMessageFailure:msg.msgLocalID uid:msg.receiver];
     for (id<OutboxObserver> observer in self.observers) {
         [observer onAudioUploadFail:msg];
     }

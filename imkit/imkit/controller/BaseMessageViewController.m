@@ -11,7 +11,7 @@
 #import <AudioToolbox/AudioServices.h>
 #import "UIImageView+WebCache.h"
 #import "IMessage.h"
-#import "PeerMessageDB.h"
+//#import "PeerMessageDB.h"
 #import "Constants.h"
 
 #import "FileCache.h"
@@ -19,7 +19,7 @@
 #import "AudioDownloader.h"
 #import "UIImage+Resize.h"
 
-#define PAGE_COUNT 10
+
 
 @interface BaseMessageViewController ()<AudioDownloaderObserver, OutboxObserver>
 
@@ -35,12 +35,53 @@
     return self;
 }
 
+- (int64_t)sender {
+    NSAssert(NO, @"not implement");
+    return 0;
+}
+
+- (int64_t)receiver {
+    NSAssert(NO, @"not implement");
+    return 0;
+}
+
+- (void)loadConversationData {
+    NSAssert(NO, @"not implement");
+}
+
+- (void)loadEarlierData {
+    NSAssert(NO, @"not implement");
+}
+
+- (BOOL)isInConversation:(IMessage*)msg {
+    NSAssert(NO, @"not implement");
+    return NO;
+}
+
+-(BOOL)saveMessage:(IMessage*)msg {
+    NSAssert(NO, @"not implement");
+    return NO;
+}
+-(BOOL)removeMessage:(IMessage*)msg {
+    NSAssert(NO, @"not implement");
+    return NO;
+}
+-(BOOL)markMessageFailure:(IMessage*)msg {
+    NSAssert(NO, @"not implement");
+    return NO;
+}
+-(BOOL)markMesageListened:(IMessage*)msg {
+    NSAssert(NO, @"not implement");
+    return NO;
+}
+
+-(BOOL)eraseMessageFailure:(IMessage*)msg {
+    NSAssert(NO, @"not implement");
+    return NO;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    [[IMService instance] addMessageObserver:self];
-    [[Outbox instance] addBoxObserver:self];
-    [[AudioDownloader instance] addDownloaderObserver:self];
 }
 
 -(void)addObserver {
@@ -54,31 +95,6 @@
     [[Outbox instance] removeBoxObserver:self];
     [[AudioDownloader instance] removeDownloaderObserver:self];
 }
-
-- (void)loadConversationData {
-    int count = 0;
-    id<IMessageIterator> iterator =  [[PeerMessageDB instance] newPeerMessageIterator: self.peerUID];
-    IMessage *msg = [iterator next];
-    while (msg) {
-        if (self.textMode) {
-            if (msg.content.type == MESSAGE_TEXT) {
-                [self.messages insertObject:msg atIndex:0];
-                if (++count >= PAGE_COUNT) {
-                    break;
-                }
-            }
-        } else {
-            [self.messages insertObject:msg atIndex:0];
-            if (++count >= PAGE_COUNT) {
-                break;
-            }
-        }
-        msg = [iterator next];
-    }
-    
-    [self initTableViewData];
-}
-
 
 -(void)initTableViewData {
     self.messageArray = [NSMutableArray array];
@@ -98,7 +114,7 @@
         
         FileCache *cache = [FileCache instance];
         AudioDownloader *downloader = [AudioDownloader instance];
-        if (msg.content.type == MESSAGE_AUDIO && msg.sender == self.peerUID) {
+        if (msg.content.type == MESSAGE_AUDIO) {
             NSString *path = [cache queryCacheForKey:msg.content.audio.url];
             if (!path && ![downloader isDownloading:msg]) {
                 [downloader downloadAudio:msg];
@@ -119,68 +135,6 @@
 }
 
 
-- (void)pullToRefresh {
-    NSLog(@"pull to refresh...");
-    [self.refreshControl endRefreshing];
-    
-    IMessage *last = [self.messages firstObject];
-    if (last == nil) {
-        return;
-    }
-    id<IMessageIterator> iterator =  [[PeerMessageDB instance] newPeerMessageIterator:self.peerUID last:last.msgLocalID];
-    
-    int count = 0;
-    IMessage *msg = [iterator next];
-    while (msg) {
-        [self.messages insertObject:msg atIndex:0];
-        if (++count >= PAGE_COUNT) {
-            break;
-        }
-        msg = [iterator next];
-    }
-    if (count == 0) {
-        return;
-    }
-    
-    [self initTableViewData];
-    
-    [self.tableView reloadData];
-    
-    int section = 0;
-    int row = 0;
-    for (NSArray *block in self.messageArray) {
-        if (count < block.count) {
-            row = count;
-            break;
-        }
-        count -= [block count];
-        section++;
-    }
-    NSLog(@"scroll to row:%d section:%d", row, section);
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:section];
-    
-    [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:NO];
-}
-
-
-- (void)sendMessage:(IMessage*)msg {
-    [[PeerMessageDB instance] insertPeerMessage:msg uid:msg.receiver];
-    
-    IMMessage *im = [[IMMessage alloc] init];
-    im.sender = msg.sender;
-    im.receiver = msg.receiver;
-    im.msgLocalID = msg.msgLocalID;
-    im.content = msg.content.raw;
-    [[IMService instance] sendPeerMessage:im];
-    
-    [[self class] playMessageSentSound];
-    
-    NSNotification* notification = [[NSNotification alloc] initWithName:SEND_FIRST_MESSAGE_OK object: msg userInfo:nil];
-    
-    [[NSNotificationCenter defaultCenter] postNotification:notification];
-    
-    [self insertMessage:msg];
-}
 
 - (void)insertMessage:(IMessage*)msg {
     NSAssert(msg.msgLocalID, @"");
@@ -257,76 +211,7 @@
 
 
 
-#pragma mark - MessageObserver
-- (void)onPeerMessage:(IMMessage*)im {
-    if (im.sender != self.peerUID) {
-        return;
-    }
-    [[self class] playMessageReceivedSound];
-    
-    NSLog(@"receive msg:%@",im);
-    
-    IMessage *m = [[IMessage alloc] init];
-    m.sender = im.sender;
-    m.receiver = im.receiver;
-    m.msgLocalID = im.msgLocalID;
-    MessageContent *content = [[MessageContent alloc] init];
-    content.raw = im.content;
-    m.content = content;
-    m.timestamp = (int)time(NULL);
-    
-    if (self.textMode && m.content.type != MESSAGE_TEXT) {
-        return;
-    }
-    
-    if (m.content.type == MESSAGE_AUDIO) {
-        AudioDownloader *downloader = [AudioDownloader instance];
-        [downloader downloadAudio:m];
-    }
-    
-    [self insertMessage:m];
-}
 
-//服务器ack
-- (void)onPeerMessageACK:(int)msgLocalID uid:(int64_t)uid {
-    if (uid != self.peerUID) {
-        return;
-    }
-    IMessage *msg = [self getImMessageById:msgLocalID];
-    msg.flags = msg.flags|MESSAGE_FLAG_ACK;
-    [self reloadMessage:msgLocalID];
-}
-
-//接受方ack
-- (void)onPeerMessageRemoteACK:(int)msgLocalID uid:(int64_t)uid {
-    if (uid != self.peerUID) {
-        return;
-    }
-    IMessage *msg = [self getImMessageById:msgLocalID];
-    msg.flags = msg.flags|MESSAGE_FLAG_PEER_ACK;
-    [self reloadMessage:msgLocalID];
-}
-
-- (void)onPeerMessageFailure:(int)msgLocalID uid:(int64_t)uid {
-    if (uid != self.peerUID) {
-        return;
-    }
-    IMessage *msg = [self getImMessageById:msgLocalID];
-    msg.flags = msg.flags|MESSAGE_FLAG_FAILURE;
-    [self reloadMessage:msgLocalID];
-}
-
-//对方正在输入
-- (void)onPeerInputing:(int64_t)uid {
-    if (uid != self.peerUID) {
-        return;
-    }
-}
-
-//同IM服务器连接的状态变更通知
-- (void)onConnectState:(int)state {
-
-}
 
 
 - (IMessage*)messageForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -345,7 +230,7 @@
 }
 
 
-- (IMessage*) getImMessageById:(int)msgLocalID {
+- (IMessage*)getMessageWithID:(int)msgLocalID {
     
     for ( long sectionIndex = [self.messageArray count] - 1; sectionIndex >= 0; sectionIndex--) {
         
@@ -436,8 +321,8 @@
 - (void)sendAudioMessage:(NSString*)path second:(int)second {
     IMessage *msg = [[IMessage alloc] init];
     
-    msg.sender = self.currentUID;
-    msg.receiver = self.peerUID;
+    msg.sender = self.sender;
+    msg.receiver = self.receiver;
     
     MessageContent *content = [[MessageContent alloc] init];
     NSNumber *d = [NSNumber numberWithInt:second];
@@ -453,7 +338,9 @@
     FileCache *fileCache = [FileCache instance];
     [fileCache storeFile:data forKey:url];
     
-    [[PeerMessageDB instance] insertPeerMessage:msg uid:msg.receiver];
+    [self saveMessage:msg];
+    
+
     
     [[Outbox instance] uploadAudio:msg];
     
@@ -470,8 +357,8 @@
 - (void)sendImageMessage:(UIImage*)image {
     IMessage *msg = [[IMessage alloc] init];
     
-    msg.sender = self.currentUID;
-    msg.receiver = self.peerUID;
+    msg.sender = self.sender;
+    msg.receiver = self.receiver;
     
     MessageContent *content = [[MessageContent alloc] init];
     NSDictionary *dic = @{@"image":[self localImageURL]};
@@ -494,7 +381,7 @@
     NSString *littleUrl =  [msg.content littleImageURL];
     [[SDImageCache sharedImageCache] storeImage:sizeImage forKey: littleUrl];
     
-    [[PeerMessageDB instance] insertPeerMessage:msg uid:msg.receiver];
+    [self saveMessage:msg];
     
     [[Outbox instance] uploadImage:msg image:image];
     
@@ -506,27 +393,48 @@
     [self insertMessage:msg];
 }
 
+
+- (void)sendMessage:(IMessage*)msg {
+    IMMessage *im = [[IMMessage alloc] init];
+    im.sender = msg.sender;
+    im.receiver = msg.receiver;
+    im.msgLocalID = msg.msgLocalID;
+    im.content = msg.content.raw;
+    [[IMService instance] sendPeerMessage:im];
+}
+
 -(void) sendTextMessage:(NSString*)text {
     IMessage *msg = [[IMessage alloc] init];
     
-    msg.sender = self.currentUID;
-    msg.receiver = self.peerUID;
+    msg.sender = self.sender;
+    msg.receiver = self.receiver;
     
     MessageContent *content = [[MessageContent alloc] init];
     NSDictionary *dic = @{@"text":text};
-    NSString* newStr = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:dic options:0 error:nil] encoding:NSUTF8StringEncoding];
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dic options:0 error:nil];
+    NSString* newStr = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
     content.raw =  newStr;
     msg.content = content;
     msg.timestamp = (int)time(NULL);
     
+    [self saveMessage:msg];
+    
     [self sendMessage:msg];
+    
+    [[self class] playMessageSentSound];
+    
+    NSNotification* notification = [[NSNotification alloc] initWithName:SEND_FIRST_MESSAGE_OK object: msg userInfo:nil];
+    
+    [[NSNotificationCenter defaultCenter] postNotification:notification];
+    
+    [self insertMessage:msg];
 }
 
 
 -(void)resendMessage:(IMessage*)message {
     message.flags = message.flags & (~MESSAGE_FLAG_FAILURE);
-    PeerMessageDB *db = [PeerMessageDB instance];
-    [db erasePeerMessageFailure:message.msgLocalID uid:message.receiver];
+    
+    [self eraseMessageFailure:message];
     
     if (message.content.type == MESSAGE_AUDIO) {
         [[Outbox instance] uploadAudio:message];
@@ -537,15 +445,7 @@
         }
         [[Outbox instance] uploadImage:message image:image];
     } else {
-        Message *m = [[Message alloc] init];
-        m.cmd = MSG_IM;
-        IMMessage *im = [[IMMessage alloc] init];
-        im.sender = message.sender;
-        im.receiver = message.receiver;
-        im.msgLocalID = message.msgLocalID;
-        im.content = message.content.raw;
-        m.body = im;
-        [[IMService instance] sendPeerMessage:im];
+        [self sendMessage:message];
     }
     
     [self reloadMessage:message.msgLocalID];
@@ -555,26 +455,26 @@
 
 #pragma mark - Outbox Observer
 - (void)onAudioUploadSuccess:(IMessage*)msg URL:(NSString*)url {
-    if (msg.receiver == self.peerUID) {
+    if ([self isInConversation:msg]) {
         [self reloadMessage:msg.msgLocalID];
     }
 }
 
 -(void)onAudioUploadFail:(IMessage*)msg {
-    if (msg.receiver == self.peerUID) {
+    if ([self isInConversation:msg]) {
         msg.flags = msg.flags|MESSAGE_FLAG_FAILURE;
         [self reloadMessage:msg.msgLocalID];
     }
 }
 
 - (void)onImageUploadSuccess:(IMessage*)msg URL:(NSString*)url {
-    if (msg.receiver == self.peerUID) {
+    if ([self isInConversation:msg]) {
         [self reloadMessage:msg.msgLocalID];
     }
 }
 
 - (void)onImageUploadFail:(IMessage*)msg {
-    if (msg.receiver == self.peerUID) {
+    if ([self isInConversation:msg]) {
         msg.flags = msg.flags|MESSAGE_FLAG_FAILURE;
         [self reloadMessage:msg.msgLocalID];
     }
@@ -582,13 +482,13 @@
 
 #pragma mark - Audio Downloader Observer
 - (void)onAudioDownloadSuccess:(IMessage*)msg {
-    if (msg.sender == self.peerUID) {
+    if ([self isInConversation:msg]) {
         [self reloadMessage:msg.msgLocalID];
     }
 }
 
 - (void)onAudioDownloadFail:(IMessage*)msg {
-    if (msg.sender == self.peerUID) {
+    if ([self isInConversation:msg]) {
         [self reloadMessage:msg.msgLocalID];
     }
 }

@@ -106,12 +106,12 @@
 }
 
 
--(BOOL)insertPeerMessage:(IMessage*)msg uid:(int64_t)uid{
+-(BOOL)insertMessage:(IMessage*)msg uid:(int64_t)uid{
     NSString *path = [self getPeerPath:uid];
     return [MessageDB insertIMessage:msg path:path];
 }
 
--(BOOL)removePeerMessage:(int)msgLocalID uid:(int64_t)uid{
+-(BOOL)removeMessage:(int)msgLocalID uid:(int64_t)uid{
     NSString *path = [self getPeerPath:uid];
     return [MessageDB addFlag:msgLocalID path:path flag:MESSAGE_FLAG_DELETE];
 }
@@ -146,27 +146,27 @@
     return YES;
 }
 
--(BOOL)acknowledgePeerMessage:(int)msgLocalID uid:(int64_t)uid {
+-(BOOL)acknowledgeMessage:(int)msgLocalID uid:(int64_t)uid {
     NSString *path = [self getPeerPath:uid];
     return [MessageDB addFlag:msgLocalID path:path flag:MESSAGE_FLAG_ACK];
 }
 
--(BOOL)acknowledgePeerMessageFromRemote:(int)msgLocalID uid:(int64_t)uid {
+-(BOOL)acknowledgeMessageFromRemote:(int)msgLocalID uid:(int64_t)uid {
     NSString *path = [self getPeerPath:uid];
     return [MessageDB addFlag:msgLocalID path:path flag:MESSAGE_FLAG_PEER_ACK];
 }
 
--(BOOL)markPeerMessageFailure:(int)msgLocalID uid:(int64_t)uid {
+-(BOOL)markMessageFailure:(int)msgLocalID uid:(int64_t)uid {
     NSString *path = [self getPeerPath:uid];
     return [MessageDB addFlag:msgLocalID path:path flag:MESSAGE_FLAG_FAILURE];
 }
 
--(BOOL)markPeerMesageListened:(int)msgLocalID uid:(int64_t)uid{
+-(BOOL)markMesageListened:(int)msgLocalID uid:(int64_t)uid{
     NSString *path = [self getPeerPath:uid];
     return [MessageDB addFlag:msgLocalID path:path flag:MESSAGE_FLAG_LISTENED];
 }
 
--(BOOL)erasePeerMessageFailure:(int)msgLocalID uid:(int64_t)uid {
+-(BOOL)eraseMessageFailure:(int)msgLocalID uid:(int64_t)uid {
     NSString *path = [self getPeerPath:uid];
     return [MessageDB eraseFlag:msgLocalID path:path flag:MESSAGE_FLAG_FAILURE];
 }

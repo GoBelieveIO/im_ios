@@ -12,9 +12,18 @@
 
 //基类处理tableview相关的数据
 @interface BaseMessageViewController : UIViewController<MessageObserver>
-@property(nonatomic, assign) int64_t currentUID;
-@property(nonatomic, assign) int64_t peerUID;
-@property(nonatomic, copy) NSString *peerName;
+
+//派生类必须重写
+@property(nonatomic, readonly) int64_t sender;
+
+//receiver可能代表uid或者群组id
+@property(nonatomic, readonly) int64_t receiver;
+
+- (BOOL)saveMessage:(IMessage*)msg;
+- (BOOL)removeMessage:(IMessage*)msg;
+- (BOOL)markMessageFailure:(IMessage*)msg;
+- (BOOL)markMesageListened:(IMessage*)msg;
+- (BOOL)eraseMessageFailure:(IMessage*)msg;
 
 
 //protected
@@ -31,6 +40,9 @@
 
 
 //protected
+//消息是否属于当前会话
+- (BOOL)isInConversation:(IMessage*)msg;
+
 - (void)addObserver;
 - (void)removeObserver;
 
@@ -41,12 +53,16 @@
 
 - (void)sendMessage:(IMessage*)msg;
 - (void)loadConversationData;
-- (void)pullToRefresh;
+- (void)loadEarlierData;
+
+
+- (void)initTableViewData;
 
 - (void)reloadMessage:(int)msgLocalID;
 - (void)insertMessage:(IMessage*)msg;
 - (void)scrollToBottomAnimated:(BOOL)animated;
 
+- (IMessage*) getMessageWithID:(int)msgLocalID;
 - (IMessage*)messageForRowAtIndexPath:(NSIndexPath *)indexPath;
 - (NSDate *)timestampForRowAtIndexPath:(NSIndexPath *)indexPath;
 - (NSIndexPath*)getIndexPathById:(int)msgLocalID;

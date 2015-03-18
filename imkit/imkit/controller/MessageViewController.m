@@ -9,17 +9,11 @@
 #import "MBProgressHUD.h"
 #import "HPGrowingTextView.h"
 
-#import "IMessage.h"
-#import "PeerMessageDB.h"
+#import "MessageTableSectionHeaderView.h"
 
 #import "FileCache.h"
 #import "Outbox.h"
 #import "AudioDownloader.h"
-#import "DraftDB.h"
-
-#import "IMHttpAPI.h"
-
-#import "MessageTableSectionHeaderView.h"
 
 #import "MessageInputView.h"
 
@@ -27,15 +21,12 @@
 #import "MessageAudioView.h"
 #import "MessageImageView.h"
 #import "MessageViewCell.h"
-#import "BubbleView.h"
 
 #import "MEESImageViewController.h"
 
 #import "NSString+JSMessagesView.h"
 #import "UIImage+Resize.h"
 #import "UIView+Toast.h"
-
-#import "Constants.h"
 
 
 #define INPUT_HEIGHT 52.0f
@@ -49,11 +40,10 @@
 @property (assign, nonatomic, readonly) UIEdgeInsets originalTableViewContentInset;
 
 @property (nonatomic,strong) UIImage *willSendImage;
-
 @property (nonatomic) int  inputTimestamp;
 
-@property(nonatomic) AVAudioPlayer *player;
 @property(nonatomic) NSIndexPath *playingIndexPath;
+@property(nonatomic) AVAudioPlayer *player;
 @property(nonatomic) NSTimer *playTimer;
 
 @property(nonatomic) AVAudioRecorder *recorder;
@@ -73,6 +63,13 @@
 #pragma mark - Keyboard notifications
 - (void)handleWillShowKeyboard:(NSNotification *)notification;
 - (void)handleWillHideKeyboard:(NSNotification *)notification;
+
+- (void)pullToRefresh;
+
+- (void)AudioAction:(UIButton*)btn;
+- (void)handleTapImageView:(UITapGestureRecognizer*)tap;
+- (void)handleLongPress:(UILongPressGestureRecognizer *)longPress;
+
 @end
 
 @implementation MessageViewController
@@ -93,16 +90,11 @@
  
     [self setup];
 
-    [self setNormalNavigationButtons];
-
-    self.navigationItem.title = self.peerName;
     [self loadConversationData];
     
     //content scroll to bottom
     [self.tableView reloadData];
     [self.tableView setContentOffset:CGPointMake(0, CGFLOAT_MAX)];
-  
-    [self addObserver];
 }
 
 
@@ -121,8 +113,6 @@
     [self.view setBackgroundColor:color];
 
 	self.tableView = [[UITableView alloc] initWithFrame:tableFrame style:UITableViewStylePlain];
-    self.tableView.delegate = self;
-    self.tableView.dataSource = self;
 	self.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     self.tableView.allowsMultipleSelectionDuringEditing = YES;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -133,6 +123,10 @@
     self.refreshControl = [[UIRefreshControl alloc] init];
     [self.refreshControl addTarget:self action:@selector(pullToRefresh) forControlEvents:UIControlEventValueChanged];
     [refreshView addSubview:self.refreshControl];
+    
+
+    self.tableView.delegate = self;
+    self.tableView.dataSource = self;
     
 	[self.view addSubview:self.tableView];
 	
@@ -170,8 +164,10 @@
                                                object:nil];
     
     
-    DraftDB *db = [DraftDB instance];
-    NSString *draft = [db getDraft:self.peerUID];
+
+}
+
+- (void)setDraft:(NSString *)draft {
     if (draft.length > 0) {
         self.inputToolBarView.sendButton.enabled = ([[IMService instance] connectState] == STATE_CONNECTED);
         self.inputToolBarView.sendButton.hidden = NO;
@@ -180,13 +176,13 @@
     }
 }
 
+- (NSString*)getDraft {
+    return self.inputToolBarView.textView.text;
+}
+
 #pragma mark - View lifecycle
-
-
 - (void)viewWillAppear:(BOOL)animated
 {
-
-    
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(handleWillShowKeyboard:)
 												 name:UIKeyboardWillShowNotification
@@ -206,8 +202,6 @@
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
-    
- 
 }
 
 - (void)didReceiveMemoryWarning
@@ -244,8 +238,8 @@
     [self.tableView reloadData];
     [self.tableView setNeedsLayout];
 }
-#pragma mark -
 
+#pragma mark -
 - (void) handlePanFrom:(UITapGestureRecognizer*)recognizer{
     
     [self.inputToolBarView.textView resignFirstResponder];
@@ -272,6 +266,12 @@
     NSString *str = [NSString stringWithFormat:@"%02d:%02d", minute, s];
     NSLog(@"timer:%@", str);
     self.inputToolBarView.timerLabel.text = str;
+}
+
+- (void)pullToRefresh {
+    NSLog(@"pull to refresh...");
+    [self.refreshControl endRefreshing];
+    [self loadEarlierData];
 }
 
 - (void)startRecord {
@@ -497,15 +497,6 @@
     self.inputToolBarView.userInteractionEnabled = YES;
 }
 
-//同IM服务器连接的状态变更通知
--(void)onConnectState:(int)state{
-    if(state == STATE_CONNECTED){
-        [self enableSend];
-    } else {
-        [self disableSend];
-    }
-}
-
 -(void)extendInputViewHeight:(CGFloat)e {
 
     
@@ -561,8 +552,8 @@
         
         self.inputTimestamp = (int)time(NULL);
         MessageInputing *inputing = [[MessageInputing alloc ] init];
-        inputing.sender = self.currentUID;
-        inputing.receiver =self.peerUID;
+        inputing.sender = self.sender;
+        inputing.receiver =self.receiver;
         
         [[IMService instance] sendInputing: inputing];
     }
@@ -633,11 +624,13 @@
         FileCache *fileCache = [FileCache instance];
         NSString *url = message.content.audio.url;
         
-        message.flags |= MESSAGE_FLAG_LISTENED;
-        if (message.receiver == self.currentUID) {
-            [[PeerMessageDB instance] markPeerMesageListened:message.msgLocalID uid:message.sender];
+        if (!message.isListened) {
+            message.flags |= MESSAGE_FLAG_LISTENED;
             [audioView setListened];
+        
+            [self markMesageListened:message];
         }
+        
         NSString *path = [fileCache queryCacheForKey:url];
         if (path != nil) {
             // Setup audio session
@@ -666,7 +659,7 @@
     }
 }
 
-- (void) handleTapImageView:(UITapGestureRecognizer*)tap{
+- (void) handleTapImageView:(UITapGestureRecognizer*)tap {
     int row = tap.view.tag & 0xffff;
     int section = (int)(tap.view.tag >> 16);
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:section];
@@ -694,6 +687,8 @@
     }
 }
 
+
+
 #pragma mark - Table view data source
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -720,15 +715,19 @@
         } else if(message.content.type == MESSAGE_TEXT){
             
         }
+        UILongPressGestureRecognizer *recognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self
+                                                                                                 action:@selector(handleLongPress:)];
+        [recognizer setMinimumPressDuration:0.4];
+        [cell addGestureRecognizer:recognizer];
     }
     BubbleMessageType msgType;
-
-    if(message.sender == self.currentUID) {
+    
+    if(message.sender == self.sender) {
         msgType = BubbleMessageTypeOutgoing;
     }else{
         msgType = BubbleMessageTypeIncoming;
     }
-
+    
     [cell setMessage:message msgType:msgType];
     
     
@@ -754,12 +753,6 @@
         [imageView setUploading:[[Outbox instance] isUploading:message]];
     }
     cell.tag = indexPath.section<<16 | indexPath.row;
-    
-    UILongPressGestureRecognizer *recognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self
-                                                                                             action:@selector(handleLongPress:)];
-    [recognizer setMinimumPressDuration:0.4];
-    [cell addGestureRecognizer:recognizer];
-    
     return cell;
 }
 
@@ -781,6 +774,8 @@
     
     return 1;
 }
+
+
 
 #pragma mark -  UITableViewDelegate
 
@@ -805,7 +800,7 @@
         default:
             return 0;
     }
-
+    
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -873,26 +868,16 @@
     
 }
 
-+ (BOOL)isHeadphone
-{
-    AVAudioSessionRouteDescription* route = [[AVAudioSession sharedInstance] currentRoute];
-    for (AVAudioSessionPortDescription* desc in [route outputs]) {
-        if ([[desc portType] isEqualToString:AVAudioSessionPortHeadphones])
-            return YES;
+
+/*
+ * 复用ID区分来去类型
+ */
+- (NSString*)getMessageViewCellId:(IMessage*)msg{
+    if(msg.sender == self.sender) {
+        return [NSString stringWithFormat:@"MessageCell_%d%d", msg.content.type, BubbleMessageTypeOutgoing];
+    } else {
+        return [NSString stringWithFormat:@"MessageCell_%d%d", msg.content.type, BubbleMessageTypeIncoming];
     }
-    return NO;
-}
-
-
-#pragma mark - UIScrollViewDelegate
-
-- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView{
-
-}
-
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
-    
-    
 }
 
 
@@ -958,44 +943,7 @@
     
 }
 
-
--(void) setNormalNavigationButtons{
-    
-    UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"对话"
-                                                             style:UIBarButtonItemStyleDone
-                                                            target:self
-                                                            action:@selector(returnMainTableViewController)];
-
-    self.navigationItem.leftBarButtonItem = item;
-}
-
-- (void)returnMainTableViewController {
-    DraftDB *db = [DraftDB instance];
-    [db setDraft:self.peerUID draft:self.inputToolBarView.textView.text];
-    
-    [self removeObserver];
-    
-    NSNotification* notification = [[NSNotification alloc] initWithName:CLEAR_SINGLE_CONV_NEW_MESSAGE_NOTIFY
-                                                                 object:[NSNumber numberWithLongLong:self.peerUID]
-                                                               userInfo:nil];
-    [[NSNotificationCenter defaultCenter] postNotification:notification];
-
-    [self.navigationController popToRootViewControllerAnimated:YES];
-}
-
-/*
- * 复用ID区分来去类型
- */
-- (NSString*)getMessageViewCellId:(IMessage*)msg{
-    if(msg.sender == self.currentUID){
-        return [NSString stringWithFormat:@"MessageCell_%d%d", msg.content.type,BubbleMessageTypeOutgoing];
-    }else{
-        return [NSString stringWithFormat:@"MessageCell_%d%d", msg.content.type,BubbleMessageTypeIncoming];
-    }
-}
-
 #pragma mark - MessageInputRecordDelegate
-
 - (void)recordStart {
     if (self.recorder.recording) {
         return;
@@ -1123,5 +1071,14 @@
 }
 
 
++ (BOOL)isHeadphone
+{
+    AVAudioSessionRouteDescription* route = [[AVAudioSession sharedInstance] currentRoute];
+    for (AVAudioSessionPortDescription* desc in [route outputs]) {
+        if ([[desc portType] isEqualToString:AVAudioSessionPortHeadphones])
+            return YES;
+    }
+    return NO;
+}
 
 @end

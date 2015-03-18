@@ -26,13 +26,13 @@
 -(id<IMessageIterator>)newPeerMessageIterator:(int64_t)uid last:(int)lastMsgID;
 -(id<ConversationIterator>)newConversationIterator;
 
--(BOOL)insertPeerMessage:(IMessage*)msg uid:(int64_t)uid;
--(BOOL)removePeerMessage:(int)msgLocalID uid:(int64_t)uid;
+-(BOOL)insertMessage:(IMessage*)msg uid:(int64_t)uid;
+-(BOOL)removeMessage:(int)msgLocalID uid:(int64_t)uid;
 -(BOOL)clearConversation:(int64_t)uid;
 -(BOOL)clear;
--(BOOL)acknowledgePeerMessage:(int)msgLocalID uid:(int64_t)uid;
--(BOOL)acknowledgePeerMessageFromRemote:(int)msgLocalID uid:(int64_t)uid;
--(BOOL)markPeerMessageFailure:(int)msgLocalID uid:(int64_t)uid;
--(BOOL)markPeerMesageListened:(int)msgLocalID uid:(int64_t)uid;
--(BOOL)erasePeerMessageFailure:(int)msgLocalID uid:(int64_t)uid;
+-(BOOL)acknowledgeMessage:(int)msgLocalID uid:(int64_t)uid;
+-(BOOL)acknowledgeMessageFromRemote:(int)msgLocalID uid:(int64_t)uid;
+-(BOOL)markMessageFailure:(int)msgLocalID uid:(int64_t)uid;
+-(BOOL)markMesageListened:(int)msgLocalID uid:(int64_t)uid;
+-(BOOL)eraseMessageFailure:(int)msgLocalID uid:(int64_t)uid;
 @end

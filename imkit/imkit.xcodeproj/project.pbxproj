@@ -45,10 +45,12 @@
 		6D03315F1AAB6626004AA39F /* NSString+JSMessagesView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D03315E1AAB6626004AA39F /* NSString+JSMessagesView.m */; };
 		6D0331621AAB6702004AA39F /* TAHttpOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D0331611AAB6702004AA39F /* TAHttpOperation.m */; };
 		6D0331651AAB6781004AA39F /* UIImage+JSMessagesView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D0331641AAB6781004AA39F /* UIImage+JSMessagesView.m */; };
-		6DF54F171AB6E58800197EBC /* TextMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54F161AB6E58800197EBC /* TextMessageViewController.m */; };
 		6DF54F181AB6EECA00197EBC /* TextMessageViewController.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6DF54F151AB6E58800197EBC /* TextMessageViewController.h */; };
 		6DF54F261AB816FB00197EBC /* BaseMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54F251AB816FB00197EBC /* BaseMessageViewController.m */; };
 		6DF54F281AB82E0000197EBC /* BaseMessageViewController.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6DF54F241AB816FB00197EBC /* BaseMessageViewController.h */; };
+		6DFDA0241AB95B9800EF553A /* PeerMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DFDA0231AB95B9800EF553A /* PeerMessageViewController.m */; };
+		6DFDA0261AB95E7F00EF553A /* PeerMessageViewController.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6DFDA0221AB95B9800EF553A /* PeerMessageViewController.h */; };
+		6DFDA0271AB9797500EF553A /* TextMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54F161AB6E58800197EBC /* TextMessageViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -89,6 +91,7 @@
 			dstPath = "include/$(PRODUCT_NAME)";
 			dstSubfolderSpec = 16;
 			files = (
+				6DFDA0261AB95E7F00EF553A /* PeerMessageViewController.h in CopyFiles */,
 				6DF54F281AB82E0000197EBC /* BaseMessageViewController.h in CopyFiles */,
 				6DF54F181AB6EECA00197EBC /* TextMessageViewController.h in CopyFiles */,
 				6D0331561AAB53EC004AA39F /* IMessage.h in CopyFiles */,
@@ -174,6 +177,8 @@
 		6DF54F161AB6E58800197EBC /* TextMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TextMessageViewController.m; path = controller/TextMessageViewController.m; sourceTree = "<group>"; };
 		6DF54F241AB816FB00197EBC /* BaseMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BaseMessageViewController.h; path = controller/BaseMessageViewController.h; sourceTree = "<group>"; };
 		6DF54F251AB816FB00197EBC /* BaseMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BaseMessageViewController.m; path = controller/BaseMessageViewController.m; sourceTree = "<group>"; };
+		6DFDA0221AB95B9800EF553A /* PeerMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeerMessageViewController.h; path = controller/PeerMessageViewController.h; sourceTree = "<group>"; };
+		6DFDA0231AB95B9800EF553A /* PeerMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PeerMessageViewController.m; path = controller/PeerMessageViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -319,6 +324,8 @@
 				6DF54F161AB6E58800197EBC /* TextMessageViewController.m */,
 				6DF54F241AB816FB00197EBC /* BaseMessageViewController.h */,
 				6DF54F251AB816FB00197EBC /* BaseMessageViewController.m */,
+				6DFDA0221AB95B9800EF553A /* PeerMessageViewController.h */,
+				6DFDA0231AB95B9800EF553A /* PeerMessageViewController.m */,
 			);
 			name = controller;
 			sourceTree = "<group>";
@@ -501,9 +508,9 @@
 				6D0331651AAB6781004AA39F /* UIImage+JSMessagesView.m in Sources */,
 				6D032FF41AA9B41C004AA39F /* PeerMessageDB.m in Sources */,
 				6D0331311AA9E734004AA39F /* BubbleView.m in Sources */,
+				6DFDA0271AB9797500EF553A /* TextMessageViewController.m in Sources */,
 				6D032FF11AA9B41C004AA39F /* GroupMessageHandler.m in Sources */,
 				6D0331331AA9E734004AA39F /* MessageAudioView.m in Sources */,
-				6DF54F171AB6E58800197EBC /* TextMessageViewController.m in Sources */,
 				6D03301B1AA9BCD8004AA39F /* DraftDB.m in Sources */,
 				6D0331381AA9E734004AA39F /* MessageViewCell.m in Sources */,
 				6D032FF51AA9B41C004AA39F /* PeerMessageHandler.m in Sources */,
@@ -520,6 +527,7 @@
 				4875B1231AAC9362001D1435 /* MEESImageViewController.m in Sources */,
 				6D0330081AA9BBC7004AA39F /* Outbox.m in Sources */,
 				6D03315F1AAB6626004AA39F /* NSString+JSMessagesView.m in Sources */,
+				6DFDA0241AB95B9800EF553A /* PeerMessageViewController.m in Sources */,
 				6D0331371AA9E734004AA39F /* MessageTextView.m in Sources */,
 				6D032FF21AA9B41C004AA39F /* IMessage.m in Sources */,
 				6D03310A1AA9BDB8004AA39F /* wav_amr.c in Sources */,
