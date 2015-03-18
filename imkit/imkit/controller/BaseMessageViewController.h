@@ -18,12 +18,12 @@
 
 
 //protected
-@property (nonatomic) NSMutableArray *messageArray;
-@property (nonatomic) NSMutableArray *timestamps;
-@property (nonatomic) NSMutableArray *messages;
+@property(nonatomic) NSMutableArray *messageArray;
+@property(nonatomic) NSMutableArray *timestamps;
+@property(nonatomic) NSMutableArray *messages;
 
 @property(nonatomic) UIRefreshControl *refreshControl;
-@property (nonatomic) UITableView *tableView;
+@property(nonatomic) UITableView *tableView;
 
 
 //是否只展示文本消息
@@ -37,7 +37,7 @@
 - (void)resendMessage:(IMessage*)message;
 - (void)sendAudioMessage:(NSString*)path second:(int)second;
 - (void)sendImageMessage:(UIImage*)image;
-- (void) sendTextMessage:(NSString*)text;
+- (void)sendTextMessage:(NSString*)text;
 
 - (void)sendMessage:(IMessage*)msg;
 - (void)loadConversationData;
@@ -58,7 +58,7 @@
 - (BOOL)isInWeek:(NSDate*)date1 today:(NSDate*)date2;
 - (BOOL)isInMonth:(NSDate*)date1 today:(NSDate*)date2;
 - (NSDateComponents*)getComponentOfDate:(NSDate *)date ;
-- (NSString *) getConversationTimeString:(NSDate *)date;
+- (NSString *)getConversationTimeString:(NSDate *)date;
 
 + (void)playMessageReceivedSound;
 + (void)playMessageSentSound;

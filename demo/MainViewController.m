@@ -109,7 +109,7 @@
             
             NSLog(@"login success");
             
-#define TEXT
+#define TEXT1
 #ifdef TEXT
             TextMessageViewController* msgController = [[TextMessageViewController alloc] init];
 #else

@@ -149,15 +149,9 @@
     [self.view addSubview:self.inputToolBarView];
     
     if ([[IMService instance] connectState] == STATE_CONNECTED) {
-        self.inputToolBarView.sendButton.enabled = YES;
-        self.inputToolBarView.recordButton.enabled = YES;
-        self.inputToolBarView.mediaButton.enabled = YES;
-        self.inputToolBarView.userInteractionEnabled = YES;
+        [self enableSend];
     } else {
-        self.inputToolBarView.sendButton.enabled = NO;
-        self.inputToolBarView.recordButton.enabled = NO;
-        self.inputToolBarView.mediaButton.enabled = NO;
-        self.inputToolBarView.userInteractionEnabled = NO;
+        [self disableSend];
     }
     
     UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanFrom:)];
@@ -825,7 +819,7 @@
     return NO;
 }
 
-- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
     return UITableViewCellEditingStyleDelete;
 }
 
@@ -869,13 +863,13 @@
     return sectionView;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     return 44;
 }
 
 
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
 }
 
