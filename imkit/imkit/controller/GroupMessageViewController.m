@@ -190,16 +190,14 @@
     msg.sender = 0;
     msg.receiver = groupID;
     msg.timestamp = (int)time(NULL);
-    NSString *n = [NSString stringWithFormat:@"群组已经被解散"];
     MessageContent *content = [[MessageContent alloc] initWithNotification:notification];
-    content.notificationDesc = n;
     msg.content = content;
+    [self updateNotificationDesc:msg];
     [self insertMessage:msg];
 }
 
 -(void)onGroupMemberAdd:(GroupNotification*)notification {
     int64_t groupID = notification.groupID;
-    int64_t member = notification.member;
     if (groupID != self.groupID) {
         return;
     }
@@ -208,27 +206,15 @@
     msg.sender = 0;
     msg.receiver = groupID;
     msg.timestamp = (int)time(NULL);
-    NSString *n;
-
-    if (member != self.currentUID) {
-        NSString *name = [self getUserName:member];
-        n = [NSString stringWithFormat:@"%@ 被加入到群组", name];
-    } else {
-        n = [NSString stringWithFormat:@"您被加到群组"];
-    }
-    
     MessageContent *content = [[MessageContent alloc] initWithNotification:notification];
-    content.notificationDesc = n;
     msg.content = content;
-    
+    [self updateNotificationDesc:msg];
 
     [self insertMessage:msg];
 }
 
 -(void)onGroupMemberLeave:(GroupNotification*)notification {
     int64_t groupID = notification.groupID;
-    int64_t member = notification.member;
-
     if (groupID != self.groupID) {
         return;
     }
@@ -237,11 +223,10 @@
     msg.sender = 0;
     msg.receiver = groupID;
     msg.timestamp = (int)time(NULL);
-    NSString *name = [self getUserName:member];
-    NSString *n = [NSString stringWithFormat:@"%@ 离开了", name];
     MessageContent *content = [[MessageContent alloc] initWithNotification:notification];
-    content.notificationDesc = n;
     msg.content = content;
+    
+    [self updateNotificationDesc:msg];
     [self insertMessage:msg];
 }
 
@@ -259,6 +244,34 @@
     return name;
 }
 
+
+- (void)updateNotificationDesc:(IMessage*)message {
+    if (message.content.type == MESSAGE_GROUP_NOTIFICATION) {
+        GroupNotification *notification = message.content.notification;
+        int type = notification.type;
+        if (type == NOTIFICATION_GROUP_CREATED) {
+            if (self.currentUID == notification.master) {
+                NSString *desc = [NSString stringWithFormat:@"您创建了\"%@\"群组", notification.groupName];
+                message.content.notificationDesc = desc;
+            } else {
+                NSString *desc = [NSString stringWithFormat:@"您加入了\"%@\"群组", notification.groupName];
+                message.content.notificationDesc = desc;
+            }
+        } else if (type == NOTIFICATION_GROUP_DISBANDED) {
+            message.content.notificationDesc = @"群组已解散";
+        } else if (type == NOTIFICATION_GROUP_MEMBER_ADDED) {
+            NSString *name = [self getUserName:notification.member];
+            NSString *desc = [NSString stringWithFormat:@"%@加入群", name];
+            message.content.notificationDesc = desc;
+        } else if (type == NOTIFICATION_GROUP_MEMBER_LEAVED) {
+            NSString *name = [self getUserName:notification.member];
+            NSString *desc = [NSString stringWithFormat:@"%@离开群", name];
+            message.content.notificationDesc = desc;
+        }
+    }
+}
+
+
 - (void)loadConversationData {
     int count = 0;
     id<IMessageIterator> iterator =  [[GroupMessageDB instance] newMessageIterator: self.groupID];
@@ -267,6 +280,7 @@
         if (self.textMode) {
             if (msg.content.type == MESSAGE_TEXT || msg.content.type == MESSAGE_GROUP_NOTIFICATION) {
                 [self getUserName:msg.sender];
+                [self updateNotificationDesc:msg];
                 [self.messages insertObject:msg atIndex:0];
                 if (++count >= PAGE_COUNT) {
                     break;
@@ -274,6 +288,7 @@
             }
         } else {
             [self getUserName:msg.sender];
+            [self updateNotificationDesc:msg];
             [self.messages insertObject:msg atIndex:0];
             if (++count >= PAGE_COUNT) {
                 break;
