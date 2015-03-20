@@ -113,7 +113,7 @@
     } else {
         cid = msg.sender;
     }
-    return [[PeerMessageDB instance] markMessageFailure:msg.msgLocalID uid:cid];
+    return [[PeerMessageDB instance] eraseMessageFailure:msg.msgLocalID uid:cid];
 }
 
 -(void) setNormalNavigationButtons{
@@ -295,13 +295,19 @@
     [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:NO];
 }
 
-- (void)sendMessage:(IMessage*)msg {
-    IMMessage *im = [[IMMessage alloc] init];
-    im.sender = msg.sender;
-    im.receiver = msg.receiver;
-    im.msgLocalID = msg.msgLocalID;
-    im.content = msg.content.raw;
-    [[IMService instance] sendPeerMessage:im];
+- (void)sendMessage:(IMessage*)message {
+    if (message.content.type == MESSAGE_AUDIO) {
+        [[Outbox instance] uploadAudio:message];
+    } else if (message.content.type == MESSAGE_IMAGE) {
+        [[Outbox instance] uploadImage:message];
+    } else {
+        IMMessage *im = [[IMMessage alloc] init];
+        im.sender = message.sender;
+        im.receiver = message.receiver;
+        im.msgLocalID = message.msgLocalID;
+        im.content = message.content.raw;
+        [[IMService instance] sendPeerMessage:im];
+    }
 }
 
 

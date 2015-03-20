@@ -12,6 +12,7 @@
 #import <imsdk/IMService.h>
 #import "PeerMessageDB.h"
 #import "wav_amr.h"
+#import "UIImageView+WebCache.h"
 
 @interface Outbox()
 @property(nonatomic) NSMutableArray *observers;
@@ -51,20 +52,60 @@
     return NO;
 }
 
+-(void)sendGroupAudioMessage:(IMessage*)msg URL:url{
+    MessageContent *old = msg.content;
+    Audio *audio = [[Audio alloc] init];
+    audio.url = url;
+    audio.duration = old.audio.duration;
+    
+    MessageContent *content = [[MessageContent alloc] initWithAudio:audio];
+    msg.content = content;
+    [self sendMessage:msg group:YES];
+    msg.content = old;
+}
 
+-(void)sendGroupImageMessage:(IMessage*)msg URL:url {
+    MessageContent *old = msg.content;
+    MessageContent *content = [[MessageContent alloc] initWithImageURL:url];
+    msg.content = content;
+    [self sendMessage:msg group:YES];
+    msg.content = old;
+}
 
-- (void)sendMessage:(IMessage*)msg {
-    Message *m = [[Message alloc] init];
-    m.cmd = MSG_IM;
+-(void)sendAudioMessage:(IMessage*)msg URL:url{
+    MessageContent *old = msg.content;
+    Audio *audio = [[Audio alloc] init];
+    audio.url = url;
+    audio.duration = old.audio.duration;
+    
+    MessageContent *content = [[MessageContent alloc] initWithAudio:audio];
+    msg.content = content;
+    [self sendMessage:msg group:NO];
+    msg.content = old;
+}
+
+-(void)sendImageMessage:(IMessage*)msg URL:url {
+    MessageContent *old = msg.content;
+    MessageContent *content = [[MessageContent alloc] initWithImageURL:url];
+    msg.content = content;
+    [self sendMessage:msg group:NO];
+    msg.content = old;
+}
+
+- (void)sendMessage:(IMessage*)msg group:(BOOL)isGroup {
+ 
     IMMessage *im = [[IMMessage alloc] init];
     im.sender = msg.sender;
     im.receiver = msg.receiver;
     im.msgLocalID = msg.msgLocalID;
     
     im.content = msg.content.raw;
-    m.body = im;
     
-    [[IMService instance] sendPeerMessage:im];
+    if (isGroup) {
+        [[IMService instance] sendGroupMessage:im];
+    } else {
+        [[IMService instance] sendPeerMessage:im];
+    }
 }
 
 -(void)onUploadImageSuccess:(IMessage*)msg URL:url {
@@ -72,15 +113,7 @@
         [observer onImageUploadSuccess:msg URL:url];
     }
 
-    
-    MessageContent *content = [[MessageContent alloc] init];
-    NSDictionary *dic = @{@"image":url};
-    NSString* newStr = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:dic options:0 error:nil] encoding:NSUTF8StringEncoding];
-    content.raw = newStr;
-    MessageContent *old = msg.content;
-    msg.content = content;
-    [self sendMessage:msg];
-    msg.content = old;
+  
 }
 
 -(void)onUploadImageFail:(IMessage*)msg {
@@ -94,18 +127,9 @@
     for (id<OutboxObserver> observer in self.observers) {
         [observer onAudioUploadSuccess:msg URL:url];
     }
-    
-    
-    MessageContent *old = msg.content;
-    NSNumber *d = [NSNumber numberWithInt:old.audio.duration];
-    NSDictionary *dic = @{@"audio":@{@"url":url, @"duration":d}};
-    NSString* newStr = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:dic options:0 error:nil] encoding:NSUTF8StringEncoding];
-    MessageContent *content = [[MessageContent alloc] init];
-    content.raw =  newStr;
-    msg.content = content;
-    [self sendMessage:msg];
-    msg.content = old;
+
 }
+
 
 -(void)onUploadAudioFail:(IMessage*)msg {
     [[PeerMessageDB instance] markMessageFailure:msg.msgLocalID uid:msg.receiver];
@@ -114,18 +138,22 @@
     }
 }
 
--(BOOL)uploadImage:(IMessage*)msg image:(UIImage*)image{
+-(BOOL)uploadImage:(IMessage*)msg {
+    
+    UIImage *image = [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:msg.content.imageURL];
+    if (!image) {
+        return NO;
+    }
+    
     [self.messages addObject:msg];
     [IMHttpAPI uploadImage:image
                     success:^(NSString *url) {
                         [self.messages removeObject:msg];
-                        if([url length] > 0){
-                            NSLog(@"upload image success url:%@", url);
-                            [self onUploadImageSuccess:msg URL:url];
-                        } else {
-                            NSLog(@"upload image fail");
-                            [self onUploadImageFail:msg];
-                        }
+                        
+                        NSLog(@"upload image success url:%@", url);
+                        [self sendImageMessage:msg URL:url];
+                        [self onUploadImageSuccess:msg URL:url];
+
                     }
                        fail:^() {
                            NSLog(@"upload image fail");
@@ -161,18 +189,77 @@
     [IMHttpAPI uploadAudio:data
                     success:^(NSString *url) {
                         [self.messages removeObject:msg];
-                        if ([url length] > 0) {
-                            NSLog(@"upload audio success url:%@", url);
-                            [self onUploadAudioSuccess:msg URL:url];
-                        } else {
-                            NSLog(@"upload audio fail");
-                            [self onUploadAudioFail:msg];
-                        }
+                        NSLog(@"upload audio success url:%@", url);
+                        [self sendAudioMessage:msg URL:url];
+                        [self onUploadAudioSuccess:msg URL:url];
                     }fail:^{
                         NSLog(@"upload audio fail");
                         [self.messages removeObject:msg];
                         [self onUploadAudioFail:msg];
                     }];
+    
+    return YES;
+}
+
+-(BOOL)uploadGroupImage:(IMessage*)msg {
+    UIImage *image = [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:msg.content.imageURL];
+    if (!image) {
+        return NO;
+    }
+    
+    [self.messages addObject:msg];
+    [IMHttpAPI uploadImage:image
+                   success:^(NSString *url) {
+                       [self.messages removeObject:msg];
+                       
+                       NSLog(@"upload image success url:%@", url);
+                       [self sendGroupImageMessage:msg URL:url];
+                       [self onUploadImageSuccess:msg URL:url];
+                       
+                   }
+                      fail:^() {
+                          NSLog(@"upload image fail");
+                          [self.messages removeObject:msg];
+                          [self onUploadImageFail:msg];
+                      }];
+    return YES;
+
+}
+
+-(BOOL)uploadGroupAudio:(IMessage*)msg {
+    FileCache *cache = [FileCache instance];
+    NSString *path = [cache queryCacheForKey:msg.content.audio.url];
+    
+    NSString *tmp = [NSString stringWithFormat:@"%@.amr", path];
+    
+    if (![[NSFileManager defaultManager] fileExistsAtPath:tmp]) {
+        const char *amr = [tmp UTF8String];
+        const char *wav = [path UTF8String];
+        
+        int r = encode_amr(wav, amr);
+        if (r != 0) {
+            return NO;
+        }
+        
+    }
+    
+    NSData *data = [NSData dataWithContentsOfFile:tmp];
+    if (data == nil) {
+        return NO;
+    }
+    
+    [self.messages addObject:msg];
+    [IMHttpAPI uploadAudio:data
+                   success:^(NSString *url) {
+                       [self.messages removeObject:msg];
+                       NSLog(@"upload audio success url:%@", url);
+                       [self sendGroupAudioMessage:msg URL:url];
+                       [self onUploadAudioSuccess:msg URL:url];
+                   }fail:^{
+                       NSLog(@"upload audio fail");
+                       [self.messages removeObject:msg];
+                       [self onUploadAudioFail:msg];
+                   }];
     
     return YES;
 }

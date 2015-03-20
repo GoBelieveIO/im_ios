@@ -21,7 +21,7 @@
 
 
 
-@interface BaseMessageViewController ()<AudioDownloaderObserver, OutboxObserver>
+@interface BaseMessageViewController ()
 
 @end
 
@@ -85,21 +85,11 @@
     NSAssert(NO, @"not implement");
 }
 
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 }
 
--(void)addObserver {
-    [[IMService instance] addMessageObserver:self];
-    [[Outbox instance] addBoxObserver:self];
-    [[AudioDownloader instance] addDownloaderObserver:self];
-}
-
--(void)removeObserver {
-    [[IMService instance] removeMessageObserver:self];
-    [[Outbox instance] removeBoxObserver:self];
-    [[AudioDownloader instance] removeDownloaderObserver:self];
-}
 
 -(void)initTableViewData {
     self.messageArray = [NSMutableArray array];
@@ -213,13 +203,6 @@
                                   animated:animated];
 }
 
-
-
-
-
-
-
-
 - (IMessage*)messageForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     NSMutableArray *array = [self.messageArray objectAtIndex: indexPath.section];
@@ -309,165 +292,6 @@
     [self playSoundWithName:@"messageSent" type:@"aiff"];
 }
 
-
--(NSString*)guid {
-    CFUUIDRef    uuidObj = CFUUIDCreate(nil);
-    NSString    *uuidString = (__bridge NSString *)CFUUIDCreateString(nil, uuidObj);
-    CFRelease(uuidObj);
-    return uuidString;
-}
--(NSString*)localImageURL {
-    return [NSString stringWithFormat:@"http://localhost/images/%@.png", [self guid]];
-}
-
--(NSString*)localAudioURL {
-    return [NSString stringWithFormat:@"http://localhost/audios/%@.m4a", [self guid]];
-}
-
-- (void)sendAudioMessage:(NSString*)path second:(int)second {
-    IMessage *msg = [[IMessage alloc] init];
-    
-    msg.sender = self.sender;
-    msg.receiver = self.receiver;
-    
-    
-    Audio *audio = [[Audio alloc] init];
-    audio.url = [self localAudioURL];
-    audio.duration = second;
-    MessageContent *content = [[MessageContent alloc] initWithAudio:audio];
-    msg.content = content;
-    msg.timestamp = (int)time(NULL);
-    
-    //todo 优化读文件次数
-    NSData *data = [NSData dataWithContentsOfFile:path];
-    FileCache *fileCache = [FileCache instance];
-    [fileCache storeFile:data forKey:audio.url];
-    
-    [self saveMessage:msg];
-    
-    [[Outbox instance] uploadAudio:msg];
-    
-    [[self class] playMessageSentSound];
-    
-    [self insertMessage:msg];
-}
-
-
-- (void)sendImageMessage:(UIImage*)image {
-    if (image.size.height == 0) {
-        return;
-    }
-    
-    
-    IMessage *msg = [[IMessage alloc] init];
-    
-    msg.sender = self.sender;
-    msg.receiver = self.receiver;
-    
-    MessageContent *content = [[MessageContent alloc] initWithImageURL:[self localImageURL]];
-    msg.content = content;
-    msg.timestamp = (int)time(NULL);
-
-    float newHeigth = 640;
-    float newWidth = newHeigth*image.size.width/image.size.height;
-    
-    UIImage *sizeImage = [image resizedImage:CGSizeMake(128, 128) interpolationQuality:kCGInterpolationDefault];
-    image = [image resizedImage:CGSizeMake(newWidth, newHeigth) interpolationQuality:kCGInterpolationDefault];
-    
-    [[SDImageCache sharedImageCache] storeImage:image forKey:msg.content.imageURL];
-    NSString *littleUrl =  [msg.content littleImageURL];
-    [[SDImageCache sharedImageCache] storeImage:sizeImage forKey: littleUrl];
-    
-    [self saveMessage:msg];
-    
-    [[Outbox instance] uploadImage:msg image:image];
-    
-    [[self class] playMessageSentSound];
-    
-    [self insertMessage:msg];
-}
-
--(void) sendTextMessage:(NSString*)text {
-    IMessage *msg = [[IMessage alloc] init];
-    
-    msg.sender = self.sender;
-    msg.receiver = self.receiver;
-    
-    MessageContent *content = [[MessageContent alloc] initWithText:text];
-    msg.content = content;
-    msg.timestamp = (int)time(NULL);
-    
-    [self saveMessage:msg];
-    
-    [self sendMessage:msg];
-    
-    [[self class] playMessageSentSound];
-    
-    [self insertMessage:msg];
-}
-
-
--(void)resendMessage:(IMessage*)message {
-    message.flags = message.flags & (~MESSAGE_FLAG_FAILURE);
-    
-    [self eraseMessageFailure:message];
-    
-    if (message.content.type == MESSAGE_AUDIO) {
-        [[Outbox instance] uploadAudio:message];
-    } else if (message.content.type == MESSAGE_IMAGE) {
-        UIImage *image = [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:message.content.imageURL];
-        if (!image) {
-            return;
-        }
-        [[Outbox instance] uploadImage:message image:image];
-    } else {
-        [self sendMessage:message];
-    }
-    
-    [self reloadMessage:message.msgLocalID];
-}
-
-
-
-#pragma mark - Outbox Observer
-- (void)onAudioUploadSuccess:(IMessage*)msg URL:(NSString*)url {
-    if ([self isInConversation:msg]) {
-        [self reloadMessage:msg.msgLocalID];
-    }
-}
-
--(void)onAudioUploadFail:(IMessage*)msg {
-    if ([self isInConversation:msg]) {
-        msg.flags = msg.flags|MESSAGE_FLAG_FAILURE;
-        [self reloadMessage:msg.msgLocalID];
-    }
-}
-
-- (void)onImageUploadSuccess:(IMessage*)msg URL:(NSString*)url {
-    if ([self isInConversation:msg]) {
-        [self reloadMessage:msg.msgLocalID];
-    }
-}
-
-- (void)onImageUploadFail:(IMessage*)msg {
-    if ([self isInConversation:msg]) {
-        msg.flags = msg.flags|MESSAGE_FLAG_FAILURE;
-        [self reloadMessage:msg.msgLocalID];
-    }
-}
-
-#pragma mark - Audio Downloader Observer
-- (void)onAudioDownloadSuccess:(IMessage*)msg {
-    if ([self isInConversation:msg]) {
-        [self reloadMessage:msg.msgLocalID];
-    }
-}
-
-- (void)onAudioDownloadFail:(IMessage*)msg {
-    if ([self isInConversation:msg]) {
-        [self reloadMessage:msg.msgLocalID];
-    }
-}
 
 #pragma mark - function
 - (NSDateComponents*) getComponentOfDate:(NSDate *)date {

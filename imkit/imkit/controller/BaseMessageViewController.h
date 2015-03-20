@@ -45,15 +45,6 @@
 //消息是否属于当前会话
 - (BOOL)isInConversation:(IMessage*)msg;
 
-- (void)addObserver;
-- (void)removeObserver;
-
-- (void)resendMessage:(IMessage*)message;
-- (void)sendAudioMessage:(NSString*)path second:(int)second;
-- (void)sendImageMessage:(UIImage*)image;
-- (void)sendTextMessage:(NSString*)text;
-
-- (void)sendMessage:(IMessage*)msg;
 - (void)loadConversationData;
 - (void)loadEarlierData;
 

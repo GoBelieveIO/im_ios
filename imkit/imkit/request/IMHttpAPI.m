@@ -14,7 +14,14 @@
 
 
 +(IMHttpAPI*)instance {
-    return nil;
+    static IMHttpAPI *im;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        if (!im) {
+            im = [[IMHttpAPI alloc] init];
+        }
+    });
+    return im;
 }
 
 +(NSOperation*)uploadImage:(UIImage*)image success:(void (^)(NSString *url))success fail:(void (^)())fail {
@@ -90,6 +97,44 @@
     };
     request.failCB = ^(IMHttpOperation*commObj, IMHttpOperationError error) {
         NSLog(@"bind device token fail");
+        fail();
+    };
+    [[NSOperationQueue mainQueue] addOperation:request];
+    return request;
+}
+
++(NSOperation*)createGroup:(NSString*)groupName master:(int64_t)master members:(NSArray*)members success:(void (^)(int64_t))success fail:(void (^)())fail {
+    IMHttpOperation *request = [IMHttpOperation httpOperationWithTimeoutInterval:60];
+    request.targetURL = [API_URL stringByAppendingString:@"/groups"];
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+
+    [dict setObject:[NSNumber numberWithLongLong:master] forKey:@"master"];
+    [dict setObject:groupName forKey:@"name"];
+    [dict setObject:members forKey:@"members"];
+    
+    NSMutableDictionary *headers = [NSMutableDictionary dictionaryWithObject:@"application/json" forKey:@"Content-Type"];
+    NSString *auth = [NSString stringWithFormat:@"Bearer %@", [IMHttpAPI instance].accessToken];
+    [headers setObject:auth forKey:@"Authorization"];
+
+    request.headers = headers;
+    NSData *data = [NSJSONSerialization dataWithJSONObject:dict options:0 error:nil];
+    request.postBody = data;
+    request.method = @"POST";
+    request.successCB = ^(IMHttpOperation*commObj, NSURLResponse *response, NSData *data) {
+        int statusCode = [(NSHTTPURLResponse*)response statusCode];
+        if (statusCode != 200) {
+            NSDictionary *resp = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil];
+            NSLog(@"create group fail:%@", resp);
+            fail();
+            return;
+        }
+        
+        NSDictionary *resp = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil];
+        int64_t groupID = [[[resp objectForKey:@"data"] objectForKey:@"group_id"] longLongValue];
+        success(groupID);
+    };
+    request.failCB = ^(IMHttpOperation*commObj, IMHttpOperationError error) {
+        NSLog(@"create group fail");
         fail();
     };
     [[NSOperationQueue mainQueue] addOperation:request];

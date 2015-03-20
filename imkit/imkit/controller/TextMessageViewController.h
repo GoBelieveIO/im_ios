@@ -28,4 +28,7 @@ typedef NSString* (^GetUserNameBlock)(int64_t uid);
 
 - (void)enableSend;
 
+- (void)addObserver;
+- (void)removeObserver;
+
 @end

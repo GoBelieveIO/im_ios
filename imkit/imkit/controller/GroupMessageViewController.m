@@ -353,14 +353,22 @@
     [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:NO];
 }
 
-- (void)sendMessage:(IMessage*)msg {
-    IMMessage *im = [[IMMessage alloc] init];
-    im.sender = msg.sender;
-    im.receiver = msg.receiver;
-    im.msgLocalID = msg.msgLocalID;
-    im.content = msg.content.raw;
-    [[IMService instance] sendGroupMessage:im];
+
+- (void)sendMessage:(IMessage*)message {
+    if (message.content.type == MESSAGE_AUDIO) {
+        [[Outbox instance] uploadGroupAudio:message];
+    } else if (message.content.type == MESSAGE_IMAGE) {
+        [[Outbox instance] uploadGroupImage:message];
+    } else {
+        IMMessage *im = [[IMMessage alloc] init];
+        im.sender = message.sender;
+        im.receiver = message.receiver;
+        im.msgLocalID = message.msgLocalID;
+        im.content = message.content.raw;
+        [[IMService instance] sendGroupMessage:im];
+    }
 }
+
 
 
 @end

@@ -429,8 +429,6 @@
     
 }
 
-
-
 /*
  * 复用ID区分来去类型
  */
@@ -440,6 +438,34 @@
     }else{
         return [NSString stringWithFormat:@"MessageCell_%d%d", msg.content.type,BubbleMessageTypeIncoming];
     }
+}
+
+
+-(void) sendTextMessage:(NSString*)text {
+    IMessage *msg = [[IMessage alloc] init];
+    
+    msg.sender = self.sender;
+    msg.receiver = self.receiver;
+    
+    MessageContent *content = [[MessageContent alloc] initWithText:text];
+    msg.content = content;
+    msg.timestamp = (int)time(NULL);
+    
+    [self saveMessage:msg];
+    
+    [self sendMessage:msg];
+    
+    [[self class] playMessageSentSound];
+    
+    [self insertMessage:msg];
+}
+
+-(void)addObserver {
+    [[IMService instance] addMessageObserver:self];
+}
+
+-(void)removeObserver {
+    [[IMService instance] removeMessageObserver:self];
 }
 
 @end

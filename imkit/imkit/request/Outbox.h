@@ -25,8 +25,11 @@
 
 -(BOOL)isUploading:(IMessage*)msg;
 
--(BOOL)uploadImage:(IMessage*)msg image:(UIImage*)image;
+-(BOOL)uploadImage:(IMessage*)msg;
 -(BOOL)uploadAudio:(IMessage*)msg;
+
+-(BOOL)uploadGroupImage:(IMessage*)msg;
+-(BOOL)uploadGroupAudio:(IMessage*)msg;
 
 -(void)addBoxObserver:(id<OutboxObserver>)ob;
 -(void)removeBoxObserver:(id<OutboxObserver>)ob;

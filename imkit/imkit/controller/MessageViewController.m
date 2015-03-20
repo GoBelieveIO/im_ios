@@ -34,7 +34,7 @@
 #define kTakePicActionSheetTag  101
 
 
-@interface MessageViewController()<MessageInputRecordDelegate, HPGrowingTextViewDelegate>
+@interface MessageViewController()<MessageInputRecordDelegate, HPGrowingTextViewDelegate, AudioDownloaderObserver, OutboxObserver>
 
 @property (strong, nonatomic) MessageInputView *inputToolBarView;
 
@@ -88,8 +88,6 @@
     [super viewDidLoad];
  
     [self setup];
-
-
     
     [self loadConversationData];
     
@@ -167,6 +165,19 @@
                                                object:nil];
     
 
+}
+
+
+-(void)addObserver {
+    [[IMService instance] addMessageObserver:self];
+    [[Outbox instance] addBoxObserver:self];
+    [[AudioDownloader instance] addDownloaderObserver:self];
+}
+
+-(void)removeObserver {
+    [[IMService instance] removeMessageObserver:self];
+    [[Outbox instance] removeBoxObserver:self];
+    [[AudioDownloader instance] removeDownloaderObserver:self];
 }
 
 - (void)setDraft:(NSString *)draft {
@@ -1089,6 +1100,154 @@
             return YES;
     }
     return NO;
+}
+
+
+
+-(NSString*)guid {
+    CFUUIDRef    uuidObj = CFUUIDCreate(nil);
+    NSString    *uuidString = (__bridge NSString *)CFUUIDCreateString(nil, uuidObj);
+    CFRelease(uuidObj);
+    return uuidString;
+}
+-(NSString*)localImageURL {
+    return [NSString stringWithFormat:@"http://localhost/images/%@.png", [self guid]];
+}
+
+-(NSString*)localAudioURL {
+    return [NSString stringWithFormat:@"http://localhost/audios/%@.m4a", [self guid]];
+}
+
+- (void)sendAudioMessage:(NSString*)path second:(int)second {
+    IMessage *msg = [[IMessage alloc] init];
+    
+    msg.sender = self.sender;
+    msg.receiver = self.receiver;
+    
+    
+    Audio *audio = [[Audio alloc] init];
+    audio.url = [self localAudioURL];
+    audio.duration = second;
+    MessageContent *content = [[MessageContent alloc] initWithAudio:audio];
+    msg.content = content;
+    msg.timestamp = (int)time(NULL);
+    
+    //todo 优化读文件次数
+    NSData *data = [NSData dataWithContentsOfFile:path];
+    FileCache *fileCache = [FileCache instance];
+    [fileCache storeFile:data forKey:audio.url];
+    
+    [self saveMessage:msg];
+    
+    [self sendMessage:msg];
+    
+    [[self class] playMessageSentSound];
+    
+    [self insertMessage:msg];
+}
+
+
+- (void)sendImageMessage:(UIImage*)image {
+    if (image.size.height == 0) {
+        return;
+    }
+    
+    
+    IMessage *msg = [[IMessage alloc] init];
+    
+    msg.sender = self.sender;
+    msg.receiver = self.receiver;
+    
+    MessageContent *content = [[MessageContent alloc] initWithImageURL:[self localImageURL]];
+    msg.content = content;
+    msg.timestamp = (int)time(NULL);
+    
+    float newHeigth = 640;
+    float newWidth = newHeigth*image.size.width/image.size.height;
+    
+    UIImage *sizeImage = [image resizedImage:CGSizeMake(128, 128) interpolationQuality:kCGInterpolationDefault];
+    image = [image resizedImage:CGSizeMake(newWidth, newHeigth) interpolationQuality:kCGInterpolationDefault];
+    
+    [[SDImageCache sharedImageCache] storeImage:image forKey:msg.content.imageURL];
+    NSString *littleUrl =  [msg.content littleImageURL];
+    [[SDImageCache sharedImageCache] storeImage:sizeImage forKey: littleUrl];
+    
+    [self saveMessage:msg];
+    
+    [self sendMessage:msg];
+    
+    [[self class] playMessageSentSound];
+    
+    [self insertMessage:msg];
+}
+
+-(void) sendTextMessage:(NSString*)text {
+    IMessage *msg = [[IMessage alloc] init];
+    
+    msg.sender = self.sender;
+    msg.receiver = self.receiver;
+    
+    MessageContent *content = [[MessageContent alloc] initWithText:text];
+    msg.content = content;
+    msg.timestamp = (int)time(NULL);
+    
+    [self saveMessage:msg];
+    
+    [self sendMessage:msg];
+    
+    [[self class] playMessageSentSound];
+    
+    [self insertMessage:msg];
+}
+
+
+-(void)resendMessage:(IMessage*)message {
+    message.flags = message.flags & (~MESSAGE_FLAG_FAILURE);
+    [self eraseMessageFailure:message];
+    [self sendMessage:message];
+    [self reloadMessage:message.msgLocalID];
+}
+
+
+
+#pragma mark - Outbox Observer
+- (void)onAudioUploadSuccess:(IMessage*)msg URL:(NSString*)url {
+    if ([self isInConversation:msg]) {
+        [self reloadMessage:msg.msgLocalID];
+    }
+}
+
+-(void)onAudioUploadFail:(IMessage*)msg {
+    if ([self isInConversation:msg]) {
+        msg.flags = msg.flags|MESSAGE_FLAG_FAILURE;
+        [self reloadMessage:msg.msgLocalID];
+    }
+}
+
+- (void)onImageUploadSuccess:(IMessage*)msg URL:(NSString*)url {
+    if ([self isInConversation:msg]) {
+        [self reloadMessage:msg.msgLocalID];
+    }
+}
+
+- (void)onImageUploadFail:(IMessage*)msg {
+    if ([self isInConversation:msg]) {
+        msg.flags = msg.flags|MESSAGE_FLAG_FAILURE;
+        [self reloadMessage:msg.msgLocalID];
+    }
+}
+
+#pragma mark - Audio Downloader Observer
+- (void)onAudioDownloadSuccess:(IMessage*)msg {
+    if ([self isInConversation:msg]) {
+        [self reloadMessage:msg.msgLocalID];
+    }
+}
+
+- (void)onAudioDownloadFail:(IMessage*)msg {
+    if ([self isInConversation:msg]) {
+        [self reloadMessage:msg.msgLocalID];
+    }
 }
 
 @end

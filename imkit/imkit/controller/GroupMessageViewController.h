@@ -9,7 +9,7 @@
 #import "MessageViewController.h"
 #import "TextMessageViewController.h"
 
-#define TEXT_MODE
+#undef TEXT_MODE
 #ifdef TEXT_MODE
 @interface GroupMessageViewController : TextMessageViewController
 #else
