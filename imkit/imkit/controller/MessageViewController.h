@@ -11,10 +11,19 @@
 #import <imsdk/IMService.h>
 #import "BaseMessageViewController.h"
 
+typedef NSString* (^GetUserNameBlock)(int64_t uid);
+
 @interface MessageViewController : BaseMessageViewController < UIImagePickerControllerDelegate, UINavigationControllerDelegate,  UITextViewDelegate, UIGestureRecognizerDelegate, AVAudioRecorderDelegate, AVAudioPlayerDelegate, UIActionSheetDelegate, UITableViewDataSource, UITableViewDelegate>
+
+@property(nonatomic, copy) GetUserNameBlock getUserName;
+@property(nonatomic) BOOL isShowUserName;
+
+@property(nonatomic)UIView *inputBar;
 
 - (void)setDraft:(NSString*)text;
 - (NSString*)getDraft;
 - (void)disableSend;
 - (void)enableSend;
+
+
 @end

@@ -37,7 +37,6 @@
 @interface MessageViewController()<MessageInputRecordDelegate, HPGrowingTextViewDelegate>
 
 @property (strong, nonatomic) MessageInputView *inputToolBarView;
-@property (assign, nonatomic, readonly) UIEdgeInsets originalTableViewContentInset;
 
 @property (nonatomic,strong) UIImage *willSendImage;
 @property (nonatomic) int  inputTimestamp;
@@ -90,6 +89,8 @@
  
     [self setup];
 
+
+    
     [self loadConversationData];
     
     //content scroll to bottom
@@ -141,6 +142,7 @@
                                 forControlEvents:UIControlEventTouchUpInside];
     
     [self.view addSubview:self.inputToolBarView];
+    self.inputBar = self.inputToolBarView;
     
     if ([[IMService instance] connectState] == STATE_CONNECTED) {
         [self enableSend];
@@ -148,6 +150,7 @@
         [self disableSend];
     }
     
+  
     UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanFrom:)];
     [self.tableView addGestureRecognizer:tapRecognizer];
     tapRecognizer.numberOfTapsRequired = 1;
@@ -162,7 +165,6 @@
                                              selector:@selector(handleMenuWillHideNotification:)
                                                  name:UIMenuControllerWillHideMenuNotification
                                                object:nil];
-    
     
 
 }
@@ -722,14 +724,15 @@
     }
     BubbleMessageType msgType;
     
-    if(message.sender == self.sender) {
+    if (message.sender == self.sender) {
         msgType = BubbleMessageTypeOutgoing;
-    }else{
+        [cell setMessage:message msgType:msgType];
+    } else {
         msgType = BubbleMessageTypeIncoming;
+        NSNumber *key = [NSNumber numberWithLongLong:message.sender];
+        NSString *name = [self.names objectForKey:key];
+        [cell setMessage:message userName:name msgType:msgType];
     }
-    
-    [cell setMessage:message msgType:msgType];
-    
     
     if (message.content.type == MESSAGE_AUDIO) {
         MessageAudioView *audioView = (MessageAudioView*)cell.bubbleView;
@@ -786,16 +789,23 @@
         NSLog(@"opps");
         return 0;
     }
+    int nameHeight = 0;
+    if (self.isShowUserName && msg.sender != self.sender) {
+        nameHeight = NAME_LABEL_HEIGHT;
+    }
+    
     switch (msg.content.type) {
         case MESSAGE_TEXT:
-            return [BubbleView cellHeightForText:msg.content.text];
+            return [BubbleView cellHeightForText:msg.content.text] + nameHeight;
         case  MESSAGE_IMAGE:
-            return kMessageImagViewHeight;
+            return kMessageImagViewHeight + nameHeight;
             break;
         case MESSAGE_AUDIO:
-            return kAudioViewCellHeight;
+            return kAudioViewCellHeight + nameHeight;
             break;
         case MESSAGE_LOCATION:
+            return 40 + nameHeight;
+        case MESSAGE_GROUP_NOTIFICATION:
             return 40;
         default:
             return 0;

@@ -12,4 +12,7 @@
 +(DraftDB*)instance;
 -(NSString*)getDraft:(int64_t)uid;
 -(void)setDraft:(int64_t)uid draft:(NSString*)draft;
+
+-(NSString*)getGroupDraft:(int64_t)gid;
+-(void)setGroupDraft:(int64_t)gid draft:(NSString*)draft;
 @end

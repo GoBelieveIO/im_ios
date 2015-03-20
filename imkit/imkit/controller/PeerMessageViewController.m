@@ -8,11 +8,7 @@
 
 #import "PeerMessageViewController.h"
 
-#import "MessageTextView.h"
-#import "MessageAudioView.h"
-#import "MessageImageView.h"
-#import "MessageViewCell.h"
-#import "BubbleView.h"
+
 
 
 #import "FileCache.h"
@@ -136,11 +132,23 @@
     
     [self removeObserver];
     
-    NSNotification* notification = [[NSNotification alloc] initWithName:CLEAR_SINGLE_CONV_NEW_MESSAGE_NOTIFY
+    if (self.messages.count > 0) {
+        
+        IMessage *msg = [self.messages lastObject];
+        
+        if (msg.sender == self.currentUID) {
+            NSNotification* notification = [[NSNotification alloc] initWithName:LATEST_PEER_MESSAGE object: msg userInfo:nil];
+            
+            [[NSNotificationCenter defaultCenter] postNotification:notification];
+        }
+    }
+    
+    NSNotification* notification = [[NSNotification alloc] initWithName:CLEAR_PEER_NEW_MESSAGE
                                                                  object:[NSNumber numberWithLongLong:self.peerUID]
                                                                userInfo:nil];
     [[NSNotificationCenter defaultCenter] postNotification:notification];
     
+
     [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
@@ -223,7 +231,7 @@
 
 - (void)loadConversationData {
     int count = 0;
-    id<IMessageIterator> iterator =  [[PeerMessageDB instance] newPeerMessageIterator: self.peerUID];
+    id<IMessageIterator> iterator =  [[PeerMessageDB instance] newMessageIterator: self.peerUID];
     IMessage *msg = [iterator next];
     while (msg) {
         if (self.textMode) {
@@ -252,7 +260,7 @@
     if (last == nil) {
         return;
     }
-    id<IMessageIterator> iterator =  [[PeerMessageDB instance] newPeerMessageIterator:self.peerUID last:last.msgLocalID];
+    id<IMessageIterator> iterator =  [[PeerMessageDB instance] newMessageIterator:self.peerUID last:last.msgLocalID];
     
     int count = 0;
     IMessage *msg = [iterator next];
@@ -287,6 +295,14 @@
     [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:NO];
 }
 
+- (void)sendMessage:(IMessage*)msg {
+    IMMessage *im = [[IMMessage alloc] init];
+    im.sender = msg.sender;
+    im.receiver = msg.receiver;
+    im.msgLocalID = msg.msgLocalID;
+    im.content = msg.content.raw;
+    [[IMService instance] sendPeerMessage:im];
+}
 
 
 @end

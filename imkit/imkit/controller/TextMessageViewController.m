@@ -308,8 +308,16 @@
         msgType = BubbleMessageTypeIncoming;
     }
     
-    [cell setMessage:message msgType:msgType];
-    
+    if (message.sender == self.sender) {
+        msgType = BubbleMessageTypeOutgoing;
+        [cell setMessage:message msgType:msgType];
+    } else {
+        msgType = BubbleMessageTypeIncoming;
+        NSNumber *key = [NSNumber numberWithLongLong:message.sender];
+        NSString *name = [self.names objectForKey:key];
+        [cell setMessage:message userName:name msgType:msgType];
+    }
+
     return cell;
 }
 
@@ -341,9 +349,16 @@
         NSLog(@"opps");
         return 0;
     }
+    int nameHeight = 0;
+    if (self.isShowUserName && msg.sender != self.sender) {
+        nameHeight = NAME_LABEL_HEIGHT;
+    }
+    
     switch (msg.content.type) {
         case MESSAGE_TEXT:
-            return [BubbleView cellHeightForText:msg.content.text];
+            return [BubbleView cellHeightForText:msg.content.text] + nameHeight;
+        case MESSAGE_GROUP_NOTIFICATION:
+            return 40;
         default:
             return 0;
     }

@@ -31,6 +31,7 @@
     self = [super init];
     if (self) {
         self.messages = [NSMutableArray array];
+        self.names = [NSMutableDictionary dictionary];
     }
     return self;
 }
@@ -78,6 +79,10 @@
 -(BOOL)eraseMessageFailure:(IMessage*)msg {
     NSAssert(NO, @"not implement");
     return NO;
+}
+
+- (void)sendMessage:(IMessage*)msg {
+    NSAssert(NO, @"not implement");
 }
 
 - (void)viewDidLoad {
@@ -138,6 +143,7 @@
 
 - (void)insertMessage:(IMessage*)msg {
     NSAssert(msg.msgLocalID, @"");
+    [self.messages addObject:msg];
     NSDate *curtDate = [NSDate dateWithTimeIntervalSince1970: msg.timestamp];
     NSMutableArray *msgBlockArray = nil;
     NSIndexPath *indexPath = nil;
@@ -324,53 +330,44 @@
     msg.sender = self.sender;
     msg.receiver = self.receiver;
     
-    MessageContent *content = [[MessageContent alloc] init];
-    NSNumber *d = [NSNumber numberWithInt:second];
-    NSString *url = [self localAudioURL];
-    NSDictionary *dic = @{@"audio":@{@"url":url, @"duration":d}};
-    NSString* newStr = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:dic options:0 error:nil] encoding:NSUTF8StringEncoding];
-    content.raw =  newStr;
+    
+    Audio *audio = [[Audio alloc] init];
+    audio.url = [self localAudioURL];
+    audio.duration = second;
+    MessageContent *content = [[MessageContent alloc] initWithAudio:audio];
     msg.content = content;
     msg.timestamp = (int)time(NULL);
     
     //todo 优化读文件次数
     NSData *data = [NSData dataWithContentsOfFile:path];
     FileCache *fileCache = [FileCache instance];
-    [fileCache storeFile:data forKey:url];
+    [fileCache storeFile:data forKey:audio.url];
     
     [self saveMessage:msg];
-    
-
     
     [[Outbox instance] uploadAudio:msg];
     
     [[self class] playMessageSentSound];
-    
-    NSNotification* notification = [[NSNotification alloc] initWithName:SEND_FIRST_MESSAGE_OK object: msg userInfo:nil];
-    
-    [[NSNotificationCenter defaultCenter] postNotification:notification];
     
     [self insertMessage:msg];
 }
 
 
 - (void)sendImageMessage:(UIImage*)image {
+    if (image.size.height == 0) {
+        return;
+    }
+    
+    
     IMessage *msg = [[IMessage alloc] init];
     
     msg.sender = self.sender;
     msg.receiver = self.receiver;
     
-    MessageContent *content = [[MessageContent alloc] init];
-    NSDictionary *dic = @{@"image":[self localImageURL]};
-    NSString* newStr = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:dic options:0 error:nil] encoding:NSUTF8StringEncoding];
-    content.raw =  newStr;
+    MessageContent *content = [[MessageContent alloc] initWithImageURL:[self localImageURL]];
     msg.content = content;
     msg.timestamp = (int)time(NULL);
-    
-    if (image.size.height == 0) {
-        return;
-    }
-    
+
     float newHeigth = 640;
     float newWidth = newHeigth*image.size.width/image.size.height;
     
@@ -387,20 +384,7 @@
     
     [[self class] playMessageSentSound];
     
-    NSNotification* notification = [[NSNotification alloc] initWithName:SEND_FIRST_MESSAGE_OK object: msg userInfo:nil];
-    [[NSNotificationCenter defaultCenter] postNotification:notification];
-    
     [self insertMessage:msg];
-}
-
-
-- (void)sendMessage:(IMessage*)msg {
-    IMMessage *im = [[IMMessage alloc] init];
-    im.sender = msg.sender;
-    im.receiver = msg.receiver;
-    im.msgLocalID = msg.msgLocalID;
-    im.content = msg.content.raw;
-    [[IMService instance] sendPeerMessage:im];
 }
 
 -(void) sendTextMessage:(NSString*)text {
@@ -409,11 +393,7 @@
     msg.sender = self.sender;
     msg.receiver = self.receiver;
     
-    MessageContent *content = [[MessageContent alloc] init];
-    NSDictionary *dic = @{@"text":text};
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dic options:0 error:nil];
-    NSString* newStr = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-    content.raw =  newStr;
+    MessageContent *content = [[MessageContent alloc] initWithText:text];
     msg.content = content;
     msg.timestamp = (int)time(NULL);
     
@@ -422,10 +402,6 @@
     [self sendMessage:msg];
     
     [[self class] playMessageSentSound];
-    
-    NSNotification* notification = [[NSNotification alloc] initWithName:SEND_FIRST_MESSAGE_OK object: msg userInfo:nil];
-    
-    [[NSNotificationCenter defaultCenter] postNotification:notification];
     
     [self insertMessage:msg];
 }

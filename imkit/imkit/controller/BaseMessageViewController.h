@@ -25,11 +25,13 @@
 - (BOOL)markMesageListened:(IMessage*)msg;
 - (BOOL)eraseMessageFailure:(IMessage*)msg;
 
+- (void)sendMessage:(IMessage*)msg;
 
 //protected
 @property(nonatomic) NSMutableArray *messageArray;
 @property(nonatomic) NSMutableArray *timestamps;
 @property(nonatomic) NSMutableArray *messages;
+@property(nonatomic) NSMutableDictionary *names;
 
 @property(nonatomic) UIRefreshControl *refreshControl;
 @property(nonatomic) UITableView *tableView;

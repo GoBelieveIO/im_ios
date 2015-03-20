@@ -64,7 +64,7 @@
         memcpy(p, t, strlen(t));
         p += strlen(t);
         return [NSData dataWithBytes:buf length:(p-buf)];
-    }  else if (self.cmd == MSG_IM) {
+    }  else if (self.cmd == MSG_IM || self.cmd == MSG_GROUP_IM) {
         IMMessage *m = (IMMessage*)self.body;
         writeInt64(m.sender, p);
         p += 8;
@@ -114,7 +114,7 @@
         int status = readInt32(p);
         self.body = [NSNumber numberWithInt:status];
         return YES;
-    } else if (self.cmd == MSG_IM) {
+    } else if (self.cmd == MSG_IM || self.cmd == MSG_GROUP_IM) {
         IMMessage *m = [[IMMessage alloc] init];
         m.sender = readInt64(p);
         p += 8;
@@ -152,6 +152,9 @@
         p += 8;
         state.online = readInt32(p);
         self.body = state;
+        return YES;
+    } else if (self.cmd == MSG_GROUP_NOTIFICATION) {
+        self.body = [[NSString alloc] initWithBytes:p length:data.length-HEAD_SIZE encoding:NSUTF8StringEncoding];
         return YES;
     } else {
         self.body = [NSData dataWithBytes:p length:data.length-8];

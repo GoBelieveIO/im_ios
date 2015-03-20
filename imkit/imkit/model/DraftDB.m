@@ -40,4 +40,13 @@
     [self.dict setObject:draft forKey:key];
 }
 
+-(NSString*)getGroupDraft:(int64_t)gid {
+    NSString *key = [NSString stringWithFormat:@"group_draft_%lld", gid];
+    return [self.dict objectForKey:key];
+}
+-(void)setGroupDraft:(int64_t)gid draft:(NSString*)draft {
+    NSString *key = [NSString stringWithFormat:@"group_draft_%lld", gid];
+    [self.dict setObject:draft forKey:key];
+}
+
 @end

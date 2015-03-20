@@ -45,6 +45,8 @@
 		6D03315F1AAB6626004AA39F /* NSString+JSMessagesView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D03315E1AAB6626004AA39F /* NSString+JSMessagesView.m */; };
 		6D0331621AAB6702004AA39F /* TAHttpOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D0331611AAB6702004AA39F /* TAHttpOperation.m */; };
 		6D0331651AAB6781004AA39F /* UIImage+JSMessagesView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D0331641AAB6781004AA39F /* UIImage+JSMessagesView.m */; };
+		6D4256871ABC0EEC001B7E43 /* GroupMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D4256861ABC0EEC001B7E43 /* GroupMessageViewController.m */; };
+		6D42568B1ABC0F2F001B7E43 /* MessageNotificationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D42568A1ABC0F2F001B7E43 /* MessageNotificationView.m */; };
 		6DF54F181AB6EECA00197EBC /* TextMessageViewController.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6DF54F151AB6E58800197EBC /* TextMessageViewController.h */; };
 		6DF54F261AB816FB00197EBC /* BaseMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54F251AB816FB00197EBC /* BaseMessageViewController.m */; };
 		6DF54F281AB82E0000197EBC /* BaseMessageViewController.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6DF54F241AB816FB00197EBC /* BaseMessageViewController.h */; };
@@ -173,6 +175,10 @@
 		6D0331611AAB6702004AA39F /* TAHttpOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TAHttpOperation.m; sourceTree = "<group>"; };
 		6D0331631AAB6781004AA39F /* UIImage+JSMessagesView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+JSMessagesView.h"; sourceTree = "<group>"; };
 		6D0331641AAB6781004AA39F /* UIImage+JSMessagesView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+JSMessagesView.m"; sourceTree = "<group>"; };
+		6D4256851ABC0EEC001B7E43 /* GroupMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GroupMessageViewController.h; path = controller/GroupMessageViewController.h; sourceTree = "<group>"; };
+		6D4256861ABC0EEC001B7E43 /* GroupMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GroupMessageViewController.m; path = controller/GroupMessageViewController.m; sourceTree = "<group>"; };
+		6D4256891ABC0F2F001B7E43 /* MessageNotificationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MessageNotificationView.h; path = view/MessageNotificationView.h; sourceTree = "<group>"; };
+		6D42568A1ABC0F2F001B7E43 /* MessageNotificationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MessageNotificationView.m; path = view/MessageNotificationView.m; sourceTree = "<group>"; };
 		6DF54F151AB6E58800197EBC /* TextMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TextMessageViewController.h; path = controller/TextMessageViewController.h; sourceTree = "<group>"; };
 		6DF54F161AB6E58800197EBC /* TextMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TextMessageViewController.m; path = controller/TextMessageViewController.m; sourceTree = "<group>"; };
 		6DF54F241AB816FB00197EBC /* BaseMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BaseMessageViewController.h; path = controller/BaseMessageViewController.h; sourceTree = "<group>"; };
@@ -295,6 +301,8 @@
 		6D032FF71AA9B493004AA39F /* view */ = {
 			isa = PBXGroup;
 			children = (
+				6D4256891ABC0F2F001B7E43 /* MessageNotificationView.h */,
+				6D42568A1ABC0F2F001B7E43 /* MessageNotificationView.m */,
 				6D03311F1AA9E734004AA39F /* BubbleView.h */,
 				6D0331201AA9E734004AA39F /* BubbleView.m */,
 				6D0331241AA9E734004AA39F /* MessageAudioView.h */,
@@ -316,6 +324,8 @@
 		6D032FF81AA9B499004AA39F /* controller */ = {
 			isa = PBXGroup;
 			children = (
+				6D4256851ABC0EEC001B7E43 /* GroupMessageViewController.h */,
+				6D4256861ABC0EEC001B7E43 /* GroupMessageViewController.m */,
 				4875B1211AAC9362001D1435 /* MEESImageViewController.h */,
 				4875B1221AAC9362001D1435 /* MEESImageViewController.m */,
 				6D032FFC1AA9B4D2004AA39F /* MessageViewController.h */,
@@ -508,10 +518,12 @@
 				6D0331651AAB6781004AA39F /* UIImage+JSMessagesView.m in Sources */,
 				6D032FF41AA9B41C004AA39F /* PeerMessageDB.m in Sources */,
 				6D0331311AA9E734004AA39F /* BubbleView.m in Sources */,
+				6D42568B1ABC0F2F001B7E43 /* MessageNotificationView.m in Sources */,
 				6DFDA0271AB9797500EF553A /* TextMessageViewController.m in Sources */,
 				6D032FF11AA9B41C004AA39F /* GroupMessageHandler.m in Sources */,
 				6D0331331AA9E734004AA39F /* MessageAudioView.m in Sources */,
 				6D03301B1AA9BCD8004AA39F /* DraftDB.m in Sources */,
+				6D4256871ABC0EEC001B7E43 /* GroupMessageViewController.m in Sources */,
 				6D0331381AA9E734004AA39F /* MessageViewCell.m in Sources */,
 				6D032FF51AA9B41C004AA39F /* PeerMessageHandler.m in Sources */,
 				6D032FF31AA9B41C004AA39F /* MessageDB.m in Sources */,

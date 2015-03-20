@@ -16,10 +16,12 @@
 
 #define HEARTBEAT (180ull*NSEC_PER_SEC)
 
-#define HOST @"imnode.gobelieve.io"
+#define HOST  @"imnode.gobelieve.io"
 #define PORT 23000
 
 @interface IMService()
+@property(nonatomic)NSString *host;
+@property(nonatomic)int port;
 @property(atomic, copy) NSString *hostIP;
 @property(atomic, assign) time_t timestmap;
 
@@ -78,7 +80,6 @@
         self.suspended = YES;
         self.reachable = YES;
         self.isBackground = NO;
-        
         self.host = HOST;
         self.port = PORT;
     }
@@ -222,7 +223,7 @@
     
     for (NSNumber *seq in self.groupMessages) {
         IMMessage *msg = [self.peerMessages objectForKey:seq];
-        [self.groupMessageHandler handleMessageFailure:msg.msgLocalID uid:msg.receiver];
+        [self.groupMessageHandler handleMessageFailure:msg.msgLocalID gid:msg.receiver];
         [self publishGroupMessageFailure:msg];
     }
     [self.peerMessages removeAllObjects];
@@ -243,7 +244,7 @@
         [self.peerMessages removeObjectForKey:seq];
         [self publishPeerMessageACK:m.msgLocalID uid:m.receiver];
     } else if (m2) {
-        [self.groupMessageHandler handleMessageACK:m2.msgLocalID uid:m2.receiver];
+        [self.groupMessageHandler handleMessageACK:m2.msgLocalID gid:m2.receiver];
         [self.groupMessages removeObjectForKey:seq];
         [self publishGroupMessageACK:m2.msgLocalID gid:m2.receiver];
     }
@@ -252,7 +253,7 @@
 -(void)handleIMMessage:(Message*)msg {
     IMMessage *im = (IMMessage*)msg.body;
     [self.peerMessageHandler handleMessage:im];
-    NSLog(@"sender:%lld receiver:%lld content:%s", im.sender, im.receiver, [im.content UTF8String]);
+    NSLog(@"peer message sender:%lld receiver:%lld content:%s", im.sender, im.receiver, [im.content UTF8String]);
     
     Message *ack = [[Message alloc] init];
     ack.cmd = MSG_ACK;
@@ -264,7 +265,7 @@
 -(void)handleGroupIMMessage:(Message*)msg {
     IMMessage *im = (IMMessage*)msg.body;
     [self.groupMessageHandler handleMessage:im];
-    NSLog(@"sender:%lld receiver:%lld content:%s", im.sender, im.receiver, [im.content UTF8String]);
+    NSLog(@"group message sender:%lld receiver:%lld content:%s", im.sender, im.receiver, [im.content UTF8String]);
     Message *ack = [[Message alloc] init];
     ack.cmd = MSG_ACK;
     ack.body = [NSNumber numberWithInt:msg.seq];
@@ -307,6 +308,22 @@
 
 -(void)handlePong:(Message*)msg {
     self.pingTimestamp = 0;
+}
+
+-(void)handleGroupNotification:(Message*)msg {
+    NSString *notification = (NSString*)msg.body;
+    NSLog(@"group notification:%@", notification);
+    [self.groupMessageHandler handleGroupNotification:notification];
+    for (id<MessageObserver> ob in self.observers) {
+        if ([ob respondsToSelector:@selector(onGroupNotification:)]) {
+            [ob onGroupNotification:notification];
+        }
+    }
+    
+    Message *ack = [[Message alloc] init];
+    ack.cmd = MSG_ACK;
+    ack.body = [NSNumber numberWithInt:msg.seq];
+    [self sendMessage:ack];
 }
 
 -(void)publishPeerMessage:(IMMessage*)msg {
@@ -378,6 +395,8 @@
         [self handlePeerACK:msg];
     } else if (msg.cmd == MSG_PONG) {
         [self handlePong:msg];
+    } else if (msg.cmd == MSG_GROUP_NOTIFICATION) {
+        [self handleGroupNotification:msg];
     }
 }
 
@@ -522,30 +541,24 @@
 }
 
 -(void)addMessageObserver:(id<MessageObserver>)ob {
-    if ([self.observers containsObject:ob]) {
-        NSLog(@"im service observer exist");
-        return;
-    }
     [self.observers addObject:ob];
 }
+
 -(void)removeMessageObserver:(id<MessageObserver>)ob {
     [self.observers removeObject:ob];
 }
 
--(void)sendPeerMessage:(IMMessage *)im {
+-(BOOL)sendPeerMessage:(IMMessage *)im {
     Message *m = [[Message alloc] init];
     m.cmd = MSG_IM;
     m.body = im;
     BOOL r = [self sendMessage:m];
 
     if (!r) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.peerMessageHandler handleMessageFailure:im.msgLocalID uid:im.receiver];
-            [self publishPeerMessageFailure:im];
-        });
-    } else {
-        [self.peerMessages setObject:im forKey:[NSNumber numberWithInt:m.seq]];
+        return r;
     }
+    [self.peerMessages setObject:im forKey:[NSNumber numberWithInt:m.seq]];
+    return r;
 }
 
 -(BOOL)sendGroupMessage:(IMMessage *)im {

@@ -14,6 +14,7 @@
 #define MESSAGE_IMAGE 2
 #define MESSAGE_AUDIO 3
 #define MESSAGE_LOCATION 4
+#define MESSAGE_GROUP_NOTIFICATION 5 //群通知
 
 
 #define MESSAGE_FLAG_DELETE 1
@@ -24,20 +25,54 @@
 #define MESSAGE_FLAG_SENDING 32
 #define MESSAGE_FLAG_LISTENED 64
 
+#define NOTIFICATION_GROUP_CREATED 1
+#define NOTIFICATION_GROUP_DISBANDED 2
+#define NOTIFICATION_GROUP_MEMBER_ADDED 3
+#define NOTIFICATION_GROUP_MEMBER_LEAVED 4
+
 @interface Audio : NSObject
 @property(nonatomic, copy) NSString *url;
 @property(nonatomic) int duration;
 @end
 
+@interface GroupNotification : NSObject
+
+@property(nonatomic, copy) NSString *raw;
+@property(nonatomic) int type;
+
+@property(nonatomic) int64_t groupID;
+
+//created
+@property(nonatomic) int64_t master;
+@property(nonatomic) NSString *groupName;
+@property(nonatomic) NSArray *members;
+
+//GROUP_MEMBER_ADDED,GROUP_MEMBER_LEAVED
+@property(nonatomic) int64_t member;
+
+-(id)initWithRaw:(NSString*)raw;
+
+@end
+
 @interface MessageContent : NSObject
+
+- (id)initWithText:(NSString*)text;
+- (id)initWithImageURL:(NSString*)imageURL;
+- (id)initWithAudio:(Audio*)audio;
+- (id)initWithNotification:(GroupNotification*)notification;
+- (id)initWithRaw:(NSString*)raw;
+
 @property(nonatomic)int type;
 @property(nonatomic)NSString *raw;
 
 @property(nonatomic, readonly)NSString *text;
-@property(nonatomic, readonly)NSString *imageURL;
 @property(nonatomic, readonly)Audio *audio;
 @property(nonatomic, readonly)CLLocationCoordinate2D location;
 
+@property(nonatomic, readonly)GroupNotification *notification;
+@property(nonatomic, copy) NSString *notificationDesc;
+
+@property(nonatomic, readonly)NSString *imageURL;
 -(NSString*) littleImageURL;
 
 @end

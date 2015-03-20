@@ -31,14 +31,12 @@ alpha:(a)]
 #define kStatusBarHeight 20
 #define kSearchBarHeight 44
 #define kTabBarHeight 49
-//NSNotificaiton
 
-#define CREATE_NEW_CONVERSATION @"creat_new_conversation"
-#define SEND_FIRST_MESSAGE_OK   @"send_first_message_ok"
-#define CLEAR_ALL_CONVESATION   @"clear_all_conversation"
+//最近发出的消息
+#define LATEST_GROUP_MESSAGE       @"latest_group_message"
+#define LATEST_PEER_MESSAGE        @"latest_peer_message"
 
-#define ON_NEW_MESSAGE_NOTIFY  @"on_new_message_notify"
-#define CLEAR_SINGLE_CONV_NEW_MESSAGE_NOTIFY @"clear_single_conv_new_message_notify"
-#define CLEAR_TAB_BAR_NEW_MESSAGE_NOTIFY  @"clear_tab_bar_new_message_notify"
-
+//清空会话的未读消息数
+#define CLEAR_PEER_NEW_MESSAGE @"clear_peer_single_conv_new_message_notify"
+#define CLEAR_GROUP_NEW_MESSAGE @"clear_group_single_conv_new_message_notify"
 #endif

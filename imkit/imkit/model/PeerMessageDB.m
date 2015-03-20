@@ -171,12 +171,12 @@
     return [MessageDB eraseFlag:msgLocalID path:path flag:MESSAGE_FLAG_FAILURE];
 }
 
--(id<IMessageIterator>)newPeerMessageIterator:(int64_t)uid {
+-(id<IMessageIterator>)newMessageIterator:(int64_t)uid {
     NSString *path = [self getPeerPath:uid];
     return [[PeerMessageIterator alloc] initWithPath:path];
 }
 
--(id<IMessageIterator>)newPeerMessageIterator:(int64_t)uid last:(int)lastMsgID {
+-(id<IMessageIterator>)newMessageIterator:(int64_t)uid last:(int)lastMsgID {
     NSString *path = [self getPeerPath:uid];
     return [[PeerMessageIterator alloc] initWithPath:path position:lastMsgID];
 }
@@ -217,7 +217,7 @@
 }
 
 -(IMessage*)getLastPeerMessage:(int64_t)uid {
-    id<IMessageIterator> iter = [[PeerMessageDB instance] newPeerMessageIterator:uid];
+    id<IMessageIterator> iter = [[PeerMessageDB instance] newMessageIterator:uid];
     IMessage *msg;
     msg = [iter next];
     return msg;
