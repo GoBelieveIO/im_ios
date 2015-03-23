@@ -47,12 +47,10 @@ typedef enum {
 
 + (UIFont *)font;
 
-+ (CGSize)textSizeForText:(NSString *)txt;
-+ (CGSize)bubbleSizeForText:(NSString *)txt;
-+ (CGSize)bubbleSizeForImage:(UIImage *)image;
-+ (CGSize)imageSizeForImage;
++ (CGSize)textSizeForText:(NSString *)txt withFont:(UIFont*)font;
++ (CGSize)bubbleSizeForText:(NSString *)txt withFont:(UIFont*)font;
+
 + (CGFloat)cellHeightForText:(NSString *)txt;
-+ (CGFloat)cellHeightForImage:(UIImage *)image;
 
 + (int)maxCharactersPerLine;
 + (int)numberOfLinesForMessage:(NSString *)txt;

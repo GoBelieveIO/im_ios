@@ -817,7 +817,7 @@
         case MESSAGE_LOCATION:
             return 40 + nameHeight;
         case MESSAGE_GROUP_NOTIFICATION:
-            return 40;
+            return 30;
         default:
             return 0;
     }
@@ -880,7 +880,7 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return 44;
+    return 30;
 }
 
 

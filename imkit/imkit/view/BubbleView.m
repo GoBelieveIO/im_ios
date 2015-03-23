@@ -136,44 +136,31 @@ CGFloat const kJSAvatarSize = 50.0f;
     return [UIFont systemFontOfSize:14.0f];
 }
 
-+ (CGSize)textSizeForText:(NSString *)txt{
++ (CGSize)textSizeForText:(NSString *)txt withFont:(UIFont*)font{
     CGFloat width = [UIScreen mainScreen].applicationFrame.size.width * 0.75f;
     CGFloat height = MAX([BubbleView numberOfLinesForMessage:txt],
-                         [txt numberOfLines]) *  30.0f; // for fontSize 16.0f;
+                         [txt numberOfLines]) *  30.0f;
+   
+    UILabel *gettingSizeLabel = [[UILabel alloc] init];
+    gettingSizeLabel.font = font;
+    gettingSizeLabel.text = txt;
+    gettingSizeLabel.numberOfLines = 0;
+    gettingSizeLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    CGSize maximumLabelSize = CGSizeMake(width, height);
     
-    return [txt sizeWithFont:[BubbleView font]
-           constrainedToSize:CGSizeMake(width - kJSAvatarSize, height + kJSAvatarSize)
-               lineBreakMode:NSLineBreakByWordWrapping];
+    return  [gettingSizeLabel sizeThatFits:maximumLabelSize];
 }
 
-+ (CGSize)bubbleSizeForText:(NSString *)txt
++ (CGSize)bubbleSizeForText:(NSString *)txt withFont:(UIFont*)font
 {
-	CGSize textSize = [BubbleView textSizeForText:txt];
-	return CGSizeMake(textSize.width + kBubblePaddingRight,
+    CGSize textSize = [BubbleView textSizeForText:txt withFont:font];
+    return CGSizeMake(textSize.width + kBubblePaddingRight,
                       textSize.height + kPaddingTop + kPaddingBottom);
-}
-
-+ (CGSize)bubbleSizeForImage:(UIImage *)image{
-    CGSize imageSize = [BubbleView imageSizeForImage];
-	return CGSizeMake(imageSize.width,
-                      imageSize.height);
-}
-
-+ (CGSize)imageSizeForImage{
-    CGFloat width = [UIScreen mainScreen].applicationFrame.size.width * 0.75f;
-    CGFloat height = 130.f;
-    
-    return CGSizeMake(width - kJSAvatarSize, height + kJSAvatarSize);
-    
 }
 
 + (CGFloat)cellHeightForText:(NSString *)txt
 {
-    return [BubbleView bubbleSizeForText:txt].height + kMarginTop + kMarginBottom;
-}
-
-+ (CGFloat)cellHeightForImage:(UIImage *)image{
-    return [BubbleView bubbleSizeForImage:image].height + kMarginTop + kMarginBottom;
+    return [BubbleView bubbleSizeForText:txt withFont:[BubbleView font]].height + kMarginTop + kMarginBottom;
 }
 
 + (int)maxCharactersPerLine

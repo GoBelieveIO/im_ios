@@ -16,13 +16,16 @@
     if (self) {
         CGRect labelFrame = CGRectMake(0, 0, frame.size.width, frame.size.height);
         self.label = [[UILabel alloc] initWithFrame:labelFrame];
+        [self.label setTextAlignment:NSTextAlignmentCenter];
+        [self.label setFont:[UIFont systemFontOfSize:11.5f]];
+        [self.label setTextColor:[UIColor grayColor]];
         [self addSubview:self.label];
     }
     return self;
 }
 
 -(void)layoutSubviews {
-    CGSize size = [[self class] bubbleSizeForText:self.label.text];
+    CGSize size = [[self class] bubbleSizeForText:self.label.text withFont:self.label.font];
     
     if (self.frame.size.width > size.width) {
         CGFloat x = (self.frame.size.width - size.width)/2;

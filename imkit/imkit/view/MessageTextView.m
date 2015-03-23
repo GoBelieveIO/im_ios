@@ -30,7 +30,7 @@
 #pragma mark - Drawing
 - (CGRect)bubbleFrame{
 
-    CGSize bubbleSize = [BubbleView bubbleSizeForText:self.text];
+    CGSize bubbleSize = [BubbleView bubbleSizeForText:self.text withFont:[BubbleView font]];
     return CGRectMake(floorf(self.type == BubbleMessageTypeOutgoing ? self.frame.size.width - bubbleSize.width : 0.0f),
                       floorf(kMarginTop),
                       floorf(bubbleSize.width),
@@ -48,7 +48,7 @@
     
     [self drawMsgStateSign: frame];
     
-    CGSize textSize = [BubbleView textSizeForText:self.text];
+    CGSize textSize = [BubbleView textSizeForText:self.text withFont:[BubbleView font]];
     
     CGFloat textX = image.leftCapWidth  + (self.type == BubbleMessageTypeOutgoing ? bubbleFrame.origin.x : 0.0f);
     
