@@ -4,11 +4,6 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>Resource.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>3</integer>
-		</dict>
 		<key>imkit.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
@@ -28,6 +23,11 @@
 			<true/>
 		</dict>
 		<key>6D032F9C1AA9B0F5004AA39F</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>6D4257C51ABFFC42001B7E43</key>
 		<dict>
 			<key>primary</key>
 			<true/>
