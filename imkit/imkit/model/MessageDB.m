@@ -40,14 +40,14 @@ static NSString *dbPath = nil;
     char buf[HEADER_SIZE] = {0};
     writeInt32(IMMAGIC, buf);
     writeInt32(IMVERSION, buf + 4);
-    int n = write(fd, buf, HEADER_SIZE);
+    ssize_t n = write(fd, buf, HEADER_SIZE);
     if (n != HEADER_SIZE) return NO;
     return YES;
 }
 
 +(BOOL)checkHeader:(int)fd {
     char header[HEADER_SIZE];
-    int n = read(fd, header, HEADER_SIZE);
+    ssize_t n = read(fd, header, HEADER_SIZE);
     if (n != HEADER_SIZE) {
         return NO;
     }
@@ -67,13 +67,13 @@ static NSString *dbPath = nil;
     char *p = buf;
     
     const char *raw = [msg.content.raw UTF8String];
-    int len = strlen(raw) + 8 + 8 + 4 + 4;
+    size_t len = strlen(raw) + 8 + 8 + 4 + 4;
     
     if (4 + 4 + len + 4 + 4 > 64*1024) return NO;
     
     writeInt32(IMMAGIC, p);
     p += 4;
-    writeInt32(len, p);
+    writeInt32((int32_t)len, p);
     p += 4;
     writeInt32(msg.flags, p);
     p += 4;
@@ -85,12 +85,12 @@ static NSString *dbPath = nil;
     p += 8;
     memcpy(p, raw, strlen(raw));
     p += strlen(raw);
-    writeInt32(len, p);
+    writeInt32((int32_t)len, p);
     p += 4;
     writeInt32(IMMAGIC, p);
     p += 4;
-    int size = p - buf;
-    int n = write(fd, buf, size);
+    long size = p - buf;
+    ssize_t n = write(fd, buf, size);
     if (n != size) return NO;
     return YES;
 }
@@ -125,7 +125,7 @@ static NSString *dbPath = nil;
         return NO;
     }
     char buf[8+4];
-    int n = pread(fd, buf, 12, msgLocalID);
+    ssize_t n = pread(fd, buf, 12, msgLocalID);
     if (n != 12) {
         return NO;
     }
@@ -151,7 +151,7 @@ static NSString *dbPath = nil;
         return NO;
     }
     char buf[8+4];
-    int n = pread(fd, buf, 12, msgLocalID);
+    ssize_t n = pread(fd, buf, 12, msgLocalID);
     if (n != 12) {
         return NO;
     }

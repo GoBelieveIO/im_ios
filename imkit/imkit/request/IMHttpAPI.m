@@ -87,7 +87,7 @@
     request.postBody = data;
     request.method = @"POST";
     request.successCB = ^(IMHttpOperation*commObj, NSURLResponse *response, NSData *data) {
-        int statusCode = [(NSHTTPURLResponse*)response statusCode];
+        NSInteger statusCode = [(NSHTTPURLResponse*)response statusCode];
         if (statusCode != 200) {
             NSLog(@"bind device token fail");
             fail();
@@ -121,7 +121,7 @@
     request.postBody = data;
     request.method = @"POST";
     request.successCB = ^(IMHttpOperation*commObj, NSURLResponse *response, NSData *data) {
-        int statusCode = [(NSHTTPURLResponse*)response statusCode];
+        NSInteger statusCode = [(NSHTTPURLResponse*)response statusCode];
         if (statusCode != 200) {
             NSDictionary *resp = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil];
             NSLog(@"create group fail:%@", resp);

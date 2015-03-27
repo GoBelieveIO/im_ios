@@ -628,11 +628,6 @@
     [self sendMessage:msg];
 }
 
--(void)sendSubscribe:(MessageSubsribe*)sub {
-    Message *msg = [[Message alloc] init];
-    msg.cmd = MSG_SUBSCRIBE_ONLINE_STATE;
-    msg.body = sub;
-    [self sendMessage:msg];
-}
+
 
 @end

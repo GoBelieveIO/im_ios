@@ -170,7 +170,7 @@ CGFloat const kJSAvatarSize = 50.0f;
 
 + (int)numberOfLinesForMessage:(NSString *)txt
 {
-    return (txt.length / [BubbleView maxCharactersPerLine]) + 1;
+    return (int)(txt.length / [BubbleView maxCharactersPerLine]) + 1;
 }
 
 @end

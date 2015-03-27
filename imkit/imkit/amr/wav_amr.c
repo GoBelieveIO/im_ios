@@ -15,7 +15,7 @@ int decode_amr(const char* infile, const char* outfile) {
 		return 1;
 	}
 	char header[6];
-	int n = fread(header, 1, 6, in);
+	ssize_t n = fread(header, 1, 6, in);
 	if (n != 6 || memcmp(header, "#!AMR\n", 6)) {
 		fprintf(stderr, "Bad header\n");
 		return 1;

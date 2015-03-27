@@ -22,8 +22,8 @@
 }
 
 -(int)read:(char*)p length:(int)len {
-    int n = pread(self.fd, p, len, self.pos - len);
+    ssize_t n = pread(self.fd, p, len, self.pos - len);
     self.pos = self.pos - len;
-    return n;
+    return (int)n;
 }
 @end

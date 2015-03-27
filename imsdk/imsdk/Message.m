@@ -25,11 +25,6 @@
 
 @end
 
-@implementation MessageSubsribe
-
-@end
-
-
 
 @implementation AuthenticationToken
 
@@ -73,7 +68,7 @@
         writeInt32(m.msgLocalID, p);
         p += 4;
         const char *s = [m.content UTF8String];
-        int l = strlen(s);
+        size_t l = strlen(s);
         if ((l + 28) > 64*1024) {
             return nil;
         }
@@ -82,15 +77,6 @@
     } else if (self.cmd == MSG_ACK) {
         writeInt32([(NSNumber*)self.body intValue], p);
         return [NSData dataWithBytes:buf length:HEAD_SIZE+4];
-    } else if (self.cmd == MSG_SUBSCRIBE_ONLINE_STATE) {
-        MessageSubsribe *sub = (MessageSubsribe*)self.body;
-        writeInt32([sub.uids count], p);
-        p += 4;
-        for (NSNumber *n in sub.uids) {
-            writeInt64([n longLongValue], p);
-            p += 8;
-        }
-        return [NSData dataWithBytes:buf length:HEAD_SIZE + 4 + [sub.uids count]*8];
     } else if (self.cmd == MSG_INPUTING) {
         MessageInputing *inputing = (MessageInputing*)self.body;
         writeInt64(inputing.sender, p);

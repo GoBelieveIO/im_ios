@@ -31,7 +31,7 @@
     MessageContent *content = [[MessageContent alloc] init];
     content.raw = im.content;
     m.content = content;
-    m.timestamp = time(NULL);
+    m.timestamp = (int)time(NULL);
     BOOL r = [[PeerMessageDB instance] insertMessage:m uid:im.sender];
     if (r) {
         msg.msgLocalID = m.msgLocalID;

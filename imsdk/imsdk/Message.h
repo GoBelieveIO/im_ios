@@ -51,9 +51,7 @@
 @property(nonatomic, assign)int32_t msgLocalID;
 @end
 
-@interface MessageSubsribe : NSObject
-@property(nonatomic)NSArray *uids;
-@end
+
 
 @interface AuthenticationToken : NSObject
 @property(nonatomic, copy) NSString *token;
