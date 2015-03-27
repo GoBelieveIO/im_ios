@@ -10,6 +10,7 @@
 #import "util.h"
 
 #define HEAD_SIZE 8
+#define VERSION 1
 
 @implementation IMMessage
 
@@ -18,9 +19,7 @@
 @implementation MessageInputing
 
 @end
-@implementation MessageOnlineState
 
-@end
 @implementation MessagePeerACK
 
 @end
@@ -37,8 +36,9 @@
 
     writeInt32(self.seq, p);
     p += 4;
-    *p = (uint8_t)self.cmd;
-    p += 4;
+    *p++ = (uint8_t)self.cmd;
+    *p++ = (uint8_t)VERSION;
+    p += 2;
     
     if (self.cmd == MSG_HEARTBEAT || self.cmd == MSG_PING) {
         return [NSData dataWithBytes:buf length:HEAD_SIZE];
@@ -65,15 +65,17 @@
         p += 8;
         writeInt64(m.receiver, p);
         p += 8;
+        writeInt32(m.timestamp, p);
+        p += 4;
         writeInt32(m.msgLocalID, p);
         p += 4;
         const char *s = [m.content UTF8String];
         size_t l = strlen(s);
-        if ((l + 28) > 64*1024) {
+        if ((l + 32) > 64*1024) {
             return nil;
         }
         memcpy(p, s, l);
-        return [NSData dataWithBytes:buf length:HEAD_SIZE + 20 +l];
+        return [NSData dataWithBytes:buf length:HEAD_SIZE + 24 +l];
     } else if (self.cmd == MSG_ACK) {
         writeInt32([(NSNumber*)self.body intValue], p);
         return [NSData dataWithBytes:buf length:HEAD_SIZE+4];
@@ -106,9 +108,11 @@
         p += 8;
         m.receiver = readInt64(p);
         p += 8;
+        m.timestamp = readInt32(p);
+        p += 4;
         m.msgLocalID = readInt32(p);
         p += 4;
-        m.content = [[NSString alloc] initWithBytes:p length:data.length-28 encoding:NSUTF8StringEncoding];
+        m.content = [[NSString alloc] initWithBytes:p length:data.length-32 encoding:NSUTF8StringEncoding];
         self.body = m;
         return YES;
     } else if (self.cmd == MSG_ACK) {
@@ -131,13 +135,6 @@
         inputing.receiver = readInt64(p);
         p += 8;
         self.body = inputing;
-        return YES;
-    } else if (self.cmd == MSG_ONLINE_STATE) {
-        MessageOnlineState *state = [[MessageOnlineState alloc] init];
-        state.sender = readInt64(p);
-        p += 8;
-        state.online = readInt32(p);
-        self.body = state;
         return YES;
     } else if (self.cmd == MSG_GROUP_NOTIFICATION) {
         self.body = [[NSString alloc] initWithBytes:p length:data.length-HEAD_SIZE encoding:NSUTF8StringEncoding];

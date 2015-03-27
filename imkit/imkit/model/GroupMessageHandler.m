@@ -30,7 +30,7 @@
     MessageContent *content = [[MessageContent alloc] init];
     content.raw = im.content;
     m.content = content;
-    m.timestamp = (int)time(NULL);
+    m.timestamp = im.timestamp;
     BOOL r = [[GroupMessageDB instance] insertMessage:m];
     if (r) {
         im.msgLocalID = m.msgLocalID;

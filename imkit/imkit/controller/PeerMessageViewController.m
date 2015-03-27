@@ -168,7 +168,7 @@
     MessageContent *content = [[MessageContent alloc] init];
     content.raw = im.content;
     m.content = content;
-    m.timestamp = (int)time(NULL);
+    m.timestamp = im.timestamp;
     
     if (self.textMode && m.content.type != MESSAGE_TEXT) {
         return;

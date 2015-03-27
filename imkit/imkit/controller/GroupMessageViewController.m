@@ -133,7 +133,7 @@
     m.msgLocalID = im.msgLocalID;
     MessageContent *content = [[MessageContent alloc] initWithRaw:im.content];
     m.content = content;
-    m.timestamp = (int)time(NULL);
+    m.timestamp = im.timestamp;
     
     if (self.textMode && m.content.type != MESSAGE_TEXT && m.content.type != MESSAGE_GROUP_NOTIFICATION) {
         return;
