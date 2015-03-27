@@ -22,6 +22,9 @@
 @class ReverseFile;
 
 @interface MessageDB : NSObject
++(void)setDBPath:(NSString*)dir;
++(NSString*)getDBPath;
+
 +(NSString*)getDocumentPath;
 +(BOOL)writeHeader:(int)fd;
 +(BOOL)checkHeader:(int)fd;

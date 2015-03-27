@@ -22,6 +22,7 @@
 @interface GroupMessageDB : NSObject
 +(GroupMessageDB*)instance;
 
+
 -(id<IMessageIterator>)newMessageIterator:(int64_t)uid;
 -(id<IMessageIterator>)newMessageIterator:(int64_t)uid last:(int)lastMsgID;
 -(id<ConversationIterator>)newConversationIterator;

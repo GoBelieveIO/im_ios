@@ -88,12 +88,21 @@
     self = [super init];
     if (self) {
         NSString *path = [self getMessagePath];
-        int r = mkdir([path UTF8String], 0755);
-        if (r == -1 && errno != EEXIST) {
-            NSLog(@"mkdir error:%d", errno);
-        }
+        [self mkdir:path];
     }
     return self;
+}
+
+
+-(BOOL)mkdir:(NSString*)path {
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSError *err;
+    BOOL r = [fileManager createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:&err];
+    
+    if (!r) {
+        NSLog(@"mkdir err:%@", err);
+    }
+    return r;
 }
 
 -(id<IMessageIterator>)newMessageIterator:(int64_t)gid {
@@ -112,12 +121,12 @@
 
 
 -(NSString*)getMessagePath {
-    NSString *s = [MessageDB getDocumentPath];
+    NSString *s = [MessageDB getDBPath];
     return [NSString stringWithFormat:@"%@/group", s];
 }
 
 -(NSString*)getGroupPath:(int64_t)gid {
-    NSString *s = [MessageDB getDocumentPath];
+    NSString *s = [MessageDB getDBPath];
     return [NSString stringWithFormat:@"%@/group/g_%lld", s, gid];
 }
 

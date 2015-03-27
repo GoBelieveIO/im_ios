@@ -11,6 +11,8 @@
 #import <imsdk/IMService.h>
 #import <imkit/PeerMessageHandler.h>
 #import <imkit/GroupMessageHandler.h>
+#import <imkit/PeerMessageDB.h>
+#import <imkit/GroupMessageDB.h>
 
 #define UIColorFromRGBHex(rgbValue) [UIColor \
 colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 \
@@ -24,9 +26,18 @@ blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 @implementation AppDelegate
 
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
+-(NSString*)getDocumentPath {
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *basePath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
+    return basePath;
+}
 
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    //设置消息存放的路径，可以在路径中加入当前登录的uid
+    NSString *path = [self getDocumentPath];
+    NSString *dbPath = [NSString stringWithFormat:@"%@/current_uid", path];
+    [MessageDB setDBPath:dbPath];
+    
     [IMService instance].deviceID = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
     [IMService instance].peerMessageHandler = [PeerMessageHandler instance];
     [IMService instance].groupMessageHandler = [GroupMessageHandler instance];

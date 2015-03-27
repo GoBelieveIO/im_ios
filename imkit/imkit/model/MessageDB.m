@@ -17,7 +17,16 @@
 #define IMVERSION (1<<16) //1.0
 
 
+static NSString *dbPath = nil;
 @implementation MessageDB
+
++(void)setDBPath:(NSString *)dir {
+    dbPath = dir;
+}
+
++(NSString*)getDBPath {
+    return dbPath;
+}
 
 +(NSString*)getDocumentPath {
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
