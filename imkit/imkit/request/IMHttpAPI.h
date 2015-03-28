@@ -12,6 +12,7 @@
 @interface IMHttpAPI : NSObject
 
 @property(nonatomic, copy) NSString *accessToken;
+@property(nonatomic, copy) NSString *apiURL;
 
 +(IMHttpAPI*)instance;
 

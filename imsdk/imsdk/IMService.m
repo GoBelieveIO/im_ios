@@ -20,7 +20,6 @@
 #define PORT 23000
 
 @interface IMService()
-@property(nonatomic)NSString *host;
 @property(nonatomic)int port;
 @property(atomic, copy) NSString *hostIP;
 @property(atomic, assign) time_t timestmap;
