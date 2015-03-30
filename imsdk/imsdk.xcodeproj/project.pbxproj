@@ -6,6 +6,20 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		6D5C186F1AC8EB3D0047A9A3 /* universal */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 6D5C18701AC8EB3D0047A9A3 /* Build configuration list for PBXAggregateTarget "universal" */;
+			buildPhases = (
+				6D5C18731AC8EB4E0047A9A3 /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = universal;
+			productName = universal;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		6D032F241AA993C0004AA39F /* libimsdk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D032F181AA993C0004AA39F /* libimsdk.a */; };
 		6D032F451AA99456004AA39F /* AsyncTCP.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D032F3E1AA99456004AA39F /* AsyncTCP.m */; };
@@ -139,7 +153,6 @@
 				6D032F141AA993C0004AA39F /* Sources */,
 				6D032F151AA993C0004AA39F /* Frameworks */,
 				6D032F161AA993C0004AA39F /* CopyFiles */,
-				6D42590F1AC01464001B7E43 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -183,6 +196,9 @@
 					6D032F221AA993C0004AA39F = {
 						CreatedOnToolsVersion = 6.1.1;
 					};
+					6D5C186F1AC8EB3D0047A9A3 = {
+						CreatedOnToolsVersion = 6.2;
+					};
 				};
 			};
 			buildConfigurationList = 6D032F131AA993C0004AA39F /* Build configuration list for PBXProject "imsdk" */;
@@ -199,6 +215,7 @@
 			targets = (
 				6D032F171AA993C0004AA39F /* imsdk */,
 				6D032F221AA993C0004AA39F /* imsdkTests */,
+				6D5C186F1AC8EB3D0047A9A3 /* universal */,
 			);
 		};
 /* End PBXProject section */
@@ -214,7 +231,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		6D42590F1AC01464001B7E43 /* ShellScript */ = {
+		6D5C18731AC8EB4E0047A9A3 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -225,7 +242,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# define output folder environment variable\nUNIVERSAL_OUTPUTFOLDER=${BUILD_DIR}/${CONFIGURATION}-universal\n\n# make sure the output directory exists\nmkdir -p \"${UNIVERSAL_OUTPUTFOLDER}\"\n\n# Step 2. Create universal binary file using lipo\nlipo -create -output \"${UNIVERSAL_OUTPUTFOLDER}/lib${PROJECT_NAME}.a\" \"${BUILD_DIR}/${CONFIGURATION}-iphoneos/lib${PROJECT_NAME}.a\" \"${BUILD_DIR}/${CONFIGURATION}-iphonesimulator/lib${PROJECT_NAME}.a\"\n\n# Last touch. copy the header files. Just for convenience\ncp -R \"${BUILD_DIR}/${CONFIGURATION}-iphoneos/include\" \"${UNIVERSAL_OUTPUTFOLDER}/\"";
+			shellScript = "# define output folder environment variable\nUNIVERSAL_OUTPUTFOLDER=${BUILD_DIR}/${CONFIGURATION}-universal\n\n# Step 1. Build Device and Simulator versions\nxcodebuild -target imsdk ONLY_ACTIVE_ARCH=NO -configuration ${CONFIGURATION} -sdk iphoneos  BUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\"\nxcodebuild -target imsdk -configuration ${CONFIGURATION} -sdk iphonesimulator -arch i386 BUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\"\n\n# make sure the output directory exists\nmkdir -p \"${UNIVERSAL_OUTPUTFOLDER}\"\n\n# Step 2. Create universal binary file using lipo\nlipo -create -output \"${UNIVERSAL_OUTPUTFOLDER}/lib${PROJECT_NAME}.a\" \"${BUILD_DIR}/${CONFIGURATION}-iphoneos/lib${PROJECT_NAME}.a\" \"${BUILD_DIR}/${CONFIGURATION}-iphonesimulator/lib${PROJECT_NAME}.a\"\n\n# Last touch. copy the header files. Just for convenience\ncp -R \"${BUILD_DIR}/${CONFIGURATION}-iphoneos/include\" \"${UNIVERSAL_OUTPUTFOLDER}/\"";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -337,6 +354,7 @@
 		6D032F2D1AA993C0004AA39F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -346,6 +364,7 @@
 		6D032F2E1AA993C0004AA39F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -384,6 +403,20 @@
 			};
 			name = Release;
 		};
+		6D5C18711AC8EB3D0047A9A3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		6D5C18721AC8EB3D0047A9A3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -410,6 +443,15 @@
 			buildConfigurations = (
 				6D032F301AA993C0004AA39F /* Debug */,
 				6D032F311AA993C0004AA39F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6D5C18701AC8EB3D0047A9A3 /* Build configuration list for PBXAggregateTarget "universal" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6D5C18711AC8EB3D0047A9A3 /* Debug */,
+				6D5C18721AC8EB3D0047A9A3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

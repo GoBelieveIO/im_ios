@@ -6,6 +6,20 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		6D5C18771AC8EBDA0047A9A3 /* universal */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 6D5C18781AC8EBDA0047A9A3 /* Build configuration list for PBXAggregateTarget "universal" */;
+			buildPhases = (
+				6D5C187B1AC8EBEB0047A9A3 /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = universal;
+			productName = universal;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		4875B1231AAC9362001D1435 /* MEESImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4875B1221AAC9362001D1435 /* MEESImageViewController.m */; };
 		6D032F9E1AA9B0F5004AA39F /* libimkit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D032F921AA9B0F5004AA39F /* libimkit.a */; };
@@ -412,7 +426,6 @@
 				6D032F8E1AA9B0F5004AA39F /* Sources */,
 				6D032F8F1AA9B0F5004AA39F /* Frameworks */,
 				6D032F901AA9B0F5004AA39F /* CopyFiles */,
-				6D4259121AC014D8001B7E43 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -457,6 +470,9 @@
 					6D032F9C1AA9B0F5004AA39F = {
 						CreatedOnToolsVersion = 6.1.1;
 					};
+					6D5C18771AC8EBDA0047A9A3 = {
+						CreatedOnToolsVersion = 6.2;
+					};
 				};
 			};
 			buildConfigurationList = 6D032F8D1AA9B0F5004AA39F /* Build configuration list for PBXProject "imkit" */;
@@ -479,6 +495,7 @@
 			targets = (
 				6D032F911AA9B0F5004AA39F /* imkit */,
 				6D032F9C1AA9B0F5004AA39F /* imkitTests */,
+				6D5C18771AC8EBDA0047A9A3 /* universal */,
 			);
 		};
 /* End PBXProject section */
@@ -511,7 +528,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		6D4259121AC014D8001B7E43 /* ShellScript */ = {
+		6D5C187B1AC8EBEB0047A9A3 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -522,7 +539,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# define output folder environment variable\nUNIVERSAL_OUTPUTFOLDER=${BUILD_DIR}/${CONFIGURATION}-universal\n\n\n# make sure the output directory exists\nmkdir -p \"${UNIVERSAL_OUTPUTFOLDER}\"\n\n# Step 2. Create universal binary file using lipo\nlipo -create -output \"${UNIVERSAL_OUTPUTFOLDER}/lib${PROJECT_NAME}.a\" \"${BUILD_DIR}/${CONFIGURATION}-iphoneos/lib${PROJECT_NAME}.a\" \"${BUILD_DIR}/${CONFIGURATION}-iphonesimulator/lib${PROJECT_NAME}.a\"\n\n# Last touch. copy the header files. Just for convenience\ncp -R \"${BUILD_DIR}/${CONFIGURATION}-iphoneos/include\" \"${UNIVERSAL_OUTPUTFOLDER}/\"";
+			shellScript = "# define output folder environment variable\nUNIVERSAL_OUTPUTFOLDER=${BUILD_DIR}/${CONFIGURATION}-universal\n\n# Step 1. Build Device and Simulator versions\nxcodebuild -target imkit ONLY_ACTIVE_ARCH=NO -configuration ${CONFIGURATION} -sdk iphoneos  BUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\"\nxcodebuild -target imkit -configuration ${CONFIGURATION} -sdk iphonesimulator -arch i386 BUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\"\n\n# make sure the output directory exists\nmkdir -p \"${UNIVERSAL_OUTPUTFOLDER}\"\n\n# Step 2. Create universal binary file using lipo\nlipo -create -output \"${UNIVERSAL_OUTPUTFOLDER}/lib${PROJECT_NAME}.a\" \"${BUILD_DIR}/${CONFIGURATION}-iphoneos/lib${PROJECT_NAME}.a\" \"${BUILD_DIR}/${CONFIGURATION}-iphonesimulator/lib${PROJECT_NAME}.a\"\n\n# Last touch. copy the header files. Just for convenience\ncp -R \"${BUILD_DIR}/${CONFIGURATION}-iphoneos/include\" \"${UNIVERSAL_OUTPUTFOLDER}/\"";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -625,7 +642,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				MTL_ENABLE_DEBUG_INFO = YES;
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -684,6 +701,7 @@
 					"$(PROJECT_DIR)/imkit/amr/opencore_amr_iosBAK",
 					"$(PROJECT_DIR)/imkit/amr/opencore_amr_iosBAK/x86_64/lib",
 				);
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -711,6 +729,7 @@
 					"$(PROJECT_DIR)/imkit/amr/opencore_amr_iosBAK",
 					"$(PROJECT_DIR)/imkit/amr/opencore_amr_iosBAK/x86_64/lib",
 				);
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -750,6 +769,21 @@
 			};
 			name = Release;
 		};
+		6D5C18791AC8EBDA0047A9A3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		6D5C187A1AC8EBDA0047A9A3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -776,6 +810,15 @@
 			buildConfigurations = (
 				6D032FAA1AA9B0F5004AA39F /* Debug */,
 				6D032FAB1AA9B0F5004AA39F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6D5C18781AC8EBDA0047A9A3 /* Build configuration list for PBXAggregateTarget "universal" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6D5C18791AC8EBDA0047A9A3 /* Debug */,
+				6D5C187A1AC8EBDA0047A9A3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
