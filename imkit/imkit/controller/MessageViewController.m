@@ -851,6 +851,14 @@
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     
     MessageTableSectionHeaderView *sectionView = [[[NSBundle mainBundle]loadNibNamed:@"MessageTableSectionHeaderView" owner:self options:nil] lastObject];
+    
+    CGRect screenRect = [[UIScreen mainScreen] bounds];
+    CGFloat screenWidth = screenRect.size.width;
+    
+    CGRect rect = sectionView.frame;
+    rect.size.width = screenWidth;
+    sectionView.frame = rect;
+    
     NSDate *curtDate = [self.timestamps objectAtIndex: section];
     NSDateComponents *components = [self getComponentOfDate:curtDate];
     NSDate *todayDate = [NSDate date];
@@ -1161,8 +1169,11 @@
     MessageContent *content = [[MessageContent alloc] initWithImageURL:[self localImageURL]];
     msg.content = content;
     msg.timestamp = (int)time(NULL);
+   
+    CGRect screenRect = [[UIScreen mainScreen] bounds];
+    CGFloat screenHeight = screenRect.size.height;
     
-    float newHeigth = 640;
+    float newHeigth = screenHeight;
     float newWidth = newHeigth*image.size.width/image.size.height;
     
     UIImage *sizeImage = [image resizedImage:CGSizeMake(128, 128) interpolationQuality:kCGInterpolationDefault];

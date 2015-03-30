@@ -95,8 +95,11 @@
     [self.view addSubview:self.tableView];
     
     UIView *inputBar = [[UIView alloc] initWithFrame:inputFrame];
-
-    UIImageView *bkview = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+    
+    CGRect screenRect = [[UIScreen mainScreen] bounds];
+    CGFloat screenWidth = screenRect.size.width;
+    
+    UIImageView *bkview = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, screenWidth, 44)];
     UIImage *img = [UIImage imageNamed:@"input-bar-flat.png"];
     UIImage *stretchImg = [img stretchableImageWithLeftCapWidth:1 topCapHeight:5];
     [bkview setImage:stretchImg];
@@ -392,6 +395,14 @@
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     
     MessageTableSectionHeaderView *sectionView = [[[NSBundle mainBundle]loadNibNamed:@"MessageTableSectionHeaderView" owner:self options:nil] lastObject];
+    
+    CGRect screenRect = [[UIScreen mainScreen] bounds];
+    CGFloat screenWidth = screenRect.size.width;
+    
+    CGRect rect = sectionView.frame;
+    rect.size.width = screenWidth;
+    sectionView.frame = rect;
+    
     NSDate *curtDate = [self.timestamps objectAtIndex: section];
     NSDateComponents *components = [self getComponentOfDate:curtDate];
     NSDate *todayDate = [NSDate date];
