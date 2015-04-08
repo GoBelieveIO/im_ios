@@ -13,6 +13,7 @@
 #import <imkit/GroupMessageHandler.h>
 #import <imkit/PeerMessageDB.h>
 #import <imkit/GroupMessageDB.h>
+#import <imkit/IMHttpAPI.H>
 
 #define UIColorFromRGBHex(rgbValue) [UIColor \
 colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 \
@@ -37,6 +38,11 @@ blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
     NSString *path = [self getDocumentPath];
     NSString *dbPath = [NSString stringWithFormat:@"%@/current_uid", path];
     [MessageDB setDBPath:dbPath];
+    
+    //app可以单独部署服务器，给予第三方应用更多的灵活性
+    //在开发阶段也可以配置成测试环境的地址 "http://sandbox.api.gobelieve.io", "sandbox.imnode.gobelieve.io"
+    [IMHttpAPI instance].apiURL = @"http://api.gobelieve.io";
+    [IMService instance].host = @"imnode.gobelieve.io";
     
     [IMService instance].deviceID = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
     [IMService instance].peerMessageHandler = [PeerMessageHandler instance];
