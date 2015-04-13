@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6DD554641AD50998005F3B7E /* im_demoTests.xctest in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DA41AB5862000197EBC /* im_demoTests.xctest */; };
 		6DF54D911AB5862000197EBC /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54D901AB5862000197EBC /* main.m */; };
 		6DF54D941AB5862000197EBC /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54D931AB5862000197EBC /* AppDelegate.m */; };
 		6DF54D9C1AB5862000197EBC /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54D9B1AB5862000197EBC /* Images.xcassets */; };
@@ -939,7 +938,6 @@
 				6DF54E231AB5883200197EBC /* GroupChat@2x.png in Resources */,
 				6DF54E161AB5883200197EBC /* BubbleOutgoingSelected@2x.png in Resources */,
 				6DF54E361AB5883200197EBC /* MicNewSelected.png in Resources */,
-				6DD554641AD50998005F3B7E /* im_demoTests.xctest in Resources */,
 				6DF54EFA1AB58DC500197EBC /* btn_blue@2x.png in Resources */,
 				6DF54E421AB5883200197EBC /* MicSelected@2x.png in Resources */,
 				6DF54E481AB5883200197EBC /* PhotoIcon@2x.png in Resources */,
