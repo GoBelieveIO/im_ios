@@ -1,9 +1,16 @@
+/*                                                                            
+  Copyright (c) 2014-2015, GoBelieve     
+    All rights reserved.		    				     			
+ 
+  This source code is licensed under the BSD-style license found in the
+  LICENSE file in the root directory of this source tree. An additional grant
+  of patent rights can be found in the PATENTS file in the same directory.
+*/
 
 #import "MessageInputView.h"
 #import "NSString+JSMessagesView.h"
 //#import "UIImage+JSMessagesView.h"
 
-#import "FBShimmeringView.h"
 #import "Constants.h"
 
 #define SEND_BUTTON_WIDTH 64.0f
@@ -118,8 +125,15 @@
         viewFrame = CGRectMake(0, 0, frame.size.width, frame.size.height);
         self.recordingView = [[UIView alloc] initWithFrame:viewFrame];
         [self.recordingView setBackgroundColor:[UIColor clearColor]];
+       
+        CGFloat startX = 100;
+        CGRect screenRect = [[UIScreen mainScreen] bounds];
+        CGFloat screenWidth = screenRect.size.width;
+        if (((screenWidth - 160 )/2) > 100) {
+            startX = (screenWidth - 160 )/2;
+        }
         
-        CGRect labelFrame = CGRectMake(100, 0, 160, 26);
+        CGRect labelFrame = CGRectMake(startX, 0, 160, 26);
         labelFrame.origin.x = (frame.size.width - labelFrame.size.width)/2;
         labelFrame.origin.y = (frame.size.height - labelFrame.size.height)/2;
         self.slipLabel = [[UILabel alloc] initWithFrame:labelFrame];
@@ -129,11 +143,11 @@
         self.slipLabel.text = @"滑动取消 <";
         [self.recordingView addSubview: self.slipLabel];
         
-        FBShimmeringView *shimmeringView = [[FBShimmeringView alloc] initWithFrame:self.slipLabel.bounds];
-        shimmeringView.contentView = self.slipLabel;
-        shimmeringView.shimmering = YES;
+        self.shimmeringView = [[FBShimmeringView alloc] initWithFrame:self.slipLabel.bounds];
+        self.shimmeringView.contentView = self.slipLabel;
+        self.shimmeringView.shimmering = YES;
        
-        [self.recordingView addSubview:shimmeringView];
+        [self.recordingView addSubview:self.shimmeringView];
         
         CGRect maskFrame = CGRectMake(0, 0, 70, frame.size.height);
         UIImage *img = [UIImage imageNamed:@"input-bar-flat.png"];
@@ -284,6 +298,14 @@
     self.mediaButton.frame = CGRectMake(x, y, w, h);
 
     self.recordingView.frame = self.bounds;
+    [self.recordingView setBackgroundColor:[UIColor lightGrayColor]];
+    [self.shimmeringView setBackgroundColor:[UIColor grayColor]];
+    [self.slipLabel setBackgroundColor:[UIColor redColor]];
+    
+    CGRect labelFrame = self.shimmeringView.frame;
+    labelFrame.origin.x = (self.recordingView.frame.size.width - labelFrame.size.width)/2  ;
+    self.shimmeringView.frame = labelFrame;
 }
+
 
 @end

@@ -1,10 +1,11 @@
-//
-//  MainViewController.h
-//  NGChatSDK
-//
-//  Created by chisj on 14-10-17.
-//  Copyright (c) 2014年 NGDS. All rights reserved.
-//
+/*                                                                            
+  Copyright (c) 2014-2015, GoBelieve     
+    All rights reserved.		    				     			
+ 
+  This source code is licensed under the BSD-style license found in the
+  LICENSE file in the root directory of this source tree. An additional grant
+  of patent rights can be found in the PATENTS file in the same directory.
+*/
 
 #import <UIKit/UIKit.h>
 

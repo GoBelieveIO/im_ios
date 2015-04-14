@@ -1,8 +1,11 @@
-//
-//  MessageViewController
-//  Created by daozhu on 14-6-16.
-//  Copyright (c) 2014年 daozhu. All rights reserved.
-//
+/*                                                                            
+  Copyright (c) 2014-2015, GoBelieve     
+    All rights reserved.		    				     			
+ 
+  This source code is licensed under the BSD-style license found in the
+  LICENSE file in the root directory of this source tree. An additional grant
+  of patent rights can be found in the PATENTS file in the same directory.
+*/
 
 #import "MessageViewController.h"
 #import <imsdk/IMService.h>
@@ -234,23 +237,6 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-#pragma mark - View rotation
-- (BOOL)shouldAutorotate
-{
-    return NO;
-}
-
-- (NSUInteger)supportedInterfaceOrientations
-{
-    return UIInterfaceOrientationMaskPortrait;
-}
-
-- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
-{
-    [super willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
-    [self.tableView reloadData];
-    [self.tableView setNeedsLayout];
-}
 
 #pragma mark -
 - (void) handlePanFrom:(UITapGestureRecognizer*)recognizer{
@@ -1259,6 +1245,23 @@
     if ([self isInConversation:msg]) {
         [self reloadMessage:msg.msgLocalID];
     }
+}
+
+#pragma mark InterfaceOrientation
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation{
+    return YES;
+}
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration{
+    [super willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
+    [self.tableView reloadData];
+    [self.tableView setNeedsLayout];
+    [self.inputToolBarView setNeedsLayout];
+}
+
+- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    
+    
 }
 
 @end
