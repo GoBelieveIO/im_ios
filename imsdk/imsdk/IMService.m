@@ -326,6 +326,10 @@
     [self sendMessage:ack];
 }
 
+-(void)handleLoginPoint:(Message*)msg {
+    [self publishLoginPoint:(LoginPoint*)msg.body];
+}
+
 -(void)publishPeerMessage:(IMMessage*)msg {
     for (id<MessageObserver> ob in self.observers) {
         if ([ob respondsToSelector:@selector(onPeerMessage:)]) {
@@ -380,6 +384,14 @@
     }
 }
 
+-(void)publishLoginPoint:(LoginPoint*)lp {
+    for (id<MessageObserver> ob in self.observers) {
+        if ([ob respondsToSelector:@selector(onLoginPoint:)]) {
+            [ob onLoginPoint:lp];
+        }
+    }
+}
+
 -(void)handleMessage:(Message*)msg {
     if (msg.cmd == MSG_AUTH_STATUS) {
         [self handleAuthStatus:msg];
@@ -397,6 +409,8 @@
         [self handlePong:msg];
     } else if (msg.cmd == MSG_GROUP_NOTIFICATION) {
         [self handleGroupNotification:msg];
+    } else if (msg.cmd == MSG_LOGIN_POINT) {
+        [self handleLoginPoint:msg];
     }
 }
 

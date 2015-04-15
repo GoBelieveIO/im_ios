@@ -52,6 +52,9 @@
 //同IM服务器连接的状态变更通知
 -(void)onConnectState:(int)state;
 
+//用户在其他地方登陆
+-(void)onLoginPoint:(LoginPoint*)lp;
+
 @optional
 -(void)onGroupMessage:(IMMessage*)msg;
 -(void)onGroupMessageACK:(int)msgLocalID gid:(int64_t)gid;

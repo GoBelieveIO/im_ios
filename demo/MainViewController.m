@@ -88,6 +88,7 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.navigationController.navigationBarHidden = YES;
+    [[IMService instance] stop];
 }
 
 
@@ -99,9 +100,9 @@
     [self.view endEditing:YES];
     
     self.chatButton.userInteractionEnabled = NO;
-    
+    long long sender = [tfSender.text longLongValue];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSString *token = [self login:[tfSender.text longLongValue]];
+        NSString *token = [self login:sender];
         
         dispatch_async(dispatch_get_main_queue(), ^{
             self.chatButton.userInteractionEnabled = YES;
@@ -112,8 +113,6 @@
             }
             
             NSLog(@"login success");
-            
-
             PeerMessageViewController *msgController = [[PeerMessageViewController alloc] init];
             
             msgController.currentUID = [tfSender.text longLongValue];

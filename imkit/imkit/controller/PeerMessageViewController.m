@@ -229,6 +229,9 @@
     }
 }
 
+-(void)onLoginPoint:(LoginPoint*)lp {
+    NSLog(@"login point:%@, platform id:%d", lp.deviceID, lp.platformID);
+}
 
 - (void)loadConversationData {
     int count = 0;

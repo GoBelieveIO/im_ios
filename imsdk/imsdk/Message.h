@@ -27,7 +27,9 @@
 #define MSG_LOGIN_POINT 16
 
 
-#define PLATFORM_IOS 1
+#define PLATFORM_IOS  1
+#define PLATFORM_ANDROID 2
+#define PLATFORM_WEB 3
 
 @interface IMMessage : NSObject
 @property(nonatomic, assign)int64_t sender;
@@ -49,10 +51,14 @@
 @property(nonatomic, assign)int32_t msgLocalID;
 @end
 
-
-
 @interface AuthenticationToken : NSObject
 @property(nonatomic, copy) NSString *token;
+@property(nonatomic, assign) int8_t platformID;
+@property(nonatomic, copy) NSString *deviceID;
+@end
+
+@interface LoginPoint : NSObject
+@property(nonatomic, assign) int32_t upTimestamp;
 @property(nonatomic, assign) int8_t platformID;
 @property(nonatomic, copy) NSString *deviceID;
 @end
