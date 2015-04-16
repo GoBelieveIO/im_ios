@@ -45,6 +45,20 @@
     // Dispose of any resources that can be recreated.
 }
 
+
+
+-(void)addObserver {
+    [super addObserver];
+    [[IMService instance] addConnectionObserver:self];
+    [[IMService instance] addGroupMessageObserver:self];
+}
+
+-(void)removeObserver {
+    [super removeObserver];
+    [[IMService instance] removeGroupMessageObserver:self];
+    [[IMService instance] removeConnectionObserver:self];
+}
+
 - (int64_t)sender {
     return self.currentUID;
 }

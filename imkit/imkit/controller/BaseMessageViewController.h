@@ -12,7 +12,7 @@
 #import "IMessage.h"
 
 //基类处理tableview相关的数据
-@interface BaseMessageViewController : UIViewController<MessageObserver>
+@interface BaseMessageViewController : UIViewController
 
 //派生类必须重写
 @property(nonatomic, readonly) int64_t sender;

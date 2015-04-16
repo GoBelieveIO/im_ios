@@ -11,9 +11,9 @@
 #import "TextMessageViewController.h"
 #define TEXT_MODE1
 #ifdef TEXT_MODE
-@interface PeerMessageViewController : TextMessageViewController
+@interface PeerMessageViewController : TextMessageViewController<PeerMessageObserver,  IMConnectionObserver>
 #else
-@interface PeerMessageViewController : MessageViewController
+@interface PeerMessageViewController : MessageViewController<PeerMessageObserver,  IMConnectionObserver>
 #endif
 
 @property(nonatomic, assign) int64_t currentUID;

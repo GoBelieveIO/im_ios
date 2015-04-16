@@ -81,14 +81,13 @@
     
     self.chatButton = btn;
     
-    
+    self.navigationController.delegate = self;
 
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.navigationController.navigationBarHidden = YES;
-    [[IMService instance] stop];
 }
 
 
@@ -178,5 +177,23 @@
     }
     NSDictionary *e = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil];
     return [e objectForKey:@"token"];
+}
+
+
+- (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
+    if (viewController == self) {
+        [[IMService instance] stop];
+        
+        if (self.deviceToken.length > 0) {
+            
+            [IMHttpAPI unbindDeviceToken:self.deviceToken
+                               success:^{
+                                   NSLog(@"unbind device token success");
+                               }
+                                  fail:^{
+                                      NSLog(@"unbind device token fail");
+                                  }];
+        }
+    }
 }
 @end

@@ -105,6 +105,36 @@
     return request;
 }
 
++(NSOperation*)unbindDeviceToken:(NSString*)deviceToken success:(void (^)())success fail:(void (^)())fail {
+    IMHttpOperation *request = [IMHttpOperation httpOperationWithTimeoutInterval:60];
+    request.targetURL = [[IMHttpAPI instance].apiURL stringByAppendingString:@"/device/unbind"];
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    [dict setObject:deviceToken forKey:@"apns_device_token"];
+    NSMutableDictionary *headers = [NSMutableDictionary dictionaryWithObject:@"application/json" forKey:@"Content-Type"];
+    NSString *auth = [NSString stringWithFormat:@"Bearer %@", [IMHttpAPI instance].accessToken];
+    [headers setObject:auth forKey:@"Authorization"];
+    
+    request.headers = headers;
+    NSData *data = [NSJSONSerialization dataWithJSONObject:dict options:0 error:nil];
+    request.postBody = data;
+    request.method = @"POST";
+    request.successCB = ^(IMHttpOperation*commObj, NSURLResponse *response, NSData *data) {
+        NSInteger statusCode = [(NSHTTPURLResponse*)response statusCode];
+        if (statusCode != 200) {
+            NSLog(@"unbind device token fail");
+            fail();
+            return;
+        }
+        success();
+    };
+    request.failCB = ^(IMHttpOperation*commObj, IMHttpOperationError error) {
+        NSLog(@"unbind device token fail");
+        fail();
+    };
+    [[NSOperationQueue mainQueue] addOperation:request];
+    return request;
+}
+
 +(NSOperation*)createGroup:(NSString*)groupName master:(int64_t)master members:(NSArray*)members success:(void (^)(int64_t))success fail:(void (^)())fail {
     IMHttpOperation *request = [IMHttpOperation httpOperationWithTimeoutInterval:60];
     request.targetURL = [[IMHttpAPI instance].apiURL stringByAppendingString:@"/groups"];

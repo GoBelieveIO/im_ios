@@ -172,13 +172,11 @@
 
 
 -(void)addObserver {
-    [[IMService instance] addMessageObserver:self];
     [[Outbox instance] addBoxObserver:self];
     [[AudioDownloader instance] addDownloaderObserver:self];
 }
 
 -(void)removeObserver {
-    [[IMService instance] removeMessageObserver:self];
     [[Outbox instance] removeBoxObserver:self];
     [[AudioDownloader instance] removeDownloaderObserver:self];
 }

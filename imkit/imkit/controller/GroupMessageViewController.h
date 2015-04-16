@@ -12,9 +12,9 @@
 
 #undef TEXT_MODE
 #ifdef TEXT_MODE
-@interface GroupMessageViewController : TextMessageViewController
+@interface GroupMessageViewController : TextMessageViewController<PeerMessageObserver,  IMConnectionObserver>
 #else
-@interface GroupMessageViewController : MessageViewController
+@interface GroupMessageViewController : MessageViewController<PeerMessageObserver,  IMConnectionObserver>
 #endif
 
 @property(nonatomic) int64_t currentUID;

@@ -473,11 +473,11 @@
 }
 
 -(void)addObserver {
-    [[IMService instance] addMessageObserver:self];
+
 }
 
 -(void)removeObserver {
-    [[IMService instance] removeMessageObserver:self];
+
 }
 
 @end

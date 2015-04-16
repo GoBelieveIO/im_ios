@@ -8,10 +8,6 @@
 */
 
 #import "PeerMessageViewController.h"
-
-
-
-
 #import "FileCache.h"
 #import "Outbox.h"
 #import "AudioDownloader.h"
@@ -50,6 +46,19 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+
+-(void)addObserver {
+    [super addObserver];
+    [[IMService instance] addConnectionObserver:self];
+    [[IMService instance] addPeerMessageObserver:self];
+}
+
+-(void)removeObserver {
+    [super removeObserver];
+    [[IMService instance] removeConnectionObserver:self];
+    [[IMService instance] removePeerMessageObserver:self];
 }
 
 - (int64_t)sender {
@@ -132,6 +141,8 @@
     [db setDraft:self.peerUID draft:[self getDraft]];
     
     [self removeObserver];
+    
+    
     
     if (self.messages.count > 0) {
         
