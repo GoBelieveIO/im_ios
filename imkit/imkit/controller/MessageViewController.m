@@ -991,15 +991,12 @@
 
 - (void)recordCancel:(CGFloat)xMove {
     NSLog(@"touch cancel");
-   
-     if (xMove < 0) {
-         [self.inputToolBarView slipLabelFrame:xMove];
-     }
-     if (xMove < -50 && self.recorder.recording) {
-         NSLog(@"cancel record...");
-         self.recordCanceled = YES;
-         [self stopRecord];
-     }
+    
+    if (self.recorder.recording) {
+        NSLog(@"cancel record...");
+        self.recordCanceled = YES;
+        [self stopRecord];
+    }
 }
 
 -(void)recordEnd {

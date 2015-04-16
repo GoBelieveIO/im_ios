@@ -260,6 +260,10 @@
         CGPoint newPoint = [touch locationInView:self];
         CGFloat xmove = newPoint.x - self.lastPoint.x;
         if (xmove < 0) {
+            [self slipLabelFrame:xmove];
+        }
+        
+        if (xmove < 0 && abs(xmove) > CANCEL_SEND_DISTANCE) {
             if (self.delegate && [self.delegate respondsToSelector:@selector(recordCancel:)]){
                 [self.delegate recordCancel:xmove];
             }
