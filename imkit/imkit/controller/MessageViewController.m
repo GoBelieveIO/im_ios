@@ -9,7 +9,6 @@
 
 #import "MessageViewController.h"
 #import <imsdk/IMService.h>
-#import "MBProgressHUD.h"
 #import "HPGrowingTextView.h"
 
 #import "MessageTableSectionHeaderView.h"
