@@ -39,9 +39,15 @@
     request.headers = headers;
     
     request.successCB = ^(IMHttpOperation*commObj, NSURLResponse *response, NSData *data) {
-        NSDictionary *resp = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil];
-        NSString *src_url = [resp objectForKey:@"src_url"];
-        success(src_url);
+        NSInteger statusCode = [(NSHTTPURLResponse*)response statusCode];
+        if (statusCode != 200) {
+            NSLog(@"图片上传失败");
+            fail();
+        } else {
+            NSDictionary *resp = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil];
+            NSString *src_url = [resp objectForKey:@"src_url"];
+            success(src_url);
+        }
     };
     request.failCB = ^(IMHttpOperation*commObj, IMHttpOperationError error) {
         fail();
@@ -64,9 +70,15 @@
     request.headers = headers;
 
     request.successCB = ^(IMHttpOperation*commObj, NSURLResponse *response, NSData *data) {
-        NSDictionary *resp = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil];
-        NSString *src_url = [resp objectForKey:@"src_url"];
-        success(src_url);
+        NSInteger statusCode = [(NSHTTPURLResponse*)response statusCode];
+        if (statusCode != 200) {
+            NSLog(@"录音上传失败");
+            fail();
+        } else {
+            NSDictionary *resp = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil];
+            NSString *src_url = [resp objectForKey:@"src_url"];
+            success(src_url);
+        }
     };
     request.failCB = ^(IMHttpOperation*commObj, IMHttpOperationError error) {
         fail();
