@@ -80,7 +80,6 @@
     [super setType:type];
     [super setMsgStateType:stateType];
     _msg = msg;
-    [self updatePosition];
     
     int minute = self.msg.content.audio.duration/60;
     int second = self.msg.content.audio.duration%60;
@@ -108,7 +107,7 @@
     
     CGRect rect = self.playBtn.frame;
     rect.origin.x = image.leftCapWidth + floorf(self.type == BubbleMessageTypeOutgoing ? self.frame.size.width - bubbleSize.width  : 0.0f);
-     self.playBtn.frame = rect;
+    self.playBtn.frame = rect;
     
     rect = self.progressView.frame;
     rect.origin.x = self.playBtn.frame.origin.x + self.playBtn.frame.size.width;
@@ -193,4 +192,7 @@
     }
 }
 
+-(void)layoutSubviews {
+    [self updatePosition];
+}
 @end
