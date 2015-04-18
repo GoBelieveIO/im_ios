@@ -463,6 +463,16 @@
     }
 }
 
+-(NSString*)IP2String:(struct in_addr)addr {
+    char buf[64] = {0};
+    const char *p = inet_ntop(AF_INET, &addr, buf, 64);
+    if (p) {
+        return [NSString stringWithUTF8String:p];
+    }
+    return nil;
+    
+}
+
 -(NSString*)resolveIP:(NSString*)host {
     struct addrinfo hints;
     struct addrinfo *result, *rp;
@@ -483,13 +493,11 @@
         return nil;
     }
     NSString *ip = nil;
-    if (result != NULL) {
-        rp = result;
+    rp = result;
+    if (rp != NULL) {
         struct sockaddr_in *addr = (struct sockaddr_in*)rp->ai_addr;
-        const char *str = inet_ntoa(addr->sin_addr);
-        ip = [NSString stringWithUTF8String:str];
+        ip = [self IP2String:addr->sin_addr];
     }
-    
     freeaddrinfo(result);
     return ip;
 }
