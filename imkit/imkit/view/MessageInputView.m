@@ -53,8 +53,7 @@
     CGRect screenRect = [[UIScreen mainScreen] bounds];
     CGFloat screenWidth = screenRect.size.width;
     
-    UIImageView *bkview = [[UIImageView alloc] initWithFrame:self.frame];
-    [bkview setFrame:CGRectMake(0, 0, screenWidth, 44)];
+    UIImageView *bkview = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, screenWidth, self.frame.size.height)];
     UIImage *img = [UIImage imageNamed:@"input-bar-flat.png"];
     UIImage *stretchImg = [img stretchableImageWithLeftCapWidth:1 topCapHeight:5];
     [bkview setImage:stretchImg];
