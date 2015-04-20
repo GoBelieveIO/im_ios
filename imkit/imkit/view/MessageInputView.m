@@ -9,8 +9,6 @@
 
 #import "MessageInputView.h"
 #import "NSString+JSMessagesView.h"
-//#import "UIImage+JSMessagesView.h"
-
 #import "Constants.h"
 
 #define SEND_BUTTON_WIDTH 64.0f
@@ -276,7 +274,9 @@
     }
 }
 
+//inputview的高度会动态变化
 -(void)layoutSubviews {
+    self.bkView.frame = self.bounds;
     [super layoutSubviews];
 }
 

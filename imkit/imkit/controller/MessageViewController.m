@@ -472,6 +472,7 @@
     }
     if (self.seconds < 1) {
         NSLog(@"record time too short");
+        [self.view makeToast:@"录音时间太短了" duration:0.7 position:@"bottom"];
         return;
     }
     
