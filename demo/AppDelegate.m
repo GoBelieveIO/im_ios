@@ -35,6 +35,7 @@ blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    NSLog(@"remote notification:%@", [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey]);
     //设置消息存放的路径，可以在路径中加入当前登录的uid
     NSString *path = [self getDocumentPath];
     NSString *dbPath = [NSString stringWithFormat:@"%@/current_uid", path];
@@ -84,6 +85,11 @@ blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
     NSLog(@"register remote notification error:%@", error);
+}
+
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+    NSLog(@"did receive remote notification:%@", userInfo);
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

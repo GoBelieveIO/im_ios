@@ -1155,15 +1155,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "Apple Development IOS Push Services: com.beetle.im.demo";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development IOS Push Services: com.beetle.im.demo";
 				GCC_PREFIX_HEADER = "demo/im_demo-prefix.pch";
 				INFOPLIST_FILE = demo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				"OTHER_LDFLAGS[arch=*]" = "-ObjC";
 				PRODUCT_NAME = im_demo;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "62a6cae0-985b-478c-9db4-5ae211f4be1c";
 			};
 			name = Debug;
 		};
@@ -1178,7 +1178,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = im_demo;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "62a6cae0-985b-478c-9db4-5ae211f4be1c";
 			};
 			name = Release;
 		};
