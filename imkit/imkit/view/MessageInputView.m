@@ -57,9 +57,11 @@
     [bkview setImage:stretchImg];
     [self addSubview:bkview];
     self.bkView = bkview;
+    self.bkView.autoresizingMask = (UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth);
+
     
     self.backgroundColor = [UIColor whiteColor];
-    self.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin);
+    self.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
     self.opaque = YES;
     self.userInteractionEnabled = YES;
     [self setupTextView];
@@ -77,7 +79,7 @@
         [self.sendButton setTitle:title forState:UIControlStateNormal];
         [self.sendButton setTitle:title forState:UIControlStateHighlighted];
         [self.sendButton setTitle:title forState:UIControlStateDisabled];
-        self.sendButton.autoresizingMask = (UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin);
+        self.sendButton.autoresizingMask = (UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin| UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleLeftMargin);
         
         [self addSubview:self.sendButton];
     }
@@ -97,7 +99,7 @@
         [self.recordButton setText:title];
         [self.recordButton setTextColor:RGBACOLOR(60, 140, 246, 1)];
         [self.recordButton setBackgroundColor:[UIColor clearColor]];
-        self.recordButton.autoresizingMask = (UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin);
+        self.recordButton.autoresizingMask = (UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin| UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleLeftMargin);
         
         [self addSubview:self.recordButton];
     }
@@ -121,6 +123,7 @@
         CGRect viewFrame = self.frame;
         viewFrame = CGRectMake(0, 0, frame.size.width, frame.size.height);
         self.recordingView = [[UIView alloc] initWithFrame:viewFrame];
+        self.recordingView.autoresizingMask = (UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth);
         [self.recordingView setBackgroundColor:[UIColor clearColor]];
         
         CGRect labelFrame = [self slipLabelFrame];
@@ -142,6 +145,7 @@
         UIImage *stretchImg = [img stretchableImageWithLeftCapWidth:1 topCapHeight:5];
         UIImageView *maskView = [[UIImageView alloc] initWithFrame:maskFrame];
         [maskView setImage:stretchImg];
+        maskView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
         [self.recordingView addSubview:maskView];
         
         labelFrame = CGRectMake(40, 0, 60, 26);
@@ -276,7 +280,22 @@
 
 //inputview的高度会动态变化
 -(void)layoutSubviews {
-    self.bkView.frame = self.bounds;
+    CGRect frame = self.frame;
+    CGRect buttonFrame = CGRectMake(8, 0, 26, 19);
+    CGFloat yHeight = (frame.size.height - buttonFrame.size.height) / 2.0f;
+    buttonFrame.origin.y = yHeight;
+    self.mediaButton.frame = buttonFrame;
+
+
+    CGRect labelFrame = CGRectMake(40, 0, 60, 26);
+    labelFrame.origin.y = (frame.size.height - labelFrame.size.height)/2;
+    self.timerLabel.frame = labelFrame;
+    
+
+    CGRect recordAFrame = CGRectMake(13, 0, 18, 29);
+    recordAFrame.origin.y = (frame.size.height - recordAFrame.size.height)/2;
+    self.recordAnimationView.frame = recordAFrame;
+    
     [super layoutSubviews];
 }
 
