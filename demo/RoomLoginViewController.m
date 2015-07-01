@@ -129,8 +129,6 @@
     //调用app自身的服务器获取连接im服务必须的access token
     //sandbox地址："http://sandbox.demo.gobelieve.io/auth/token"
     NSString *url = @"http://demo.gobelieve.io/auth/token";
-    url = @"http://192.168.1.101/auth/token";
-    
     
     NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]
                                                               cachePolicy:NSURLRequestUseProtocolCachePolicy

@@ -50,12 +50,8 @@ blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
     
     //app可以单独部署服务器，给予第三方应用更多的灵活性
     //在开发阶段也可以配置成测试环境的地址 "http://sandbox.api.gobelieve.io", "sandbox.imnode.gobelieve.io"
-    //[IMHttpAPI instance].apiURL = @"http://api.gobelieve.io";
-    //[IMService instance].host = @"imnode.gobelieve.io";
-    
     [IMHttpAPI instance].apiURL = @"http://api.gobelieve.io";
-    [IMService instance].host = @"192.168.1.101";
-    
+    [IMService instance].host = @"imnode.gobelieve.io";
     
     [IMService instance].deviceID = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
     [IMService instance].peerMessageHandler = [PeerMessageHandler instance];
