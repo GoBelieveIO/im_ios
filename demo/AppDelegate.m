@@ -8,7 +8,12 @@
 */
 
 #import "AppDelegate.h"
+#ifdef TEST_ROOM
+#import "RoomLoginViewController.h"
+#else
 #import "MainViewController.h"
+#endif
+
 #import <imsdk/IMService.h>
 #import <imkit/PeerMessageHandler.h>
 #import <imkit/GroupMessageHandler.h>
@@ -22,7 +27,9 @@ green:((float)((rgbValue & 0xFF00) >> 8))/255.0 \
 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 
 @interface AppDelegate ()
+#ifndef TEST_ROOM
 @property(nonatomic) MainViewController *mainViewController;
+#endif
 @end
 
 @implementation AppDelegate
@@ -43,8 +50,12 @@ blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
     
     //app可以单独部署服务器，给予第三方应用更多的灵活性
     //在开发阶段也可以配置成测试环境的地址 "http://sandbox.api.gobelieve.io", "sandbox.imnode.gobelieve.io"
+    //[IMHttpAPI instance].apiURL = @"http://api.gobelieve.io";
+    //[IMService instance].host = @"imnode.gobelieve.io";
+    
     [IMHttpAPI instance].apiURL = @"http://api.gobelieve.io";
-    [IMService instance].host = @"imnode.gobelieve.io";
+    [IMService instance].host = @"192.168.1.101";
+    
     
     [IMService instance].deviceID = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
     [IMService instance].peerMessageHandler = [PeerMessageHandler instance];
@@ -57,10 +68,14 @@ blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     
+#ifdef TEST_ROOM
+    RoomLoginViewController *mainViewController = [[RoomLoginViewController alloc] init];
+    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:mainViewController];
+#else
     MainViewController *mainViewController = [[MainViewController alloc] init];
     self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:mainViewController];
     self.mainViewController = mainViewController;
-    
+#endif
     if ([UIDevice currentDevice].systemVersion.floatValue >= 7.0) {
         [[UINavigationBar appearance] setBarTintColor:UIColorFromRGBHex(0x00abf1)];
         [[UINavigationBar appearance] setTitleTextAttributes:
@@ -80,7 +95,10 @@ blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
   
     NSLog(@"device token is: %@:%@", deviceToken, newToken);
     
+#ifndef TEST_ROOM
     self.mainViewController.deviceToken = newToken;
+#endif
+    
 }
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {

@@ -25,7 +25,10 @@
 #define MSG_PONG 14
 #define MSG_AUTH_TOKEN 15
 #define MSG_LOGIN_POINT 16
-
+#define MSG_RT 17
+#define MSG_ENTER_ROOM 18
+#define MSG_LEAVE_ROOM 19
+#define MSG_ROOM_IM 20
 
 #define PLATFORM_IOS  1
 #define PLATFORM_ANDROID 2
@@ -38,6 +41,13 @@
 @property(nonatomic, assign)int32_t msgLocalID;
 @property(nonatomic, copy)NSString *content;
 @end
+
+@interface RoomMessage : NSObject
+@property(nonatomic, assign)int64_t sender;
+@property(nonatomic, assign)int64_t receiver;
+@property(nonatomic, copy)NSString *content;
+@end
+
 
 @interface MessageInputing : NSObject
 @property(nonatomic, assign)int64_t sender;

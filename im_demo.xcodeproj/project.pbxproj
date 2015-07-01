@@ -7,6 +7,149 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6D69BCF11B4449D0008EAA8A /* UIView+Toast.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54EA01AB58BB100197EBC /* UIView+Toast.m */; };
+		6D69BCF21B4449D0008EAA8A /* ESImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E9B1AB58BB100197EBC /* ESImageViewController.m */; };
+		6D69BCF31B4449D0008EAA8A /* SDWebImageDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E801AB58BB100197EBC /* SDWebImageDecoder.m */; };
+		6D69BCF41B4449D0008EAA8A /* SDWebImageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E861AB58BB100197EBC /* SDWebImageManager.m */; };
+		6D69BCF51B4449D0008EAA8A /* NSData+ImageContentType.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E7A1AB58BB100197EBC /* NSData+ImageContentType.m */; };
+		6D69BCF61B4449D0008EAA8A /* SDWebImageCompat.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E7E1AB58BB100197EBC /* SDWebImageCompat.m */; };
+		6D69BCF71B4449D0008EAA8A /* UIView+WebCacheOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E971AB58BB100197EBC /* UIView+WebCacheOperation.m */; };
+		6D69BCF81B4449D0008EAA8A /* UIImage+WebP.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E911AB58BB100197EBC /* UIImage+WebP.m */; };
+		6D69BCF91B4449D0008EAA8A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54D931AB5862000197EBC /* AppDelegate.m */; };
+		6D69BCFA1B4449D0008EAA8A /* UIImageView+HighlightedWebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E931AB58BB100197EBC /* UIImageView+HighlightedWebCache.m */; };
+		6D69BCFB1B4449D0008EAA8A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54D901AB5862000197EBC /* main.m */; };
+		6D69BCFC1B4449D0008EAA8A /* FBShimmeringLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E6B1AB58BB100197EBC /* FBShimmeringLayer.m */; };
+		6D69BCFD1B4449D0008EAA8A /* UIButton+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E8B1AB58BB100197EBC /* UIButton+WebCache.m */; };
+		6D69BCFE1B4449D0008EAA8A /* SDWebImagePrefetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E891AB58BB100197EBC /* SDWebImagePrefetcher.m */; };
+		6D69BCFF1B4449D0008EAA8A /* SDWebImageDownloaderOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E841AB58BB100197EBC /* SDWebImageDownloaderOperation.m */; };
+		6D69BD001B4449D0008EAA8A /* HPGrowingTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E701AB58BB100197EBC /* HPGrowingTextView.m */; };
+		6D69BD011B4449D0008EAA8A /* FBShimmeringView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E6D1AB58BB100197EBC /* FBShimmeringView.m */; };
+		6D69BD021B4449D0008EAA8A /* UIImage+MultiFormat.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E8F1AB58BB100197EBC /* UIImage+MultiFormat.m */; };
+		6D69BD031B4449D0008EAA8A /* ESModalImageViewAnimationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E9D1AB58BB100197EBC /* ESModalImageViewAnimationController.m */; };
+		6D69BD041B4449D0008EAA8A /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E561AB588C700197EBC /* MainViewController.m */; };
+		6D69BD051B4449D0008EAA8A /* SDImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E7C1AB58BB100197EBC /* SDImageCache.m */; };
+		6D69BD061B4449D0008EAA8A /* HPTextViewInternal.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E721AB58BB100197EBC /* HPTextViewInternal.m */; };
+		6D69BD071B4449D0008EAA8A /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E751AB58BB100197EBC /* MBProgressHUD.m */; };
+		6D69BD081B4449D0008EAA8A /* UIImage+GIF.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E8D1AB58BB100197EBC /* UIImage+GIF.m */; };
+		6D69BD091B4449D0008EAA8A /* SDWebImageDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E821AB58BB100197EBC /* SDWebImageDownloader.m */; };
+		6D69BD0A1B4449D0008EAA8A /* UIImageView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E951AB58BB100197EBC /* UIImageView+WebCache.m */; };
+		6D69BD0B1B4449D0008EAA8A /* MKAnnotationView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E781AB58BB100197EBC /* MKAnnotationView+WebCache.m */; };
+		6D69BD0D1B4449D0008EAA8A /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF54EBA1AB58D6600197EBC /* SystemConfiguration.framework */; };
+		6D69BD0E1B4449D0008EAA8A /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF54E621AB58B1900197EBC /* QuartzCore.framework */; };
+		6D69BD0F1B4449D0008EAA8A /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF54E601AB58B0400197EBC /* CoreMedia.framework */; };
+		6D69BD101B4449D0008EAA8A /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF54E5E1AB58AFF00197EBC /* CoreAudio.framework */; };
+		6D69BD111B4449D0008EAA8A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF54E5C1AB58AD000197EBC /* UIKit.framework */; };
+		6D69BD121B4449D0008EAA8A /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF54E5A1AB58AC900197EBC /* AVFoundation.framework */; };
+		6D69BD131B4449D0008EAA8A /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF54E581AB58AC400197EBC /* AssetsLibrary.framework */; };
+		6D69BD141B4449D0008EAA8A /* libimkit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF54DC51AB587BF00197EBC /* libimkit.a */; };
+		6D69BD151B4449D0008EAA8A /* libimsdk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF54DBB1AB587B700197EBC /* libimsdk.a */; };
+		6D69BD171B4449D0008EAA8A /* btn_grey@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54ED41AB58DC500197EBC /* btn_grey@2x.png */; };
+		6D69BD181B4449D0008EAA8A /* MicChats.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DE81AB5883200197EBC /* MicChats.png */; };
+		6D69BD191B4449D0008EAA8A /* btn_grey.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EC61AB58DC500197EBC /* btn_grey.png */; };
+		6D69BD1A1B4449D0008EAA8A /* ic_dustbin@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EE31AB58DC500197EBC /* ic_dustbin@3x.png */; };
+		6D69BD1B1B4449D0008EAA8A /* MicChatsBlue.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DEA1AB5883200197EBC /* MicChatsBlue.png */; };
+		6D69BD1C1B4449D0008EAA8A /* bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54ECE1AB58DC500197EBC /* bg@2x.png */; };
+		6D69BD1D1B4449D0008EAA8A /* avater_you.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EBF1AB58DC500197EBC /* avater_you.png */; };
+		6D69BD1E1B4449D0008EAA8A /* bottombar_inputbox.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EC41AB58DC500197EBC /* bottombar_inputbox.png */; };
+		6D69BD1F1B4449D0008EAA8A /* MicEmpty.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DED1AB5883200197EBC /* MicEmpty.png */; };
+		6D69BD201B4449D0008EAA8A /* bg_blue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54ECF1AB58DC500197EBC /* bg_blue@2x.png */; };
+		6D69BD211B4449D0008EAA8A /* MicOutgoing@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DF31AB5883200197EBC /* MicOutgoing@2x.png */; };
+		6D69BD221B4449D0008EAA8A /* messageSent.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E0B1AB5883200197EBC /* messageSent.aiff */; };
+		6D69BD231B4449D0008EAA8A /* ic_man@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54ED71AB58DC500197EBC /* ic_man@2x.png */; };
+		6D69BD241B4449D0008EAA8A /* MicBlueIncoming.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DE41AB5883200197EBC /* MicBlueIncoming.png */; };
+		6D69BD251B4449D0008EAA8A /* BubbleIncoming@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DCF1AB5883200197EBC /* BubbleIncoming@2x.png */; };
+		6D69BD261B4449D0008EAA8A /* MicRecBtn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DF51AB5883200197EBC /* MicRecBtn@2x.png */; };
+		6D69BD271B4449D0008EAA8A /* bottombar_bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54ED11AB58DC500197EBC /* bottombar_bg@2x.png */; };
+		6D69BD281B4449D0008EAA8A /* MicRecRed.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DF81AB5883200197EBC /* MicRecRed.png */; };
+		6D69BD291B4449D0008EAA8A /* CheckSingleLight7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DDC1AB5883200197EBC /* CheckSingleLight7@2x.png */; };
+		6D69BD2A1B4449D0008EAA8A /* MicChatsSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DEC1AB5883200197EBC /* MicChatsSelected@2x.png */; };
+		6D69BD2B1B4449D0008EAA8A /* CheckSingleLight.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DDB1AB5883200197EBC /* CheckSingleLight.png */; };
+		6D69BD2C1B4449D0008EAA8A /* btn_grey@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EE11AB58DC500197EBC /* btn_grey@3x.png */; };
+		6D69BD2D1B4449D0008EAA8A /* BrdtDoubleCheck@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DCE1AB5883200197EBC /* BrdtDoubleCheck@2x.png */; };
+		6D69BD2E1B4449D0008EAA8A /* bg_white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54ED01AB58DC500197EBC /* bg_white@2x.png */; };
+		6D69BD2F1B4449D0008EAA8A /* CheckSingleGreen.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DD91AB5883200197EBC /* CheckSingleGreen.png */; };
+		6D69BD301B4449D0008EAA8A /* MicRecRed90.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DFC1AB5883200197EBC /* MicRecRed90.png */; };
+		6D69BD311B4449D0008EAA8A /* bottombar_inputbox@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EDF1AB58DC500197EBC /* bottombar_inputbox@3x.png */; };
+		6D69BD321B4449D0008EAA8A /* chatBack.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DD31AB5883200197EBC /* chatBack.png */; };
+		6D69BD331B4449D0008EAA8A /* ic_man.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EC91AB58DC500197EBC /* ic_man.png */; };
+		6D69BD341B4449D0008EAA8A /* avater_you@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EDA1AB58DC500197EBC /* avater_you@3x.png */; };
+		6D69BD351B4449D0008EAA8A /* MicIncoming.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DEE1AB5883200197EBC /* MicIncoming.png */; };
+		6D69BD361B4449D0008EAA8A /* CheckDoubleGreen.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DD41AB5883200197EBC /* CheckDoubleGreen.png */; };
+		6D69BD371B4449D0008EAA8A /* MicBlueSent@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DE71AB5883200197EBC /* MicBlueSent@2x.png */; };
+		6D69BD381B4449D0008EAA8A /* BrdtCheck.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DCB1AB5883200197EBC /* BrdtCheck.png */; };
+		6D69BD391B4449D0008EAA8A /* ic_dustbin@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54ED61AB58DC500197EBC /* ic_dustbin@2x.png */; };
+		6D69BD3A1B4449D0008EAA8A /* GroupChat@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DDF1AB5883200197EBC /* GroupChat@2x.png */; };
+		6D69BD3B1B4449D0008EAA8A /* BubbleOutgoingSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DD21AB5883200197EBC /* BubbleOutgoingSelected@2x.png */; };
+		6D69BD3C1B4449D0008EAA8A /* MicNewSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DF21AB5883200197EBC /* MicNewSelected.png */; };
+		6D69BD3D1B4449D0008EAA8A /* btn_blue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54ED31AB58DC500197EBC /* btn_blue@2x.png */; };
+		6D69BD3E1B4449D0008EAA8A /* MicSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DFE1AB5883200197EBC /* MicSelected@2x.png */; };
+		6D69BD3F1B4449D0008EAA8A /* PhotoIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E041AB5883200197EBC /* PhotoIcon@2x.png */; };
+		6D69BD401B4449D0008EAA8A /* PausePressed.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E021AB5883200197EBC /* PausePressed.png */; };
+		6D69BD411B4449D0008EAA8A /* bg_white@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EDD1AB58DC500197EBC /* bg_white@3x.png */; };
+		6D69BD421B4449D0008EAA8A /* btn_blue@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EE01AB58DC500197EBC /* btn_blue@3x.png */; };
+		6D69BD431B4449D0008EAA8A /* PlayPressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E071AB5883200197EBC /* PlayPressed@2x.png */; };
+		6D69BD441B4449D0008EAA8A /* 640 1136.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54ECB1AB58DC500197EBC /* 640 1136.png */; };
+		6D69BD451B4449D0008EAA8A /* GroupChat.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DDE1AB5883200197EBC /* GroupChat.png */; };
+		6D69BD461B4449D0008EAA8A /* MicRecBtn.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DF41AB5883200197EBC /* MicRecBtn.png */; };
+		6D69BD471B4449D0008EAA8A /* bg_white.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EC21AB58DC500197EBC /* bg_white.png */; };
+		6D69BD481B4449D0008EAA8A /* CheckDoubleGreen@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DD51AB5883200197EBC /* CheckDoubleGreen@2x.png */; };
+		6D69BD491B4449D0008EAA8A /* MicBlueSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DE51AB5883200197EBC /* MicBlueSelected@2x.png */; };
+		6D69BD4A1B4449D0008EAA8A /* GroupChatRound.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DE01AB5883200197EBC /* GroupChatRound.png */; };
+		6D69BD4B1B4449D0008EAA8A /* bg@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EDB1AB58DC500197EBC /* bg@3x.png */; };
+		6D69BD4C1B4449D0008EAA8A /* ic_dustbin.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EC81AB58DC500197EBC /* ic_dustbin.png */; };
+		6D69BD4D1B4449D0008EAA8A /* input-bar-flat@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DE21AB5883200197EBC /* input-bar-flat@2x.png */; };
+		6D69BD4E1B4449D0008EAA8A /* avater_me@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54ECC1AB58DC500197EBC /* avater_me@2x.png */; };
+		6D69BD4F1B4449D0008EAA8A /* MessageSendError.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DE31AB5883200197EBC /* MessageSendError.png */; };
+		6D69BD501B4449D0008EAA8A /* CheckSingleLight@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DDD1AB5883200197EBC /* CheckSingleLight@2x.png */; };
+		6D69BD511B4449D0008EAA8A /* CheckSingleGreen@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DDA1AB5883200197EBC /* CheckSingleGreen@2x.png */; };
+		6D69BD521B4449D0008EAA8A /* Pause.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DFF1AB5883200197EBC /* Pause.png */; };
+		6D69BD531B4449D0008EAA8A /* MicChatsSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DEB1AB5883200197EBC /* MicChatsSelected.png */; };
+		6D69BD541B4449D0008EAA8A /* MicIncoming@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DEF1AB5883200197EBC /* MicIncoming@2x.png */; };
+		6D69BD551B4449D0008EAA8A /* BubbleIncomingSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DD01AB5883200197EBC /* BubbleIncomingSelected@2x.png */; };
+		6D69BD561B4449D0008EAA8A /* MicRecRed70.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DFB1AB5883200197EBC /* MicRecRed70.png */; };
+		6D69BD571B4449D0008EAA8A /* Pause@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E001AB5883200197EBC /* Pause@2x.png */; };
+		6D69BD581B4449D0008EAA8A /* avater_me.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EBE1AB58DC500197EBC /* avater_me.png */; };
+		6D69BD591B4449D0008EAA8A /* bottombar_inputbox@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54ED21AB58DC500197EBC /* bottombar_inputbox@2x.png */; };
+		6D69BD5A1B4449D0008EAA8A /* ic_back.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EC71AB58DC500197EBC /* ic_back.png */; };
+		6D69BD5B1B4449D0008EAA8A /* bottombar_bg@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EDE1AB58DC500197EBC /* bottombar_bg@3x.png */; };
+		6D69BD5C1B4449D0008EAA8A /* msg_state_fail@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EE51AB58DC500197EBC /* msg_state_fail@2x.png */; };
+		6D69BD5D1B4449D0008EAA8A /* MicRecRed50.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DFA1AB5883200197EBC /* MicRecRed50.png */; };
+		6D69BD5E1B4449D0008EAA8A /* bg_blue.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EC11AB58DC500197EBC /* bg_blue.png */; };
+		6D69BD5F1B4449D0008EAA8A /* ic_back@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EE21AB58DC500197EBC /* ic_back@3x.png */; };
+		6D69BD601B4449D0008EAA8A /* MicRecGray.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DF61AB5883200197EBC /* MicRecGray.png */; };
+		6D69BD611B4449D0008EAA8A /* BrdtDoubleCheck.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DCD1AB5883200197EBC /* BrdtDoubleCheck.png */; };
+		6D69BD621B4449D0008EAA8A /* MicRecGray@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DF71AB5883200197EBC /* MicRecGray@2x.png */; };
+		6D69BD631B4449D0008EAA8A /* bottombar_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EC31AB58DC500197EBC /* bottombar_bg.png */; };
+		6D69BD641B4449D0008EAA8A /* bg_blue@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EDC1AB58DC500197EBC /* bg_blue@3x.png */; };
+		6D69BD651B4449D0008EAA8A /* MicNewIncoming@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DF11AB5883200197EBC /* MicNewIncoming@2x.png */; };
+		6D69BD661B4449D0008EAA8A /* MicNewIncoming.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DF01AB5883200197EBC /* MicNewIncoming.png */; };
+		6D69BD671B4449D0008EAA8A /* CheckDoubleLight.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DD61AB5883200197EBC /* CheckDoubleLight.png */; };
+		6D69BD681B4449D0008EAA8A /* BrdtCheck@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DCC1AB5883200197EBC /* BrdtCheck@2x.png */; };
+		6D69BD691B4449D0008EAA8A /* input-bar-flat.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DE11AB5883200197EBC /* input-bar-flat.png */; };
+		6D69BD6A1B4449D0008EAA8A /* avater_you@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54ECD1AB58DC500197EBC /* avater_you@2x.png */; };
+		6D69BD6B1B4449D0008EAA8A /* MicSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DFD1AB5883200197EBC /* MicSelected.png */; };
+		6D69BD6C1B4449D0008EAA8A /* PhotoIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E031AB5883200197EBC /* PhotoIcon.png */; };
+		6D69BD6D1B4449D0008EAA8A /* CheckDoubleLight7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DD71AB5883200197EBC /* CheckDoubleLight7@2x.png */; };
+		6D69BD6E1B4449D0008EAA8A /* btn_blue.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EC51AB58DC500197EBC /* btn_blue.png */; };
+		6D69BD6F1B4449D0008EAA8A /* ic_man@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EE41AB58DC500197EBC /* ic_man@3x.png */; };
+		6D69BD701B4449D0008EAA8A /* MessageTableSectionHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E0E1AB5883200197EBC /* MessageTableSectionHeaderView.xib */; };
+		6D69BD711B4449D0008EAA8A /* ic_back@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54ED51AB58DC500197EBC /* ic_back@2x.png */; };
+		6D69BD721B4449D0008EAA8A /* BubbleOutgoing@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DD11AB5883200197EBC /* BubbleOutgoing@2x.png */; };
+		6D69BD731B4449D0008EAA8A /* MicChats@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DE91AB5883200197EBC /* MicChats@2x.png */; };
+		6D69BD741B4449D0008EAA8A /* MicBlueSent.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DE61AB5883200197EBC /* MicBlueSent.png */; };
+		6D69BD751B4449D0008EAA8A /* messageReceived.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E0A1AB5883200197EBC /* messageReceived.aiff */; };
+		6D69BD761B4449D0008EAA8A /* save@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E081AB5883200197EBC /* save@2x.png */; };
+		6D69BD771B4449D0008EAA8A /* Play.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E051AB5883200197EBC /* Play.png */; };
+		6D69BD781B4449D0008EAA8A /* Play@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E061AB5883200197EBC /* Play@2x.png */; };
+		6D69BD791B4449D0008EAA8A /* avater_me@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54ED91AB58DC500197EBC /* avater_me@3x.png */; };
+		6D69BD7A1B4449D0008EAA8A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54D9B1AB5862000197EBC /* Images.xcassets */; };
+		6D69BD7B1B4449D0008EAA8A /* PauseOS7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E011AB5883200197EBC /* PauseOS7@2x.png */; };
+		6D69BD7C1B4449D0008EAA8A /* bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EC01AB58DC500197EBC /* bg.png */; };
+		6D69BD7D1B4449D0008EAA8A /* MicRecRed2X.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DF91AB5883200197EBC /* MicRecRed2X.png */; };
+		6D69BD7E1B4449D0008EAA8A /* CheckDoubleLight@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DD81AB5883200197EBC /* CheckDoubleLight@2x.png */; };
+		6D69BD921B444B79008EAA8A /* room-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6D69BD911B444B79008EAA8A /* room-Info.plist */; };
+		6D69BD951B444BBA008EAA8A /* RoomViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D69BD941B444BBA008EAA8A /* RoomViewController.m */; };
+		6D69BD981B444C09008EAA8A /* RoomLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D69BD971B444C09008EAA8A /* RoomLoginViewController.m */; };
 		6DF54D911AB5862000197EBC /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54D901AB5862000197EBC /* main.m */; };
 		6DF54D941AB5862000197EBC /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54D931AB5862000197EBC /* AppDelegate.m */; };
 		6DF54D9C1AB5862000197EBC /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54D9B1AB5862000197EBC /* Images.xcassets */; };
@@ -151,6 +294,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		6D69BCEF1B4449D0008EAA8A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6DF54DBE1AB587BF00197EBC /* imkit.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 6D032F911AA9B0F5004AA39F;
+			remoteInfo = imkit;
+		};
 		6DF54DA51AB5862000197EBC /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6DF54D831AB5862000197EBC /* Project object */;
@@ -196,6 +346,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		6D69BD821B4449D0008EAA8A /* room_demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = room_demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6D69BD911B444B79008EAA8A /* room-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "room-Info.plist"; sourceTree = "<group>"; };
+		6D69BD931B444BBA008EAA8A /* RoomViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RoomViewController.h; sourceTree = "<group>"; };
+		6D69BD941B444BBA008EAA8A /* RoomViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RoomViewController.m; sourceTree = "<group>"; };
+		6D69BD961B444C09008EAA8A /* RoomLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RoomLoginViewController.h; sourceTree = "<group>"; };
+		6D69BD971B444C09008EAA8A /* RoomLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RoomLoginViewController.m; sourceTree = "<group>"; };
 		6DF54D8B1AB5862000197EBC /* im_demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = im_demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6DF54D8F1AB5862000197EBC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6DF54D901AB5862000197EBC /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -375,6 +531,22 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		6D69BD0C1B4449D0008EAA8A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6D69BD0D1B4449D0008EAA8A /* SystemConfiguration.framework in Frameworks */,
+				6D69BD0E1B4449D0008EAA8A /* QuartzCore.framework in Frameworks */,
+				6D69BD0F1B4449D0008EAA8A /* CoreMedia.framework in Frameworks */,
+				6D69BD101B4449D0008EAA8A /* CoreAudio.framework in Frameworks */,
+				6D69BD111B4449D0008EAA8A /* UIKit.framework in Frameworks */,
+				6D69BD121B4449D0008EAA8A /* AVFoundation.framework in Frameworks */,
+				6D69BD131B4449D0008EAA8A /* AssetsLibrary.framework in Frameworks */,
+				6D69BD141B4449D0008EAA8A /* libimkit.a in Frameworks */,
+				6D69BD151B4449D0008EAA8A /* libimsdk.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6DF54D881AB5862000197EBC /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -418,6 +590,7 @@
 			children = (
 				6DF54D8B1AB5862000197EBC /* im_demo.app */,
 				6DF54DA41AB5862000197EBC /* im_demoTests.xctest */,
+				6D69BD821B4449D0008EAA8A /* room_demo.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -429,6 +602,10 @@
 				6DF54EB91AB58CAA00197EBC /* im_demo-prefix.pch */,
 				6DF54E551AB588C700197EBC /* MainViewController.h */,
 				6DF54E561AB588C700197EBC /* MainViewController.m */,
+				6D69BD931B444BBA008EAA8A /* RoomViewController.h */,
+				6D69BD941B444BBA008EAA8A /* RoomViewController.m */,
+				6D69BD961B444C09008EAA8A /* RoomLoginViewController.h */,
+				6D69BD971B444C09008EAA8A /* RoomLoginViewController.m */,
 				6DF54D921AB5862000197EBC /* AppDelegate.h */,
 				6DF54D931AB5862000197EBC /* AppDelegate.m */,
 				6DF54D9B1AB5862000197EBC /* Images.xcassets */,
@@ -442,6 +619,7 @@
 			isa = PBXGroup;
 			children = (
 				6DF54D8F1AB5862000197EBC /* Info.plist */,
+				6D69BD911B444B79008EAA8A /* room-Info.plist */,
 				6DF54D901AB5862000197EBC /* main.m */,
 			);
 			name = "Supporting Files";
@@ -781,6 +959,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		6D69BCED1B4449D0008EAA8A /* room_demo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6D69BD7F1B4449D0008EAA8A /* Build configuration list for PBXNativeTarget "room_demo" */;
+			buildPhases = (
+				6D69BCF01B4449D0008EAA8A /* Sources */,
+				6D69BD0C1B4449D0008EAA8A /* Frameworks */,
+				6D69BD161B4449D0008EAA8A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6D69BCEE1B4449D0008EAA8A /* PBXTargetDependency */,
+			);
+			name = room_demo;
+			productName = im_demo;
+			productReference = 6D69BD821B4449D0008EAA8A /* room_demo.app */;
+			productType = "com.apple.product-type.application";
+		};
 		6DF54D8A1AB5862000197EBC /* im_demo */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6DF54DAE1AB5862000197EBC /* Build configuration list for PBXNativeTarget "im_demo" */;
@@ -860,6 +1056,7 @@
 			targets = (
 				6DF54D8A1AB5862000197EBC /* im_demo */,
 				6DF54DA31AB5862000197EBC /* im_demoTests */,
+				6D69BCED1B4449D0008EAA8A /* room_demo */,
 			);
 		};
 /* End PBXProject section */
@@ -896,6 +1093,117 @@
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
+		6D69BD161B4449D0008EAA8A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6D69BD171B4449D0008EAA8A /* btn_grey@2x.png in Resources */,
+				6D69BD181B4449D0008EAA8A /* MicChats.png in Resources */,
+				6D69BD191B4449D0008EAA8A /* btn_grey.png in Resources */,
+				6D69BD1A1B4449D0008EAA8A /* ic_dustbin@3x.png in Resources */,
+				6D69BD1B1B4449D0008EAA8A /* MicChatsBlue.png in Resources */,
+				6D69BD1C1B4449D0008EAA8A /* bg@2x.png in Resources */,
+				6D69BD1D1B4449D0008EAA8A /* avater_you.png in Resources */,
+				6D69BD1E1B4449D0008EAA8A /* bottombar_inputbox.png in Resources */,
+				6D69BD1F1B4449D0008EAA8A /* MicEmpty.png in Resources */,
+				6D69BD201B4449D0008EAA8A /* bg_blue@2x.png in Resources */,
+				6D69BD211B4449D0008EAA8A /* MicOutgoing@2x.png in Resources */,
+				6D69BD221B4449D0008EAA8A /* messageSent.aiff in Resources */,
+				6D69BD231B4449D0008EAA8A /* ic_man@2x.png in Resources */,
+				6D69BD241B4449D0008EAA8A /* MicBlueIncoming.png in Resources */,
+				6D69BD251B4449D0008EAA8A /* BubbleIncoming@2x.png in Resources */,
+				6D69BD261B4449D0008EAA8A /* MicRecBtn@2x.png in Resources */,
+				6D69BD271B4449D0008EAA8A /* bottombar_bg@2x.png in Resources */,
+				6D69BD281B4449D0008EAA8A /* MicRecRed.png in Resources */,
+				6D69BD291B4449D0008EAA8A /* CheckSingleLight7@2x.png in Resources */,
+				6D69BD2A1B4449D0008EAA8A /* MicChatsSelected@2x.png in Resources */,
+				6D69BD2B1B4449D0008EAA8A /* CheckSingleLight.png in Resources */,
+				6D69BD2C1B4449D0008EAA8A /* btn_grey@3x.png in Resources */,
+				6D69BD2D1B4449D0008EAA8A /* BrdtDoubleCheck@2x.png in Resources */,
+				6D69BD2E1B4449D0008EAA8A /* bg_white@2x.png in Resources */,
+				6D69BD2F1B4449D0008EAA8A /* CheckSingleGreen.png in Resources */,
+				6D69BD301B4449D0008EAA8A /* MicRecRed90.png in Resources */,
+				6D69BD311B4449D0008EAA8A /* bottombar_inputbox@3x.png in Resources */,
+				6D69BD321B4449D0008EAA8A /* chatBack.png in Resources */,
+				6D69BD331B4449D0008EAA8A /* ic_man.png in Resources */,
+				6D69BD341B4449D0008EAA8A /* avater_you@3x.png in Resources */,
+				6D69BD351B4449D0008EAA8A /* MicIncoming.png in Resources */,
+				6D69BD361B4449D0008EAA8A /* CheckDoubleGreen.png in Resources */,
+				6D69BD371B4449D0008EAA8A /* MicBlueSent@2x.png in Resources */,
+				6D69BD381B4449D0008EAA8A /* BrdtCheck.png in Resources */,
+				6D69BD391B4449D0008EAA8A /* ic_dustbin@2x.png in Resources */,
+				6D69BD3A1B4449D0008EAA8A /* GroupChat@2x.png in Resources */,
+				6D69BD3B1B4449D0008EAA8A /* BubbleOutgoingSelected@2x.png in Resources */,
+				6D69BD3C1B4449D0008EAA8A /* MicNewSelected.png in Resources */,
+				6D69BD3D1B4449D0008EAA8A /* btn_blue@2x.png in Resources */,
+				6D69BD3E1B4449D0008EAA8A /* MicSelected@2x.png in Resources */,
+				6D69BD3F1B4449D0008EAA8A /* PhotoIcon@2x.png in Resources */,
+				6D69BD401B4449D0008EAA8A /* PausePressed.png in Resources */,
+				6D69BD411B4449D0008EAA8A /* bg_white@3x.png in Resources */,
+				6D69BD421B4449D0008EAA8A /* btn_blue@3x.png in Resources */,
+				6D69BD431B4449D0008EAA8A /* PlayPressed@2x.png in Resources */,
+				6D69BD441B4449D0008EAA8A /* 640 1136.png in Resources */,
+				6D69BD451B4449D0008EAA8A /* GroupChat.png in Resources */,
+				6D69BD461B4449D0008EAA8A /* MicRecBtn.png in Resources */,
+				6D69BD471B4449D0008EAA8A /* bg_white.png in Resources */,
+				6D69BD481B4449D0008EAA8A /* CheckDoubleGreen@2x.png in Resources */,
+				6D69BD491B4449D0008EAA8A /* MicBlueSelected@2x.png in Resources */,
+				6D69BD4A1B4449D0008EAA8A /* GroupChatRound.png in Resources */,
+				6D69BD4B1B4449D0008EAA8A /* bg@3x.png in Resources */,
+				6D69BD4C1B4449D0008EAA8A /* ic_dustbin.png in Resources */,
+				6D69BD4D1B4449D0008EAA8A /* input-bar-flat@2x.png in Resources */,
+				6D69BD4E1B4449D0008EAA8A /* avater_me@2x.png in Resources */,
+				6D69BD4F1B4449D0008EAA8A /* MessageSendError.png in Resources */,
+				6D69BD501B4449D0008EAA8A /* CheckSingleLight@2x.png in Resources */,
+				6D69BD511B4449D0008EAA8A /* CheckSingleGreen@2x.png in Resources */,
+				6D69BD521B4449D0008EAA8A /* Pause.png in Resources */,
+				6D69BD531B4449D0008EAA8A /* MicChatsSelected.png in Resources */,
+				6D69BD541B4449D0008EAA8A /* MicIncoming@2x.png in Resources */,
+				6D69BD551B4449D0008EAA8A /* BubbleIncomingSelected@2x.png in Resources */,
+				6D69BD561B4449D0008EAA8A /* MicRecRed70.png in Resources */,
+				6D69BD571B4449D0008EAA8A /* Pause@2x.png in Resources */,
+				6D69BD581B4449D0008EAA8A /* avater_me.png in Resources */,
+				6D69BD591B4449D0008EAA8A /* bottombar_inputbox@2x.png in Resources */,
+				6D69BD5A1B4449D0008EAA8A /* ic_back.png in Resources */,
+				6D69BD5B1B4449D0008EAA8A /* bottombar_bg@3x.png in Resources */,
+				6D69BD5C1B4449D0008EAA8A /* msg_state_fail@2x.png in Resources */,
+				6D69BD5D1B4449D0008EAA8A /* MicRecRed50.png in Resources */,
+				6D69BD5E1B4449D0008EAA8A /* bg_blue.png in Resources */,
+				6D69BD5F1B4449D0008EAA8A /* ic_back@3x.png in Resources */,
+				6D69BD601B4449D0008EAA8A /* MicRecGray.png in Resources */,
+				6D69BD611B4449D0008EAA8A /* BrdtDoubleCheck.png in Resources */,
+				6D69BD621B4449D0008EAA8A /* MicRecGray@2x.png in Resources */,
+				6D69BD631B4449D0008EAA8A /* bottombar_bg.png in Resources */,
+				6D69BD641B4449D0008EAA8A /* bg_blue@3x.png in Resources */,
+				6D69BD651B4449D0008EAA8A /* MicNewIncoming@2x.png in Resources */,
+				6D69BD661B4449D0008EAA8A /* MicNewIncoming.png in Resources */,
+				6D69BD671B4449D0008EAA8A /* CheckDoubleLight.png in Resources */,
+				6D69BD681B4449D0008EAA8A /* BrdtCheck@2x.png in Resources */,
+				6D69BD691B4449D0008EAA8A /* input-bar-flat.png in Resources */,
+				6D69BD6A1B4449D0008EAA8A /* avater_you@2x.png in Resources */,
+				6D69BD6B1B4449D0008EAA8A /* MicSelected.png in Resources */,
+				6D69BD6C1B4449D0008EAA8A /* PhotoIcon.png in Resources */,
+				6D69BD6D1B4449D0008EAA8A /* CheckDoubleLight7@2x.png in Resources */,
+				6D69BD6E1B4449D0008EAA8A /* btn_blue.png in Resources */,
+				6D69BD6F1B4449D0008EAA8A /* ic_man@3x.png in Resources */,
+				6D69BD701B4449D0008EAA8A /* MessageTableSectionHeaderView.xib in Resources */,
+				6D69BD711B4449D0008EAA8A /* ic_back@2x.png in Resources */,
+				6D69BD721B4449D0008EAA8A /* BubbleOutgoing@2x.png in Resources */,
+				6D69BD731B4449D0008EAA8A /* MicChats@2x.png in Resources */,
+				6D69BD741B4449D0008EAA8A /* MicBlueSent.png in Resources */,
+				6D69BD751B4449D0008EAA8A /* messageReceived.aiff in Resources */,
+				6D69BD761B4449D0008EAA8A /* save@2x.png in Resources */,
+				6D69BD771B4449D0008EAA8A /* Play.png in Resources */,
+				6D69BD781B4449D0008EAA8A /* Play@2x.png in Resources */,
+				6D69BD791B4449D0008EAA8A /* avater_me@3x.png in Resources */,
+				6D69BD7A1B4449D0008EAA8A /* Images.xcassets in Resources */,
+				6D69BD7B1B4449D0008EAA8A /* PauseOS7@2x.png in Resources */,
+				6D69BD7C1B4449D0008EAA8A /* bg.png in Resources */,
+				6D69BD7D1B4449D0008EAA8A /* MicRecRed2X.png in Resources */,
+				6D69BD7E1B4449D0008EAA8A /* CheckDoubleLight@2x.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6DF54D891AB5862000197EBC /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -955,6 +1263,7 @@
 				6DF54F011AB58DC500197EBC /* bg@3x.png in Resources */,
 				6DF54EF01AB58DC500197EBC /* ic_dustbin.png in Resources */,
 				6DF54E261AB5883200197EBC /* input-bar-flat@2x.png in Resources */,
+				6D69BD921B444B79008EAA8A /* room-Info.plist in Resources */,
 				6DF54EF31AB58DC500197EBC /* avater_me@2x.png in Resources */,
 				6DF54E271AB5883200197EBC /* MessageSendError.png in Resources */,
 				6DF54E211AB5883200197EBC /* CheckSingleLight@2x.png in Resources */,
@@ -1017,6 +1326,42 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		6D69BCF01B4449D0008EAA8A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6D69BCF11B4449D0008EAA8A /* UIView+Toast.m in Sources */,
+				6D69BCF21B4449D0008EAA8A /* ESImageViewController.m in Sources */,
+				6D69BCF31B4449D0008EAA8A /* SDWebImageDecoder.m in Sources */,
+				6D69BCF41B4449D0008EAA8A /* SDWebImageManager.m in Sources */,
+				6D69BCF51B4449D0008EAA8A /* NSData+ImageContentType.m in Sources */,
+				6D69BCF61B4449D0008EAA8A /* SDWebImageCompat.m in Sources */,
+				6D69BCF71B4449D0008EAA8A /* UIView+WebCacheOperation.m in Sources */,
+				6D69BCF81B4449D0008EAA8A /* UIImage+WebP.m in Sources */,
+				6D69BCF91B4449D0008EAA8A /* AppDelegate.m in Sources */,
+				6D69BCFA1B4449D0008EAA8A /* UIImageView+HighlightedWebCache.m in Sources */,
+				6D69BD981B444C09008EAA8A /* RoomLoginViewController.m in Sources */,
+				6D69BCFB1B4449D0008EAA8A /* main.m in Sources */,
+				6D69BD951B444BBA008EAA8A /* RoomViewController.m in Sources */,
+				6D69BCFC1B4449D0008EAA8A /* FBShimmeringLayer.m in Sources */,
+				6D69BCFD1B4449D0008EAA8A /* UIButton+WebCache.m in Sources */,
+				6D69BCFE1B4449D0008EAA8A /* SDWebImagePrefetcher.m in Sources */,
+				6D69BCFF1B4449D0008EAA8A /* SDWebImageDownloaderOperation.m in Sources */,
+				6D69BD001B4449D0008EAA8A /* HPGrowingTextView.m in Sources */,
+				6D69BD011B4449D0008EAA8A /* FBShimmeringView.m in Sources */,
+				6D69BD021B4449D0008EAA8A /* UIImage+MultiFormat.m in Sources */,
+				6D69BD031B4449D0008EAA8A /* ESModalImageViewAnimationController.m in Sources */,
+				6D69BD041B4449D0008EAA8A /* MainViewController.m in Sources */,
+				6D69BD051B4449D0008EAA8A /* SDImageCache.m in Sources */,
+				6D69BD061B4449D0008EAA8A /* HPTextViewInternal.m in Sources */,
+				6D69BD071B4449D0008EAA8A /* MBProgressHUD.m in Sources */,
+				6D69BD081B4449D0008EAA8A /* UIImage+GIF.m in Sources */,
+				6D69BD091B4449D0008EAA8A /* SDWebImageDownloader.m in Sources */,
+				6D69BD0A1B4449D0008EAA8A /* UIImageView+WebCache.m in Sources */,
+				6D69BD0B1B4449D0008EAA8A /* MKAnnotationView+WebCache.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6DF54D871AB5862000197EBC /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1062,6 +1407,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		6D69BCEE1B4449D0008EAA8A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = imkit;
+			targetProxy = 6D69BCEF1B4449D0008EAA8A /* PBXContainerItemProxy */;
+		};
 		6DF54DA61AB5862000197EBC /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 6DF54D8A1AB5862000197EBC /* im_demo */;
@@ -1075,6 +1425,45 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		6D69BD801B4449D0008EAA8A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Apple Development IOS Push Services: com.beetle.im.demo";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development IOS Push Services: com.beetle.im.demo";
+				GCC_PREFIX_HEADER = "demo/im_demo-prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					TEST_ROOM,
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "demo/room-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				"OTHER_LDFLAGS[arch=*]" = "-ObjC";
+				PRODUCT_NAME = room_demo;
+				PROVISIONING_PROFILE = "62a6cae0-985b-478c-9db4-5ae211f4be1c";
+			};
+			name = Debug;
+		};
+		6D69BD811B4449D0008EAA8A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				GCC_PREFIX_HEADER = "demo/im_demo-prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					TEST_ROOM,
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "demo/room-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = room_demo;
+				PROVISIONING_PROFILE = "62a6cae0-985b-478c-9db4-5ae211f4be1c";
+			};
+			name = Release;
+		};
 		6DF54DAC1AB5862000197EBC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1219,6 +1608,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		6D69BD7F1B4449D0008EAA8A /* Build configuration list for PBXNativeTarget "room_demo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6D69BD801B4449D0008EAA8A /* Debug */,
+				6D69BD811B4449D0008EAA8A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		6DF54D861AB5862000197EBC /* Build configuration list for PBXProject "im_demo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

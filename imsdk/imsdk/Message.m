@@ -17,6 +17,10 @@
 
 @end
 
+@implementation RoomMessage
+
+@end
+
 @implementation MessageInputing
 
 @end
@@ -76,7 +80,7 @@
         p += 4;
         const char *s = [m.content UTF8String];
         size_t l = strlen(s);
-        if ((l + 32) > 64*1024) {
+        if ((l + 36) > 64*1024) {
             return nil;
         }
         memcpy(p, s, l);
@@ -90,6 +94,25 @@
         p += 8;
         writeInt64(inputing.receiver, p);
         return [NSData dataWithBytes:buf length:HEAD_SIZE + 16];
+    } else if (self.cmd == MSG_ENTER_ROOM || self.cmd == MSG_LEAVE_ROOM) {
+        NSNumber *n = (NSNumber*)self.body;
+        int64_t roomID = [n longLongValue];
+        writeInt64(roomID, p);
+        p += 8;
+        return [NSData dataWithBytes:buf length:HEAD_SIZE + 8];
+    } else if (self.cmd == MSG_ROOM_IM) {
+        RoomMessage *rm = (RoomMessage*)self.body;
+        writeInt64(rm.sender, p);
+        p += 8;
+        writeInt64(rm.receiver, p);
+        p += 8;
+        const char *s = [rm.content UTF8String];
+        size_t l = strlen(s);
+        if ((l + 28) > 64*1024) {
+            return nil;
+        }
+        memcpy(p, s, l);
+        return [NSData dataWithBytes:buf length:HEAD_SIZE + 16 +l];
     }
     return nil;
 }
@@ -152,6 +175,15 @@
         p++;
         lp.deviceID = [[NSString alloc] initWithBytes:p length:data.length-13 encoding:NSUTF8StringEncoding];
         self.body = lp;
+        return YES;
+    } else if (self.cmd == MSG_ROOM_IM) {
+        RoomMessage *rm = [[RoomMessage alloc] init];
+        rm.sender = readInt64(p);
+        p += 8;
+        rm.receiver = readInt64(p);
+        p += 8;
+        rm.content = [[NSString alloc] initWithBytes:p length:data.length-24 encoding:NSUTF8StringEncoding];
+        self.body = rm;
         return YES;
     } else {
         self.body = [NSData dataWithBytes:p length:data.length-8];
