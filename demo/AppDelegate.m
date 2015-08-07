@@ -10,6 +10,8 @@
 #import "AppDelegate.h"
 #ifdef TEST_ROOM
 #import "RoomLoginViewController.h"
+#elif defined TEST_GROUP
+#import "GroupLoginViewController.h"
 #else
 #import "MainViewController.h"
 #endif
@@ -27,9 +29,16 @@ green:((float)((rgbValue & 0xFF00) >> 8))/255.0 \
 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 
 @interface AppDelegate ()
-#ifndef TEST_ROOM
+
+#ifdef TEST_ROOM
+
+#elif defined TEST_GROUP
+@property(nonatomic) GroupLoginViewController *mainViewController;
+
+#else
 @property(nonatomic) MainViewController *mainViewController;
 #endif
+
 @end
 
 @implementation AppDelegate
@@ -67,6 +76,10 @@ blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 #ifdef TEST_ROOM
     RoomLoginViewController *mainViewController = [[RoomLoginViewController alloc] init];
     self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:mainViewController];
+#elif defined TEST_GROUP
+    GroupLoginViewController *mainViewController = [[GroupLoginViewController alloc] init];
+    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:mainViewController];
+    self.mainViewController = mainViewController;
 #else
     MainViewController *mainViewController = [[MainViewController alloc] init];
     self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:mainViewController];

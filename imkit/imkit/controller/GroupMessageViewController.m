@@ -51,12 +51,14 @@
     [super addObserver];
     [[IMService instance] addConnectionObserver:self];
     [[IMService instance] addGroupMessageObserver:self];
+    [[IMService instance] addLoginPointObserver:self];
 }
 
 -(void)removeObserver {
     [super removeObserver];
     [[IMService instance] removeGroupMessageObserver:self];
     [[IMService instance] removeConnectionObserver:self];
+    [[IMService instance] removeLoginPointObserver:self];
 }
 
 - (int64_t)sender {
@@ -128,6 +130,20 @@
 
     
     [self.navigationController popToRootViewControllerAnimated:YES];
+}
+
+
+//同IM服务器连接的状态变更通知
+-(void)onConnectState:(int)state{
+    if(state == STATE_CONNECTED){
+        [self enableSend];
+    } else {
+        [self disableSend];
+    }
+}
+
+-(void)onLoginPoint:(LoginPoint*)lp {
+    NSLog(@"login point:%@, platform id:%d", lp.deviceID, lp.platformID);
 }
 
 

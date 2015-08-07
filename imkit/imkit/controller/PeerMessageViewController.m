@@ -53,12 +53,14 @@
     [super addObserver];
     [[IMService instance] addConnectionObserver:self];
     [[IMService instance] addPeerMessageObserver:self];
+    [[IMService instance] addLoginPointObserver:self];
 }
 
 -(void)removeObserver {
     [super removeObserver];
     [[IMService instance] removeConnectionObserver:self];
     [[IMService instance] removePeerMessageObserver:self];
+    [[IMService instance] removeLoginPointObserver:self];
 }
 
 - (int64_t)sender {
