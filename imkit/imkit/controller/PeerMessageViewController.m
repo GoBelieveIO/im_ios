@@ -168,7 +168,7 @@
 
 #pragma mark - MessageObserver
 - (void)onPeerMessage:(IMMessage*)im {
-    if (im.sender != self.peerUID) {
+    if (im.sender != self.peerUID && im.receiver != self.peerUID) {
         return;
     }
     [[self class] playMessageReceivedSound];
@@ -203,16 +203,6 @@
     }
     IMessage *msg = [self getMessageWithID:msgLocalID];
     msg.flags = msg.flags|MESSAGE_FLAG_ACK;
-    [self reloadMessage:msgLocalID];
-}
-
-//接受方ack
-- (void)onPeerMessageRemoteACK:(int)msgLocalID uid:(int64_t)uid {
-    if (uid != self.peerUID) {
-        return;
-    }
-    IMessage *msg = [self getMessageWithID:msgLocalID];
-    msg.flags = msg.flags|MESSAGE_FLAG_PEER_ACK;
     [self reloadMessage:msgLocalID];
 }
 

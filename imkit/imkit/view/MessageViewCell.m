@@ -129,11 +129,7 @@
     
     BubbleMessageReceiveStateType state;
     if(message.isACK){
-        if (message.isPeerACK) {
-            state =  BubbleMessageReceiveStateClient;
-        }else{
-            state =  BubbleMessageReceiveStateServer;
-        }
+        state =  BubbleMessageReceiveStateServer;
     }else{
         state =  BubbleMessageReceiveStateNone;
     }

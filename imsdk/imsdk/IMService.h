@@ -14,9 +14,8 @@
 @class IMessage;
 
 @protocol IMPeerMessageHandler <NSObject>
--(BOOL)handleMessage:(IMMessage*)msg;
+-(BOOL)handleMessage:(IMMessage*)msg uid:(int64_t)uid;
 -(BOOL)handleMessageACK:(int)msgLocalID uid:(int64_t)uid;
--(BOOL)handleMessageRemoteACK:(int)msgLocalID uid:(int64_t)uid;
 -(BOOL)handleMessageFailure:(int)msgLocalID uid:(int64_t)uid;
 @end
 
@@ -42,8 +41,6 @@
 
 //服务器ack
 -(void)onPeerMessageACK:(int)msgLocalID uid:(int64_t)uid;
-//接受方ack
--(void)onPeerMessageRemoteACK:(int)msgLocalID uid:(int64_t)uid;
 
 //消息发送失败
 -(void)onPeerMessageFailure:(int)msgLocalID uid:(int64_t)uid;
@@ -73,6 +70,8 @@
 @interface IMService : TCPConnection
 @property(nonatomic, copy) NSString *deviceID;
 @property(nonatomic, copy) NSString *token;
+@property(nonatomic) int64_t uid;
+
 @property(nonatomic, weak)id<IMPeerMessageHandler> peerMessageHandler;
 @property(nonatomic, weak)id<IMGroupMessageHandler> groupMessageHandler;
 +(IMService*)instance;

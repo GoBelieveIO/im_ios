@@ -117,6 +117,7 @@
             
             [IMHttpAPI instance].accessToken = token;
             [[IMService instance] setToken:token];
+            [IMService instance].uid = [tfSender.text longLongValue];
             [[IMService instance] start];
             
             self.navigationController.navigationBarHidden = NO;

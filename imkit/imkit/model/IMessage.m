@@ -197,10 +197,6 @@
     return self.flags&MESSAGE_FLAG_ACK;
 }
 
--(BOOL)isPeerACK {
-    return self.flags&MESSAGE_FLAG_PEER_ACK;
-}
-
 -(BOOL)isFailure {
     return self.flags&MESSAGE_FLAG_FAILURE;
 }

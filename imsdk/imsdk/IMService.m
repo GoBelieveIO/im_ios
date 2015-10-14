@@ -92,7 +92,11 @@
 
 -(void)handleIMMessage:(Message*)msg {
     IMMessage *im = (IMMessage*)msg.body;
-    [self.peerMessageHandler handleMessage:im];
+    if (self.uid == im.sender) {
+        [self.peerMessageHandler handleMessage:im uid:im.receiver];
+    } else {
+        [self.peerMessageHandler handleMessage:im uid:im.sender];
+    }
     NSLog(@"peer message sender:%lld receiver:%lld content:%s", im.sender, im.receiver, [im.content UTF8String]);
     
     Message *ack = [[Message alloc] init];
@@ -100,6 +104,11 @@
     ack.body = [NSNumber numberWithInt:msg.seq];
     [self sendMessage:ack];
     [self publishPeerMessage:im];
+    
+    if (self.uid == im.sender) {
+        [self.peerMessageHandler handleMessageACK:im.msgLocalID uid:im.receiver];
+        [self publishPeerMessageACK:im.msgLocalID uid:im.receiver];
+    }
 }
 
 -(void)handleGroupIMMessage:(Message*)msg {
@@ -111,6 +120,11 @@
     ack.body = [NSNumber numberWithInt:msg.seq];
     [self sendMessage:ack];
     [self publishGroupMessage:im];
+    
+    if (im.sender == self.uid) {
+        [self.groupMessageHandler handleMessageACK:im.msgLocalID gid:im.receiver];
+        [self publishGroupMessageACK:im.msgLocalID gid:im.receiver];
+    }
 }
 
 -(void)handleAuthStatus:(Message*)msg {
@@ -136,14 +150,7 @@
 }
 
 -(void)handlePeerACK:(Message*)msg {
-    MessagePeerACK *ack = (MessagePeerACK*)msg.body;
-    [self.peerMessageHandler handleMessageRemoteACK:ack.msgLocalID uid:ack.sender];
-    
-    for (id<PeerMessageObserver> ob in self.peerObservers) {
-        if ([ob respondsToSelector:@selector(onPeerMessageRemoteACK:uid:)]) {
-            [ob onPeerMessageRemoteACK:ack.msgLocalID uid:ack.sender];
-        }
-    }
+    return;
 }
 
 -(void)handlePong:(Message*)msg {

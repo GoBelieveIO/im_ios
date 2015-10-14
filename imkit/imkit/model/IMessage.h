@@ -20,7 +20,7 @@
 
 #define MESSAGE_FLAG_DELETE 1
 #define MESSAGE_FLAG_ACK 2
-#define MESSAGE_FLAG_PEER_ACK 4
+//#define MESSAGE_FLAG_PEER_ACK 4
 #define MESSAGE_FLAG_FAILURE 8
 #define MESSAGE_FLAG_UPLOADING 16
 #define MESSAGE_FLAG_SENDING 32
@@ -90,7 +90,6 @@
 @property(nonatomic) MessageContent *content;
 @property(nonatomic) int timestamp;
 @property(nonatomic, readonly) BOOL isACK;
-@property(nonatomic, readonly) BOOL isPeerACK;
 @property(nonatomic, readonly) BOOL isFailure;
 @property(nonatomic)           BOOL isListened;
 @end

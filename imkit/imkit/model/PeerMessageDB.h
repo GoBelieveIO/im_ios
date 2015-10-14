@@ -32,7 +32,6 @@
 -(BOOL)clearConversation:(int64_t)uid;
 -(BOOL)clear;
 -(BOOL)acknowledgeMessage:(int)msgLocalID uid:(int64_t)uid;
--(BOOL)acknowledgeMessageFromRemote:(int)msgLocalID uid:(int64_t)uid;
 -(BOOL)markMessageFailure:(int)msgLocalID uid:(int64_t)uid;
 -(BOOL)markMesageListened:(int)msgLocalID uid:(int64_t)uid;
 -(BOOL)eraseMessageFailure:(int)msgLocalID uid:(int64_t)uid;

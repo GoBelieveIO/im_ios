@@ -24,7 +24,7 @@
     return m;
 }
 
--(BOOL)handleMessage:(IMMessage*)msg {
+-(BOOL)handleMessage:(IMMessage*)msg uid:(int64_t)uid{
     IMMessage *im = msg;
     IMessage *m = [[IMessage alloc] init];
     m.sender = im.sender;
@@ -33,7 +33,7 @@
     content.raw = im.content;
     m.content = content;
     m.timestamp = msg.timestamp;
-    BOOL r = [[PeerMessageDB instance] insertMessage:m uid:im.sender];
+    BOOL r = [[PeerMessageDB instance] insertMessage:m uid:uid];
     if (r) {
         msg.msgLocalID = m.msgLocalID;
     }
@@ -42,11 +42,6 @@
 
 -(BOOL)handleMessageACK:(int)msgLocalID uid:(int64_t)uid {
     return [[PeerMessageDB instance] acknowledgeMessage:msgLocalID uid:uid];
-}
-
--(BOOL)handleMessageRemoteACK:(int)msgLocalID uid:(int64_t)uid {
-    PeerMessageDB *db = [PeerMessageDB instance];
-    return [db acknowledgeMessageFromRemote:msgLocalID uid:uid];
 }
 
 -(BOOL)handleMessageFailure:(int)msgLocalID uid:(int64_t)uid {

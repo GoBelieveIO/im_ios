@@ -161,10 +161,6 @@
     return [MessageDB addFlag:msgLocalID path:path flag:MESSAGE_FLAG_ACK];
 }
 
--(BOOL)acknowledgeMessageFromRemote:(int)msgLocalID uid:(int64_t)uid {
-    NSString *path = [self getPeerPath:uid];
-    return [MessageDB addFlag:msgLocalID path:path flag:MESSAGE_FLAG_PEER_ACK];
-}
 
 -(BOOL)markMessageFailure:(int)msgLocalID uid:(int64_t)uid {
     NSString *path = [self getPeerPath:uid];

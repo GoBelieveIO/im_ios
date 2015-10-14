@@ -120,7 +120,9 @@
             msgController.peerName = @"测试";
 
             [IMHttpAPI instance].accessToken = token;
-            [[IMService instance] setToken:token];
+            [IMService instance].token = token;
+            [IMService instance].uid = [tfSender.text longLongValue];
+            
             [[IMService instance] start];
             
             if (self.deviceToken.length > 0) {
