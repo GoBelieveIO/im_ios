@@ -121,6 +121,17 @@
     return self;
 }
 
+- (id)initWithLocation:(CLLocationCoordinate2D)location {
+    self = [super init];
+    if (self) {
+        NSDictionary *loc = @{@"latitude":[NSNumber numberWithDouble:location.latitude],
+                            @"longitude":[NSNumber numberWithDouble:location.longitude]};
+        NSDictionary *dic = @{@"location":loc};
+        NSString* newStr = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:dic options:0 error:nil] encoding:NSUTF8StringEncoding];
+        self.raw =  newStr;
+    }
+    return self;
+}
 - (id)initWithRaw:(NSString*)raw {
     self = [super init];
     if (self) {
@@ -157,6 +168,13 @@
     lc.latitude = [[location objectForKey:@"latitude"] doubleValue];
     lc.longitude = [[location objectForKey:@"longitude"] doubleValue];
     return lc;
+}
+
+-(NSString*)snapshotURL {
+    CLLocationCoordinate2D location = self.location;
+    NSString *s = [NSString stringWithFormat:@"%f-%f", location.latitude, location.longitude];
+    NSString *t = [NSString stringWithFormat:@"http://localhost/snapshot/%@.png", s];
+    return t;
 }
 
 -(GroupNotification*)notification {

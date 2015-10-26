@@ -15,7 +15,7 @@
 #import "MessageImageView.h"
 #import "MessageAudioView.h"
 #import "MessageNotificationView.h"
-
+#import "MessageLocationView.h"
 
 
 @implementation MessageViewCell
@@ -80,6 +80,12 @@
             {
                 MessageNotificationView *notificationView = [[MessageNotificationView alloc] initWithFrame:frame];
                 self.bubbleView = notificationView;
+            }
+                break;
+            case MESSAGE_LOCATION:
+            {
+                MessageLocationView *locationView = [[MessageLocationView alloc] initWithFrame:frame];
+                self.bubbleView = locationView;
             }
                 break;
             default:
@@ -163,6 +169,13 @@
             notificationView.label.text = message.content.notificationDesc;
         }
             break;
+        case MESSAGE_LOCATION:
+        {
+            MessageLocationView *locationView = (MessageLocationView*)self.bubbleView;
+            locationView.type = msgType;
+            locationView.msgStateType = state;
+            [locationView setSnapshotURL:message.content.snapshotURL];
+        }
         default:
             break;
     }

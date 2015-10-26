@@ -62,6 +62,9 @@
 		6D4256871ABC0EEC001B7E43 /* GroupMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D4256861ABC0EEC001B7E43 /* GroupMessageViewController.m */; };
 		6D42568B1ABC0F2F001B7E43 /* MessageNotificationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D42568A1ABC0F2F001B7E43 /* MessageNotificationView.m */; };
 		6DBEBA771AF77291002CAEA3 /* GroupMessageViewController.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6D4256851ABC0EEC001B7E43 /* GroupMessageViewController.h */; };
+		6DEE56851BDCF309002BCAB8 /* MessageLocationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DEE56841BDCF309002BCAB8 /* MessageLocationView.m */; };
+		6DEE56C01BDE1663002BCAB8 /* LocationPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DEE56BE1BDE1663002BCAB8 /* LocationPickerController.m */; };
+		6DEE56C31BDE2F5D002BCAB8 /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DEE56C21BDE2F5D002BCAB8 /* MapViewController.m */; };
 		6DF54F181AB6EECA00197EBC /* TextMessageViewController.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6DF54F151AB6E58800197EBC /* TextMessageViewController.h */; };
 		6DF54F261AB816FB00197EBC /* BaseMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54F251AB816FB00197EBC /* BaseMessageViewController.m */; };
 		6DF54F281AB82E0000197EBC /* BaseMessageViewController.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6DF54F241AB816FB00197EBC /* BaseMessageViewController.h */; };
@@ -195,6 +198,12 @@
 		6D4256861ABC0EEC001B7E43 /* GroupMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GroupMessageViewController.m; path = controller/GroupMessageViewController.m; sourceTree = "<group>"; };
 		6D4256891ABC0F2F001B7E43 /* MessageNotificationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MessageNotificationView.h; path = view/MessageNotificationView.h; sourceTree = "<group>"; };
 		6D42568A1ABC0F2F001B7E43 /* MessageNotificationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MessageNotificationView.m; path = view/MessageNotificationView.m; sourceTree = "<group>"; };
+		6DEE56831BDCF309002BCAB8 /* MessageLocationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MessageLocationView.h; path = view/MessageLocationView.h; sourceTree = "<group>"; };
+		6DEE56841BDCF309002BCAB8 /* MessageLocationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MessageLocationView.m; path = view/MessageLocationView.m; sourceTree = "<group>"; };
+		6DEE56BD1BDE1663002BCAB8 /* LocationPickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocationPickerController.h; path = controller/LocationPickerController.h; sourceTree = "<group>"; };
+		6DEE56BE1BDE1663002BCAB8 /* LocationPickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocationPickerController.m; path = controller/LocationPickerController.m; sourceTree = "<group>"; };
+		6DEE56C11BDE2F5D002BCAB8 /* MapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MapViewController.h; path = controller/MapViewController.h; sourceTree = "<group>"; };
+		6DEE56C21BDE2F5D002BCAB8 /* MapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MapViewController.m; path = controller/MapViewController.m; sourceTree = "<group>"; };
 		6DF54F151AB6E58800197EBC /* TextMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TextMessageViewController.h; path = controller/TextMessageViewController.h; sourceTree = "<group>"; };
 		6DF54F161AB6E58800197EBC /* TextMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TextMessageViewController.m; path = controller/TextMessageViewController.m; sourceTree = "<group>"; };
 		6DF54F241AB816FB00197EBC /* BaseMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BaseMessageViewController.h; path = controller/BaseMessageViewController.h; sourceTree = "<group>"; };
@@ -331,6 +340,8 @@
 				6D03312B1AA9E734004AA39F /* MessageTableSectionHeaderView.m */,
 				6D03312D1AA9E734004AA39F /* MessageTextView.h */,
 				6D03312E1AA9E734004AA39F /* MessageTextView.m */,
+				6DEE56831BDCF309002BCAB8 /* MessageLocationView.h */,
+				6DEE56841BDCF309002BCAB8 /* MessageLocationView.m */,
 				6D03312F1AA9E734004AA39F /* MessageViewCell.h */,
 				6D0331301AA9E734004AA39F /* MessageViewCell.m */,
 			);
@@ -352,6 +363,10 @@
 				6DF54F251AB816FB00197EBC /* BaseMessageViewController.m */,
 				6DFDA0221AB95B9800EF553A /* PeerMessageViewController.h */,
 				6DFDA0231AB95B9800EF553A /* PeerMessageViewController.m */,
+				6DEE56C11BDE2F5D002BCAB8 /* MapViewController.h */,
+				6DEE56C21BDE2F5D002BCAB8 /* MapViewController.m */,
+				6DEE56BD1BDE1663002BCAB8 /* LocationPickerController.h */,
+				6DEE56BE1BDE1663002BCAB8 /* LocationPickerController.m */,
 			);
 			name = controller;
 			sourceTree = "<group>";
@@ -553,8 +568,10 @@
 				6D03301C1AA9BCD8004AA39F /* FileCache.m in Sources */,
 				6D0331651AAB6781004AA39F /* UIImage+JSMessagesView.m in Sources */,
 				6D032FF41AA9B41C004AA39F /* PeerMessageDB.m in Sources */,
+				6DEE56C31BDE2F5D002BCAB8 /* MapViewController.m in Sources */,
 				6D0331311AA9E734004AA39F /* BubbleView.m in Sources */,
 				6D42568B1ABC0F2F001B7E43 /* MessageNotificationView.m in Sources */,
+				6DEE56851BDCF309002BCAB8 /* MessageLocationView.m in Sources */,
 				6DFDA0271AB9797500EF553A /* TextMessageViewController.m in Sources */,
 				6D032FF11AA9B41C004AA39F /* GroupMessageHandler.m in Sources */,
 				6D0331331AA9E734004AA39F /* MessageAudioView.m in Sources */,
@@ -562,6 +579,7 @@
 				6D4256871ABC0EEC001B7E43 /* GroupMessageViewController.m in Sources */,
 				6D0331381AA9E734004AA39F /* MessageViewCell.m in Sources */,
 				6D032FF51AA9B41C004AA39F /* PeerMessageHandler.m in Sources */,
+				6DEE56C01BDE1663002BCAB8 /* LocationPickerController.m in Sources */,
 				6D032FF31AA9B41C004AA39F /* MessageDB.m in Sources */,
 				6D0331361AA9E734004AA39F /* MessageTableSectionHeaderView.m in Sources */,
 				6D0330061AA9BBC7004AA39F /* AudioDownloader.m in Sources */,

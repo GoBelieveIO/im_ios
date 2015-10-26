@@ -16,7 +16,6 @@
 //
 
 #import "MessageImageView.h"
-//#import "ESImageViewController.h"
 
 #define kImageWidth  100
 #define kImageHeight 100
@@ -72,18 +71,6 @@
     
     [self drawMsgStateSign: frame];
     
-    if (self.imageView) {
-        
-        CGSize imageSize = CGSizeMake(kImageWidth, kImageHeight);
-        CGFloat imgX = image.leftCapWidth + (self.type == BubbleMessageTypeOutgoing ? bubbleFrame.origin.x + kOuttingMoveRight: KInComingMoveRight);
-        
-        CGRect imageFrame = CGRectMake(imgX,
-                                       kPaddingTop + kMarginTop,
-                                       imageSize.width - kPaddingTop - kMarginTop,
-                                       imageSize.height - kPaddingBottom + 2.f);
-        [self.imageView setFrame:imageFrame];
-        
-    }
 }
 
 
@@ -113,6 +100,25 @@
         if (self.uploadIndicatorView&&[self.uploadIndicatorView isAnimating]) {
             [self.uploadIndicatorView stopAnimating];
         }
+    }
+}
+
+
+-(void)layoutSubviews {
+    UIImage *image = (self.selectedToShowCopyMenu) ? [self bubbleImageHighlighted] : [self bubbleImage];
+    CGRect bubbleFrame = [self bubbleFrame];
+    
+    if (self.imageView) {
+        
+        CGSize imageSize = CGSizeMake(kImageWidth, kImageHeight);
+        CGFloat imgX = image.leftCapWidth + (self.type == BubbleMessageTypeOutgoing ? bubbleFrame.origin.x + kOuttingMoveRight: KInComingMoveRight);
+        
+        CGRect imageFrame = CGRectMake(imgX,
+                                       kPaddingTop + kMarginTop,
+                                       imageSize.width - kPaddingTop - kMarginTop,
+                                       imageSize.height - kPaddingBottom + 2.f);
+        [self.imageView setFrame:imageFrame];
+        
     }
 }
 @end

@@ -82,6 +82,10 @@
     return NO;
 }
 
+- (void)sendMessage:(IMessage *)msg withImage:(UIImage*)image {
+    NSAssert(NO, @"not implement");
+}
+
 - (void)sendMessage:(IMessage*)msg {
     NSAssert(NO, @"not implement");
 }
@@ -108,15 +112,7 @@
     for (NSInteger i = count-1; i >= 0; i--) {
         IMessage *msg = [self.messages objectAtIndex:i];
         
-        FileCache *cache = [FileCache instance];
-        AudioDownloader *downloader = [AudioDownloader instance];
-        if (msg.content.type == MESSAGE_AUDIO) {
-            NSString *path = [cache queryCacheForKey:msg.content.audio.url];
-            if (!path && ![downloader isDownloading:msg]) {
-                [downloader downloadAudio:msg];
-            }
-        }
-        
+
         curtDate = [NSDate dateWithTimeIntervalSince1970: msg.timestamp];
         if ([self isSameDay:lastDate other:curtDate]) {
             [msgBlockArray insertObject:msg atIndex:0];
@@ -129,7 +125,6 @@
         }
     }
 }
-
 
 
 - (void)insertMessage:(IMessage*)msg {
@@ -169,23 +164,20 @@
     
     [UIView beginAnimations:nil context:NULL];
     if (indexPath.row == 0 ) {
-        
         NSUInteger sectionCount = indexPath.section;
         NSIndexSet *indices = [NSIndexSet indexSetWithIndex: sectionCount];
         [self.tableView beginUpdates];
         [self.tableView insertSections:indices withRowAnimation:UITableViewRowAnimationNone];
         [self.tableView endUpdates];
-        
-    }else{
+    } else {
         NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
         [indexPaths addObject:indexPath];
         [self.tableView beginUpdates];
         [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
         [self.tableView endUpdates];
     }
-    
+
     [self scrollToBottomAnimated:NO];
-    
     [UIView commitAnimations];
 }
 

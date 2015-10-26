@@ -27,6 +27,7 @@
 - (BOOL)eraseMessageFailure:(IMessage*)msg;
 
 - (void)sendMessage:(IMessage*)msg;
+- (void)sendMessage:(IMessage *)msg withImage:(UIImage*)image;
 
 //protected
 @property(nonatomic) NSMutableArray *messageArray;

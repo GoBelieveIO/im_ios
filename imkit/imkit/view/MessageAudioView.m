@@ -70,8 +70,12 @@
         self.microPhoneBtn = [[UIButton alloc] initWithFrame:rect ];
 
         [self addSubview:self.microPhoneBtn];
-
         
+        
+        self.downloadIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        [self addSubview:self.downloadIndicatorView];
+        self.uploadIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        [self addSubview:self.uploadIndicatorView];
     }
     return self;
 }
@@ -97,30 +101,6 @@
     }else{
         [self.microPhoneBtn setHidden:NO];
     }
-    
-}
-
-
--(void)updatePosition{
-    UIImage *image = (self.selectedToShowCopyMenu) ? [self bubbleImageHighlighted] : [self bubbleImage];
-    CGSize bubbleSize = CGSizeMake(kAudioCellWidth, kAudioViewCellHeight);
-    
-    CGRect rect = self.playBtn.frame;
-    rect.origin.x = image.leftCapWidth + floorf(self.type == BubbleMessageTypeOutgoing ? self.frame.size.width - bubbleSize.width  : 0.0f);
-    self.playBtn.frame = rect;
-    
-    rect = self.progressView.frame;
-    rect.origin.x = self.playBtn.frame.origin.x + self.playBtn.frame.size.width;
-    rect.size.width = kAudioCellWidth - image.leftCapWidth - kPlayBtnWidth - 2*kblank   - (self.type == BubbleMessageTypeOutgoing ?  2*image.leftCapWidth  : 10);
-    self.progressView.frame = rect;
-    
-    rect = self.timeLengthLabel.frame;
-    rect.origin.x = self.progressView.frame.origin.x ;
-    self.timeLengthLabel.frame = rect;
-    
-    rect = self.microPhoneBtn.frame;
-    rect.origin.x = kAudioCellWidth - image.leftCapWidth - kmicroBtnWidth + floorf(self.type == BubbleMessageTypeOutgoing ? self.frame.size.width - bubbleSize.width - 20 : 0.0f);
-    self.microPhoneBtn.frame = rect;
     
 }
 
@@ -163,14 +143,9 @@
 }
 
 -(void)setDownloading:(BOOL)downloading {
-    //todo download的动画
     if (downloading) {
-        self.downloadIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-        CGRect bubbleFrame = [self bubbleFrame];
-        [self.downloadIndicatorView setFrame: bubbleFrame];
         [self.downloadIndicatorView startAnimating];
-        [self addSubview: self.downloadIndicatorView];
-    }else{
+    } else {
         if (self.downloadIndicatorView&&[self.downloadIndicatorView isAnimating]) {
             [self.downloadIndicatorView stopAnimating];
         }
@@ -178,14 +153,9 @@
 }
 
 -(void)setUploading:(BOOL)uploading {
-    //todo uploading的动画
     if (uploading) {
-        self.uploadIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-        CGRect bubbleFrame = [self bubbleFrame];
-        [self.uploadIndicatorView setFrame: bubbleFrame];
         [self.uploadIndicatorView startAnimating];
-        [self addSubview: self.uploadIndicatorView];
-    }else{
+    } else {
         if (self.uploadIndicatorView&&[self.uploadIndicatorView isAnimating]) {
             [self.uploadIndicatorView stopAnimating];
         }
@@ -193,6 +163,30 @@
 }
 
 -(void)layoutSubviews {
-    [self updatePosition];
+    
+    UIImage *image = (self.selectedToShowCopyMenu) ? [self bubbleImageHighlighted] : [self bubbleImage];
+    CGSize bubbleSize = CGSizeMake(kAudioCellWidth, kAudioViewCellHeight);
+    
+    CGRect rect = self.playBtn.frame;
+    rect.origin.x = image.leftCapWidth + floorf(self.type == BubbleMessageTypeOutgoing ? self.frame.size.width - bubbleSize.width  : 0.0f);
+    self.playBtn.frame = rect;
+    
+    rect = self.progressView.frame;
+    rect.origin.x = self.playBtn.frame.origin.x + self.playBtn.frame.size.width;
+    rect.size.width = kAudioCellWidth - image.leftCapWidth - kPlayBtnWidth - 2*kblank   - (self.type == BubbleMessageTypeOutgoing ?  2*image.leftCapWidth  : 10);
+    self.progressView.frame = rect;
+    
+    rect = self.timeLengthLabel.frame;
+    rect.origin.x = self.progressView.frame.origin.x ;
+    self.timeLengthLabel.frame = rect;
+    
+    rect = self.microPhoneBtn.frame;
+    rect.origin.x = kAudioCellWidth - image.leftCapWidth - kmicroBtnWidth + floorf(self.type == BubbleMessageTypeOutgoing ? self.frame.size.width - bubbleSize.width - 20 : 0.0f);
+    self.microPhoneBtn.frame = rect;
+    
+    CGRect bubbleFrame = [self bubbleFrame];
+    
+    self.uploadIndicatorView.frame = bubbleFrame;
+    self.downloadIndicatorView.frame = bubbleFrame;
 }
 @end

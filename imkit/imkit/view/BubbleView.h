@@ -36,6 +36,7 @@ typedef enum {
 @property (assign, nonatomic) BOOL selectedToShowCopyMenu;
 @property (nonatomic) BubbleMessageReceiveStateType msgStateType;
 @property (nonatomic) UIImageView *receiveStateImgSign;
+
 @property (nonatomic) UIActivityIndicatorView *downloadIndicatorView;
 @property (nonatomic) UIActivityIndicatorView *uploadIndicatorView;
 @property (nonatomic) CGRect contentFrame;

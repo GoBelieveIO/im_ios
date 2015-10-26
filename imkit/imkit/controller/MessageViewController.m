@@ -22,6 +22,7 @@
 #import "MessageTextView.h"
 #import "MessageAudioView.h"
 #import "MessageImageView.h"
+#import "MessageLocationView.h"
 #import "MessageViewCell.h"
 
 #import "MEESImageViewController.h"
@@ -29,14 +30,16 @@
 #import "NSString+JSMessagesView.h"
 #import "UIImage+Resize.h"
 #import "UIView+Toast.h"
-
+#import "MapViewController.h"
+#import "LocationPickerController.h"
 
 #define INPUT_HEIGHT 52.0f
 
 #define kTakePicActionSheetTag  101
 
 
-@interface MessageViewController()<MessageInputRecordDelegate, HPGrowingTextViewDelegate, AudioDownloaderObserver, OutboxObserver>
+@interface MessageViewController()<MessageInputRecordDelegate, HPGrowingTextViewDelegate,
+    AudioDownloaderObserver, OutboxObserver, LocationPickerControllerDelegate>
 
 @property (strong, nonatomic) MessageInputView *inputToolBarView;
 
@@ -685,6 +688,20 @@
 }
 
 
+- (void) handleTapLocationView:(UITapGestureRecognizer*)tap {
+    int row = tap.view.tag & 0xffff;
+    int section = (int)(tap.view.tag >> 16);
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:section];
+    IMessage *message = [self messageForRowAtIndexPath:indexPath];
+    if (message == nil) {
+        return;
+    }
+    
+    MapViewController *ctl = [[MapViewController alloc] init];
+    ctl.friendCoordinate = message.content.location;
+    [self.navigationController pushViewController:ctl animated:YES];
+}
+
 
 #pragma mark - Table view data source
 
@@ -708,6 +725,11 @@
             UITapGestureRecognizer *tap  = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapImageView:)];
             [tap setNumberOfTouchesRequired: 1];
             MessageImageView *imageView = (MessageImageView*)cell.bubbleView;
+            [imageView.imageView addGestureRecognizer:tap];
+        } else if (message.content.type == MESSAGE_LOCATION) {
+            UITapGestureRecognizer *tap  = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapLocationView:)];
+            [tap setNumberOfTouchesRequired: 1];
+            MessageLocationView *imageView = (MessageLocationView*)cell.bubbleView;
             [imageView.imageView addGestureRecognizer:tap];
         } else if(message.content.type == MESSAGE_TEXT){
             
@@ -749,6 +771,9 @@
         MessageImageView *imageView = (MessageImageView*)cell.bubbleView;
         imageView.imageView.tag = indexPath.section<<16 | indexPath.row;
         [imageView setUploading:[[Outbox instance] isUploading:message]];
+    } else if (message.content.type == MESSAGE_LOCATION) {
+        MessageLocationView *locationView = (MessageLocationView*)cell.bubbleView;
+        locationView.imageView.tag = indexPath.section<<16 | indexPath.row;
     }
     cell.tag = indexPath.section<<16 | indexPath.row;
     return cell;
@@ -799,7 +824,7 @@
             return kAudioViewCellHeight + nameHeight;
             break;
         case MESSAGE_LOCATION:
-            return 40 + nameHeight;
+            return kMessageImagViewHeight + nameHeight;
         case MESSAGE_GROUP_NOTIFICATION:
             return 30;
         default:
@@ -875,12 +900,9 @@
     return 30;
 }
 
-
-
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
 }
-
 
 /*
  * 复用ID区分来去类型
@@ -893,6 +915,9 @@
     }
 }
 
+- (void)didFinishSelectAddress:(CLLocationCoordinate2D)location {
+    [self sendLocationMessage:location];
+}
 
 #pragma mark - Messages view delegate
 
@@ -908,7 +933,7 @@
                                   delegate:self
                                   cancelButtonTitle:@"取消"
                                   destructiveButtonTitle:nil
-                                  otherButtonTitles:@"摄像头拍照", @"从相册选取",nil];
+                                  otherButtonTitles:@"摄像头拍照", @"从相册选取", @"共享位置", nil];
     actionSheet.actionSheetStyle = UIActionSheetStyleDefault;
     actionSheet.tag = kTakePicActionSheetTag;
     [actionSheet showInView:self.view];
@@ -931,6 +956,10 @@
             picker.allowsEditing = NO;
             picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
             [self presentViewController:picker animated:YES completion:NULL];
+        } else if (buttonIndex == 2) {
+            LocationPickerController *ctl = [[LocationPickerController alloc] init];
+            ctl.selectAddressdelegate = self;
+            [self.navigationController pushViewController:ctl animated:YES];
         }
     }
 }
@@ -938,15 +967,14 @@
 
 
 #pragma mark - UIImagePickerControllerDelegate
-
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
 	NSLog(@"Chose image!  Details:  %@", info);
     UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
 
-    [self sendImageMessage:image];
- 
-    [self dismissViewControllerAnimated:YES completion:NULL];
+    [self dismissViewControllerAnimated:YES completion:^{
+        [self sendImageMessage:image];
+    }];
 }
 
 
@@ -1081,8 +1109,7 @@
 }
 
 
-+ (BOOL)isHeadphone
-{
++ (BOOL)isHeadphone {
     AVAudioSessionRouteDescription* route = [[AVAudioSession sharedInstance] currentRoute];
     for (AVAudioSessionPortDescription* desc in [route outputs]) {
         if ([[desc portType] isEqualToString:AVAudioSessionPortHeadphones])
@@ -1091,7 +1118,29 @@
     return NO;
 }
 
+- (void)downloadMessageContent:(IMessage*)msg {
+    FileCache *cache = [FileCache instance];
+    AudioDownloader *downloader = [AudioDownloader instance];
+    if (msg.content.type == MESSAGE_AUDIO) {
+        NSString *path = [cache queryCacheForKey:msg.content.audio.url];
+        if (!path && ![downloader isDownloading:msg]) {
+            [downloader downloadAudio:msg];
+        }
+    } else if (msg.content.type == MESSAGE_LOCATION) {
+        NSString *url = msg.content.snapshotURL;
+        if(![[SDImageCache sharedImageCache] imageFromMemoryCacheForKey:url] &&
+           ![[SDImageCache sharedImageCache] diskImageExistsWithKey:url]){
+            [self createMapSnapshot:msg];
+        }
+    }
+}
 
+- (void)downloadMessageContent:(NSArray*)messages count:(int)count {
+    for (int i = 0; i < count; i++) {
+        IMessage *msg = [messages objectAtIndex:i];
+        [self downloadMessageContent:msg];
+    }
+}
 
 -(NSString*)guid {
     CFUUIDRef    uuidObj = CFUUIDCreate(nil);
@@ -1105,6 +1154,52 @@
 
 -(NSString*)localAudioURL {
     return [NSString stringWithFormat:@"http://localhost/audios/%@.m4a", [self guid]];
+}
+
+- (void)createMapSnapshot:(IMessage*)msg {
+    CLLocationCoordinate2D location = msg.content.location;
+    NSString *url = msg.content.snapshotURL;
+    
+    MKMapSnapshotOptions *options = [[MKMapSnapshotOptions alloc] init];
+    options.scale = [[UIScreen mainScreen] scale];
+    options.showsPointsOfInterest = YES;
+    options.showsBuildings = YES;
+    options.region = MKCoordinateRegionMakeWithDistance(location, 300, 300);
+    options.mapType = MKMapTypeStandard;
+    MKMapSnapshotter *snapshotter = [[MKMapSnapshotter alloc] initWithOptions:options];
+    
+    [snapshotter startWithCompletionHandler:^(MKMapSnapshot *snapshot, NSError *e) {
+        if (e) {
+            NSLog(@"error:%@", e);
+        }
+        else {
+            NSLog(@"map snapshot success");
+            [[SDImageCache sharedImageCache] storeImage:snapshot.image forKey:url];
+            [self reloadMessage:msg.msgLocalID];
+        }
+    }];
+
+}
+
+- (void)sendLocationMessage:(CLLocationCoordinate2D)location {
+    IMessage *msg = [[IMessage alloc] init];
+    
+    msg.sender = self.sender;
+    msg.receiver = self.receiver;
+
+
+    MessageContent *content = [[MessageContent alloc] initWithLocation:location];
+    msg.content = content;
+    msg.timestamp = (int)time(NULL);
+    
+    [self saveMessage:msg];
+    
+    [self sendMessage:msg];
+    
+    [[self class] playMessageSentSound];
+    
+    [self createMapSnapshot:msg];
+    [self insertMessage:msg];
 }
 
 - (void)sendAudioMessage:(NSString*)path second:(int)second {
@@ -1165,12 +1260,12 @@
     [[SDImageCache sharedImageCache] storeImage:sizeImage forKey: littleUrl];
     
     [self saveMessage:msg];
-    
-    [self sendMessage:msg];
+
+    [self sendMessage:msg withImage:image];
+
+    [self insertMessage:msg];
     
     [[self class] playMessageSentSound];
-    
-    [self insertMessage:msg];
 }
 
 -(void) sendTextMessage:(NSString*)text {

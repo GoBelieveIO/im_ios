@@ -170,10 +170,7 @@
         return;
     }
     
-    if (m.content.type == MESSAGE_AUDIO) {
-        AudioDownloader *downloader = [AudioDownloader instance];
-        [downloader downloadAudio:m];
-    }
+    [self downloadMessageContent:m];
     
     [self insertMessage:m];
 }
@@ -328,6 +325,8 @@
         msg = [iterator next];
     }
     
+    [self downloadMessageContent:self.messages count:count];
+    
     [self initTableViewData];
 }
 
@@ -364,6 +363,7 @@
         return;
     }
     
+    [self downloadMessageContent:self.messages count:count];
     [self initTableViewData];
     
     [self.tableView reloadData];
@@ -384,7 +384,6 @@
     [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:NO];
 }
 
-
 - (void)sendMessage:(IMessage*)message {
     if (message.content.type == MESSAGE_AUDIO) {
         [[Outbox instance] uploadGroupAudio:message];
@@ -400,6 +399,9 @@
     }
 }
 
+- (void)sendMessage:(IMessage *)msg withImage:(UIImage*)image {
+    [[Outbox instance] uploadGroupImage:msg withImage:image];
+}
 
 
 @end

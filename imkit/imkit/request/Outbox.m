@@ -139,29 +139,33 @@
     }
 }
 
--(BOOL)uploadImage:(IMessage*)msg {
-    
-    UIImage *image = [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:msg.content.imageURL];
-    if (!image) {
-        return NO;
-    }
-    
+-(BOOL)uploadImage:(IMessage*)msg withImage:(UIImage*)image {
     [self.messages addObject:msg];
     [IMHttpAPI uploadImage:image
-                    success:^(NSString *url) {
-                        [self.messages removeObject:msg];
-                        
-                        NSLog(@"upload image success url:%@", url);
-                        [self sendImageMessage:msg URL:url];
-                        [self onUploadImageSuccess:msg URL:url];
-
-                    }
-                       fail:^() {
-                           NSLog(@"upload image fail");
-                           [self.messages removeObject:msg];
-                           [self onUploadImageFail:msg];
-                       }];
+                   success:^(NSString *url) {
+                       [self.messages removeObject:msg];
+                       
+                       NSLog(@"upload image success url:%@", url);
+                       [self sendImageMessage:msg URL:url];
+                       [self onUploadImageSuccess:msg URL:url];
+                       
+                   }
+                      fail:^() {
+                          NSLog(@"upload image fail");
+                          [self.messages removeObject:msg];
+                          [self onUploadImageFail:msg];
+                      }];
     return YES;
+
+}
+
+-(BOOL)uploadImage:(IMessage*)msg {
+    UIImage *image = [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:msg.content.imageURL];
+    if (!image) {
+        NSLog(@"can't load image from image cache");
+        return NO;
+    }
+    return [self uploadImage:msg withImage:image];
 }
 
 -(BOOL)uploadAudio:(IMessage*)msg {
@@ -202,12 +206,7 @@
     return YES;
 }
 
--(BOOL)uploadGroupImage:(IMessage*)msg {
-    UIImage *image = [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:msg.content.imageURL];
-    if (!image) {
-        return NO;
-    }
-    
+-(BOOL)uploadGroupImage:(IMessage*)msg withImage:(UIImage*)image {
     [self.messages addObject:msg];
     [IMHttpAPI uploadImage:image
                    success:^(NSString *url) {
@@ -224,7 +223,14 @@
                           [self onUploadImageFail:msg];
                       }];
     return YES;
-
+ 
+}
+-(BOOL)uploadGroupImage:(IMessage*)msg {
+    UIImage *image = [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:msg.content.imageURL];
+    if (!image) {
+        return NO;
+    }
+    return [self uploadGroupImage:msg withImage:image];
 }
 
 -(BOOL)uploadGroupAudio:(IMessage*)msg {

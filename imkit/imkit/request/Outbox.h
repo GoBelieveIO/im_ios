@@ -27,9 +27,11 @@
 -(BOOL)isUploading:(IMessage*)msg;
 
 -(BOOL)uploadImage:(IMessage*)msg;
+-(BOOL)uploadImage:(IMessage*)msg withImage:(UIImage*)image;
 -(BOOL)uploadAudio:(IMessage*)msg;
 
 -(BOOL)uploadGroupImage:(IMessage*)msg;
+-(BOOL)uploadGroupImage:(IMessage*)msg withImage:(UIImage*)image;
 -(BOOL)uploadGroupAudio:(IMessage*)msg;
 
 -(void)addBoxObserver:(id<OutboxObserver>)ob;

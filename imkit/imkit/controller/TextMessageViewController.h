@@ -32,4 +32,6 @@ typedef NSString* (^GetUserNameBlock)(int64_t uid);
 - (void)addObserver;
 - (void)removeObserver;
 
+- (void)downloadMessageContent:(IMessage*)message;
+- (void)downloadMessageContent:(NSArray*)messages count:(int)count;
 @end

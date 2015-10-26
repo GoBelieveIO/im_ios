@@ -188,10 +188,7 @@
         return;
     }
     
-    if (m.content.type == MESSAGE_AUDIO) {
-        AudioDownloader *downloader = [AudioDownloader instance];
-        [downloader downloadAudio:m];
-    }
+    [self downloadMessageContent:m];
     
     [self insertMessage:m];
 }
@@ -257,6 +254,8 @@
         msg = [iterator next];
     }
     
+    [self downloadMessageContent:self.messages count:count];
+    
     [self initTableViewData];
 }
 
@@ -282,6 +281,9 @@
         return;
     }
     
+
+    [self downloadMessageContent:self.messages count:count];
+    
     [self initTableViewData];
     
     [self.tableView reloadData];
@@ -300,6 +302,10 @@
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:section];
     
     [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:NO];
+}
+
+- (void)sendMessage:(IMessage *)msg withImage:(UIImage*)image {
+    [[Outbox instance] uploadImage:msg withImage:image];
 }
 
 - (void)sendMessage:(IMessage*)message {

@@ -61,6 +61,7 @@
 - (id)initWithImageURL:(NSString*)imageURL;
 - (id)initWithAudio:(Audio*)audio;
 - (id)initWithNotification:(GroupNotification*)notification;
+- (id)initWithLocation:(CLLocationCoordinate2D)location;
 - (id)initWithRaw:(NSString*)raw;
 
 @property(nonatomic)int type;
@@ -69,6 +70,7 @@
 @property(nonatomic, readonly)NSString *text;
 @property(nonatomic, readonly)Audio *audio;
 @property(nonatomic, readonly)CLLocationCoordinate2D location;
+@property(nonatomic, readonly)NSString *snapshotURL;
 
 @property(nonatomic, readonly)GroupNotification *notification;
 @property(nonatomic, copy) NSString *notificationDesc;
