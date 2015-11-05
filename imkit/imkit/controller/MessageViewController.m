@@ -718,21 +718,12 @@
     
 }
 
-- (CGFloat)widthOfString:(NSString *)string withFont:(UIFont *)font {
-    NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:font, NSFontAttributeName, nil];
-    return [[[NSAttributedString alloc] initWithString:string attributes:attributes] size].width;
-}
-
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
-    
-    MessageTableSectionHeaderView *sectionView = [[[NSBundle mainBundle]loadNibNamed:@"MessageTableSectionHeaderView" owner:self options:nil] lastObject];
-    
     CGRect screenRect = [[UIScreen mainScreen] bounds];
     CGFloat screenWidth = screenRect.size.width;
     
-    CGRect rect = sectionView.frame;
-    rect.size.width = screenWidth;
-    sectionView.frame = rect;
+    CGRect rect = CGRectMake(0, 0, screenWidth, 30);
+    MessageTableSectionHeaderView *sectionView = [[MessageTableSectionHeaderView alloc] initWithFrame:rect];
     
     NSDate *curtDate = [self.timestamps objectAtIndex: section];
     NSDateComponents *components = [self getComponentOfDate:curtDate];
@@ -748,17 +739,7 @@
         timeStr = [self getConversationTimeString:curtDate];
         sectionView.sectionHeader.text = timeStr;
     }
-    
-    CGFloat width = [self widthOfString:timeStr withFont:[UIFont systemFontOfSize:MES_SECTION_TIMER_FONT_SIZE]] + 12;
-    if (width>(self.view.frame.size.width/2)) {
-        width = self.view.frame.size.width/2;
-    }
-    CGRect frame = sectionView.sectionHeader.frame;
-    frame.size.width = width;
-    frame.origin.x = (sectionView.frame.size.width - width)/2;
-    [sectionView.sectionHeader setFrame:frame];
-    
-    sectionView.alpha = 0.9;
+
     return sectionView;
 }
 

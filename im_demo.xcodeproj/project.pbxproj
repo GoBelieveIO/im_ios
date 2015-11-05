@@ -132,7 +132,6 @@
 		6D69BD6D1B4449D0008EAA8A /* CheckDoubleLight7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DD71AB5883200197EBC /* CheckDoubleLight7@2x.png */; };
 		6D69BD6E1B4449D0008EAA8A /* btn_blue.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EC51AB58DC500197EBC /* btn_blue.png */; };
 		6D69BD6F1B4449D0008EAA8A /* ic_man@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EE41AB58DC500197EBC /* ic_man@3x.png */; };
-		6D69BD701B4449D0008EAA8A /* MessageTableSectionHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E0E1AB5883200197EBC /* MessageTableSectionHeaderView.xib */; };
 		6D69BD711B4449D0008EAA8A /* ic_back@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54ED51AB58DC500197EBC /* ic_back@2x.png */; };
 		6D69BD721B4449D0008EAA8A /* BubbleOutgoing@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DD11AB5883200197EBC /* BubbleOutgoing@2x.png */; };
 		6D69BD731B4449D0008EAA8A /* MicChats@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DE91AB5883200197EBC /* MicChats@2x.png */; };
@@ -277,7 +276,6 @@
 		6D8E72C91B750A31004E069E /* CheckDoubleLight7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DD71AB5883200197EBC /* CheckDoubleLight7@2x.png */; };
 		6D8E72CA1B750A31004E069E /* btn_blue.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EC51AB58DC500197EBC /* btn_blue.png */; };
 		6D8E72CB1B750A31004E069E /* ic_man@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EE41AB58DC500197EBC /* ic_man@3x.png */; };
-		6D8E72CC1B750A31004E069E /* MessageTableSectionHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E0E1AB5883200197EBC /* MessageTableSectionHeaderView.xib */; };
 		6D8E72CD1B750A31004E069E /* ic_back@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54ED51AB58DC500197EBC /* ic_back@2x.png */; };
 		6D8E72CE1B750A31004E069E /* BubbleOutgoing@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DD11AB5883200197EBC /* BubbleOutgoing@2x.png */; };
 		6D8E72CF1B750A31004E069E /* MicChats@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DE91AB5883200197EBC /* MicChats@2x.png */; };
@@ -365,7 +363,6 @@
 		6DF54E4C1AB5883200197EBC /* save@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E081AB5883200197EBC /* save@2x.png */; };
 		6DF54E4D1AB5883200197EBC /* messageReceived.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E0A1AB5883200197EBC /* messageReceived.aiff */; };
 		6DF54E4E1AB5883200197EBC /* messageSent.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E0B1AB5883200197EBC /* messageSent.aiff */; };
-		6DF54E501AB5883200197EBC /* MessageTableSectionHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E0E1AB5883200197EBC /* MessageTableSectionHeaderView.xib */; };
 		6DF54E541AB5886B00197EBC /* libimsdk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF54DBB1AB587B700197EBC /* libimsdk.a */; };
 		6DF54E571AB588C700197EBC /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E561AB588C700197EBC /* MainViewController.m */; };
 		6DF54E591AB58AC400197EBC /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF54E581AB58AC400197EBC /* AssetsLibrary.framework */; };
@@ -596,7 +593,6 @@
 		6DF54E081AB5883200197EBC /* save@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "save@2x.png"; sourceTree = "<group>"; };
 		6DF54E0A1AB5883200197EBC /* messageReceived.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = messageReceived.aiff; sourceTree = "<group>"; };
 		6DF54E0B1AB5883200197EBC /* messageSent.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = messageSent.aiff; sourceTree = "<group>"; };
-		6DF54E0E1AB5883200197EBC /* MessageTableSectionHeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MessageTableSectionHeaderView.xib; sourceTree = "<group>"; };
 		6DF54E551AB588C700197EBC /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
 		6DF54E561AB588C700197EBC /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
 		6DF54E581AB58AC400197EBC /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
@@ -858,7 +854,6 @@
 			children = (
 				6DF54DCA1AB5883200197EBC /* images */,
 				6DF54E091AB5883200197EBC /* sounds */,
-				6DF54E0C1AB5883200197EBC /* xibs */,
 			);
 			name = imKitRes;
 			path = imkit/imkit/imKitRes;
@@ -941,14 +936,6 @@
 				6DF54E0B1AB5883200197EBC /* messageSent.aiff */,
 			);
 			path = sounds;
-			sourceTree = "<group>";
-		};
-		6DF54E0C1AB5883200197EBC /* xibs */ = {
-			isa = PBXGroup;
-			children = (
-				6DF54E0E1AB5883200197EBC /* MessageTableSectionHeaderView.xib */,
-			);
-			path = xibs;
 			sourceTree = "<group>";
 		};
 		6DF54E651AB58B8500197EBC /* Frameworks */ = {
@@ -1377,7 +1364,6 @@
 				6D69BD6D1B4449D0008EAA8A /* CheckDoubleLight7@2x.png in Resources */,
 				6D69BD6E1B4449D0008EAA8A /* btn_blue.png in Resources */,
 				6D69BD6F1B4449D0008EAA8A /* ic_man@3x.png in Resources */,
-				6D69BD701B4449D0008EAA8A /* MessageTableSectionHeaderView.xib in Resources */,
 				6D69BD711B4449D0008EAA8A /* ic_back@2x.png in Resources */,
 				6D69BD721B4449D0008EAA8A /* BubbleOutgoing@2x.png in Resources */,
 				6D69BD731B4449D0008EAA8A /* MicChats@2x.png in Resources */,
@@ -1488,7 +1474,6 @@
 				6D8E72C91B750A31004E069E /* CheckDoubleLight7@2x.png in Resources */,
 				6D8E72CA1B750A31004E069E /* btn_blue.png in Resources */,
 				6D8E72CB1B750A31004E069E /* ic_man@3x.png in Resources */,
-				6D8E72CC1B750A31004E069E /* MessageTableSectionHeaderView.xib in Resources */,
 				6D8E72CD1B750A31004E069E /* ic_back@2x.png in Resources */,
 				6D8E72CE1B750A31004E069E /* BubbleOutgoing@2x.png in Resources */,
 				6D8E72CF1B750A31004E069E /* MicChats@2x.png in Resources */,
@@ -1604,7 +1589,6 @@
 				6D8E72E61B750B04004E069E /* group-Info.plist in Resources */,
 				6DF54EED1AB58DC500197EBC /* btn_blue.png in Resources */,
 				6DF54F0A1AB58DC500197EBC /* ic_man@3x.png in Resources */,
-				6DF54E501AB5883200197EBC /* MessageTableSectionHeaderView.xib in Resources */,
 				6DF54EFC1AB58DC500197EBC /* ic_back@2x.png in Resources */,
 				6DF54E151AB5883200197EBC /* BubbleOutgoing@2x.png in Resources */,
 				6DF54E2D1AB5883200197EBC /* MicChats@2x.png in Resources */,

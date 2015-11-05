@@ -14,6 +14,7 @@
 
 @interface MessageTableSectionHeaderView : UIView
 
-@property (nonatomic,weak) IBOutlet UILabel* sectionHeader;
+//@property (nonatomic,weak) IBOutlet UILabel* sectionHeader;
 
+@property (nonatomic)  UILabel* sectionHeader;
 @end

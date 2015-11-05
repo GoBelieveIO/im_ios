@@ -9,21 +9,42 @@
 
 #import "MessageTableSectionHeaderView.h"
 #import <QuartzCore/QuartzCore.h>
+#import "Constants.h"
+
+@interface PaddingLabel : UILabel
+
+@end
+
+@implementation PaddingLabel
+
+-(CGSize)intrinsicContentSize{
+    CGSize contentSize = [super intrinsicContentSize];
+    return CGSizeMake(contentSize.width + 12, contentSize.height);
+}
+
+@end
 
 @implementation MessageTableSectionHeaderView
 
--(void)awakeFromNib{
-    self.sectionHeader.layer.cornerRadius = 10;
-    self.sectionHeader.layer.masksToBounds = YES;
+-(id)initWithFrame:(CGRect)frame {
+    self = [super initWithFrame:frame];
+    if (self) {
+        self.sectionHeader = [[PaddingLabel alloc] init];
+        self.sectionHeader.layer.cornerRadius = 10;
+        self.sectionHeader.layer.masksToBounds = YES;
+        self.sectionHeader.backgroundColor = RGBCOLOR(0xF6, 0xF4, 0xE5);
+        self.sectionHeader.textAlignment = NSTextAlignmentCenter;
+        self.sectionHeader.translatesAutoresizingMaskIntoConstraints = NO;
+
+        [self addConstraint:[NSLayoutConstraint constraintWithItem:self.sectionHeader attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
+        [self addConstraint:[NSLayoutConstraint constraintWithItem:self.sectionHeader attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
+
+        [self addSubview:self.sectionHeader];
+
+        self.alpha = 0.9;
+    }
+    return self;
 }
 
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect
-{
-    // Drawing code
-}
-*/
 
 @end
