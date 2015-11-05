@@ -10,7 +10,9 @@
 #import <UIKit/UIKit.h>
 #import "BubbleView.h"
 
-#define  kMessageImagViewHeight 120
+#define kImageWidth  240
+#define kImageHeight 240
+#define  kMessageImagViewHeight (kImageHeight + kMarginTop + kMarginBottom + kPaddingTop + kPaddingBottom)
 
 @interface MessageImageView : BubbleView
 

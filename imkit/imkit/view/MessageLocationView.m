@@ -9,9 +9,6 @@
 
 #import "MessageLocationView.h"
 
-#define kImageWidth  150
-#define kImageHeight 100
-
 #define kPinImageWidth 32
 #define kPinImageHeight 39
 
@@ -66,22 +63,9 @@
 }
 
 
-- (void)drawRect:(CGRect)frame{
-    [super drawRect:frame];
-    
-    UIImage *image = (self.selectedToShowCopyMenu) ? [self bubbleImageHighlighted] : [self bubbleImage];
-    
-    CGRect bubbleFrame = [self bubbleFrame];
-    [image drawInRect:bubbleFrame];
-    
-    [self drawMsgStateSign: frame];
-    
-}
-
-
 #pragma mark - Drawing
 - (CGRect)bubbleFrame {
-    CGSize bubbleSize = CGSizeMake(kImageWidth + 35, kImageHeight + 15);
+    CGSize bubbleSize = CGSizeMake(kLocationWidth + kBubblePaddingRight, kLocationHeight + kPaddingTop + kPaddingBottom);
     return CGRectMake(floorf(self.type == BubbleMessageTypeOutgoing ? self.frame.size.width - bubbleSize.width : 0.0f),
                       floorf(kMarginTop),
                       floorf(bubbleSize.width),
@@ -91,18 +75,20 @@
 
 
 -(void)layoutSubviews {
+    [super layoutSubviews];
+    
     UIImage *image = (self.selectedToShowCopyMenu) ? [self bubbleImageHighlighted] : [self bubbleImage];
     CGRect bubbleFrame = [self bubbleFrame];
     
     if (self.imageView) {
         
-        CGSize imageSize = CGSizeMake(kImageWidth, kImageHeight);
+        CGSize imageSize = CGSizeMake(kLocationWidth, kLocationHeight);
         CGFloat imgX = image.leftCapWidth + (self.type == BubbleMessageTypeOutgoing ? bubbleFrame.origin.x + kOuttingMoveRight: KInComingMoveRight);
         
         CGRect imageFrame = CGRectMake(imgX,
-                                       kPaddingTop + kMarginTop,
-                                       imageSize.width - kPaddingTop - kMarginTop,
-                                       imageSize.height - kPaddingBottom + 2.f);
+                                       kMarginTop + kPaddingTop,
+                                       imageSize.width,
+                                       imageSize.height);
         [self.imageView setFrame:imageFrame];
         
         [self.indicatorView setFrame:imageFrame];

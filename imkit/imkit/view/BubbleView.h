@@ -15,13 +15,7 @@ extern CGFloat const kJSAvatarSize;
 #define kMarginBottom 4.0f
 #define kPaddingTop 8.0f
 #define kPaddingBottom 8.0f
-#define kBubblePaddingRight 45.0f
-
-typedef enum {
-    BubbleMessageReceiveStateNone = 0,
-    BubbleMessageReceiveStateServer,
-    BubbleMessageReceiveStateClient
-}BubbleMessageReceiveStateType;
+#define kBubblePaddingRight 36.0f
 
 typedef enum {
     BubbleMessageTypeIncoming = 0,
@@ -34,7 +28,6 @@ typedef enum {
 
 @property (assign, nonatomic) BubbleMessageType type;
 @property (assign, nonatomic) BOOL selectedToShowCopyMenu;
-@property (nonatomic) BubbleMessageReceiveStateType msgStateType;
 @property (nonatomic) UIImageView *receiveStateImgSign;
 
 @property (nonatomic) UIActivityIndicatorView *downloadIndicatorView;
@@ -47,9 +40,7 @@ typedef enum {
 - (UIImage *)bubbleImage;
 - (UIImage *)bubbleImageHighlighted;
 
--(void) showSendErrorBtn:(BOOL)show;
-
--(void) drawMsgStateSign:(CGRect) frame;
+-(void)showSendErrorBtn:(BOOL)show;
 
 #pragma mark - Bubble view
 + (UIImage *)bubbleImageForType:(BubbleMessageType)aType;

@@ -25,6 +25,7 @@
 #import "MessageImageView.h"
 #import "MessageLocationView.h"
 #import "MessageViewCell.h"
+#import "MessageNotificationView.h"
 
 #import "MEESImageViewController.h"
 
@@ -690,9 +691,9 @@
             return kAudioViewCellHeight + nameHeight;
             break;
         case MESSAGE_LOCATION:
-            return kMessageImagViewHeight + nameHeight;
+            return kMessageLocationViewHeight + nameHeight;
         case MESSAGE_GROUP_NOTIFICATION:
-            return 30;
+            return kMessageNotificationViewHeight;
         default:
             return 0;
     }

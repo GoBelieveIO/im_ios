@@ -44,11 +44,6 @@ CGFloat const kJSAvatarSize = 50.0f;
     [self setNeedsDisplay];
 }
 
-- (void) setMsgStateType:(BubbleMessageReceiveStateType)type{
-    _msgStateType = type;
-    [self setNeedsDisplay];
-}
-
 - (void)setSelectedToShowCopyMenu:(BOOL)isSelected{
     _selectedToShowCopyMenu = isSelected;
     [self setNeedsDisplay];
@@ -75,46 +70,22 @@ CGFloat const kJSAvatarSize = 50.0f;
 
 }
 
--(void) drawMsgStateSign:(CGRect) frame{
-    if (self.type == BubbleMessageTypeOutgoing) {
-        UIImage *msgSignImg = nil;
-        switch (_msgStateType) {
-            case BubbleMessageReceiveStateNone:
-            {
-                msgSignImg = [UIImage imageNamed:@"CheckDoubleLight"];
-            }
-                break;
-            case BubbleMessageReceiveStateClient:
-            {
-                msgSignImg = [UIImage imageNamed:@"CheckDoubleGreen"];
-            }
-                break;
-            case BubbleMessageReceiveStateServer:
-            {
-                msgSignImg = [UIImage imageNamed:@"CheckSingleGreen"];
-            }
-                break;
-            default:
-                break;
-        }
-        
-        CGRect bubbleFrame = [self bubbleFrame];
-        
-        CGFloat imgX = bubbleFrame.origin.x + bubbleFrame.size.width - msgSignImg.size.width;
-        imgX = self.type == BubbleMessageTypeOutgoing ?(imgX - 15):(imgX - 5);
-        
-        CGRect msgStateSignRect = CGRectMake(imgX, frame.size.height -  kPaddingBottom - msgSignImg.size.height, msgSignImg.size.width , msgSignImg.size.height);
-        
-        [msgSignImg drawInRect:msgStateSignRect];
-        
-        
-        imgX = bubbleFrame.origin.x;
-        CGRect rect = self.msgSendErrorBtn.frame;
-        rect.origin.x = imgX - self.msgSendErrorBtn.frame.size.width + 2;
-        rect.origin.y = bubbleFrame.origin.y + bubbleFrame.size.height  - self.msgSendErrorBtn.frame.size.height - kMarginBottom;
-        [self.msgSendErrorBtn setFrame:rect];
-        [self bringSubviewToFront:self.msgSendErrorBtn];
-    }
+- (void)drawRect:(CGRect)frame{
+    [super drawRect:frame];
+    
+    UIImage *image = (self.selectedToShowCopyMenu) ? [self bubbleImageHighlighted] : [self bubbleImage];
+    
+    CGRect bubbleFrame = [self bubbleFrame];
+    [image drawInRect:bubbleFrame];
+}
+
+-(void)layoutSubviews {
+    CGRect bubbleFrame = [self bubbleFrame];
+    CGFloat imgX = bubbleFrame.origin.x;
+    CGRect rect = self.msgSendErrorBtn.frame;
+    rect.origin.x = imgX - self.msgSendErrorBtn.frame.size.width + 2;
+    rect.origin.y = bubbleFrame.origin.y + bubbleFrame.size.height  - self.msgSendErrorBtn.frame.size.height - kMarginBottom;
+    [self.msgSendErrorBtn setFrame:rect];
 }
 
 #pragma mark - Bubble view

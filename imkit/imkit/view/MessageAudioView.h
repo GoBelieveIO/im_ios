@@ -12,6 +12,7 @@
 #import "IMessage.h"
 
 #define kAudioViewCellHeight 58 
+#define kAudioCellWidth 210
 
 @interface MessageAudioView : BubbleView <AVAudioPlayerDelegate>
 
@@ -23,7 +24,7 @@
 
 @property (nonatomic ,strong) IMessage *msg;
 
--(void)initializeWithMsg:(IMessage *)msg withType:(BubbleMessageType)type withMsgStateType:(BubbleMessageReceiveStateType)stateType;
+-(void)initializeWithMsg:(IMessage *)msg withType:(BubbleMessageType)type;
 
 -(void)setPlaying:(BOOL)playing;
 -(void)setDownloading:(BOOL)downloading;

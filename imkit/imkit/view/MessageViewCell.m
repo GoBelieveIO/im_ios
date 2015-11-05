@@ -132,21 +132,13 @@
     } else {
         self.nameLabel.textAlignment = NSTextAlignmentLeft;
     }
-    
-    BubbleMessageReceiveStateType state;
-    if(message.isACK){
-        state =  BubbleMessageReceiveStateServer;
-    }else{
-        state =  BubbleMessageReceiveStateNone;
-    }
-    
+
     switch (message.content.type) {
         case MESSAGE_TEXT:
         {
             MessageTextView *textView = (MessageTextView*)self.bubbleView;
             textView.text = message.content.text;
             textView.type = msgType;
-            textView.msgStateType = state;
         }
             break;
         case MESSAGE_IMAGE:
@@ -154,13 +146,12 @@
             MessageImageView *msgImageView = (MessageImageView*)self.bubbleView;
             msgImageView.data = message.content.imageURL;
             msgImageView.type = msgType;
-            msgImageView.msgStateType = state;
         }
             break;
         case MESSAGE_AUDIO:
         {
             MessageAudioView *audioView = (MessageAudioView*)self.bubbleView;
-            [audioView initializeWithMsg:message withType:msgType withMsgStateType:state];
+            [audioView initializeWithMsg:message withType:msgType];
         }
             break;
         case MESSAGE_GROUP_NOTIFICATION:
@@ -173,7 +164,6 @@
         {
             MessageLocationView *locationView = (MessageLocationView*)self.bubbleView;
             locationView.type = msgType;
-            locationView.msgStateType = state;
             [locationView setSnapshotURL:message.content.snapshotURL];
         }
         default:

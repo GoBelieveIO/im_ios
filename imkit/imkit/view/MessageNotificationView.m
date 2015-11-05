@@ -26,6 +26,8 @@
 }
 
 -(void)layoutSubviews {
+    [super layoutSubviews];
+    
     CGSize size = [[self class] bubbleSizeForText:self.label.text withFont:self.label.font];
     
     if (self.frame.size.width > size.width) {

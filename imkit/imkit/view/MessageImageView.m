@@ -17,8 +17,7 @@
 
 #import "MessageImageView.h"
 
-#define kImageWidth  100
-#define kImageHeight 100
+
 
 #define KInComingMoveRight  8.0
 #define kOuttingMoveRight   3.0
@@ -61,22 +60,10 @@
     [self setNeedsDisplay];
 }
 
-- (void)drawRect:(CGRect)frame{
-    [super drawRect:frame];
-    
-	UIImage *image = (self.selectedToShowCopyMenu) ? [self bubbleImageHighlighted] : [self bubbleImage];
-    
-    CGRect bubbleFrame = [self bubbleFrame];
-	[image drawInRect:bubbleFrame];
-    
-    [self drawMsgStateSign: frame];
-    
-}
-
 
 #pragma mark - Drawing
 - (CGRect)bubbleFrame {
-    CGSize bubbleSize = CGSizeMake(kImageWidth + 35, kImageHeight + 15);
+    CGSize bubbleSize = CGSizeMake(kImageWidth + kBubblePaddingRight, kImageHeight + kPaddingTop + kPaddingBottom);
     return CGRectMake(floorf(self.type == BubbleMessageTypeOutgoing ? self.frame.size.width - bubbleSize.width : 0.0f),
                       floorf(kMarginTop),
                       floorf(bubbleSize.width),
@@ -105,6 +92,8 @@
 
 
 -(void)layoutSubviews {
+    [super layoutSubviews];
+    
     UIImage *image = (self.selectedToShowCopyMenu) ? [self bubbleImageHighlighted] : [self bubbleImage];
     CGRect bubbleFrame = [self bubbleFrame];
     
@@ -114,9 +103,9 @@
         CGFloat imgX = image.leftCapWidth + (self.type == BubbleMessageTypeOutgoing ? bubbleFrame.origin.x + kOuttingMoveRight: KInComingMoveRight);
         
         CGRect imageFrame = CGRectMake(imgX,
-                                       kPaddingTop + kMarginTop,
-                                       imageSize.width - kPaddingTop - kMarginTop,
-                                       imageSize.height - kPaddingBottom + 2.f);
+                                       kMarginTop + kPaddingTop,
+                                       imageSize.width,
+                                       imageSize.height);
         [self.imageView setFrame:imageFrame];
         
     }

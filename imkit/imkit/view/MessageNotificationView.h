@@ -9,6 +9,7 @@
 
 #import <UIKit/UIKit.h>
 #import "BubbleView.h"
+#define  kMessageNotificationViewHeight 30
 
 @interface MessageNotificationView : BubbleView
 @property(nonatomic) UILabel *label;

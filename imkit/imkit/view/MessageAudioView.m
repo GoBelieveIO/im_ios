@@ -16,8 +16,6 @@
 #define kblank 5
 #define kMargin 20
 
-#define kAudioCellWidth 210
-
 #define kPlayBtnWidth    26
 #define kPlayBtnHeight   27
 #define kmicroBtnWidth   14
@@ -26,8 +24,6 @@
 #define ktimeLabelHeight 20
 
 #define kProgressViewHeight 3
-
-
 
 @implementation MessageAudioView
 
@@ -80,9 +76,8 @@
     return self;
 }
 
--(void)initializeWithMsg:(IMessage *)msg withType:(BubbleMessageType)type withMsgStateType:(BubbleMessageReceiveStateType)stateType{
+-(void)initializeWithMsg:(IMessage *)msg withType:(BubbleMessageType)type {
     [super setType:type];
-    [super setMsgStateType:stateType];
     _msg = msg;
     
     int minute = self.msg.content.audio.duration/60;
@@ -133,14 +128,6 @@
     
 }
 
-- (void)drawRect:(CGRect)rect
-{
-    [super drawRect:rect];
-    UIImage *image = (self.selectedToShowCopyMenu) ? [self bubbleImageHighlighted] : [self bubbleImage];
-    CGRect bubbleFrame = [self bubbleFrame];
-	[image drawInRect:bubbleFrame];
-    [self drawMsgStateSign: rect];
-}
 
 -(void)setDownloading:(BOOL)downloading {
     if (downloading) {
@@ -163,6 +150,7 @@
 }
 
 -(void)layoutSubviews {
+    [super layoutSubviews];
     
     UIImage *image = (self.selectedToShowCopyMenu) ? [self bubbleImageHighlighted] : [self bubbleImage];
     CGSize bubbleSize = CGSizeMake(kAudioCellWidth, kAudioViewCellHeight);
@@ -188,5 +176,7 @@
     
     self.uploadIndicatorView.frame = bubbleFrame;
     self.downloadIndicatorView.frame = bubbleFrame;
+    
+
 }
 @end

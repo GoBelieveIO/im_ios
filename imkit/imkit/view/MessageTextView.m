@@ -25,6 +25,7 @@
 - (void)setText:(NSString *)newText
 {
     _text = newText;
+    [self setNeedsLayout];
     [self setNeedsDisplay];
 }
 
@@ -45,9 +46,6 @@
     UIImage *image = (self.selectedToShowCopyMenu) ? [self bubbleImageHighlighted] : [self bubbleImage];
     
     CGRect bubbleFrame = [self bubbleFrame];
-	[image drawInRect:bubbleFrame];
-    
-    [self drawMsgStateSign: frame];
     
     CGSize textSize = [BubbleView textSizeForText:self.text withFont:[BubbleView font]];
     
