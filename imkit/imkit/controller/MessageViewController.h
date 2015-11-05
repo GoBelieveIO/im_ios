@@ -14,7 +14,7 @@
 
 typedef NSString* (^GetUserNameBlock)(int64_t uid);
 
-@interface MessageViewController : BaseMessageViewController < UIImagePickerControllerDelegate, UINavigationControllerDelegate,  UITextViewDelegate, UIGestureRecognizerDelegate, AVAudioRecorderDelegate, AVAudioPlayerDelegate, UIActionSheetDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface MessageViewController : BaseMessageViewController < UIImagePickerControllerDelegate, UINavigationControllerDelegate,  UITextViewDelegate, UIGestureRecognizerDelegate, AVAudioRecorderDelegate, AVAudioPlayerDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @property(nonatomic, copy) GetUserNameBlock getUserName;
 @property(nonatomic) BOOL isShowUserName;

@@ -13,11 +13,29 @@
 #import "MBProgressHUD.h"
 
 
+@interface PlaceAnnotation : NSObject <MKAnnotation>
 
-@interface LocationPickerController()<MKMapViewDelegate, UISearchBarDelegate, UISearchDisplayDelegate>
+@property (nonatomic, assign) CLLocationCoordinate2D coordinate;
+@property (nonatomic, copy) NSString *title;
+@property (nonatomic, copy) NSString *subTitle;
+@property (nonatomic, retain) NSURL *url;
+
+@end
+
+
+@implementation PlaceAnnotation
+
+@end
+
+@interface LocationPickerController()<MKMapViewDelegate, CLLocationManagerDelegate> {
+    CLLocationManager *_locationManager;
+}
 
 @property(nonatomic) MBProgressHUD *hub;
-@property(nonatomic) UIImageView *annotationView;
+@property(nonatomic) UIView *annotationView;
+
+@property(nonatomic) BOOL locating;
+@property(nonatomic) PlaceAnnotation *annotation;
 @end
 
 
@@ -28,6 +46,7 @@
         self.addressArray = [NSMutableArray array];
         self.addressSearchArray = [NSMutableArray array];
         self.userCoordinate = kCLLocationCoordinate2DInvalid;
+        self.locating = YES;
 	}
 	return self;
 }
@@ -36,7 +55,7 @@
     [super viewDidLoad];
     
     float h = self.view.bounds.size.height;
-    CGRect f = CGRectMake(0, 64, 320, h - 64);
+    CGRect f = CGRectMake(0, 64, self.view.bounds.size.width, h - 64);
     self.mapView = [[MKMapView alloc] initWithFrame:f];
     self.mapView.zoomEnabled       = YES;
     self.mapView.showsUserLocation = YES;
@@ -44,11 +63,20 @@
     self.mapView.mapType = MKMapTypeStandard;
     [self.view addSubview:self.mapView];
 
-    UIImage *image = [UIImage imageNamed:@"Fav_Located"];
+    //create annotation view
+    self.annotationView = [[UIView alloc] init];
+    UIImage *image = [UIImage imageNamed:@"imkitResource.bundle/PinFloatingGreen"];
     UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
-    imageView.frame = CGRectMake(f.size.width/2 - 24 + 11, f.size.height/2 - 16 - 16, 48, 32);
-    [self.mapView addSubview:imageView];
-    self.annotationView = imageView;
+    imageView.frame = CGRectMake(0, 0, 32, 39);
+    [self.annotationView addSubview:imageView];
+    image = [UIImage imageNamed:@"imkitResource.bundle/PinHole"];
+    imageView = [[UIImageView alloc] initWithImage:image];
+    imageView.frame = CGRectMake(6, 49, 5, 4);
+    [self.annotationView addSubview:imageView];
+
+    self.annotationView.frame = CGRectMake(f.size.width/2 - 8, f.size.height/2 - 51, 32, 53);
+    [self.mapView addSubview:self.annotationView];
+
     self.annotationView.hidden = YES;
     
     UIButton *itemButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 27, 60,30)];
@@ -59,24 +87,20 @@
 
     
     UIButton *rightButton = [[UIButton alloc] initWithFrame:CGRectMake(280, 27, 60,30)];
-    [rightButton setTitle:@"发送" forState:UIControlStateNormal];
+    [rightButton setTitle:NSLocalizedString(@"send", @"Send")  forState:UIControlStateNormal];
     [rightButton setTitleColor:[UIColor greenColor] forState:UIControlStateNormal];
     [rightButton addTarget:self action:@selector(actionRight:) forControlEvents:UIControlEventTouchUpInside];
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightButton];
     
-    self.navigationItem.title = @"位置";
-    
-#if !TARGET_IPHONE_SIMULATOR
-    if (![CLLocationManager locationServicesEnabled]) {
+    self.title = NSLocalizedString(@"location.messageType", @"location message");
 
-    }
-#endif
-    
     self.hub = [[MBProgressHUD alloc] initWithView:self.view];
     [self.view addSubview:self.hub];
-    self.hub.labelText = @"定位中...";
+    self.hub.labelText = NSLocalizedString(@"location.ongoning", @"locating...");
     [self.hub show:YES];
+    
+    [self startLocation];
 }
 
 - (void)dealloc {
@@ -84,6 +108,20 @@
     self.addressSearchArray = nil;
 }
 
+- (void)startLocation
+{
+    if([CLLocationManager locationServicesEnabled]){
+        _locationManager = [[CLLocationManager alloc] init];
+        _locationManager.delegate = self;
+        _locationManager.distanceFilter = 5;
+        _locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation;//kCLLocationAccuracyBest;
+        if ([[UIDevice currentDevice].systemVersion floatValue] >= 8.0) {
+            [_locationManager requestWhenInUseAuthorization];
+        }
+    }
+    
+    self.navigationItem.rightBarButtonItem.enabled = NO;
+}
 
 - (void)actionLeft:(id)sender {
     [self.navigationController popViewControllerAnimated:YES];
@@ -112,18 +150,16 @@
     if (userLocation.location.horizontalAccuracy < 0 || userLocation.location.horizontalAccuracy > 10000) {
         return;
     }
-    
-    BOOL updateLocationInfo = NO;
-    if (!CLLocationCoordinate2DIsValid(self.userCoordinate)) {
-        updateLocationInfo = YES;
-        
+
+    if (self.locating) {
+        self.locating = NO;
         MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(userLocation.coordinate, 300, 500);
-        [lmapView setRegion:region animated:YES];
-        self.userCoordinate = userLocation.coordinate;
-        
-        self.annotationView.hidden = NO;
+        [lmapView setRegion:region animated:NO];
         [self.hub hide:YES];
     }
+    
+    self.userCoordinate = userLocation.coordinate;
+    self.navigationItem.rightBarButtonItem.enabled = YES;
 }
 
 - (void)mapView:(MKMapView *)mapView didFailToLocateUserWithError:(NSError *)error {
@@ -137,10 +173,93 @@
 
 - (void)mapView:(MKMapView *)mapView regionWillChangeAnimated:(BOOL)animated {
     NSLog(@"regionWillChangeAnimated");
+    if (self.locating) {
+        return;
+    }
+    self.annotationView.hidden = NO;
+    if (self.annotation) {
+        [self.mapView removeAnnotation:self.annotation];
+        self.annotation = nil;
+    }
 }
 
 - (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated {
     NSLog(@"regionDidChangeAnimated");
+    
+    if (self.locating) {
+        return;
+    }
+    
+    self.annotationView.hidden = YES;
+    
+    
+    CGPoint point;
+    point.x = self.mapView.bounds.size.width/2;
+    point.y = self.mapView.bounds.size.height/2;
+    
+    CLLocationCoordinate2D location = [self.mapView convertPoint:point toCoordinateFromView:self.mapView];
+    
+    if (self.annotation) {
+        [self.mapView removeAnnotation:self.annotation];
+        self.annotation = nil;
+    }
+
+    PlaceAnnotation *annotation = [[PlaceAnnotation alloc] init];
+    annotation.coordinate = location;
+    [self.mapView addAnnotation:annotation];
+    self.annotation = annotation;
+    
+    __weak LocationPickerController *wself = self;
+    CLGeocoder *geocoder = [[CLGeocoder alloc] init];
+    
+    CLLocation *loc = [[CLLocation alloc] initWithLatitude:location.latitude longitude:location.longitude];
+    [geocoder reverseGeocodeLocation:loc completionHandler:^(NSArray *array, NSError *error) {
+        if (!error && array.count > 0) {
+            CLPlacemark *placemark = [array objectAtIndex:0];
+            annotation.title = placemark.name;
+            if (wself.annotation) {
+                [wself.mapView selectAnnotation:wself.annotation animated:YES];
+            }
+        }
+    }];
+}
+
+
+- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation
+{
+    MKPinAnnotationView *annotationView = nil;
+    
+    if ([annotation isKindOfClass:[PlaceAnnotation class]]) {
+        annotationView = (MKPinAnnotationView *)[self.mapView dequeueReusableAnnotationViewWithIdentifier:@"Pin"];
+        
+        if (annotationView == nil) {
+            annotationView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"Pin"];
+            annotationView.canShowCallout = YES;
+            annotationView.animatesDrop = NO;
+            annotationView.pinColor = MKPinAnnotationColorGreen;
+        }
+    }
+    return annotationView;
+}
+
+
+#pragma mark CLLocationManagerDelegate
+- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
+{
+    switch (status) {
+        case kCLAuthorizationStatusNotDetermined:
+            if ([_locationManager respondsToSelector:@selector(requestAlwaysAuthorization)])
+            {
+                [_locationManager requestWhenInUseAuthorization];
+            }
+            break;
+        case kCLAuthorizationStatusDenied:
+        {
+            
+        }
+        default:
+            break;
+    }
 }
 
 

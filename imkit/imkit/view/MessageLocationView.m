@@ -9,8 +9,11 @@
 
 #import "MessageLocationView.h"
 
-#define kImageWidth  100
+#define kImageWidth  150
 #define kImageHeight 100
+
+#define kPinImageWidth 32
+#define kPinImageHeight 39
 
 #define KInComingMoveRight  8.0
 #define kOuttingMoveRight   3.0
@@ -18,6 +21,7 @@
 
 @interface MessageLocationView()
 @property (nonatomic) UIActivityIndicatorView *indicatorView;
+@property (nonatomic) UIImageView *pinImageView;
 @end
 
 @implementation MessageLocationView
@@ -32,6 +36,10 @@
         self.imageView = imageView;
         self.imageView.userInteractionEnabled = YES;
         
+        self.pinImageView = [[UIImageView alloc] init];
+        UIImage *image = [UIImage imageNamed:@"imkitResource.bundle/PinGreen"];
+        self.pinImageView.image = image;
+        [self addSubview:self.pinImageView];
         
         self.indicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         
@@ -98,6 +106,11 @@
         [self.imageView setFrame:imageFrame];
         
         [self.indicatorView setFrame:imageFrame];
+
+        //center
+        CGPoint centerPoint = CGPointMake(imageFrame.origin.x + imageFrame.size.width/2, imageFrame.origin.y + imageFrame.size.height/2);
+        CGRect pinFrame = CGRectMake(centerPoint.x - 8, centerPoint.y - 36, kPinImageWidth, kPinImageHeight);
+        self.pinImageView.frame = pinFrame;
     }
 }
 

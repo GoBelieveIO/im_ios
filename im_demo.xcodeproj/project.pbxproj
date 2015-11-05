@@ -294,6 +294,9 @@
 		6D8E72DA1B750A31004E069E /* CheckDoubleLight@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DD81AB5883200197EBC /* CheckDoubleLight@2x.png */; };
 		6D8E72E61B750B04004E069E /* group-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6D8E72E51B750B04004E069E /* group-Info.plist */; };
 		6D8E72E91B750B79004E069E /* GroupLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D8E72E81B750B79004E069E /* GroupLoginViewController.m */; };
+		6D9C46C91BEB09DC0053066A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C46CB1BEB09DC0053066A /* InfoPlist.strings */; };
+		6D9C46D41BEB0A940053066A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C46D61BEB0A940053066A /* Localizable.strings */; };
+		6D9C46EB1BEB52930053066A /* imkitResource.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 6DF882171BEA11B4003F7B87 /* imkitResource.bundle */; };
 		6DEE567C1BDC7404002BCAB8 /* Fav_Located@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DEE567B1BDC7404002BCAB8 /* Fav_Located@2x.png */; };
 		6DF54D911AB5862000197EBC /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54D901AB5862000197EBC /* main.m */; };
 		6DF54D941AB5862000197EBC /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54D931AB5862000197EBC /* AppDelegate.m */; };
@@ -363,7 +366,6 @@
 		6DF54E4D1AB5883200197EBC /* messageReceived.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E0A1AB5883200197EBC /* messageReceived.aiff */; };
 		6DF54E4E1AB5883200197EBC /* messageSent.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E0B1AB5883200197EBC /* messageSent.aiff */; };
 		6DF54E501AB5883200197EBC /* MessageTableSectionHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E0E1AB5883200197EBC /* MessageTableSectionHeaderView.xib */; };
-		6DF54E531AB5886B00197EBC /* libimkit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF54DC51AB587BF00197EBC /* libimkit.a */; };
 		6DF54E541AB5886B00197EBC /* libimsdk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF54DBB1AB587B700197EBC /* libimsdk.a */; };
 		6DF54E571AB588C700197EBC /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E561AB588C700197EBC /* MainViewController.m */; };
 		6DF54E591AB58AC400197EBC /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF54E581AB58AC400197EBC /* AssetsLibrary.framework */; };
@@ -435,6 +437,7 @@
 		6DF54F091AB58DC500197EBC /* ic_dustbin@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EE31AB58DC500197EBC /* ic_dustbin@3x.png */; };
 		6DF54F0A1AB58DC500197EBC /* ic_man@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EE41AB58DC500197EBC /* ic_man@3x.png */; };
 		6DF54F0B1AB58DC500197EBC /* msg_state_fail@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EE51AB58DC500197EBC /* msg_state_fail@2x.png */; };
+		6DF882181BEA14F4003F7B87 /* libimkit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF54DC51AB587BF00197EBC /* libimkit.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -487,6 +490,20 @@
 			remoteGlobalIDString = 6D032F911AA9B0F5004AA39F;
 			remoteInfo = imkit;
 		};
+		6DF882131BEA11B3003F7B87 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6DF54DBE1AB587BF00197EBC /* imkit.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 6DF881991BEA113F003F7B87;
+			remoteInfo = imkitResource;
+		};
+		6DF882161BEA11B4003F7B87 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6DF54DBE1AB587BF00197EBC /* imkit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 6DF8819A1BEA113F003F7B87;
+			remoteInfo = imkitResource;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -500,6 +517,10 @@
 		6D8E72E51B750B04004E069E /* group-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "group-Info.plist"; sourceTree = "<group>"; };
 		6D8E72E71B750B79004E069E /* GroupLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GroupLoginViewController.h; sourceTree = "<group>"; };
 		6D8E72E81B750B79004E069E /* GroupLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GroupLoginViewController.m; sourceTree = "<group>"; };
+		6D9C46CA1BEB09DC0053066A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		6D9C46CC1BEB09E80053066A /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		6D9C46D51BEB0A940053066A /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		6D9C46D81BEB0ABB0053066A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		6DEE567B1BDC7404002BCAB8 /* Fav_Located@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Fav_Located@2x.png"; sourceTree = "<group>"; };
 		6DF54D8B1AB5862000197EBC /* im_demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = im_demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6DF54D8F1AB5862000197EBC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -722,7 +743,7 @@
 				6DF54E5D1AB58AD000197EBC /* UIKit.framework in Frameworks */,
 				6DF54E5B1AB58AC900197EBC /* AVFoundation.framework in Frameworks */,
 				6DF54E591AB58AC400197EBC /* AssetsLibrary.framework in Frameworks */,
-				6DF54E531AB5886B00197EBC /* libimkit.a in Frameworks */,
+				6DF882181BEA14F4003F7B87 /* libimkit.a in Frameworks */,
 				6DF54E541AB5886B00197EBC /* libimsdk.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -777,8 +798,10 @@
 		6DF54D8E1AB5862000197EBC /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				6D9C46D61BEB0A940053066A /* Localizable.strings */,
 				6D8E72E51B750B04004E069E /* group-Info.plist */,
 				6DF54D8F1AB5862000197EBC /* Info.plist */,
+				6D9C46CB1BEB09DC0053066A /* InfoPlist.strings */,
 				6D69BD911B444B79008EAA8A /* room-Info.plist */,
 				6DF54D901AB5862000197EBC /* main.m */,
 			);
@@ -825,6 +848,7 @@
 			children = (
 				6DF54DC51AB587BF00197EBC /* libimkit.a */,
 				6DF54DC71AB587BF00197EBC /* imkitTests.xctest */,
+				6DF882171BEA11B4003F7B87 /* imkitResource.bundle */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1167,6 +1191,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				6DF882141BEA11B3003F7B87 /* PBXTargetDependency */,
 				6DF54E521AB5886400197EBC /* PBXTargetDependency */,
 			);
 			name = im_demo;
@@ -1196,6 +1221,7 @@
 			knownRegions = (
 				en,
 				Base,
+				"zh-Hans",
 			);
 			mainGroup = 6DF54D821AB5862000197EBC;
 			productRefGroup = 6DF54D8C1AB5862000197EBC /* Products */;
@@ -1246,6 +1272,13 @@
 			fileType = wrapper.cfbundle;
 			path = imkitTests.xctest;
 			remoteRef = 6DF54DC61AB587BF00197EBC /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6DF882171BEA11B4003F7B87 /* imkitResource.bundle */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = imkitResource.bundle;
+			remoteRef = 6DF882161BEA11B4003F7B87 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -1477,6 +1510,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6D9C46EB1BEB52930053066A /* imkitResource.bundle in Resources */,
 				6DF54EFB1AB58DC500197EBC /* btn_grey@2x.png in Resources */,
 				6DF54E2C1AB5883200197EBC /* MicChats.png in Resources */,
 				6DF54EEE1AB58DC500197EBC /* btn_grey.png in Resources */,
@@ -1523,6 +1557,7 @@
 				6DF54F061AB58DC500197EBC /* btn_blue@3x.png in Resources */,
 				6DF54E4B1AB5883200197EBC /* PlayPressed@2x.png in Resources */,
 				6DF54EF21AB58DC500197EBC /* 640 1136.png in Resources */,
+				6D9C46C91BEB09DC0053066A /* InfoPlist.strings in Resources */,
 				6DF54E221AB5883200197EBC /* GroupChat.png in Resources */,
 				6DF54E381AB5883200197EBC /* MicRecBtn.png in Resources */,
 				6DF54EEA1AB58DC500197EBC /* bg_white.png in Resources */,
@@ -1574,6 +1609,7 @@
 				6DF54E151AB5883200197EBC /* BubbleOutgoing@2x.png in Resources */,
 				6DF54E2D1AB5883200197EBC /* MicChats@2x.png in Resources */,
 				6DF54E2A1AB5883200197EBC /* MicBlueSent.png in Resources */,
+				6D9C46D41BEB0A940053066A /* Localizable.strings in Resources */,
 				6DF54E4D1AB5883200197EBC /* messageReceived.aiff in Resources */,
 				6DF54E4C1AB5883200197EBC /* save@2x.png in Resources */,
 				6DF54E491AB5883200197EBC /* Play.png in Resources */,
@@ -1715,7 +1751,33 @@
 			name = imkit;
 			targetProxy = 6DF54E511AB5886400197EBC /* PBXContainerItemProxy */;
 		};
+		6DF882141BEA11B3003F7B87 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = imkitResource;
+			targetProxy = 6DF882131BEA11B3003F7B87 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		6D9C46CB1BEB09DC0053066A /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				6D9C46CA1BEB09DC0053066A /* en */,
+				6D9C46CC1BEB09E80053066A /* zh-Hans */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		6D9C46D61BEB0A940053066A /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				6D9C46D51BEB0A940053066A /* zh-Hans */,
+				6D9C46D81BEB0ABB0053066A /* en */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		6D69BD801B4449D0008EAA8A /* Debug */ = {
@@ -1831,7 +1893,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PROVISIONING_PROFILE = "";
@@ -1867,7 +1929,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
@@ -1881,6 +1943,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development IOS Push Services: com.beetle.im.demo";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development IOS Push Services: com.beetle.im.demo";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "demo/im_demo-prefix.pch";
 				INFOPLIST_FILE = demo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
@@ -1897,6 +1960,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "demo/im_demo-prefix.pch";
 				INFOPLIST_FILE = demo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;

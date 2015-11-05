@@ -9,6 +9,7 @@
 
 #import "MessageViewController.h"
 #import <imsdk/IMService.h>
+#import <MobileCoreServices/MobileCoreServices.h>
 #import "HPGrowingTextView.h"
 
 #import "MessageTableSectionHeaderView.h"
@@ -33,25 +34,37 @@
 #import "MapViewController.h"
 #import "LocationPickerController.h"
 
+#import "EaseChatToolbar.h"
+#import "EaseEmoji.h"
+#import "EaseEmotionManager.h"
+
 #define INPUT_HEIGHT 52.0f
 
 #define kTakePicActionSheetTag  101
 
 
-@interface MessageViewController()<MessageInputRecordDelegate, HPGrowingTextViewDelegate,
-    AudioDownloaderObserver, OutboxObserver, LocationPickerControllerDelegate>
+@interface MessageViewController()<MessageInputRecordDelegate, 
+    AudioDownloaderObserver, OutboxObserver, LocationPickerControllerDelegate,
+    EMChatToolbarDelegate>
 
-@property (strong, nonatomic) MessageInputView *inputToolBarView;
+@property(strong, nonatomic) EaseChatToolbar *chatToolbar;
+
+@property(strong, nonatomic) EaseChatBarMoreView *chatBarMoreView;
+
+@property(strong, nonatomic) EaseFaceView *faceView;
+
+@property(strong, nonatomic) EaseRecordView *recordView;
 
 @property (nonatomic,strong) UIImage *willSendImage;
 @property (nonatomic) int  inputTimestamp;
 
-@property(nonatomic) NSIndexPath *playingIndexPath;
+@property(nonatomic) IMessage *playingMessage;
 @property(nonatomic) AVAudioPlayer *player;
 @property(nonatomic) NSTimer *playTimer;
 
 @property(nonatomic) AVAudioRecorder *recorder;
 @property(nonatomic) NSTimer *recordingTimer;
+@property(nonatomic) NSTimer *updateMeterTimer;
 @property(nonatomic, assign) int seconds;
 @property(nonatomic) BOOL recordCanceled;
 
@@ -59,14 +72,6 @@
 @property(nonatomic, weak) MessageViewCell *selectedCell;
 
 - (void)setup;
-
-#pragma mark - Actions
-- (void)sendPressed:(UIButton *)sender;
-
-
-#pragma mark - Keyboard notifications
-- (void)handleWillShowKeyboard:(NSNotification *)notification;
-- (void)handleWillHideKeyboard:(NSNotification *)notification;
 
 - (void)pullToRefresh;
 
@@ -109,8 +114,7 @@
     int h = CGRectGetHeight(screenBounds);
 
 
-    CGRect tableFrame = CGRectMake(0.0f,  0.0f, w,  h - INPUT_HEIGHT);
-    CGRect inputFrame = CGRectMake(0.0f, h - INPUT_HEIGHT, w, INPUT_HEIGHT);
+    CGRect tableFrame = CGRectMake(0.0f,  0.0f, w, h - [EaseChatToolbar defaultHeight]);
     
     UIImage *backColor = [UIImage imageNamed:@"chatBack"];
     UIColor *color = [[UIColor alloc] initWithPatternImage:backColor];
@@ -133,19 +137,22 @@
     self.tableView.dataSource = self;
     
 	[self.view addSubview:self.tableView];
-	
-    self.inputToolBarView = [[MessageInputView alloc] initWithFrame:inputFrame andDelegate:self];
-    self.inputToolBarView.textView.maxHeight = 100;
-    self.inputToolBarView.textView.delegate = self;
 
-    [self.inputToolBarView.sendButton addTarget:self action:@selector(sendPressed:)
-                               forControlEvents:UIControlEventTouchUpInside];
     
-    [self.inputToolBarView.mediaButton addTarget:self action:@selector(cameraAction:)
-                                forControlEvents:UIControlEventTouchUpInside];
+    //初始化页面
+    CGFloat chatbarHeight = [EaseChatToolbar defaultHeight];
+    EMChatToolbarType barType = EMChatToolbarTypeChat;
+    self.chatToolbar = [[EaseChatToolbar alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - chatbarHeight, self.view.frame.size.width, chatbarHeight) type:barType];
+    [(EaseChatToolbar *)self.chatToolbar setDelegate:self];
+    self.chatBarMoreView = (EaseChatBarMoreView*)[(EaseChatToolbar *)self.chatToolbar moreView];
+    self.faceView = (EaseFaceView*)[(EaseChatToolbar *)self.chatToolbar faceView];
+    self.recordView = (EaseRecordView*)[(EaseChatToolbar *)self.chatToolbar recordView];
+    self.chatToolbar.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
+    [self.view addSubview:self.chatToolbar];
+    self.inputBar = self.chatToolbar;
     
-    [self.view addSubview:self.inputToolBarView];
-    self.inputBar = self.inputToolBarView;
+    EaseEmotionManager *manager= [[EaseEmotionManager alloc] initWithType:EMEmotionDefault emotionRow:3 emotionCol:7 emotions:[EaseEmoji allEmoji]];
+    [self.faceView setEmotionManagers:@[manager]];
     
     if ([[IMService instance] connectState] == STATE_CONNECTED) {
         [self enableSend];
@@ -158,7 +165,7 @@
     [self.tableView addGestureRecognizer:tapRecognizer];
     tapRecognizer.numberOfTapsRequired = 1;
     tapRecognizer.delegate  = self;
-    
+
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(handleMenuWillShowNotification:)
                                                  name:UIMenuControllerWillShowMenuNotification
@@ -185,39 +192,28 @@
 
 - (void)setDraft:(NSString *)draft {
     if (draft.length > 0) {
-        self.inputToolBarView.sendButton.enabled = ([[IMService instance] connectState] == STATE_CONNECTED);
-        self.inputToolBarView.sendButton.hidden = NO;
-        self.inputToolBarView.recordButton.hidden = YES;
-        self.inputToolBarView.textView.text = draft;
+        self.chatToolbar.inputTextView.text = draft;
     }
 }
 
 - (NSString*)getDraft {
-    return self.inputToolBarView.textView.text;
+    NSString *draft = self.chatToolbar.inputTextView.text;
+    if (!draft) {
+        draft = @"";
+    }
+    return draft;
 }
 
 #pragma mark - View lifecycle
 - (void)viewWillAppear:(BOOL)animated
 {
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(handleWillShowKeyboard:)
-												 name:UIKeyboardWillShowNotification
-                                               object:nil];
-    
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(handleWillHideKeyboard:)
-												 name:UIKeyboardWillHideNotification
-                                               object:nil];
+    [super viewWillAppear:animated];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    [self.inputToolBarView resignFirstResponder];
     [self setEditing:NO animated:YES];
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
 }
 
 - (void)didReceiveMemoryWarning
@@ -231,31 +227,28 @@
     self.tableView.delegate = nil;
     self.tableView.dataSource = nil;
     self.tableView = nil;
-    self.inputToolBarView.textView.delegate = nil;
-    self.inputToolBarView = nil;
-    
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 
 #pragma mark -
 - (void) handlePanFrom:(UITapGestureRecognizer*)recognizer{
-    
-    [self.inputToolBarView.textView resignFirstResponder];
+    if (recognizer.state == UIGestureRecognizerStateEnded) {
+        [self.chatToolbar endEditing:YES];
+    }
 }
 
 #pragma mark - Actions
-- (void)sendPressed:(UIButton *)sender
-{
-    NSString *text = [self.inputToolBarView.textView.text trimWhitespace];
-    
-    [self sendTextMessage:text];
-    
-    [self.inputToolBarView setNomarlShowing];
-    if (INPUT_HEIGHT < self.inputToolBarView.frame.size.height) {
-        CGFloat e = INPUT_HEIGHT - self.inputToolBarView.frame.size.height;
-        [self extendInputViewHeight:e];
+- (void)updateMeter:(NSTimer*)timer {
+    double voiceMeter = 0;
+    if ([self.recorder isRecording]) {
+        [self.recorder updateMeters];
+        //获取音量的平均值  [recorder averagePowerForChannel:0];
+        //音量的最大值  [recorder peakPowerForChannel:0];
+        double lowPassResults = pow(10, (0.05 * [self.recorder peakPowerForChannel:0]));
+        voiceMeter = lowPassResults;
     }
+    [self.recordView setVoiceImage:voiceMeter];
 }
 
 - (void)timerFired:(NSTimer*)timer {
@@ -264,7 +257,6 @@
     int s = self.seconds%60;
     NSString *str = [NSString stringWithFormat:@"%02d:%02d", minute, s];
     NSLog(@"timer:%@", str);
-    self.inputToolBarView.timerLabel.text = str;
 }
 
 - (void)pullToRefresh {
@@ -308,30 +300,30 @@
         return;
     }
     
-    [self.inputToolBarView setRecordShowing];
     
     self.recordCanceled = NO;
     self.seconds = 0;
     self.recordingTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(timerFired:) userInfo:nil repeats:YES];
+    
+    self.updateMeterTimer = [NSTimer scheduledTimerWithTimeInterval:0.05
+                                              target:self
+                                            selector:@selector(updateMeter:)
+                                            userInfo:nil
+                                             repeats:YES];
 }
 
 -(void)stopRecord {
     [self.recorder stop];
     [self.recordingTimer invalidate];
     self.recordingTimer = nil;
-    self.inputToolBarView.textView.hidden = NO;
-    self.inputToolBarView.mediaButton.hidden = NO;
-    self.inputToolBarView.recordingView.hidden = YES;
+    [self.updateMeterTimer invalidate];
+    self.updateMeterTimer = nil;
+
     AVAudioSession *audioSession = [AVAudioSession sharedInstance];
     BOOL r = [audioSession setActive:NO error:nil];
     if (!r) {
         NSLog(@"deactivate audio session fail");
     }
-}
-
-- (void)cameraAction:(id)sender
-{
-    [self cameraPressed:sender];
 }
 
 
@@ -365,66 +357,15 @@
 }
 
 
-#pragma mark - Keyboard notifications
-- (void)handleWillShowKeyboard:(NSNotification *)notification{
-    NSLog(@"keyboard show");
-    CGRect keyboardRect = [[notification.userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-	NSTimeInterval animationDuration = [[notification.userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
-    
-    UIViewAnimationCurve animationCurve = [notification.userInfo[UIKeyboardAnimationCurveUserInfoKey] integerValue];
-    
-    [UIView beginAnimations:nil context:nil];
-    [UIView setAnimationDuration:animationDuration];
-    [UIView setAnimationCurve:animationCurve];
-    [UIView setAnimationBeginsFromCurrentState:YES];
-    
-    CGRect screenBounds = [[UIScreen mainScreen] bounds];
-    int h = CGRectGetHeight(screenBounds);
-    int w = CGRectGetWidth(screenBounds);
-    
-    CGRect tableViewFrame = CGRectMake(0.0f,  0.0f, w,  h - self.inputToolBarView.frame.size.height - keyboardRect.size.height);
-    CGFloat y = h - keyboardRect.size.height;
-    y -= self.inputToolBarView.frame.size.height;
-    CGRect inputViewFrame = CGRectMake(0, y, self.inputToolBarView.frame.size.width, self.inputToolBarView.frame.size.height);
-    self.inputToolBarView.frame = inputViewFrame;
-    self.tableView.frame = tableViewFrame;
-    [self scrollToBottomAnimated:NO];
-    [UIView commitAnimations];
-
-}
-
-- (void)handleWillHideKeyboard:(NSNotification *)notification{
-    NSLog(@"keyboard hide");
-    CGRect keyboardRect = [[notification.userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-	NSTimeInterval animationDuration = [[notification.userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
-    
-    UIViewAnimationCurve animationCurve = [notification.userInfo[UIKeyboardAnimationCurveUserInfoKey] integerValue];
-    
-    [UIView beginAnimations:nil context:nil];
-    [UIView setAnimationDuration:animationDuration];
-    [UIView setAnimationCurve:animationCurve];
-    [UIView setAnimationBeginsFromCurrentState:YES];
-    
-    CGRect inputViewFrame = CGRectOffset(self.inputToolBarView.frame, 0, keyboardRect.size.height);
-    CGRect tableViewFrame = self.tableView.frame;
-    tableViewFrame.size.height += keyboardRect.size.height;
-    
-    self.inputToolBarView.frame = inputViewFrame;
-    self.tableView.frame = tableViewFrame;
-
-    [self scrollToBottomAnimated:NO];
-    [UIView commitAnimations];
-}
-
 #pragma mark - AVAudioPlayerDelegate
 - (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag {
     NSLog(@"player finished");
-    MessageViewCell *cell = (MessageViewCell*)[self.tableView cellForRowAtIndexPath:self.playingIndexPath];
+    NSIndexPath *indexPath = [self getIndexPathById:self.playingMessage.msgLocalID];
+    MessageViewCell *cell = (MessageViewCell*)[self.tableView cellForRowAtIndexPath:indexPath];
     if (cell == nil) {
         return;
     }
-    
-    self.playingIndexPath = nil;
+    self.playingMessage = nil;
     if ([self.playTimer isValid]) {
         [self.playTimer invalidate];
         self.playTimer = nil;
@@ -443,12 +384,13 @@
 
 - (void)audioPlayerDecodeErrorDidOccur:(AVAudioPlayer *)player error:(NSError *)error {
     NSLog(@"player decode error");
-    MessageViewCell *cell = (MessageViewCell*)[self.tableView cellForRowAtIndexPath:self.playingIndexPath];
+    NSIndexPath *indexPath = [self getIndexPathById:self.playingMessage.msgLocalID];
+    MessageViewCell *cell = (MessageViewCell*)[self.tableView cellForRowAtIndexPath:indexPath];
     if (cell == nil) {
         return;
     }
+    self.playingMessage = nil;
     
-    self.playingIndexPath = nil;
     if ([self.playTimer isValid]) {
         [self.playTimer invalidate];
         self.playTimer = nil;
@@ -483,89 +425,17 @@
 }
 
 - (void)disableSend {
-    self.inputToolBarView.sendButton.enabled = NO;
-    self.inputToolBarView.recordButton.enabled = NO;
-    self.inputToolBarView.mediaButton.enabled = NO;
-    self.inputToolBarView.userInteractionEnabled = NO;
+    self.chatToolbar.userInteractionEnabled = NO;
 }
 
 - (void)enableSend {
-    HPGrowingTextView *textView = self.inputToolBarView.textView;
-    self.inputToolBarView.sendButton.enabled = ([textView.text trimWhitespace].length > 0);
-    self.inputToolBarView.recordButton.enabled = YES;
-    self.inputToolBarView.mediaButton.enabled = YES;
-    self.inputToolBarView.userInteractionEnabled = YES;
-}
-
--(void)extendInputViewHeight:(CGFloat)e {
-
-    
-    CGRect frame = self.inputToolBarView.frame;
-    CGRect inputFrame = CGRectMake(frame.origin.x, frame.origin.y-e, frame.size.width, frame.size.height+e);
-
-    frame = self.tableView.frame;
-    CGRect tableFrame = CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, frame.size.height-e);
-    
-    if (inputFrame.origin.y < 60) {
-        return;
-    }
-    NSLog(@"input frame:%f %f %f %f", inputFrame.origin.x, inputFrame.origin.y, inputFrame.size.width, inputFrame.size.height);
-    NSLog(@"table frame:%f %f %f %f", tableFrame.origin.x, tableFrame.origin.y, tableFrame.size.width, tableFrame.size.height);
-    [UIView beginAnimations:nil context:NULL];
-    self.inputToolBarView.frame = inputFrame;
-    self.tableView.frame = tableFrame;
-    [UIView commitAnimations];
-}
-
-
-#pragma mark - HPGrowingTextViewDelegate
-- (void)growingTextView:(HPGrowingTextView *)growingTextView willChangeHeight:(float)height
-{
-
-    NSLog(@"change height:%f", height);
-    HPGrowingTextView *textView = growingTextView;
-    NSLog(@"text:%@, height:%f", textView.text, height);
-    if (height > textView.frame.size.height) {
-        CGFloat e = height - textView.frame.size.height;
-        [self extendInputViewHeight:e];
-    } else if (height < textView.frame.size.height) {
-        CGFloat e = height - textView.frame.size.height;
-        [self extendInputViewHeight:e];
-    }
-}
-
-- (void)growingTextViewDidChange:(HPGrowingTextView *)textView {
-
-    if ([textView.text trimWhitespace].length > 0) {
-        self.inputToolBarView.sendButton.enabled = ([[IMService instance] connectState] == STATE_CONNECTED);
-        self.inputToolBarView.sendButton.hidden = NO;
-        
-        self.inputToolBarView.recordButton.hidden = YES;
-    } else {
-        self.inputToolBarView.sendButton.hidden = YES;
-        
-        self.inputToolBarView.recordButton.enabled = ([[IMService instance] connectState] == STATE_CONNECTED);
-        self.inputToolBarView.recordButton.hidden = NO;
-    }
-    
-    if((time(NULL) -  self.inputTimestamp) > 10){
-        
-        self.inputTimestamp = (int)time(NULL);
-        MessageInputing *inputing = [[MessageInputing alloc ] init];
-        inputing.sender = self.sender;
-        inputing.receiver =self.receiver;
-        
-        [[IMService instance] sendInputing: inputing];
-    }
+    self.chatToolbar.userInteractionEnabled = YES;
 }
 
 - (void)updateSlider {
-    IMessage *message = [self messageForRowAtIndexPath:self.playingIndexPath];
-    if (message == nil) {
-        return;
-    }
+    NSIndexPath *indexPath = [self getIndexPathById:self.playingMessage.msgLocalID];
 
-    MessageViewCell *cell = (MessageViewCell*)[self.tableView cellForRowAtIndexPath:self.playingIndexPath];
+    MessageViewCell *cell = (MessageViewCell*)[self.tableView cellForRowAtIndexPath:indexPath];
     if (cell == nil) {
         return;
     }
@@ -582,10 +452,7 @@
         return;
     }
 
-    if (self.playingIndexPath != nil &&
-        indexPath.section == self.playingIndexPath.section &&
-        indexPath.row == self.playingIndexPath.row) {
-
+    if (self.playingMessage != nil && self.playingMessage.msgLocalID == message.msgLocalID) {
         MessageViewCell *cell = (MessageViewCell*)[self.tableView cellForRowAtIndexPath:indexPath];
         if (cell == nil) {
             return;
@@ -597,7 +464,7 @@
                 [self.playTimer invalidate];
                 self.playTimer = nil;
             }
-            self.playingIndexPath = nil;
+            self.playingMessage = nil;
             [audioView setPlaying:NO];
         }
     } else {
@@ -608,12 +475,13 @@
                 self.playTimer = nil;
             }
 
-            MessageViewCell *cell = (MessageViewCell*)[self.tableView cellForRowAtIndexPath:self.playingIndexPath];
+            NSIndexPath *indexPath = [self getIndexPathById:self.playingMessage.msgLocalID];
+            MessageViewCell *cell = (MessageViewCell*)[self.tableView cellForRowAtIndexPath:indexPath];
             if (cell != nil) {
                 MessageAudioView *audioView = (MessageAudioView*)cell.bubbleView;
                 [audioView setPlaying:NO];
             }
-            self.playingIndexPath = nil;
+            self.playingMessage = nil;
         }
         
         MessageViewCell *cell = (MessageViewCell*)[self.tableView cellForRowAtIndexPath:indexPath];
@@ -651,7 +519,7 @@
             
             //设置为与当前音频播放同步的Timer
             self.playTimer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(updateSlider) userInfo:nil repeats:YES];
-            self.playingIndexPath = indexPath;
+            self.playingMessage = message;
 
             [self.player play];
 
@@ -756,9 +624,7 @@
         audioView.microPhoneBtn.tag = indexPath.section<<16 | indexPath.row;
         audioView.playBtn.tag = indexPath.section<<16 | indexPath.row;
         
-        if (self.playingIndexPath != nil &&
-            self.playingIndexPath.section == indexPath.section &&
-            self.playingIndexPath.row == indexPath.row) {
+        if (self.playingMessage.msgLocalID == message.msgLocalID) {
             [audioView setPlaying:YES];
             audioView.progressView.progress = self.player.currentTime/self.player.duration;
         } else {
@@ -919,53 +785,6 @@
     [self sendLocationMessage:location];
 }
 
-#pragma mark - Messages view delegate
-
-
-- (void)cameraPressed:(id)sender{
-    
-    if ([self.inputToolBarView.textView isFirstResponder]) {
-        [self.inputToolBarView.textView resignFirstResponder];
-    }
-    
-    UIActionSheet *actionSheet = [[UIActionSheet alloc]
-                                  initWithTitle:nil
-                                  delegate:self
-                                  cancelButtonTitle:@"取消"
-                                  destructiveButtonTitle:nil
-                                  otherButtonTitles:@"摄像头拍照", @"从相册选取", @"共享位置", nil];
-    actionSheet.actionSheetStyle = UIActionSheetStyleDefault;
-    actionSheet.tag = kTakePicActionSheetTag;
-    [actionSheet showInView:self.view];
-    
-
-}
-
-#pragma mark - UIActionSheetDelegate
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
-    if (actionSheet.tag==kTakePicActionSheetTag) {
-        if (buttonIndex == 0) {
-            UIImagePickerController *picker = [[UIImagePickerController alloc] init];
-            picker.delegate  = self;
-            picker.allowsEditing = NO;
-            picker.sourceType = UIImagePickerControllerSourceTypeCamera;
-            [self presentViewController:picker animated:YES completion:NULL];
-        }else if(buttonIndex == 1){
-            UIImagePickerController *picker = [[UIImagePickerController alloc] init];
-            picker.delegate  = self;
-            picker.allowsEditing = NO;
-            picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-            [self presentViewController:picker animated:YES completion:NULL];
-        } else if (buttonIndex == 2) {
-            LocationPickerController *ctl = [[LocationPickerController alloc] init];
-            ctl.selectAddressdelegate = self;
-            [self.navigationController pushViewController:ctl animated:YES];
-        }
-    }
-}
-
-
-
 #pragma mark - UIImagePickerControllerDelegate
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
@@ -997,14 +816,15 @@
             self.playTimer = nil;
         }
         
-        MessageViewCell *cell = (MessageViewCell*)[self.tableView cellForRowAtIndexPath:self.playingIndexPath];
+        NSIndexPath *indexPath = [self getIndexPathById:self.playingMessage.msgLocalID];
+        MessageViewCell *cell = (MessageViewCell*)[self.tableView cellForRowAtIndexPath:indexPath];
         if (cell != nil) {
             MessageAudioView *audioView = (MessageAudioView*)cell.bubbleView;
             [audioView.playBtn setImage:[UIImage imageNamed:@"Play"] forState:UIControlStateNormal];
             [audioView.playBtn setImage:[UIImage imageNamed:@"PlayPressed"] forState:UIControlStateSelected];
             audioView.progressView.progress = 0.0f;
         }
-        self.playingIndexPath = nil;
+        self.playingMessage = nil;
     }
     
     
@@ -1017,7 +837,7 @@
     }];
 }
 
-- (void)recordCancel:(CGFloat)xMove {
+- (void)recordCancel {
     NSLog(@"touch cancel");
     
     if (self.recorder.recording) {
@@ -1025,6 +845,10 @@
         self.recordCanceled = YES;
         [self stopRecord];
     }
+}
+
+- (void)recordCancel:(CGFloat)xMove {
+    [self recordCancel];
 }
 
 -(void)recordEnd {
@@ -1164,7 +988,7 @@
     options.scale = [[UIScreen mainScreen] scale];
     options.showsPointsOfInterest = YES;
     options.showsBuildings = YES;
-    options.region = MKCoordinateRegionMakeWithDistance(location, 300, 300);
+    options.region = MKCoordinateRegionMakeWithDistance(location, 300, 200);
     options.mapType = MKMapTypeStandard;
     MKMapSnapshotter *snapshotter = [[MKMapSnapshotter alloc] initWithOptions:options];
     
@@ -1346,12 +1170,157 @@
     [super willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
     [self.tableView reloadData];
     [self.tableView setNeedsLayout];
-    [self.inputToolBarView setNeedsLayout];
 }
 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
     
     
+}
+
+#pragma mark - EMChatToolbarDelegate
+
+- (void)chatToolbarDidChangeFrameToHeight:(CGFloat)toHeight
+{
+    [UIView animateWithDuration:0.3 animations:^{
+        CGRect rect = self.tableView.frame;
+        rect.origin.y = 0;
+        rect.size.height = self.view.frame.size.height - toHeight;
+        self.tableView.frame = rect;
+    
+        [self scrollToBottomAnimated:NO];
+    }];
+}
+
+- (void)inputTextViewWillBeginEditing:(EaseTextView *)inputTextView
+{
+
+}
+
+- (void)didSendText:(NSString *)text
+{
+    if (text && text.length > 0) {
+        [self sendTextMessage:text];
+    }
+}
+
+- (BOOL)_canRecord
+{
+    __block BOOL bCanRecord = YES;
+    if ([[[UIDevice currentDevice] systemVersion] compare:@"7.0"] != NSOrderedAscending)
+    {
+        AVAudioSession *audioSession = [AVAudioSession sharedInstance];
+        if ([audioSession respondsToSelector:@selector(requestRecordPermission:)]) {
+            [audioSession performSelector:@selector(requestRecordPermission:) withObject:^(BOOL granted) {
+                bCanRecord = granted;
+            }];
+        }
+    }
+    
+    return bCanRecord;
+}
+
+/**
+ *  按下录音按钮开始录音
+ */
+- (void)didStartRecordingVoiceAction:(UIView *)recordView
+{
+    if ([self.recordView isKindOfClass:[EaseRecordView class]]) {
+        [(EaseRecordView *)self.recordView recordButtonTouchDown];
+    }
+
+    if ([self _canRecord]) {
+        EaseRecordView *tmpView = (EaseRecordView *)recordView;
+        tmpView.center = self.view.center;
+        [self.view addSubview:tmpView];
+        [self.view bringSubviewToFront:recordView];
+        
+        [self recordStart];
+    }
+}
+
+/**
+ *  手指向上滑动取消录音
+ */
+- (void)didCancelRecordingVoiceAction:(UIView *)recordView
+{
+    [self.recordView removeFromSuperview];
+    [self recordCancel];
+}
+
+/**
+ *  松开手指完成录音
+ */
+- (void)didFinishRecoingVoiceAction:(UIView *)recordView
+{
+    [self.recordView removeFromSuperview];
+    [self recordEnd];
+}
+
+- (void)didDragInsideAction:(UIView *)recordView
+{
+    
+    if ([self.recordView isKindOfClass:[EaseRecordView class]]) {
+        [(EaseRecordView *)self.recordView recordButtonDragInside];
+    }
+
+}
+
+- (void)didDragOutsideAction:(UIView *)recordView
+{
+    if ([self.recordView isKindOfClass:[EaseRecordView class]]) {
+        [(EaseRecordView *)self.recordView recordButtonDragOutside];
+    }
+
+}
+
+
+#pragma mark - EaseChatBarMoreViewDelegate
+
+- (void)moreView:(EaseChatBarMoreView *)moreView didItemInMoreViewAtIndex:(NSInteger)index
+{
+
+}
+
+- (void)moreViewPhotoAction:(EaseChatBarMoreView *)moreView
+{
+    // 隐藏键盘
+    [self.chatToolbar endEditing:YES];
+    
+    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+    picker.delegate  = self;
+    picker.allowsEditing = NO;
+    picker.mediaTypes = @[(NSString *)kUTTypeImage];
+    picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+    [self presentViewController:picker animated:YES completion:NULL];
+
+}
+
+- (void)moreViewTakePicAction:(EaseChatBarMoreView *)moreView
+{
+    // 隐藏键盘
+    [self.chatToolbar endEditing:YES];
+    
+#if TARGET_IPHONE_SIMULATOR
+    NSString *s = NSLocalizedString(@"message.simulatorNotSupportCamera", @"simulator does not support taking picture");
+    [self.view makeToast:s];
+#elif TARGET_OS_IPHONE
+    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+    picker.delegate  = self;
+    picker.allowsEditing = NO;
+    picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+    picker.mediaTypes = @[(NSString *)kUTTypeImage];
+    [self presentViewController:picker animated:YES completion:NULL];
+#endif
+}
+
+- (void)moreViewLocationAction:(EaseChatBarMoreView *)moreView
+{
+    // 隐藏键盘
+    [self.chatToolbar endEditing:YES];
+    
+    LocationPickerController *ctl = [[LocationPickerController alloc] init];
+    ctl.selectAddressdelegate = self;
+    [self.navigationController pushViewController:ctl animated:YES];
 }
 
 @end
