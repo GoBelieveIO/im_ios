@@ -1039,7 +1039,6 @@
     message.flags = message.flags & (~MESSAGE_FLAG_FAILURE);
     [self eraseMessageFailure:message];
     [self sendMessage:message];
-    [self reloadMessage:message.msgLocalID];
 }
 
 
@@ -1219,7 +1218,6 @@
     picker.mediaTypes = @[(NSString *)kUTTypeImage];
     picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
     [self presentViewController:picker animated:YES completion:NULL];
-
 }
 
 - (void)moreViewTakePicAction:(EaseChatBarMoreView *)moreView

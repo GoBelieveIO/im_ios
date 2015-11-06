@@ -19,6 +19,5 @@
 }
 @property (nonatomic) UIImageView *imageView;
 
--(void)setSnapshotURL:(NSString*)url;
 
 @end

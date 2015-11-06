@@ -42,6 +42,14 @@ CGFloat const kJSAvatarSize = 50.0f;
     [self.msg removeObserver:self forKeyPath:@"flags"];
     _msg = msg;
     [self.msg addObserver:self forKeyPath:@"flags" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
+    
+    if (self.msg.isFailure) {
+        if (self.type == BubbleMessageTypeOutgoing) {
+            [self showSendErrorBtn:YES];
+        }
+    }else{
+        [self showSendErrorBtn:NO];
+    }
 }
 - (void)setType:(BubbleMessageType)newType
 {

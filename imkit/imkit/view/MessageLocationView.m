@@ -45,23 +45,47 @@
     return self;
 }
 
-
-- (void)setSnapshotURL:(NSString*)url {
-    if(![[SDImageCache sharedImageCache] imageFromMemoryCacheForKey:url] &&
-       ![[SDImageCache sharedImageCache] diskImageExistsWithKey:url]){
+-(void)setMsg:(IMessage *)msg {
+    [self.msg removeObserver:self forKeyPath:@"downloading"];
+    [super setMsg:msg];
+    [self.msg addObserver:self forKeyPath:@"downloading" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
+    
+    UIImage *placehodler = [UIImage imageNamed:@"imkitResource.bundle/chat_location_preview"];
+    if (self.msg.downloading) {
         [self.indicatorView startAnimating];
-        return;
+        self.imageView.image = placehodler;
+        self.pinImageView.hidden = YES;
+    } else {
+        [self.indicatorView stopAnimating];
+        self.pinImageView.hidden = NO;
+        NSString *url = msg.content.snapshotURL;
+        [self.imageView sd_setImageWithURL: [[NSURL alloc] initWithString:url]
+                          placeholderImage:placehodler
+                                 completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                                 }];
     }
-    
-    [self.indicatorView stopAnimating];
-    [self.imageView sd_setImageWithURL: [[NSURL alloc] initWithString:url]
-                      placeholderImage:nil
-                             completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                             }];
-    
-    [self setNeedsDisplay];
 }
 
+
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    if([keyPath isEqualToString:@"downloading"]) {
+        UIImage *placehodler = [UIImage imageNamed:@"imkitResource.bundle/chat_location_preview"];
+        if (self.msg.downloading) {
+            [self.indicatorView startAnimating];
+            self.imageView.image = placehodler;
+            self.pinImageView.hidden = YES;
+        } else {
+            [self.indicatorView stopAnimating];
+            self.pinImageView.hidden = NO;
+            NSString *url = self.msg.content.snapshotURL;
+            [self.imageView sd_setImageWithURL: [[NSURL alloc] initWithString:url]
+                              placeholderImage:placehodler
+                                     completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                                     }];
+        }
+    }
+}
 
 #pragma mark - Drawing
 - (CGRect)bubbleFrame {
