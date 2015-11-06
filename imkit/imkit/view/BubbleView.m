@@ -38,6 +38,11 @@ CGFloat const kJSAvatarSize = 50.0f;
 }
 
 #pragma mark - Setters
+-(void)setMsg:(IMessage *)msg {
+    [self.msg removeObserver:self forKeyPath:@"flags"];
+    _msg = msg;
+    [self.msg addObserver:self forKeyPath:@"flags" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
+}
 - (void)setType:(BubbleMessageType)newType
 {
     _type = newType;
@@ -47,6 +52,19 @@ CGFloat const kJSAvatarSize = 50.0f;
 - (void)setSelectedToShowCopyMenu:(BOOL)isSelected{
     _selectedToShowCopyMenu = isSelected;
     [self setNeedsDisplay];
+}
+
+
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if([keyPath isEqualToString:@"flags"]) {
+        if (self.msg.isFailure) {
+            if (self.type == BubbleMessageTypeOutgoing) {
+                [self.msgSendErrorBtn setHidden:NO];
+            }
+        } else {
+            [self.msgSendErrorBtn setHidden:YES];
+        }
+    }
 }
 
 #pragma mark - Drawing

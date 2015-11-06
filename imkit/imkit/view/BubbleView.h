@@ -8,6 +8,7 @@
 */
 #import <UIKit/UIKit.h>
 #import "UIImageView+WebCache.h"
+#import "IMessage.h"
 
 extern CGFloat const kJSAvatarSize;
 
@@ -25,15 +26,17 @@ typedef enum {
 
 @interface BubbleView : UIView
 
+@property (nonatomic ,strong) IMessage *msg;
 
 @property (assign, nonatomic) BubbleMessageType type;
 @property (assign, nonatomic) BOOL selectedToShowCopyMenu;
 @property (nonatomic) UIImageView *receiveStateImgSign;
 
-@property (nonatomic) UIActivityIndicatorView *downloadIndicatorView;
-@property (nonatomic) UIActivityIndicatorView *uploadIndicatorView;
+
 @property (nonatomic) CGRect contentFrame;
 @property (strong, nonatomic) UIButton *msgSendErrorBtn;
+
+
 
 #pragma mark - Drawing
 - (CGRect)bubbleFrame;

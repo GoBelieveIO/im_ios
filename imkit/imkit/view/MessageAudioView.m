@@ -67,7 +67,6 @@
 
         [self addSubview:self.microPhoneBtn];
         
-        
         self.downloadIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         [self addSubview:self.downloadIndicatorView];
         self.uploadIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
@@ -76,34 +75,52 @@
     return self;
 }
 
--(void)initializeWithMsg:(IMessage *)msg withType:(BubbleMessageType)type {
-    [super setType:type];
-    _msg = msg;
+-(void)setMsg:(IMessage *)msg {
+    [self.msg removeObserver:self forKeyPath:@"uploading"];
+    [self.msg removeObserver:self forKeyPath:@"downloading"];
+    [self.msg removeObserver:self forKeyPath:@"playing"];
+    [self.msg removeObserver:self forKeyPath:@"progress"];
+
+    [super setMsg:msg];
     
     int minute = self.msg.content.audio.duration/60;
     int second = self.msg.content.audio.duration%60;
     NSString *str = [NSString stringWithFormat:@"%02d:%02d",minute,second];
     [self.timeLengthLabel setText:str];
-   
+    
     if ([self.msg isListened]) {
         [self.microPhoneBtn setImage:[UIImage imageNamed:@"MicBlueIncoming"] forState:UIControlStateNormal];
     }else{
         [self.microPhoneBtn setImage:[UIImage imageNamed:@"MicNewIncoming"] forState:UIControlStateNormal];
     }
     
-    if(self.type == BubbleMessageTypeOutgoing){
+    if (self.type == BubbleMessageTypeOutgoing) {
         [self.microPhoneBtn setHidden:YES];
-    }else{
+    } else {
         [self.microPhoneBtn setHidden:NO];
     }
     
-}
-
--(void)setPlaying:(BOOL)playing {
-    if (playing) {
+    [self.msg addObserver:self forKeyPath:@"uploading" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
+    [self.msg addObserver:self forKeyPath:@"downloading" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
+    [self.msg addObserver:self forKeyPath:@"playing" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
+    [self.msg addObserver:self forKeyPath:@"progress" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
+    
+    if (self.msg.uploading) {
+        [self.uploadIndicatorView startAnimating];
+    } else {
+        [self.uploadIndicatorView stopAnimating];
+    }
+    
+    if (self.msg.downloading) {
+        [self.downloadIndicatorView startAnimating];
+    } else {
+        [self.downloadIndicatorView stopAnimating];
+    }
+    
+    if (self.msg.playing) {
         [self.playBtn setImage:[UIImage imageNamed:@"PauseOS7"] forState:UIControlStateNormal];
         [self.playBtn setImage:[UIImage imageNamed:@"PausePressed"] forState:UIControlStateSelected];
-        self.progressView.progress = 0;
+        self.progressView.progress = self.msg.progress/100.0;
     } else {
         [self.playBtn setImage:[UIImage imageNamed:@"Play"] forState:UIControlStateNormal];
         [self.playBtn setImage:[UIImage imageNamed:@"PlayPressed"] forState:UIControlStateSelected];
@@ -111,11 +128,39 @@
     }
 }
 
--(void)setListened{
-    
-    [self.microPhoneBtn setImage:[UIImage imageNamed:@"MicBlueIncoming"] forState:UIControlStateNormal];
-    
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    if([keyPath isEqualToString:@"uploading"]) {
+        if (self.msg.uploading) {
+            [self.uploadIndicatorView startAnimating];
+        } else {
+            [self.uploadIndicatorView stopAnimating];
+        }
+    } else if ([keyPath isEqualToString:@"downloading"]) {
+        if (self.msg.downloading) {
+            [self.downloadIndicatorView startAnimating];
+        } else {
+            [self.downloadIndicatorView stopAnimating];
+        }
+    } else if ([keyPath isEqualToString:@"playing"]) {
+        if (self.msg.playing) {
+            [self.playBtn setImage:[UIImage imageNamed:@"PauseOS7"] forState:UIControlStateNormal];
+            [self.playBtn setImage:[UIImage imageNamed:@"PausePressed"] forState:UIControlStateSelected];
+        } else {
+            [self.playBtn setImage:[UIImage imageNamed:@"Play"] forState:UIControlStateNormal];
+            [self.playBtn setImage:[UIImage imageNamed:@"PlayPressed"] forState:UIControlStateSelected];
+        }
+    } else if ([keyPath isEqualToString:@"progress"]) {
+        self.progressView.progress = self.msg.progress/100.0;
+    } else if([keyPath isEqualToString:@"flags"]) {
+        if (self.msg.isListened) {
+            [self.microPhoneBtn setImage:[UIImage imageNamed:@"MicBlueIncoming"] forState:UIControlStateNormal];
+        } else {
+            [self.microPhoneBtn setImage:[UIImage imageNamed:@"MicNewIncoming"] forState:UIControlStateNormal];
+        }
+    }
 }
+
 
 #pragma mark - Drawing
 - (CGRect)bubbleFrame{
@@ -126,27 +171,6 @@
                       floorf(bubbleSize.width),
                       floorf(bubbleSize.height - 4));
     
-}
-
-
--(void)setDownloading:(BOOL)downloading {
-    if (downloading) {
-        [self.downloadIndicatorView startAnimating];
-    } else {
-        if (self.downloadIndicatorView&&[self.downloadIndicatorView isAnimating]) {
-            [self.downloadIndicatorView stopAnimating];
-        }
-    }
-}
-
--(void)setUploading:(BOOL)uploading {
-    if (uploading) {
-        [self.uploadIndicatorView startAnimating];
-    } else {
-        if (self.uploadIndicatorView&&[self.uploadIndicatorView isAnimating]) {
-            [self.uploadIndicatorView stopAnimating];
-        }
-    }
 }
 
 -(void)layoutSubviews {

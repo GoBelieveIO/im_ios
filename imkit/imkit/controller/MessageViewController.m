@@ -110,10 +110,8 @@
 
 - (void)setup
 {
-    CGRect screenBounds = [[UIScreen mainScreen] bounds];
-    int w = CGRectGetWidth(screenBounds);
-    int h = CGRectGetHeight(screenBounds);
-
+    int w = self.view.bounds.size.width;
+    int h = self.view.bounds.size.height;
 
     CGRect tableFrame = CGRectMake(0.0f,  0.0f, w, h - [EaseChatToolbar defaultHeight]);
     
@@ -361,50 +359,25 @@
 #pragma mark - AVAudioPlayerDelegate
 - (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag {
     NSLog(@"player finished");
-    NSIndexPath *indexPath = [self getIndexPathById:self.playingMessage.msgLocalID];
-    MessageViewCell *cell = (MessageViewCell*)[self.tableView cellForRowAtIndexPath:indexPath];
-    if (cell == nil) {
-        return;
-    }
+    self.playingMessage.progress = 0;
+    self.playingMessage.playing = NO;
     self.playingMessage = nil;
     if ([self.playTimer isValid]) {
         [self.playTimer invalidate];
         self.playTimer = nil;
     }
-
-    MessageAudioView *audioView = (MessageAudioView*)cell.bubbleView;
-
-    audioView.progressView.progress = 1.0f;
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [audioView.playBtn setImage:[UIImage imageNamed:@"Play"] forState:UIControlStateNormal];
-        [audioView.playBtn setImage:[UIImage imageNamed:@"PlayPressed"] forState:UIControlStateSelected];
-        audioView.progressView.progress = 0.0f;
-        
-    });
 }
 
 - (void)audioPlayerDecodeErrorDidOccur:(AVAudioPlayer *)player error:(NSError *)error {
     NSLog(@"player decode error");
-    NSIndexPath *indexPath = [self getIndexPathById:self.playingMessage.msgLocalID];
-    MessageViewCell *cell = (MessageViewCell*)[self.tableView cellForRowAtIndexPath:indexPath];
-    if (cell == nil) {
-        return;
-    }
+    self.playingMessage.progress = 0;
+    self.playingMessage.playing = NO;
     self.playingMessage = nil;
     
     if ([self.playTimer isValid]) {
         [self.playTimer invalidate];
         self.playTimer = nil;
     }
-    
-    MessageAudioView *audioView = (MessageAudioView*)cell.bubbleView;
-    audioView.progressView.progress = 1.0f;
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [audioView.playBtn setImage:[UIImage imageNamed:@"Play"] forState:UIControlStateNormal];
-        [audioView.playBtn setImage:[UIImage imageNamed:@"PlayPressed"] forState:UIControlStateSelected];
-        audioView.progressView.progress = 0.0f;
-        
-    });
 }
 
 #pragma mark - AVAudioRecorderDelegate
@@ -434,14 +407,7 @@
 }
 
 - (void)updateSlider {
-    NSIndexPath *indexPath = [self getIndexPathById:self.playingMessage.msgLocalID];
-
-    MessageViewCell *cell = (MessageViewCell*)[self.tableView cellForRowAtIndexPath:indexPath];
-    if (cell == nil) {
-        return;
-    }
-    MessageAudioView *audioView = (MessageAudioView*)cell.bubbleView;
-    audioView.progressView.progress = self.player.currentTime/self.player.duration;
+    self.playingMessage.progress = 100*self.player.currentTime/self.player.duration;
 }
 
 -(void)AudioAction:(UIButton*)btn{
@@ -454,19 +420,15 @@
     }
 
     if (self.playingMessage != nil && self.playingMessage.msgLocalID == message.msgLocalID) {
-        MessageViewCell *cell = (MessageViewCell*)[self.tableView cellForRowAtIndexPath:indexPath];
-        if (cell == nil) {
-            return;
-        }
-        MessageAudioView *audioView = (MessageAudioView*)cell.bubbleView;
         if (self.player && [self.player isPlaying]) {
             [self.player stop];
             if ([self.playTimer isValid]) {
                 [self.playTimer invalidate];
                 self.playTimer = nil;
             }
+            self.playingMessage.progress = 0;
+            self.playingMessage.playing = NO;
             self.playingMessage = nil;
-            [audioView setPlaying:NO];
         }
     } else {
         if (self.player && [self.player isPlaying]) {
@@ -476,37 +438,30 @@
                 self.playTimer = nil;
             }
 
-            NSIndexPath *indexPath = [self getIndexPathById:self.playingMessage.msgLocalID];
-            MessageViewCell *cell = (MessageViewCell*)[self.tableView cellForRowAtIndexPath:indexPath];
-            if (cell != nil) {
-                MessageAudioView *audioView = (MessageAudioView*)cell.bubbleView;
-                [audioView setPlaying:NO];
-            }
+            self.playingMessage.progress = 0;
+            self.playingMessage.playing = NO;
             self.playingMessage = nil;
         }
-        
-        MessageViewCell *cell = (MessageViewCell*)[self.tableView cellForRowAtIndexPath:indexPath];
-        if (cell == nil) {
-            return;
-        }
-        MessageAudioView *audioView = (MessageAudioView*)cell.bubbleView;
+
         FileCache *fileCache = [FileCache instance];
         NSString *url = message.content.audio.url;
-        
-        if (!message.isListened) {
-            message.flags |= MESSAGE_FLAG_LISTENED;
-            [audioView setListened];
-        
-            [self markMesageListened:message];
-        }
-        
         NSString *path = [fileCache queryCacheForKey:url];
         if (path != nil) {
+            if (!message.isListened) {
+                message.flags |= MESSAGE_FLAG_LISTENED;
+                [self markMesageListened:message];
+            }
+
+            message.progress = 0;
+            message.playing = YES;
+            
             // Setup audio session
             AVAudioSession *session = [AVAudioSession sharedInstance];
             [session setCategory:AVAudioSessionCategoryPlayAndRecord error:nil];
             
-            [audioView setPlaying:YES];
+            //设置为与当前音频播放同步的Timer
+            self.playTimer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(updateSlider) userInfo:nil repeats:YES];
+            self.playingMessage = message;
             
             if (![[self class] isHeadphone]) {
                 //打开外放
@@ -517,11 +472,6 @@
             NSURL *u = [NSURL fileURLWithPath:path];
             self.player = [[AVAudioPlayer alloc] initWithContentsOfURL:u error:nil];
             [self.player setDelegate:self];
-            
-            //设置为与当前音频播放同步的Timer
-            self.playTimer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(updateSlider) userInfo:nil repeats:YES];
-            self.playingMessage = message;
-
             [self.player play];
 
         }
@@ -624,20 +574,9 @@
         MessageAudioView *audioView = (MessageAudioView*)cell.bubbleView;
         audioView.microPhoneBtn.tag = indexPath.section<<16 | indexPath.row;
         audioView.playBtn.tag = indexPath.section<<16 | indexPath.row;
-        
-        if (self.playingMessage.msgLocalID == message.msgLocalID) {
-            [audioView setPlaying:YES];
-            audioView.progressView.progress = self.player.currentTime/self.player.duration;
-        } else {
-            [audioView setPlaying:NO];
-        }
-        
-        [audioView setUploading:[[Outbox instance] isUploading:message]];
-        [audioView setDownloading:[[AudioDownloader instance] isDownloading:message]];
     } else if (message.content.type == MESSAGE_IMAGE) {
         MessageImageView *imageView = (MessageImageView*)cell.bubbleView;
         imageView.imageView.tag = indexPath.section<<16 | indexPath.row;
-        [imageView setUploading:[[Outbox instance] isUploading:message]];
     } else if (message.content.type == MESSAGE_LOCATION) {
         MessageLocationView *locationView = (MessageLocationView*)cell.bubbleView;
         locationView.imageView.tag = indexPath.section<<16 | indexPath.row;
@@ -798,14 +737,8 @@
             self.playTimer = nil;
         }
         
-        NSIndexPath *indexPath = [self getIndexPathById:self.playingMessage.msgLocalID];
-        MessageViewCell *cell = (MessageViewCell*)[self.tableView cellForRowAtIndexPath:indexPath];
-        if (cell != nil) {
-            MessageAudioView *audioView = (MessageAudioView*)cell.bubbleView;
-            [audioView.playBtn setImage:[UIImage imageNamed:@"Play"] forState:UIControlStateNormal];
-            [audioView.playBtn setImage:[UIImage imageNamed:@"PlayPressed"] forState:UIControlStateSelected];
-            audioView.progressView.progress = 0.0f;
-        }
+        self.playingMessage.progress = 0;
+        self.playingMessage.playing = NO;
         self.playingMessage = nil;
     }
     
@@ -924,6 +857,7 @@
     return NO;
 }
 
+    
 - (void)downloadMessageContent:(IMessage*)msg {
     FileCache *cache = [FileCache instance];
     AudioDownloader *downloader = [AudioDownloader instance];
@@ -932,12 +866,16 @@
         if (!path && ![downloader isDownloading:msg]) {
             [downloader downloadAudio:msg];
         }
+        msg.downloading = [downloader isDownloading:msg];
+        msg.uploading = [[Outbox instance] isUploading:msg];
     } else if (msg.content.type == MESSAGE_LOCATION) {
         NSString *url = msg.content.snapshotURL;
         if(![[SDImageCache sharedImageCache] imageFromMemoryCacheForKey:url] &&
            ![[SDImageCache sharedImageCache] diskImageExistsWithKey:url]){
             [self createMapSnapshot:msg];
         }
+    } else if (msg.content.type == MESSAGE_IMAGE) {
+        msg.uploading = [[Outbox instance] isUploading:msg];
     }
 }
 
@@ -974,6 +912,7 @@
     options.mapType = MKMapTypeStandard;
     MKMapSnapshotter *snapshotter = [[MKMapSnapshotter alloc] initWithOptions:options];
     
+    msg.downloading = YES;
     [snapshotter startWithCompletionHandler:^(MKMapSnapshot *snapshot, NSError *e) {
         if (e) {
             NSLog(@"error:%@", e);
@@ -981,8 +920,8 @@
         else {
             NSLog(@"map snapshot success");
             [[SDImageCache sharedImageCache] storeImage:snapshot.image forKey:url];
-            [self reloadMessage:msg.msgLocalID];
         }
+        msg.downloading = NO;
     }];
 
 }
@@ -1033,6 +972,7 @@
     
     [[self class] playMessageSentSound];
     
+    msg.uploading = YES;
     [self insertMessage:msg];
 }
 
@@ -1069,6 +1009,7 @@
 
     [self sendMessage:msg withImage:image];
 
+    msg.uploading = YES;
     [self insertMessage:msg];
     
     [[self class] playMessageSentSound];
@@ -1102,52 +1043,57 @@
 }
 
 
-
 #pragma mark - Outbox Observer
 - (void)onAudioUploadSuccess:(IMessage*)msg URL:(NSString*)url {
     if ([self isInConversation:msg]) {
-        [self reloadMessage:msg.msgLocalID];
+        IMessage *m = [self getMessageWithID:msg.msgLocalID];
+        m.uploading = NO;
     }
 }
 
 -(void)onAudioUploadFail:(IMessage*)msg {
     if ([self isInConversation:msg]) {
-        msg.flags = msg.flags|MESSAGE_FLAG_FAILURE;
-        [self reloadMessage:msg.msgLocalID];
+        IMessage *m = [self getMessageWithID:msg.msgLocalID];
+        m.flags = m.flags|MESSAGE_FLAG_FAILURE;
+        m.uploading = NO;
     }
 }
 
 - (void)onImageUploadSuccess:(IMessage*)msg URL:(NSString*)url {
     if ([self isInConversation:msg]) {
-        [self reloadMessage:msg.msgLocalID];
+        IMessage *m = [self getMessageWithID:msg.msgLocalID];
+        m.uploading = NO;
     }
 }
 
 - (void)onImageUploadFail:(IMessage*)msg {
     if ([self isInConversation:msg]) {
-        msg.flags = msg.flags|MESSAGE_FLAG_FAILURE;
-        [self reloadMessage:msg.msgLocalID];
+        IMessage *m = [self getMessageWithID:msg.msgLocalID];
+        m.flags = m.flags|MESSAGE_FLAG_FAILURE;
+        m.uploading = NO;
     }
 }
 
 #pragma mark - Audio Downloader Observer
 - (void)onAudioDownloadSuccess:(IMessage*)msg {
     if ([self isInConversation:msg]) {
-        [self reloadMessage:msg.msgLocalID];
+        IMessage *m = [self getMessageWithID:msg.msgLocalID];
+        m.downloading = NO;
     }
 }
 
 - (void)onAudioDownloadFail:(IMessage*)msg {
     if ([self isInConversation:msg]) {
-        [self reloadMessage:msg.msgLocalID];
+        IMessage *m = [self getMessageWithID:msg.msgLocalID];
+        m.downloading = NO;
     }
 }
 
 #pragma mark InterfaceOrientation
-
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation{
     return YES;
 }
+
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration{
     [super willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
     [self.tableView reloadData];
@@ -1160,7 +1106,6 @@
 }
 
 #pragma mark - EMChatToolbarDelegate
-
 - (void)chatToolbarDidChangeFrameToHeight:(CGFloat)toHeight
 {
     [UIView animateWithDuration:0.3 animations:^{

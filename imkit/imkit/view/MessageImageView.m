@@ -7,17 +7,7 @@
   of patent rights can be found in the PATENTS file in the same directory.
 */
 
-//
-//  MessageImageView.m
-//  Message
-//
-//  Created by houxh on 14-9-9.
-//  Copyright (c) 2014年 daozhu. All rights reserved.
-//
-
 #import "MessageImageView.h"
-
-
 
 #define KInComingMoveRight  8.0
 #define kOuttingMoveRight   3.0
@@ -32,34 +22,59 @@
         self.imageView = [[UIImageView alloc] init];
         [self.imageView setUserInteractionEnabled:YES];
         [self addSubview:self.imageView];
+        
+        self.uploadIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        [self addSubview:self.uploadIndicatorView];
+        
+        self.downloadIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        [self addSubview:self.downloadIndicatorView];
     }
     return self;
 }
 
-- (void)setData:(id)newData{
-    _data = newData;
-    if (_data) {
+- (void)setMsg:(IMessage*)msg {
+    [self.msg removeObserver:self forKeyPath:@"uploading"];
+    
+    [super setMsg:msg];
+    
+    NSString *originURL = msg.content.imageURL;
+    if (originURL) {
         //在原图URL后面添加"@{width}w_{heigth}h_{1|0}c", 支持128x128, 256x256
-        NSString *url = [NSString stringWithFormat:@"%@@128w_128h_0c", _data];
+        NSString *url = [NSString stringWithFormat:@"%@@128w_128h_0c", originURL];
         if(![[SDImageCache sharedImageCache] diskImageExistsWithKey:url]){
-            self.downloadIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-            CGRect bubbleFrame = [self bubbleFrame];
-            [self.downloadIndicatorView setFrame: bubbleFrame];
             [self.downloadIndicatorView startAnimating];
-            [self addSubview: self.downloadIndicatorView];
         }
 
-        [self.imageView sd_setImageWithURL: [[NSURL alloc] initWithString:url] placeholderImage:[UIImage imageNamed:@"GroupChatRound"] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+        UIImage *placehodler = [UIImage imageNamed:@"imkitResource.bundle/imageDownloadFail"];
+        [self.imageView sd_setImageWithURL: [[NSURL alloc] initWithString:url] placeholderImage:placehodler
+                                 completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
             if (self.downloadIndicatorView&&[self.downloadIndicatorView isAnimating]) {
                 [self.downloadIndicatorView stopAnimating];
-                [self.downloadIndicatorView removeFromSuperview];
             }
         }];
+    }
+    
+    [self.msg addObserver:self forKeyPath:@"uploading" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
+    
+    if (self.msg.uploading) {
+        [self.uploadIndicatorView startAnimating];
+    } else {
+        [self.uploadIndicatorView stopAnimating];
     }
     
     [self setNeedsDisplay];
 }
 
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    if([keyPath isEqualToString:@"uploading"]) {
+        if (self.msg.uploading) {
+            [self.uploadIndicatorView startAnimating];
+        } else {
+            [self.uploadIndicatorView stopAnimating];
+        }
+    }
+}
 
 #pragma mark - Drawing
 - (CGRect)bubbleFrame {
@@ -71,43 +86,25 @@
     
 }
 
--(void) setUploading:(BOOL)uploading {
-    //uploading的动画
-    if (uploading) {
-        self.uploadIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-        CGRect bubbleFrame = [self bubbleFrame];
-        
-        UIImage *image = (self.selectedToShowCopyMenu) ? [self bubbleImageHighlighted] : [self bubbleImage];
-        bubbleFrame.origin.x -= image.leftCapWidth;
-        
-        [self.uploadIndicatorView setFrame: bubbleFrame];
-        [self.uploadIndicatorView startAnimating];
-        [self addSubview: self.uploadIndicatorView];
-    }else{
-        if (self.uploadIndicatorView&&[self.uploadIndicatorView isAnimating]) {
-            [self.uploadIndicatorView stopAnimating];
-        }
-    }
-}
 
 
 -(void)layoutSubviews {
     [super layoutSubviews];
     
-    UIImage *image = (self.selectedToShowCopyMenu) ? [self bubbleImageHighlighted] : [self bubbleImage];
+    UIImage *image = [self bubbleImage];
     CGRect bubbleFrame = [self bubbleFrame];
+
+    CGSize imageSize = CGSizeMake(kImageWidth, kImageHeight);
+    CGFloat imgX = image.leftCapWidth + (self.type == BubbleMessageTypeOutgoing ? bubbleFrame.origin.x + kOuttingMoveRight: KInComingMoveRight);
     
-    if (self.imageView) {
-        
-        CGSize imageSize = CGSizeMake(kImageWidth, kImageHeight);
-        CGFloat imgX = image.leftCapWidth + (self.type == BubbleMessageTypeOutgoing ? bubbleFrame.origin.x + kOuttingMoveRight: KInComingMoveRight);
-        
-        CGRect imageFrame = CGRectMake(imgX,
-                                       kMarginTop + kPaddingTop,
-                                       imageSize.width,
-                                       imageSize.height);
-        [self.imageView setFrame:imageFrame];
-        
-    }
+    CGRect imageFrame = CGRectMake(imgX,
+                                   kMarginTop + kPaddingTop,
+                                   imageSize.width,
+                                   imageSize.height);
+    [self.imageView setFrame:imageFrame];
+    
+    [self.downloadIndicatorView setFrame:imageFrame];
+    [self.uploadIndicatorView setFrame:imageFrame];
+    
 }
 @end

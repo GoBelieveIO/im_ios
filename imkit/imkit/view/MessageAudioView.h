@@ -9,7 +9,7 @@
 
 #import "BubbleView.h"
 #import <AVFoundation/AVFoundation.h>
-#import "IMessage.h"
+
 
 #define kAudioViewCellHeight 58 
 #define kAudioCellWidth 210
@@ -22,13 +22,8 @@
 @property (nonatomic, strong) UILabel *timeLengthLabel;
 @property (nonatomic, strong) UILabel *createTimeLabel;
 
-@property (nonatomic ,strong) IMessage *msg;
+@property (nonatomic) UIActivityIndicatorView *downloadIndicatorView;
+@property (nonatomic) UIActivityIndicatorView *uploadIndicatorView;
 
--(void)initializeWithMsg:(IMessage *)msg withType:(BubbleMessageType)type;
-
--(void)setPlaying:(BOOL)playing;
--(void)setDownloading:(BOOL)downloading;
--(void)setUploading:(BOOL)uploading;
--(void)setListened;
 
 @end

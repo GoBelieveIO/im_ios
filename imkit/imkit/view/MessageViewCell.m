@@ -137,21 +137,22 @@
         case MESSAGE_TEXT:
         {
             MessageTextView *textView = (MessageTextView*)self.bubbleView;
-            textView.text = message.content.text;
             textView.type = msgType;
+            textView.text = message.content.text;
         }
             break;
         case MESSAGE_IMAGE:
         {
             MessageImageView *msgImageView = (MessageImageView*)self.bubbleView;
-            msgImageView.data = message.content.imageURL;
             msgImageView.type = msgType;
+            msgImageView.msg = message;
         }
             break;
         case MESSAGE_AUDIO:
         {
             MessageAudioView *audioView = (MessageAudioView*)self.bubbleView;
-            [audioView initializeWithMsg:message withType:msgType];
+            audioView.type = msgType;
+            audioView.msg = message;
         }
             break;
         case MESSAGE_GROUP_NOTIFICATION:

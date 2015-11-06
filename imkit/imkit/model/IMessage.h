@@ -64,25 +64,22 @@
 - (id)initWithLocation:(CLLocationCoordinate2D)location;
 - (id)initWithRaw:(NSString*)raw;
 
-@property(nonatomic)int type;
-@property(nonatomic)NSString *raw;
+@property(nonatomic) int type;
+@property(nonatomic) NSString *raw;
 
-@property(nonatomic, readonly)NSString *text;
-@property(nonatomic, readonly)Audio *audio;
-@property(nonatomic, readonly)CLLocationCoordinate2D location;
-@property(nonatomic, readonly)NSString *snapshotURL;
+@property(nonatomic, readonly) NSString *text;
+@property(nonatomic, readonly) Audio *audio;
+@property(nonatomic, readonly) CLLocationCoordinate2D location;
+@property(nonatomic, readonly) NSString *snapshotURL;
 
-@property(nonatomic, readonly)GroupNotification *notification;
+@property(nonatomic, readonly) GroupNotification *notification;
 @property(nonatomic, copy) NSString *notificationDesc;
 
-@property(nonatomic, readonly)NSString *imageURL;
--(NSString*) littleImageURL;
+@property(nonatomic, readonly) NSString *imageURL;
+@property(nonatomic, readonly) NSString *littleImageURL;
 
 @end
 
-@interface MessageContent(Text)
-@property(nonatomic, readonly)NSString *text;
-@end
 
 @interface IMessage : NSObject
 @property(nonatomic) int msgLocalID;
@@ -93,7 +90,14 @@
 @property(nonatomic) int timestamp;
 @property(nonatomic, readonly) BOOL isACK;
 @property(nonatomic, readonly) BOOL isFailure;
-@property(nonatomic)           BOOL isListened;
+@property(nonatomic, readonly) BOOL isListened;
+
+//UI, kvo
+@property(nonatomic) BOOL uploading;
+@property(nonatomic) BOOL downloading;
+@property(nonatomic) BOOL playing;
+@property(nonatomic) int progress;//[0,100]
+
 @end
 
 

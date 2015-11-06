@@ -9,18 +9,18 @@
 
 #import <UIKit/UIKit.h>
 #import "BubbleView.h"
+#import "IMessage.h"
 
-#define kImageWidth  240
-#define kImageHeight 240
+#define kImageWidth  200
+#define kImageHeight 200
 #define  kMessageImagViewHeight (kImageHeight + kMarginTop + kMarginBottom + kPaddingTop + kPaddingBottom)
 
 @interface MessageImageView : BubbleView
 
-@property (weak, nonatomic) UIViewController *dgtController;
 @property (nonatomic) UIImageView *imageView;
 
-@property (nonatomic) id data;
+@property (nonatomic) UIActivityIndicatorView *downloadIndicatorView;
+@property (nonatomic) UIActivityIndicatorView *uploadIndicatorView;
 
--(void) setUploading:(BOOL)uploading;
 
 @end

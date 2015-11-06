@@ -444,8 +444,8 @@
 		6D032F941AA9B0F5004AA39F /* imkit */ = {
 			isa = PBXGroup;
 			children = (
-				6D18DB941BEA08E8006A3B66 /* emoji */,
 				6D03311B1AA9E534004AA39F /* Constants.h */,
+				6D18DB941BEA08E8006A3B66 /* emoji */,
 				6D03301E1AA9BD81004AA39F /* amr */,
 				6D032FFF1AA9BBC7004AA39F /* request */,
 				6D032FF81AA9B499004AA39F /* controller */,
@@ -500,22 +500,22 @@
 			isa = PBXGroup;
 			children = (
 				6D18DB761BEA06D8006A3B66 /* toolbar */,
-				6D4256891ABC0F2F001B7E43 /* MessageNotificationView.h */,
-				6D42568A1ABC0F2F001B7E43 /* MessageNotificationView.m */,
+				6D0331281AA9E734004AA39F /* MessageInputView.h */,
+				6D0331291AA9E734004AA39F /* MessageInputView.m */,
+				6D03312A1AA9E734004AA39F /* MessageTableSectionHeaderView.h */,
+				6D03312B1AA9E734004AA39F /* MessageTableSectionHeaderView.m */,
 				6D03311F1AA9E734004AA39F /* BubbleView.h */,
 				6D0331201AA9E734004AA39F /* BubbleView.m */,
 				6D0331241AA9E734004AA39F /* MessageAudioView.h */,
 				6D0331251AA9E734004AA39F /* MessageAudioView.m */,
 				6D0331261AA9E734004AA39F /* MessageImageView.h */,
 				6D0331271AA9E734004AA39F /* MessageImageView.m */,
-				6D0331281AA9E734004AA39F /* MessageInputView.h */,
-				6D0331291AA9E734004AA39F /* MessageInputView.m */,
-				6D03312A1AA9E734004AA39F /* MessageTableSectionHeaderView.h */,
-				6D03312B1AA9E734004AA39F /* MessageTableSectionHeaderView.m */,
 				6D03312D1AA9E734004AA39F /* MessageTextView.h */,
 				6D03312E1AA9E734004AA39F /* MessageTextView.m */,
 				6DEE56831BDCF309002BCAB8 /* MessageLocationView.h */,
 				6DEE56841BDCF309002BCAB8 /* MessageLocationView.m */,
+				6D4256891ABC0F2F001B7E43 /* MessageNotificationView.h */,
+				6D42568A1ABC0F2F001B7E43 /* MessageNotificationView.m */,
 				6D03312F1AA9E734004AA39F /* MessageViewCell.h */,
 				6D0331301AA9E734004AA39F /* MessageViewCell.m */,
 			);
