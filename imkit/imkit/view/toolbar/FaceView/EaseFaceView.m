@@ -167,6 +167,7 @@
 {
     _emotionManagers = emotionManagers;
     [self _setupButtonScrollView];
+    [self reloadEmotionData];
 }
 
 

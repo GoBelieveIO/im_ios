@@ -111,8 +111,8 @@
     [_scrollview addSubview:_takePicButton];
 
     CGRect frame = self.frame;
-    frame.size.height = 80;
-    self.frame = frame;
+    //frame.size.height = 80;
+    //self.frame = frame;
     _scrollview.frame = CGRectMake(0, 0, CGRectGetWidth(frame), CGRectGetHeight(frame));
     _pageControl.frame = CGRectMake(0, CGRectGetHeight(frame) - 20, CGRectGetWidth(frame), 20);
     _pageControl.hidden = _pageControl.numberOfPages<=1;

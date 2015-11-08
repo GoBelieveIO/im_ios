@@ -96,6 +96,8 @@
  */
 - (void)cancelTouchRecord;
 
+- (void)setText:(NSString*)text;
+
 @end
 
 @protocol EMChatToolbarDelegate <NSObject>

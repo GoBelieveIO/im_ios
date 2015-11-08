@@ -29,7 +29,6 @@
  *  底部扩展页面
  */
 @property (nonatomic) BOOL isShowButtomView;
-@property (strong, nonatomic) UIView *activityButtomView;//当前活跃的底部扩展页面
 
 /**
  *  按钮、toolbarView
@@ -58,7 +57,7 @@
 
 - (instancetype)initWithFrame:(CGRect)frame
 {
-    self = [self initWithFrame:frame horizontalPadding:8 verticalPadding:5 inputViewMinHeight:36 inputViewMaxHeight:150 type:EMChatToolbarTypeGroup];
+    self = [self initWithFrame:frame horizontalPadding:8 verticalPadding:5 inputViewMinHeight:36 inputViewMaxHeight:120 type:EMChatToolbarTypeGroup];
     if (self) {
         
     }
@@ -69,7 +68,7 @@
 - (instancetype)initWithFrame:(CGRect)frame
                          type:(EMChatToolbarType)type
 {
-    self = [self initWithFrame:frame horizontalPadding:8 verticalPadding:5 inputViewMinHeight:36 inputViewMaxHeight:150 type:type];
+    self = [self initWithFrame:frame horizontalPadding:8 verticalPadding:5 inputViewMinHeight:36 inputViewMaxHeight:120 type:type];
     if (self) {
         
     }
@@ -98,7 +97,6 @@
         _leftItems = [NSMutableArray array];
         _rightItems = [NSMutableArray array];
         _version = [[[UIDevice currentDevice] systemVersion] floatValue];
-        _activityButtomView = nil;
         _isShowButtomView = NO;
         
         _defaultEmoji = [EaseEmoji allEmoji];
@@ -220,7 +218,6 @@
         _faceView = [[EaseFaceView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(_toolbarView.frame), self.frame.size.width, 180)];
         [(EaseFaceView *)_faceView setDelegate:self];
         _faceView.backgroundColor = [UIColor colorWithRed:240 / 255.0 green:242 / 255.0 blue:247 / 255.0 alpha:1.0];
-        _faceView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
     }
     
     return _faceView;
@@ -229,15 +226,19 @@
 - (UIView *)moreView
 {
     if (_moreView == nil) {
-        _moreView = [[EaseChatBarMoreView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(_toolbarView.frame), self.frame.size.width, 80) type:self.chatBarType];
+        _moreView = [[EaseChatBarMoreView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(_toolbarView.frame), self.frame.size.width, 180) type:self.chatBarType];
         _moreView.backgroundColor = [UIColor colorWithRed:240 / 255.0 green:242 / 255.0 blue:247 / 255.0 alpha:1.0];
-        _moreView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
     }
     
     return _moreView;
 }
 
 #pragma mark - setter
+
+- (void)setText:(NSString*)text {
+    self.inputTextView.text = text;
+    [self _willShowInputTextViewToHeight:[self _getTextViewContentH:self.inputTextView]];
+}
 
 - (void)setDelegate:(id<EMChatToolbarDelegate>)delegate
 {
@@ -360,6 +361,7 @@
                     oMaxX -= self.horizontalPadding;
                     
                     [self.toolbarView addSubview:chatItem.button];
+                    [self addSubview:chatItem.button2View];
                     [self.rightItems addObject:item];
                 }
             }
@@ -389,6 +391,45 @@
     }
 }
 
+- (void)setInputTextViewHeight:(CGFloat)toHeight {
+    if (toHeight < self.inputViewMinHeight) {
+        toHeight = self.inputViewMinHeight;
+    }
+    if (toHeight > self.inputViewMaxHeight) {
+        toHeight = self.inputViewMaxHeight;
+    }
+    
+    if (toHeight == _previousTextViewContentHeight)
+    {
+        return;
+    }
+    else{
+        CGFloat changeHeight = toHeight - _previousTextViewContentHeight;
+        
+        CGRect rect = self.frame;
+        rect.size.height += changeHeight;
+        rect.origin.y -= changeHeight;
+        self.frame = rect;
+        
+        rect = self.toolbarView.frame;
+        rect.size.height += changeHeight;
+        self.toolbarView.frame = rect;
+        
+        rect = self.faceView.frame;
+        rect.origin.y += changeHeight;
+        self.faceView.frame = rect;
+        
+        rect = self.moreView.frame;
+        rect.origin.y += changeHeight;
+        self.moreView.frame = rect;
+        
+        if (self.version < 7.0) {
+            [self.inputTextView setContentOffset:CGPointMake(0.0f, (self.inputTextView.contentSize.height - self.inputTextView.frame.size.height) / 2) animated:YES];
+        }
+        _previousTextViewContentHeight = toHeight;
+    }
+}
+
 - (void)_willShowInputTextViewToHeight:(CGFloat)toHeight
 {
     if (toHeight < self.inputViewMinHeight) {
@@ -413,6 +454,14 @@
         rect = self.toolbarView.frame;
         rect.size.height += changeHeight;
         self.toolbarView.frame = rect;
+        
+        rect = self.faceView.frame;
+        rect.origin.y += changeHeight;
+        self.faceView.frame = rect;
+        
+        rect = self.moreView.frame;
+        rect.origin.y += changeHeight;
+        self.moreView.frame = rect;
         
         if (self.version < 7.0) {
             [self.inputTextView setContentOffset:CGPointMake(0.0f, (self.inputTextView.contentSize.height - self.inputTextView.frame.size.height) / 2) animated:YES];
@@ -455,21 +504,18 @@
 
 - (void)_willShowBottomView:(UIView *)bottomView
 {
-    if (![self.activityButtomView isEqual:bottomView]) {
-        CGFloat bottomHeight = bottomView ? bottomView.frame.size.height : 0;
-        [self _willShowBottomHeight:bottomHeight];
-        
-        if (bottomView) {
-            CGRect rect = bottomView.frame;
-            rect.origin.y = CGRectGetMaxY(self.toolbarView.frame);
-            bottomView.frame = rect;
-            [self addSubview:bottomView];
-        }
-        
-        if (self.activityButtomView) {
-            [self.activityButtomView removeFromSuperview];
-        }
-        self.activityButtomView = bottomView;
+    CGFloat bottomHeight = bottomView ? bottomView.frame.size.height : 0;
+    [self _willShowBottomHeight:bottomHeight];
+    
+    if (bottomView) {
+        CGRect rect = bottomView.frame;
+        rect.origin.y = CGRectGetMaxY(self.toolbarView.frame);
+        bottomView.frame = rect;
+    }
+    
+
+    if (bottomView) {
+        [self bringSubviewToFront:bottomView];
     }
 }
 
@@ -477,12 +523,7 @@
 {
     if (beginFrame.origin.y == [[UIScreen mainScreen] bounds].size.height)
     {
-        //一定要把self.activityButtomView置为空
         [self _willShowBottomHeight:toFrame.size.height];
-        if (self.activityButtomView) {
-            [self.activityButtomView removeFromSuperview];
-        }
-        self.activityButtomView = nil;
     }
     else if (toFrame.origin.y == [[UIScreen mainScreen] bounds].size.height)
     {
@@ -532,7 +573,7 @@
         if ([self.delegate respondsToSelector:@selector(didSendText:)]) {
             [self.delegate didSendText:textView.text];
             self.inputTextView.text = @"";
-            [self _willShowInputTextViewToHeight:[self _getTextViewContentH:self.inputTextView]];;
+            [self _willShowInputTextViewToHeight:[self _getTextViewContentH:self.inputTextView]];
         }
         
         return NO;
@@ -659,16 +700,16 @@
             }
         }
         
+        //使toolbarView回到最小高度
+        [self setInputTextViewHeight:36];
         //录音状态下，不显示底部扩展页面
         [self _willShowBottomView:nil];
-        
-        //将inputTextView内容置空，以使toolbarView回到最小高度
-        self.inputTextView.text = @"";
-        [self textViewDidChange:self.inputTextView];
+
         [self.inputTextView resignFirstResponder];
     }
     else{
         //键盘也算一种底部扩展页面
+        [self _willShowInputTextViewToHeight:[self _getTextViewContentH:self.inputTextView]];
         [self.inputTextView becomeFirstResponder];
     }
     
@@ -701,8 +742,11 @@
         //如果处于文字输入状态，使文字输入框失去焦点
         [self.inputTextView resignFirstResponder];
         
-        [self _willShowBottomView:faceItem.button2View];
-        [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+        CGFloat height = [self _getTextViewContentH:self.inputTextView];
+        [self setInputTextViewHeight:height];
+ 
+        [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseInOut|UIViewAnimationOptionBeginFromCurrentState animations:^{
+            [self _willShowBottomView:faceItem.button2View];
             self.recordButton.hidden = button.selected;
             self.inputTextView.hidden = !button.selected;
         } completion:^(BOOL finished) {
@@ -736,8 +780,11 @@
         //如果处于文字输入状态，使文字输入框失去焦点
         [self.inputTextView resignFirstResponder];
         
-        [self _willShowBottomView:moreItem.button2View];
-        [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+        CGFloat height = [self _getTextViewContentH:self.inputTextView];
+        [self setInputTextViewHeight:height];
+        
+        [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseInOut|UIViewAnimationOptionBeginFromCurrentState animations:^{
+            [self _willShowBottomView:moreItem.button2View];
             self.recordButton.hidden = button.selected;
             self.inputTextView.hidden = !button.selected;
         } completion:nil];
@@ -808,14 +855,13 @@
 {
     BOOL result = [super endEditing:force];
     
-//    for (EaseChatToolbarItem *item in self.leftItems) {
-//        item.button.selected = NO;
-//    }
-    
     for (EaseChatToolbarItem *item in self.rightItems) {
         item.button.selected = NO;
     }
-    [self _willShowBottomView:nil];
+    
+    [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionCurveEaseInOut|UIViewAnimationOptionBeginFromCurrentState animations:^{
+        [self _willShowBottomView:nil];
+    } completion:nil];
     
     return result;
 }

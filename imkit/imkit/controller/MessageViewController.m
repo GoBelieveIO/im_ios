@@ -191,7 +191,7 @@
 
 - (void)setDraft:(NSString *)draft {
     if (draft.length > 0) {
-        self.chatToolbar.inputTextView.text = draft;
+        [self.chatToolbar setText:draft];
     }
 }
 
@@ -1107,14 +1107,11 @@
 #pragma mark - EMChatToolbarDelegate
 - (void)chatToolbarDidChangeFrameToHeight:(CGFloat)toHeight
 {
-    [UIView animateWithDuration:0.3 animations:^{
-        CGRect rect = self.tableView.frame;
-        rect.origin.y = 0;
-        rect.size.height = self.view.frame.size.height - toHeight;
-        self.tableView.frame = rect;
-    
-        [self scrollToBottomAnimated:NO];
-    }];
+    CGRect rect = self.tableView.frame;
+    rect.origin.y = 0;
+    rect.size.height = self.view.frame.size.height - toHeight;
+    self.tableView.frame = rect;
+    [self scrollToBottomAnimated:NO];
 }
 
 - (void)inputTextViewWillBeginEditing:(EaseTextView *)inputTextView
