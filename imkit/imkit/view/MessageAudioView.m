@@ -118,7 +118,7 @@
     }
     
     if (self.msg.playing) {
-        [self.playBtn setImage:[UIImage imageNamed:@"PauseOS7"] forState:UIControlStateNormal];
+        [self.playBtn setImage:[UIImage imageNamed:@"Pause"] forState:UIControlStateNormal];
         [self.playBtn setImage:[UIImage imageNamed:@"PausePressed"] forState:UIControlStateSelected];
         self.progressView.progress = self.msg.progress/100.0;
     } else {
@@ -144,7 +144,7 @@
         }
     } else if ([keyPath isEqualToString:@"playing"]) {
         if (self.msg.playing) {
-            [self.playBtn setImage:[UIImage imageNamed:@"PauseOS7"] forState:UIControlStateNormal];
+            [self.playBtn setImage:[UIImage imageNamed:@"Pause"] forState:UIControlStateNormal];
             [self.playBtn setImage:[UIImage imageNamed:@"PausePressed"] forState:UIControlStateSelected];
         } else {
             [self.playBtn setImage:[UIImage imageNamed:@"Play"] forState:UIControlStateNormal];

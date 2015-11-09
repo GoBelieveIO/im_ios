@@ -97,15 +97,7 @@
     
     UIView *inputBar = [[UIView alloc] initWithFrame:inputFrame];
     
-    CGRect screenRect = [[UIScreen mainScreen] bounds];
-    CGFloat screenWidth = screenRect.size.width;
-    
-    UIImageView *bkview = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, screenWidth, 44)];
-    UIImage *img = [UIImage imageNamed:@"input-bar-flat.png"];
-    UIImage *stretchImg = [img stretchableImageWithLeftCapWidth:1 topCapHeight:5];
-    [bkview setImage:stretchImg];
-    [self.inputBar addSubview:bkview];
-    
+
     inputBar.backgroundColor = [UIColor whiteColor];
     inputBar.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin);
     inputBar.opaque = YES;

@@ -44,108 +44,46 @@
 		6D69BD141B4449D0008EAA8A /* libimkit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF54DC51AB587BF00197EBC /* libimkit.a */; };
 		6D69BD151B4449D0008EAA8A /* libimsdk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF54DBB1AB587B700197EBC /* libimsdk.a */; };
 		6D69BD171B4449D0008EAA8A /* btn_grey@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54ED41AB58DC500197EBC /* btn_grey@2x.png */; };
-		6D69BD181B4449D0008EAA8A /* MicChats.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DE81AB5883200197EBC /* MicChats.png */; };
 		6D69BD191B4449D0008EAA8A /* btn_grey.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EC61AB58DC500197EBC /* btn_grey.png */; };
 		6D69BD1A1B4449D0008EAA8A /* ic_dustbin@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EE31AB58DC500197EBC /* ic_dustbin@3x.png */; };
-		6D69BD1B1B4449D0008EAA8A /* MicChatsBlue.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DEA1AB5883200197EBC /* MicChatsBlue.png */; };
 		6D69BD1C1B4449D0008EAA8A /* bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54ECE1AB58DC500197EBC /* bg@2x.png */; };
 		6D69BD1D1B4449D0008EAA8A /* avater_you.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EBF1AB58DC500197EBC /* avater_you.png */; };
 		6D69BD1E1B4449D0008EAA8A /* bottombar_inputbox.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EC41AB58DC500197EBC /* bottombar_inputbox.png */; };
-		6D69BD1F1B4449D0008EAA8A /* MicEmpty.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DED1AB5883200197EBC /* MicEmpty.png */; };
 		6D69BD201B4449D0008EAA8A /* bg_blue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54ECF1AB58DC500197EBC /* bg_blue@2x.png */; };
-		6D69BD211B4449D0008EAA8A /* MicOutgoing@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DF31AB5883200197EBC /* MicOutgoing@2x.png */; };
 		6D69BD221B4449D0008EAA8A /* messageSent.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E0B1AB5883200197EBC /* messageSent.aiff */; };
 		6D69BD231B4449D0008EAA8A /* ic_man@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54ED71AB58DC500197EBC /* ic_man@2x.png */; };
-		6D69BD241B4449D0008EAA8A /* MicBlueIncoming.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DE41AB5883200197EBC /* MicBlueIncoming.png */; };
-		6D69BD251B4449D0008EAA8A /* BubbleIncoming@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DCF1AB5883200197EBC /* BubbleIncoming@2x.png */; };
-		6D69BD261B4449D0008EAA8A /* MicRecBtn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DF51AB5883200197EBC /* MicRecBtn@2x.png */; };
 		6D69BD271B4449D0008EAA8A /* bottombar_bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54ED11AB58DC500197EBC /* bottombar_bg@2x.png */; };
-		6D69BD281B4449D0008EAA8A /* MicRecRed.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DF81AB5883200197EBC /* MicRecRed.png */; };
-		6D69BD291B4449D0008EAA8A /* CheckSingleLight7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DDC1AB5883200197EBC /* CheckSingleLight7@2x.png */; };
-		6D69BD2A1B4449D0008EAA8A /* MicChatsSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DEC1AB5883200197EBC /* MicChatsSelected@2x.png */; };
-		6D69BD2B1B4449D0008EAA8A /* CheckSingleLight.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DDB1AB5883200197EBC /* CheckSingleLight.png */; };
 		6D69BD2C1B4449D0008EAA8A /* btn_grey@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EE11AB58DC500197EBC /* btn_grey@3x.png */; };
-		6D69BD2D1B4449D0008EAA8A /* BrdtDoubleCheck@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DCE1AB5883200197EBC /* BrdtDoubleCheck@2x.png */; };
 		6D69BD2E1B4449D0008EAA8A /* bg_white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54ED01AB58DC500197EBC /* bg_white@2x.png */; };
-		6D69BD2F1B4449D0008EAA8A /* CheckSingleGreen.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DD91AB5883200197EBC /* CheckSingleGreen.png */; };
-		6D69BD301B4449D0008EAA8A /* MicRecRed90.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DFC1AB5883200197EBC /* MicRecRed90.png */; };
 		6D69BD311B4449D0008EAA8A /* bottombar_inputbox@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EDF1AB58DC500197EBC /* bottombar_inputbox@3x.png */; };
-		6D69BD321B4449D0008EAA8A /* chatBack.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DD31AB5883200197EBC /* chatBack.png */; };
 		6D69BD331B4449D0008EAA8A /* ic_man.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EC91AB58DC500197EBC /* ic_man.png */; };
 		6D69BD341B4449D0008EAA8A /* avater_you@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EDA1AB58DC500197EBC /* avater_you@3x.png */; };
-		6D69BD351B4449D0008EAA8A /* MicIncoming.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DEE1AB5883200197EBC /* MicIncoming.png */; };
-		6D69BD361B4449D0008EAA8A /* CheckDoubleGreen.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DD41AB5883200197EBC /* CheckDoubleGreen.png */; };
-		6D69BD371B4449D0008EAA8A /* MicBlueSent@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DE71AB5883200197EBC /* MicBlueSent@2x.png */; };
-		6D69BD381B4449D0008EAA8A /* BrdtCheck.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DCB1AB5883200197EBC /* BrdtCheck.png */; };
 		6D69BD391B4449D0008EAA8A /* ic_dustbin@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54ED61AB58DC500197EBC /* ic_dustbin@2x.png */; };
-		6D69BD3A1B4449D0008EAA8A /* GroupChat@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DDF1AB5883200197EBC /* GroupChat@2x.png */; };
-		6D69BD3B1B4449D0008EAA8A /* BubbleOutgoingSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DD21AB5883200197EBC /* BubbleOutgoingSelected@2x.png */; };
-		6D69BD3C1B4449D0008EAA8A /* MicNewSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DF21AB5883200197EBC /* MicNewSelected.png */; };
 		6D69BD3D1B4449D0008EAA8A /* btn_blue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54ED31AB58DC500197EBC /* btn_blue@2x.png */; };
-		6D69BD3E1B4449D0008EAA8A /* MicSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DFE1AB5883200197EBC /* MicSelected@2x.png */; };
-		6D69BD3F1B4449D0008EAA8A /* PhotoIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E041AB5883200197EBC /* PhotoIcon@2x.png */; };
-		6D69BD401B4449D0008EAA8A /* PausePressed.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E021AB5883200197EBC /* PausePressed.png */; };
 		6D69BD411B4449D0008EAA8A /* bg_white@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EDD1AB58DC500197EBC /* bg_white@3x.png */; };
 		6D69BD421B4449D0008EAA8A /* btn_blue@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EE01AB58DC500197EBC /* btn_blue@3x.png */; };
-		6D69BD431B4449D0008EAA8A /* PlayPressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E071AB5883200197EBC /* PlayPressed@2x.png */; };
 		6D69BD441B4449D0008EAA8A /* 640 1136.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54ECB1AB58DC500197EBC /* 640 1136.png */; };
-		6D69BD451B4449D0008EAA8A /* GroupChat.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DDE1AB5883200197EBC /* GroupChat.png */; };
-		6D69BD461B4449D0008EAA8A /* MicRecBtn.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DF41AB5883200197EBC /* MicRecBtn.png */; };
 		6D69BD471B4449D0008EAA8A /* bg_white.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EC21AB58DC500197EBC /* bg_white.png */; };
-		6D69BD481B4449D0008EAA8A /* CheckDoubleGreen@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DD51AB5883200197EBC /* CheckDoubleGreen@2x.png */; };
-		6D69BD491B4449D0008EAA8A /* MicBlueSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DE51AB5883200197EBC /* MicBlueSelected@2x.png */; };
-		6D69BD4A1B4449D0008EAA8A /* GroupChatRound.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DE01AB5883200197EBC /* GroupChatRound.png */; };
 		6D69BD4B1B4449D0008EAA8A /* bg@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EDB1AB58DC500197EBC /* bg@3x.png */; };
 		6D69BD4C1B4449D0008EAA8A /* ic_dustbin.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EC81AB58DC500197EBC /* ic_dustbin.png */; };
-		6D69BD4D1B4449D0008EAA8A /* input-bar-flat@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DE21AB5883200197EBC /* input-bar-flat@2x.png */; };
 		6D69BD4E1B4449D0008EAA8A /* avater_me@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54ECC1AB58DC500197EBC /* avater_me@2x.png */; };
-		6D69BD4F1B4449D0008EAA8A /* MessageSendError.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DE31AB5883200197EBC /* MessageSendError.png */; };
-		6D69BD501B4449D0008EAA8A /* CheckSingleLight@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DDD1AB5883200197EBC /* CheckSingleLight@2x.png */; };
-		6D69BD511B4449D0008EAA8A /* CheckSingleGreen@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DDA1AB5883200197EBC /* CheckSingleGreen@2x.png */; };
-		6D69BD521B4449D0008EAA8A /* Pause.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DFF1AB5883200197EBC /* Pause.png */; };
-		6D69BD531B4449D0008EAA8A /* MicChatsSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DEB1AB5883200197EBC /* MicChatsSelected.png */; };
-		6D69BD541B4449D0008EAA8A /* MicIncoming@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DEF1AB5883200197EBC /* MicIncoming@2x.png */; };
-		6D69BD551B4449D0008EAA8A /* BubbleIncomingSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DD01AB5883200197EBC /* BubbleIncomingSelected@2x.png */; };
-		6D69BD561B4449D0008EAA8A /* MicRecRed70.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DFB1AB5883200197EBC /* MicRecRed70.png */; };
-		6D69BD571B4449D0008EAA8A /* Pause@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E001AB5883200197EBC /* Pause@2x.png */; };
 		6D69BD581B4449D0008EAA8A /* avater_me.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EBE1AB58DC500197EBC /* avater_me.png */; };
 		6D69BD591B4449D0008EAA8A /* bottombar_inputbox@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54ED21AB58DC500197EBC /* bottombar_inputbox@2x.png */; };
 		6D69BD5A1B4449D0008EAA8A /* ic_back.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EC71AB58DC500197EBC /* ic_back.png */; };
 		6D69BD5B1B4449D0008EAA8A /* bottombar_bg@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EDE1AB58DC500197EBC /* bottombar_bg@3x.png */; };
 		6D69BD5C1B4449D0008EAA8A /* msg_state_fail@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EE51AB58DC500197EBC /* msg_state_fail@2x.png */; };
-		6D69BD5D1B4449D0008EAA8A /* MicRecRed50.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DFA1AB5883200197EBC /* MicRecRed50.png */; };
 		6D69BD5E1B4449D0008EAA8A /* bg_blue.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EC11AB58DC500197EBC /* bg_blue.png */; };
 		6D69BD5F1B4449D0008EAA8A /* ic_back@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EE21AB58DC500197EBC /* ic_back@3x.png */; };
-		6D69BD601B4449D0008EAA8A /* MicRecGray.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DF61AB5883200197EBC /* MicRecGray.png */; };
-		6D69BD611B4449D0008EAA8A /* BrdtDoubleCheck.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DCD1AB5883200197EBC /* BrdtDoubleCheck.png */; };
-		6D69BD621B4449D0008EAA8A /* MicRecGray@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DF71AB5883200197EBC /* MicRecGray@2x.png */; };
 		6D69BD631B4449D0008EAA8A /* bottombar_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EC31AB58DC500197EBC /* bottombar_bg.png */; };
 		6D69BD641B4449D0008EAA8A /* bg_blue@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EDC1AB58DC500197EBC /* bg_blue@3x.png */; };
-		6D69BD651B4449D0008EAA8A /* MicNewIncoming@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DF11AB5883200197EBC /* MicNewIncoming@2x.png */; };
-		6D69BD661B4449D0008EAA8A /* MicNewIncoming.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DF01AB5883200197EBC /* MicNewIncoming.png */; };
-		6D69BD671B4449D0008EAA8A /* CheckDoubleLight.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DD61AB5883200197EBC /* CheckDoubleLight.png */; };
-		6D69BD681B4449D0008EAA8A /* BrdtCheck@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DCC1AB5883200197EBC /* BrdtCheck@2x.png */; };
-		6D69BD691B4449D0008EAA8A /* input-bar-flat.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DE11AB5883200197EBC /* input-bar-flat.png */; };
 		6D69BD6A1B4449D0008EAA8A /* avater_you@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54ECD1AB58DC500197EBC /* avater_you@2x.png */; };
-		6D69BD6B1B4449D0008EAA8A /* MicSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DFD1AB5883200197EBC /* MicSelected.png */; };
-		6D69BD6C1B4449D0008EAA8A /* PhotoIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E031AB5883200197EBC /* PhotoIcon.png */; };
-		6D69BD6D1B4449D0008EAA8A /* CheckDoubleLight7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DD71AB5883200197EBC /* CheckDoubleLight7@2x.png */; };
 		6D69BD6E1B4449D0008EAA8A /* btn_blue.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EC51AB58DC500197EBC /* btn_blue.png */; };
 		6D69BD6F1B4449D0008EAA8A /* ic_man@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EE41AB58DC500197EBC /* ic_man@3x.png */; };
 		6D69BD711B4449D0008EAA8A /* ic_back@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54ED51AB58DC500197EBC /* ic_back@2x.png */; };
-		6D69BD721B4449D0008EAA8A /* BubbleOutgoing@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DD11AB5883200197EBC /* BubbleOutgoing@2x.png */; };
-		6D69BD731B4449D0008EAA8A /* MicChats@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DE91AB5883200197EBC /* MicChats@2x.png */; };
-		6D69BD741B4449D0008EAA8A /* MicBlueSent.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DE61AB5883200197EBC /* MicBlueSent.png */; };
 		6D69BD751B4449D0008EAA8A /* messageReceived.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E0A1AB5883200197EBC /* messageReceived.aiff */; };
-		6D69BD761B4449D0008EAA8A /* save@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E081AB5883200197EBC /* save@2x.png */; };
-		6D69BD771B4449D0008EAA8A /* Play.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E051AB5883200197EBC /* Play.png */; };
-		6D69BD781B4449D0008EAA8A /* Play@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E061AB5883200197EBC /* Play@2x.png */; };
 		6D69BD791B4449D0008EAA8A /* avater_me@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54ED91AB58DC500197EBC /* avater_me@3x.png */; };
 		6D69BD7A1B4449D0008EAA8A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54D9B1AB5862000197EBC /* Images.xcassets */; };
-		6D69BD7B1B4449D0008EAA8A /* PauseOS7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E011AB5883200197EBC /* PauseOS7@2x.png */; };
 		6D69BD7C1B4449D0008EAA8A /* bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EC01AB58DC500197EBC /* bg.png */; };
-		6D69BD7D1B4449D0008EAA8A /* MicRecRed2X.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DF91AB5883200197EBC /* MicRecRed2X.png */; };
-		6D69BD7E1B4449D0008EAA8A /* CheckDoubleLight@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DD81AB5883200197EBC /* CheckDoubleLight@2x.png */; };
 		6D69BD921B444B79008EAA8A /* room-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6D69BD911B444B79008EAA8A /* room-Info.plist */; };
 		6D69BD951B444BBA008EAA8A /* RoomViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D69BD941B444BBA008EAA8A /* RoomViewController.m */; };
 		6D69BD981B444C09008EAA8A /* RoomLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D69BD971B444C09008EAA8A /* RoomLoginViewController.m */; };
@@ -188,182 +126,55 @@
 		6D8E72701B750A31004E069E /* libimkit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF54DC51AB587BF00197EBC /* libimkit.a */; };
 		6D8E72711B750A31004E069E /* libimsdk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF54DBB1AB587B700197EBC /* libimsdk.a */; };
 		6D8E72731B750A31004E069E /* btn_grey@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54ED41AB58DC500197EBC /* btn_grey@2x.png */; };
-		6D8E72741B750A31004E069E /* MicChats.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DE81AB5883200197EBC /* MicChats.png */; };
 		6D8E72751B750A31004E069E /* btn_grey.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EC61AB58DC500197EBC /* btn_grey.png */; };
 		6D8E72761B750A31004E069E /* ic_dustbin@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EE31AB58DC500197EBC /* ic_dustbin@3x.png */; };
-		6D8E72771B750A31004E069E /* MicChatsBlue.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DEA1AB5883200197EBC /* MicChatsBlue.png */; };
 		6D8E72781B750A31004E069E /* bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54ECE1AB58DC500197EBC /* bg@2x.png */; };
 		6D8E72791B750A31004E069E /* avater_you.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EBF1AB58DC500197EBC /* avater_you.png */; };
 		6D8E727A1B750A31004E069E /* bottombar_inputbox.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EC41AB58DC500197EBC /* bottombar_inputbox.png */; };
-		6D8E727B1B750A31004E069E /* MicEmpty.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DED1AB5883200197EBC /* MicEmpty.png */; };
 		6D8E727C1B750A31004E069E /* bg_blue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54ECF1AB58DC500197EBC /* bg_blue@2x.png */; };
-		6D8E727D1B750A31004E069E /* MicOutgoing@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DF31AB5883200197EBC /* MicOutgoing@2x.png */; };
 		6D8E727E1B750A31004E069E /* messageSent.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E0B1AB5883200197EBC /* messageSent.aiff */; };
 		6D8E727F1B750A31004E069E /* ic_man@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54ED71AB58DC500197EBC /* ic_man@2x.png */; };
-		6D8E72801B750A31004E069E /* MicBlueIncoming.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DE41AB5883200197EBC /* MicBlueIncoming.png */; };
-		6D8E72811B750A31004E069E /* BubbleIncoming@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DCF1AB5883200197EBC /* BubbleIncoming@2x.png */; };
-		6D8E72821B750A31004E069E /* MicRecBtn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DF51AB5883200197EBC /* MicRecBtn@2x.png */; };
 		6D8E72831B750A31004E069E /* bottombar_bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54ED11AB58DC500197EBC /* bottombar_bg@2x.png */; };
-		6D8E72841B750A31004E069E /* MicRecRed.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DF81AB5883200197EBC /* MicRecRed.png */; };
-		6D8E72851B750A31004E069E /* CheckSingleLight7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DDC1AB5883200197EBC /* CheckSingleLight7@2x.png */; };
-		6D8E72861B750A31004E069E /* MicChatsSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DEC1AB5883200197EBC /* MicChatsSelected@2x.png */; };
-		6D8E72871B750A31004E069E /* CheckSingleLight.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DDB1AB5883200197EBC /* CheckSingleLight.png */; };
 		6D8E72881B750A31004E069E /* btn_grey@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EE11AB58DC500197EBC /* btn_grey@3x.png */; };
-		6D8E72891B750A31004E069E /* BrdtDoubleCheck@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DCE1AB5883200197EBC /* BrdtDoubleCheck@2x.png */; };
 		6D8E728A1B750A31004E069E /* bg_white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54ED01AB58DC500197EBC /* bg_white@2x.png */; };
-		6D8E728B1B750A31004E069E /* CheckSingleGreen.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DD91AB5883200197EBC /* CheckSingleGreen.png */; };
-		6D8E728C1B750A31004E069E /* MicRecRed90.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DFC1AB5883200197EBC /* MicRecRed90.png */; };
 		6D8E728D1B750A31004E069E /* bottombar_inputbox@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EDF1AB58DC500197EBC /* bottombar_inputbox@3x.png */; };
-		6D8E728E1B750A31004E069E /* chatBack.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DD31AB5883200197EBC /* chatBack.png */; };
 		6D8E728F1B750A31004E069E /* ic_man.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EC91AB58DC500197EBC /* ic_man.png */; };
 		6D8E72901B750A31004E069E /* avater_you@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EDA1AB58DC500197EBC /* avater_you@3x.png */; };
-		6D8E72911B750A31004E069E /* MicIncoming.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DEE1AB5883200197EBC /* MicIncoming.png */; };
-		6D8E72921B750A31004E069E /* CheckDoubleGreen.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DD41AB5883200197EBC /* CheckDoubleGreen.png */; };
-		6D8E72931B750A31004E069E /* MicBlueSent@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DE71AB5883200197EBC /* MicBlueSent@2x.png */; };
-		6D8E72941B750A31004E069E /* BrdtCheck.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DCB1AB5883200197EBC /* BrdtCheck.png */; };
 		6D8E72951B750A31004E069E /* ic_dustbin@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54ED61AB58DC500197EBC /* ic_dustbin@2x.png */; };
-		6D8E72961B750A31004E069E /* GroupChat@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DDF1AB5883200197EBC /* GroupChat@2x.png */; };
-		6D8E72971B750A31004E069E /* BubbleOutgoingSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DD21AB5883200197EBC /* BubbleOutgoingSelected@2x.png */; };
-		6D8E72981B750A31004E069E /* MicNewSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DF21AB5883200197EBC /* MicNewSelected.png */; };
 		6D8E72991B750A31004E069E /* btn_blue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54ED31AB58DC500197EBC /* btn_blue@2x.png */; };
-		6D8E729A1B750A31004E069E /* MicSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DFE1AB5883200197EBC /* MicSelected@2x.png */; };
-		6D8E729B1B750A31004E069E /* PhotoIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E041AB5883200197EBC /* PhotoIcon@2x.png */; };
-		6D8E729C1B750A31004E069E /* PausePressed.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E021AB5883200197EBC /* PausePressed.png */; };
 		6D8E729D1B750A31004E069E /* bg_white@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EDD1AB58DC500197EBC /* bg_white@3x.png */; };
 		6D8E729E1B750A31004E069E /* btn_blue@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EE01AB58DC500197EBC /* btn_blue@3x.png */; };
-		6D8E729F1B750A31004E069E /* PlayPressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E071AB5883200197EBC /* PlayPressed@2x.png */; };
 		6D8E72A01B750A31004E069E /* 640 1136.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54ECB1AB58DC500197EBC /* 640 1136.png */; };
-		6D8E72A11B750A31004E069E /* GroupChat.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DDE1AB5883200197EBC /* GroupChat.png */; };
-		6D8E72A21B750A31004E069E /* MicRecBtn.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DF41AB5883200197EBC /* MicRecBtn.png */; };
 		6D8E72A31B750A31004E069E /* bg_white.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EC21AB58DC500197EBC /* bg_white.png */; };
-		6D8E72A41B750A31004E069E /* CheckDoubleGreen@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DD51AB5883200197EBC /* CheckDoubleGreen@2x.png */; };
-		6D8E72A51B750A31004E069E /* MicBlueSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DE51AB5883200197EBC /* MicBlueSelected@2x.png */; };
-		6D8E72A61B750A31004E069E /* GroupChatRound.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DE01AB5883200197EBC /* GroupChatRound.png */; };
 		6D8E72A71B750A31004E069E /* bg@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EDB1AB58DC500197EBC /* bg@3x.png */; };
 		6D8E72A81B750A31004E069E /* ic_dustbin.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EC81AB58DC500197EBC /* ic_dustbin.png */; };
-		6D8E72A91B750A31004E069E /* input-bar-flat@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DE21AB5883200197EBC /* input-bar-flat@2x.png */; };
 		6D8E72AA1B750A31004E069E /* avater_me@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54ECC1AB58DC500197EBC /* avater_me@2x.png */; };
-		6D8E72AB1B750A31004E069E /* MessageSendError.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DE31AB5883200197EBC /* MessageSendError.png */; };
-		6D8E72AC1B750A31004E069E /* CheckSingleLight@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DDD1AB5883200197EBC /* CheckSingleLight@2x.png */; };
-		6D8E72AD1B750A31004E069E /* CheckSingleGreen@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DDA1AB5883200197EBC /* CheckSingleGreen@2x.png */; };
-		6D8E72AE1B750A31004E069E /* Pause.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DFF1AB5883200197EBC /* Pause.png */; };
-		6D8E72AF1B750A31004E069E /* MicChatsSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DEB1AB5883200197EBC /* MicChatsSelected.png */; };
-		6D8E72B01B750A31004E069E /* MicIncoming@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DEF1AB5883200197EBC /* MicIncoming@2x.png */; };
-		6D8E72B11B750A31004E069E /* BubbleIncomingSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DD01AB5883200197EBC /* BubbleIncomingSelected@2x.png */; };
-		6D8E72B21B750A31004E069E /* MicRecRed70.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DFB1AB5883200197EBC /* MicRecRed70.png */; };
-		6D8E72B31B750A31004E069E /* Pause@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E001AB5883200197EBC /* Pause@2x.png */; };
 		6D8E72B41B750A31004E069E /* avater_me.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EBE1AB58DC500197EBC /* avater_me.png */; };
 		6D8E72B51B750A31004E069E /* bottombar_inputbox@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54ED21AB58DC500197EBC /* bottombar_inputbox@2x.png */; };
 		6D8E72B61B750A31004E069E /* ic_back.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EC71AB58DC500197EBC /* ic_back.png */; };
 		6D8E72B71B750A31004E069E /* bottombar_bg@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EDE1AB58DC500197EBC /* bottombar_bg@3x.png */; };
 		6D8E72B81B750A31004E069E /* msg_state_fail@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EE51AB58DC500197EBC /* msg_state_fail@2x.png */; };
-		6D8E72B91B750A31004E069E /* MicRecRed50.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DFA1AB5883200197EBC /* MicRecRed50.png */; };
 		6D8E72BA1B750A31004E069E /* bg_blue.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EC11AB58DC500197EBC /* bg_blue.png */; };
 		6D8E72BB1B750A31004E069E /* ic_back@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EE21AB58DC500197EBC /* ic_back@3x.png */; };
-		6D8E72BC1B750A31004E069E /* MicRecGray.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DF61AB5883200197EBC /* MicRecGray.png */; };
-		6D8E72BD1B750A31004E069E /* BrdtDoubleCheck.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DCD1AB5883200197EBC /* BrdtDoubleCheck.png */; };
-		6D8E72BE1B750A31004E069E /* MicRecGray@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DF71AB5883200197EBC /* MicRecGray@2x.png */; };
 		6D8E72BF1B750A31004E069E /* bottombar_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EC31AB58DC500197EBC /* bottombar_bg.png */; };
 		6D8E72C01B750A31004E069E /* bg_blue@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EDC1AB58DC500197EBC /* bg_blue@3x.png */; };
-		6D8E72C11B750A31004E069E /* MicNewIncoming@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DF11AB5883200197EBC /* MicNewIncoming@2x.png */; };
-		6D8E72C21B750A31004E069E /* MicNewIncoming.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DF01AB5883200197EBC /* MicNewIncoming.png */; };
-		6D8E72C31B750A31004E069E /* CheckDoubleLight.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DD61AB5883200197EBC /* CheckDoubleLight.png */; };
-		6D8E72C41B750A31004E069E /* BrdtCheck@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DCC1AB5883200197EBC /* BrdtCheck@2x.png */; };
-		6D8E72C51B750A31004E069E /* input-bar-flat.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DE11AB5883200197EBC /* input-bar-flat.png */; };
 		6D8E72C61B750A31004E069E /* avater_you@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54ECD1AB58DC500197EBC /* avater_you@2x.png */; };
-		6D8E72C71B750A31004E069E /* MicSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DFD1AB5883200197EBC /* MicSelected.png */; };
-		6D8E72C81B750A31004E069E /* PhotoIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E031AB5883200197EBC /* PhotoIcon.png */; };
-		6D8E72C91B750A31004E069E /* CheckDoubleLight7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DD71AB5883200197EBC /* CheckDoubleLight7@2x.png */; };
 		6D8E72CA1B750A31004E069E /* btn_blue.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EC51AB58DC500197EBC /* btn_blue.png */; };
 		6D8E72CB1B750A31004E069E /* ic_man@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EE41AB58DC500197EBC /* ic_man@3x.png */; };
 		6D8E72CD1B750A31004E069E /* ic_back@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54ED51AB58DC500197EBC /* ic_back@2x.png */; };
-		6D8E72CE1B750A31004E069E /* BubbleOutgoing@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DD11AB5883200197EBC /* BubbleOutgoing@2x.png */; };
-		6D8E72CF1B750A31004E069E /* MicChats@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DE91AB5883200197EBC /* MicChats@2x.png */; };
-		6D8E72D01B750A31004E069E /* MicBlueSent.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DE61AB5883200197EBC /* MicBlueSent.png */; };
 		6D8E72D11B750A31004E069E /* messageReceived.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E0A1AB5883200197EBC /* messageReceived.aiff */; };
-		6D8E72D21B750A31004E069E /* save@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E081AB5883200197EBC /* save@2x.png */; };
-		6D8E72D31B750A31004E069E /* Play.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E051AB5883200197EBC /* Play.png */; };
-		6D8E72D41B750A31004E069E /* Play@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E061AB5883200197EBC /* Play@2x.png */; };
 		6D8E72D51B750A31004E069E /* avater_me@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54ED91AB58DC500197EBC /* avater_me@3x.png */; };
 		6D8E72D61B750A31004E069E /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54D9B1AB5862000197EBC /* Images.xcassets */; };
-		6D8E72D71B750A31004E069E /* PauseOS7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E011AB5883200197EBC /* PauseOS7@2x.png */; };
 		6D8E72D81B750A31004E069E /* bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EC01AB58DC500197EBC /* bg.png */; };
-		6D8E72D91B750A31004E069E /* MicRecRed2X.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DF91AB5883200197EBC /* MicRecRed2X.png */; };
-		6D8E72DA1B750A31004E069E /* CheckDoubleLight@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DD81AB5883200197EBC /* CheckDoubleLight@2x.png */; };
 		6D8E72E61B750B04004E069E /* group-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6D8E72E51B750B04004E069E /* group-Info.plist */; };
 		6D8E72E91B750B79004E069E /* GroupLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D8E72E81B750B79004E069E /* GroupLoginViewController.m */; };
 		6D9C46C91BEB09DC0053066A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C46CB1BEB09DC0053066A /* InfoPlist.strings */; };
 		6D9C46D41BEB0A940053066A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C46D61BEB0A940053066A /* Localizable.strings */; };
-		6D9C46EB1BEB52930053066A /* imkitResource.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 6DF882171BEA11B4003F7B87 /* imkitResource.bundle */; };
 		6D9C47141BF0810B0053066A /* MessageConversationCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C47131BF0810B0053066A /* MessageConversationCell.xib */; };
-		6D9C47181BF082D70053066A /* PersonalChat.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C47161BF082D70053066A /* PersonalChat.png */; };
-		6D9C47191BF082D70053066A /* PersonalChat@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C47171BF082D70053066A /* PersonalChat@2x.png */; };
-		6DEE567C1BDC7404002BCAB8 /* Fav_Located@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DEE567B1BDC7404002BCAB8 /* Fav_Located@2x.png */; };
+		6D9C471B1BF08A9A0053066A /* images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C471A1BF08A9A0053066A /* images.xcassets */; };
 		6DF54D911AB5862000197EBC /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54D901AB5862000197EBC /* main.m */; };
 		6DF54D941AB5862000197EBC /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54D931AB5862000197EBC /* AppDelegate.m */; };
 		6DF54D9C1AB5862000197EBC /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54D9B1AB5862000197EBC /* Images.xcassets */; };
-		6DF54E0F1AB5883200197EBC /* BrdtCheck.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DCB1AB5883200197EBC /* BrdtCheck.png */; };
-		6DF54E101AB5883200197EBC /* BrdtCheck@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DCC1AB5883200197EBC /* BrdtCheck@2x.png */; };
-		6DF54E111AB5883200197EBC /* BrdtDoubleCheck.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DCD1AB5883200197EBC /* BrdtDoubleCheck.png */; };
-		6DF54E121AB5883200197EBC /* BrdtDoubleCheck@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DCE1AB5883200197EBC /* BrdtDoubleCheck@2x.png */; };
-		6DF54E131AB5883200197EBC /* BubbleIncoming@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DCF1AB5883200197EBC /* BubbleIncoming@2x.png */; };
-		6DF54E141AB5883200197EBC /* BubbleIncomingSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DD01AB5883200197EBC /* BubbleIncomingSelected@2x.png */; };
-		6DF54E151AB5883200197EBC /* BubbleOutgoing@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DD11AB5883200197EBC /* BubbleOutgoing@2x.png */; };
-		6DF54E161AB5883200197EBC /* BubbleOutgoingSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DD21AB5883200197EBC /* BubbleOutgoingSelected@2x.png */; };
-		6DF54E171AB5883200197EBC /* chatBack.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DD31AB5883200197EBC /* chatBack.png */; };
-		6DF54E181AB5883200197EBC /* CheckDoubleGreen.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DD41AB5883200197EBC /* CheckDoubleGreen.png */; };
-		6DF54E191AB5883200197EBC /* CheckDoubleGreen@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DD51AB5883200197EBC /* CheckDoubleGreen@2x.png */; };
-		6DF54E1A1AB5883200197EBC /* CheckDoubleLight.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DD61AB5883200197EBC /* CheckDoubleLight.png */; };
-		6DF54E1B1AB5883200197EBC /* CheckDoubleLight7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DD71AB5883200197EBC /* CheckDoubleLight7@2x.png */; };
-		6DF54E1C1AB5883200197EBC /* CheckDoubleLight@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DD81AB5883200197EBC /* CheckDoubleLight@2x.png */; };
-		6DF54E1D1AB5883200197EBC /* CheckSingleGreen.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DD91AB5883200197EBC /* CheckSingleGreen.png */; };
-		6DF54E1E1AB5883200197EBC /* CheckSingleGreen@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DDA1AB5883200197EBC /* CheckSingleGreen@2x.png */; };
-		6DF54E1F1AB5883200197EBC /* CheckSingleLight.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DDB1AB5883200197EBC /* CheckSingleLight.png */; };
-		6DF54E201AB5883200197EBC /* CheckSingleLight7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DDC1AB5883200197EBC /* CheckSingleLight7@2x.png */; };
-		6DF54E211AB5883200197EBC /* CheckSingleLight@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DDD1AB5883200197EBC /* CheckSingleLight@2x.png */; };
-		6DF54E221AB5883200197EBC /* GroupChat.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DDE1AB5883200197EBC /* GroupChat.png */; };
-		6DF54E231AB5883200197EBC /* GroupChat@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DDF1AB5883200197EBC /* GroupChat@2x.png */; };
-		6DF54E241AB5883200197EBC /* GroupChatRound.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DE01AB5883200197EBC /* GroupChatRound.png */; };
-		6DF54E251AB5883200197EBC /* input-bar-flat.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DE11AB5883200197EBC /* input-bar-flat.png */; };
-		6DF54E261AB5883200197EBC /* input-bar-flat@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DE21AB5883200197EBC /* input-bar-flat@2x.png */; };
-		6DF54E271AB5883200197EBC /* MessageSendError.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DE31AB5883200197EBC /* MessageSendError.png */; };
-		6DF54E281AB5883200197EBC /* MicBlueIncoming.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DE41AB5883200197EBC /* MicBlueIncoming.png */; };
-		6DF54E291AB5883200197EBC /* MicBlueSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DE51AB5883200197EBC /* MicBlueSelected@2x.png */; };
-		6DF54E2A1AB5883200197EBC /* MicBlueSent.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DE61AB5883200197EBC /* MicBlueSent.png */; };
-		6DF54E2B1AB5883200197EBC /* MicBlueSent@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DE71AB5883200197EBC /* MicBlueSent@2x.png */; };
-		6DF54E2C1AB5883200197EBC /* MicChats.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DE81AB5883200197EBC /* MicChats.png */; };
-		6DF54E2D1AB5883200197EBC /* MicChats@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DE91AB5883200197EBC /* MicChats@2x.png */; };
-		6DF54E2E1AB5883200197EBC /* MicChatsBlue.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DEA1AB5883200197EBC /* MicChatsBlue.png */; };
-		6DF54E2F1AB5883200197EBC /* MicChatsSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DEB1AB5883200197EBC /* MicChatsSelected.png */; };
-		6DF54E301AB5883200197EBC /* MicChatsSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DEC1AB5883200197EBC /* MicChatsSelected@2x.png */; };
-		6DF54E311AB5883200197EBC /* MicEmpty.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DED1AB5883200197EBC /* MicEmpty.png */; };
-		6DF54E321AB5883200197EBC /* MicIncoming.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DEE1AB5883200197EBC /* MicIncoming.png */; };
-		6DF54E331AB5883200197EBC /* MicIncoming@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DEF1AB5883200197EBC /* MicIncoming@2x.png */; };
-		6DF54E341AB5883200197EBC /* MicNewIncoming.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DF01AB5883200197EBC /* MicNewIncoming.png */; };
-		6DF54E351AB5883200197EBC /* MicNewIncoming@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DF11AB5883200197EBC /* MicNewIncoming@2x.png */; };
-		6DF54E361AB5883200197EBC /* MicNewSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DF21AB5883200197EBC /* MicNewSelected.png */; };
-		6DF54E371AB5883200197EBC /* MicOutgoing@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DF31AB5883200197EBC /* MicOutgoing@2x.png */; };
-		6DF54E381AB5883200197EBC /* MicRecBtn.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DF41AB5883200197EBC /* MicRecBtn.png */; };
-		6DF54E391AB5883200197EBC /* MicRecBtn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DF51AB5883200197EBC /* MicRecBtn@2x.png */; };
-		6DF54E3A1AB5883200197EBC /* MicRecGray.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DF61AB5883200197EBC /* MicRecGray.png */; };
-		6DF54E3B1AB5883200197EBC /* MicRecGray@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DF71AB5883200197EBC /* MicRecGray@2x.png */; };
-		6DF54E3C1AB5883200197EBC /* MicRecRed.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DF81AB5883200197EBC /* MicRecRed.png */; };
-		6DF54E3D1AB5883200197EBC /* MicRecRed2X.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DF91AB5883200197EBC /* MicRecRed2X.png */; };
-		6DF54E3E1AB5883200197EBC /* MicRecRed50.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DFA1AB5883200197EBC /* MicRecRed50.png */; };
-		6DF54E3F1AB5883200197EBC /* MicRecRed70.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DFB1AB5883200197EBC /* MicRecRed70.png */; };
-		6DF54E401AB5883200197EBC /* MicRecRed90.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DFC1AB5883200197EBC /* MicRecRed90.png */; };
-		6DF54E411AB5883200197EBC /* MicSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DFD1AB5883200197EBC /* MicSelected.png */; };
-		6DF54E421AB5883200197EBC /* MicSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DFE1AB5883200197EBC /* MicSelected@2x.png */; };
-		6DF54E431AB5883200197EBC /* Pause.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54DFF1AB5883200197EBC /* Pause.png */; };
-		6DF54E441AB5883200197EBC /* Pause@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E001AB5883200197EBC /* Pause@2x.png */; };
-		6DF54E451AB5883200197EBC /* PauseOS7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E011AB5883200197EBC /* PauseOS7@2x.png */; };
-		6DF54E461AB5883200197EBC /* PausePressed.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E021AB5883200197EBC /* PausePressed.png */; };
-		6DF54E471AB5883200197EBC /* PhotoIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E031AB5883200197EBC /* PhotoIcon.png */; };
-		6DF54E481AB5883200197EBC /* PhotoIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E041AB5883200197EBC /* PhotoIcon@2x.png */; };
-		6DF54E491AB5883200197EBC /* Play.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E051AB5883200197EBC /* Play.png */; };
-		6DF54E4A1AB5883200197EBC /* Play@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E061AB5883200197EBC /* Play@2x.png */; };
-		6DF54E4B1AB5883200197EBC /* PlayPressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E071AB5883200197EBC /* PlayPressed@2x.png */; };
-		6DF54E4C1AB5883200197EBC /* save@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E081AB5883200197EBC /* save@2x.png */; };
 		6DF54E4D1AB5883200197EBC /* messageReceived.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E0A1AB5883200197EBC /* messageReceived.aiff */; };
 		6DF54E4E1AB5883200197EBC /* messageSent.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54E0B1AB5883200197EBC /* messageSent.aiff */; };
 		6DF54E541AB5886B00197EBC /* libimsdk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF54DBB1AB587B700197EBC /* libimsdk.a */; };
@@ -490,13 +301,6 @@
 			remoteGlobalIDString = 6D032F911AA9B0F5004AA39F;
 			remoteInfo = imkit;
 		};
-		6DF882131BEA11B3003F7B87 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 6DF54DBE1AB587BF00197EBC /* imkit.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 6DF881991BEA113F003F7B87;
-			remoteInfo = imkitResource;
-		};
 		6DF882161BEA11B4003F7B87 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6DF54DBE1AB587BF00197EBC /* imkit.xcodeproj */;
@@ -522,9 +326,7 @@
 		6D9C46D51BEB0A940053066A /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		6D9C46D81BEB0ABB0053066A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		6D9C47131BF0810B0053066A /* MessageConversationCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MessageConversationCell.xib; sourceTree = "<group>"; };
-		6D9C47161BF082D70053066A /* PersonalChat.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PersonalChat.png; sourceTree = "<group>"; };
-		6D9C47171BF082D70053066A /* PersonalChat@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "PersonalChat@2x.png"; sourceTree = "<group>"; };
-		6DEE567B1BDC7404002BCAB8 /* Fav_Located@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Fav_Located@2x.png"; sourceTree = "<group>"; };
+		6D9C471A1BF08A9A0053066A /* images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = images.xcassets; sourceTree = "<group>"; };
 		6DF54D8B1AB5862000197EBC /* im_demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = im_demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6DF54D8F1AB5862000197EBC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6DF54D901AB5862000197EBC /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -535,68 +337,6 @@
 		6DF54DAA1AB5862000197EBC /* demoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = demoTests.m; sourceTree = "<group>"; };
 		6DF54DB51AB587B700197EBC /* imsdk.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = imsdk.xcodeproj; path = imsdk/imsdk.xcodeproj; sourceTree = "<group>"; };
 		6DF54DBE1AB587BF00197EBC /* imkit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = imkit.xcodeproj; path = imkit/imkit.xcodeproj; sourceTree = "<group>"; };
-		6DF54DCB1AB5883200197EBC /* BrdtCheck.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = BrdtCheck.png; sourceTree = "<group>"; };
-		6DF54DCC1AB5883200197EBC /* BrdtCheck@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "BrdtCheck@2x.png"; sourceTree = "<group>"; };
-		6DF54DCD1AB5883200197EBC /* BrdtDoubleCheck.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = BrdtDoubleCheck.png; sourceTree = "<group>"; };
-		6DF54DCE1AB5883200197EBC /* BrdtDoubleCheck@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "BrdtDoubleCheck@2x.png"; sourceTree = "<group>"; };
-		6DF54DCF1AB5883200197EBC /* BubbleIncoming@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "BubbleIncoming@2x.png"; sourceTree = "<group>"; };
-		6DF54DD01AB5883200197EBC /* BubbleIncomingSelected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "BubbleIncomingSelected@2x.png"; sourceTree = "<group>"; };
-		6DF54DD11AB5883200197EBC /* BubbleOutgoing@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "BubbleOutgoing@2x.png"; sourceTree = "<group>"; };
-		6DF54DD21AB5883200197EBC /* BubbleOutgoingSelected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "BubbleOutgoingSelected@2x.png"; sourceTree = "<group>"; };
-		6DF54DD31AB5883200197EBC /* chatBack.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = chatBack.png; sourceTree = "<group>"; };
-		6DF54DD41AB5883200197EBC /* CheckDoubleGreen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = CheckDoubleGreen.png; sourceTree = "<group>"; };
-		6DF54DD51AB5883200197EBC /* CheckDoubleGreen@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "CheckDoubleGreen@2x.png"; sourceTree = "<group>"; };
-		6DF54DD61AB5883200197EBC /* CheckDoubleLight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = CheckDoubleLight.png; sourceTree = "<group>"; };
-		6DF54DD71AB5883200197EBC /* CheckDoubleLight7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "CheckDoubleLight7@2x.png"; sourceTree = "<group>"; };
-		6DF54DD81AB5883200197EBC /* CheckDoubleLight@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "CheckDoubleLight@2x.png"; sourceTree = "<group>"; };
-		6DF54DD91AB5883200197EBC /* CheckSingleGreen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = CheckSingleGreen.png; sourceTree = "<group>"; };
-		6DF54DDA1AB5883200197EBC /* CheckSingleGreen@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "CheckSingleGreen@2x.png"; sourceTree = "<group>"; };
-		6DF54DDB1AB5883200197EBC /* CheckSingleLight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = CheckSingleLight.png; sourceTree = "<group>"; };
-		6DF54DDC1AB5883200197EBC /* CheckSingleLight7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "CheckSingleLight7@2x.png"; sourceTree = "<group>"; };
-		6DF54DDD1AB5883200197EBC /* CheckSingleLight@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "CheckSingleLight@2x.png"; sourceTree = "<group>"; };
-		6DF54DDE1AB5883200197EBC /* GroupChat.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GroupChat.png; sourceTree = "<group>"; };
-		6DF54DDF1AB5883200197EBC /* GroupChat@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "GroupChat@2x.png"; sourceTree = "<group>"; };
-		6DF54DE01AB5883200197EBC /* GroupChatRound.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GroupChatRound.png; sourceTree = "<group>"; };
-		6DF54DE11AB5883200197EBC /* input-bar-flat.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "input-bar-flat.png"; sourceTree = "<group>"; };
-		6DF54DE21AB5883200197EBC /* input-bar-flat@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "input-bar-flat@2x.png"; sourceTree = "<group>"; };
-		6DF54DE31AB5883200197EBC /* MessageSendError.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MessageSendError.png; sourceTree = "<group>"; };
-		6DF54DE41AB5883200197EBC /* MicBlueIncoming.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MicBlueIncoming.png; sourceTree = "<group>"; };
-		6DF54DE51AB5883200197EBC /* MicBlueSelected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MicBlueSelected@2x.png"; sourceTree = "<group>"; };
-		6DF54DE61AB5883200197EBC /* MicBlueSent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MicBlueSent.png; sourceTree = "<group>"; };
-		6DF54DE71AB5883200197EBC /* MicBlueSent@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MicBlueSent@2x.png"; sourceTree = "<group>"; };
-		6DF54DE81AB5883200197EBC /* MicChats.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MicChats.png; sourceTree = "<group>"; };
-		6DF54DE91AB5883200197EBC /* MicChats@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MicChats@2x.png"; sourceTree = "<group>"; };
-		6DF54DEA1AB5883200197EBC /* MicChatsBlue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MicChatsBlue.png; sourceTree = "<group>"; };
-		6DF54DEB1AB5883200197EBC /* MicChatsSelected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MicChatsSelected.png; sourceTree = "<group>"; };
-		6DF54DEC1AB5883200197EBC /* MicChatsSelected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MicChatsSelected@2x.png"; sourceTree = "<group>"; };
-		6DF54DED1AB5883200197EBC /* MicEmpty.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MicEmpty.png; sourceTree = "<group>"; };
-		6DF54DEE1AB5883200197EBC /* MicIncoming.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MicIncoming.png; sourceTree = "<group>"; };
-		6DF54DEF1AB5883200197EBC /* MicIncoming@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MicIncoming@2x.png"; sourceTree = "<group>"; };
-		6DF54DF01AB5883200197EBC /* MicNewIncoming.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MicNewIncoming.png; sourceTree = "<group>"; };
-		6DF54DF11AB5883200197EBC /* MicNewIncoming@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MicNewIncoming@2x.png"; sourceTree = "<group>"; };
-		6DF54DF21AB5883200197EBC /* MicNewSelected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MicNewSelected.png; sourceTree = "<group>"; };
-		6DF54DF31AB5883200197EBC /* MicOutgoing@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MicOutgoing@2x.png"; sourceTree = "<group>"; };
-		6DF54DF41AB5883200197EBC /* MicRecBtn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MicRecBtn.png; sourceTree = "<group>"; };
-		6DF54DF51AB5883200197EBC /* MicRecBtn@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MicRecBtn@2x.png"; sourceTree = "<group>"; };
-		6DF54DF61AB5883200197EBC /* MicRecGray.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MicRecGray.png; sourceTree = "<group>"; };
-		6DF54DF71AB5883200197EBC /* MicRecGray@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MicRecGray@2x.png"; sourceTree = "<group>"; };
-		6DF54DF81AB5883200197EBC /* MicRecRed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MicRecRed.png; sourceTree = "<group>"; };
-		6DF54DF91AB5883200197EBC /* MicRecRed2X.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MicRecRed2X.png; sourceTree = "<group>"; };
-		6DF54DFA1AB5883200197EBC /* MicRecRed50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MicRecRed50.png; sourceTree = "<group>"; };
-		6DF54DFB1AB5883200197EBC /* MicRecRed70.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MicRecRed70.png; sourceTree = "<group>"; };
-		6DF54DFC1AB5883200197EBC /* MicRecRed90.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MicRecRed90.png; sourceTree = "<group>"; };
-		6DF54DFD1AB5883200197EBC /* MicSelected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MicSelected.png; sourceTree = "<group>"; };
-		6DF54DFE1AB5883200197EBC /* MicSelected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MicSelected@2x.png"; sourceTree = "<group>"; };
-		6DF54DFF1AB5883200197EBC /* Pause.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Pause.png; sourceTree = "<group>"; };
-		6DF54E001AB5883200197EBC /* Pause@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Pause@2x.png"; sourceTree = "<group>"; };
-		6DF54E011AB5883200197EBC /* PauseOS7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "PauseOS7@2x.png"; sourceTree = "<group>"; };
-		6DF54E021AB5883200197EBC /* PausePressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PausePressed.png; sourceTree = "<group>"; };
-		6DF54E031AB5883200197EBC /* PhotoIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PhotoIcon.png; sourceTree = "<group>"; };
-		6DF54E041AB5883200197EBC /* PhotoIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "PhotoIcon@2x.png"; sourceTree = "<group>"; };
-		6DF54E051AB5883200197EBC /* Play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Play.png; sourceTree = "<group>"; };
-		6DF54E061AB5883200197EBC /* Play@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Play@2x.png"; sourceTree = "<group>"; };
-		6DF54E071AB5883200197EBC /* PlayPressed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "PlayPressed@2x.png"; sourceTree = "<group>"; };
-		6DF54E081AB5883200197EBC /* save@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "save@2x.png"; sourceTree = "<group>"; };
 		6DF54E0A1AB5883200197EBC /* messageReceived.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = messageReceived.aiff; sourceTree = "<group>"; };
 		6DF54E0B1AB5883200197EBC /* messageSent.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = messageSent.aiff; sourceTree = "<group>"; };
 		6DF54E551AB588C700197EBC /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
@@ -866,84 +606,12 @@
 		6DF54DC91AB5883200197EBC /* imKitRes */ = {
 			isa = PBXGroup;
 			children = (
+				6D9C471A1BF08A9A0053066A /* images.xcassets */,
 				6D9C47121BF0810A0053066A /* xibs */,
-				6DF54DCA1AB5883200197EBC /* images */,
 				6DF54E091AB5883200197EBC /* sounds */,
 			);
 			name = imKitRes;
 			path = imkit/imkit/imKitRes;
-			sourceTree = "<group>";
-		};
-		6DF54DCA1AB5883200197EBC /* images */ = {
-			isa = PBXGroup;
-			children = (
-				6D9C47161BF082D70053066A /* PersonalChat.png */,
-				6D9C47171BF082D70053066A /* PersonalChat@2x.png */,
-				6DF54DCB1AB5883200197EBC /* BrdtCheck.png */,
-				6DF54DCC1AB5883200197EBC /* BrdtCheck@2x.png */,
-				6DEE567B1BDC7404002BCAB8 /* Fav_Located@2x.png */,
-				6DF54DCD1AB5883200197EBC /* BrdtDoubleCheck.png */,
-				6DF54DCE1AB5883200197EBC /* BrdtDoubleCheck@2x.png */,
-				6DF54DCF1AB5883200197EBC /* BubbleIncoming@2x.png */,
-				6DF54DD01AB5883200197EBC /* BubbleIncomingSelected@2x.png */,
-				6DF54DD11AB5883200197EBC /* BubbleOutgoing@2x.png */,
-				6DF54DD21AB5883200197EBC /* BubbleOutgoingSelected@2x.png */,
-				6DF54DD31AB5883200197EBC /* chatBack.png */,
-				6DF54DD41AB5883200197EBC /* CheckDoubleGreen.png */,
-				6DF54DD51AB5883200197EBC /* CheckDoubleGreen@2x.png */,
-				6DF54DD61AB5883200197EBC /* CheckDoubleLight.png */,
-				6DF54DD71AB5883200197EBC /* CheckDoubleLight7@2x.png */,
-				6DF54DD81AB5883200197EBC /* CheckDoubleLight@2x.png */,
-				6DF54DD91AB5883200197EBC /* CheckSingleGreen.png */,
-				6DF54DDA1AB5883200197EBC /* CheckSingleGreen@2x.png */,
-				6DF54DDB1AB5883200197EBC /* CheckSingleLight.png */,
-				6DF54DDC1AB5883200197EBC /* CheckSingleLight7@2x.png */,
-				6DF54DDD1AB5883200197EBC /* CheckSingleLight@2x.png */,
-				6DF54DDE1AB5883200197EBC /* GroupChat.png */,
-				6DF54DDF1AB5883200197EBC /* GroupChat@2x.png */,
-				6DF54DE01AB5883200197EBC /* GroupChatRound.png */,
-				6DF54DE11AB5883200197EBC /* input-bar-flat.png */,
-				6DF54DE21AB5883200197EBC /* input-bar-flat@2x.png */,
-				6DF54DE31AB5883200197EBC /* MessageSendError.png */,
-				6DF54DE41AB5883200197EBC /* MicBlueIncoming.png */,
-				6DF54DE51AB5883200197EBC /* MicBlueSelected@2x.png */,
-				6DF54DE61AB5883200197EBC /* MicBlueSent.png */,
-				6DF54DE71AB5883200197EBC /* MicBlueSent@2x.png */,
-				6DF54DE81AB5883200197EBC /* MicChats.png */,
-				6DF54DE91AB5883200197EBC /* MicChats@2x.png */,
-				6DF54DEA1AB5883200197EBC /* MicChatsBlue.png */,
-				6DF54DEB1AB5883200197EBC /* MicChatsSelected.png */,
-				6DF54DEC1AB5883200197EBC /* MicChatsSelected@2x.png */,
-				6DF54DED1AB5883200197EBC /* MicEmpty.png */,
-				6DF54DEE1AB5883200197EBC /* MicIncoming.png */,
-				6DF54DEF1AB5883200197EBC /* MicIncoming@2x.png */,
-				6DF54DF01AB5883200197EBC /* MicNewIncoming.png */,
-				6DF54DF11AB5883200197EBC /* MicNewIncoming@2x.png */,
-				6DF54DF21AB5883200197EBC /* MicNewSelected.png */,
-				6DF54DF31AB5883200197EBC /* MicOutgoing@2x.png */,
-				6DF54DF41AB5883200197EBC /* MicRecBtn.png */,
-				6DF54DF51AB5883200197EBC /* MicRecBtn@2x.png */,
-				6DF54DF61AB5883200197EBC /* MicRecGray.png */,
-				6DF54DF71AB5883200197EBC /* MicRecGray@2x.png */,
-				6DF54DF81AB5883200197EBC /* MicRecRed.png */,
-				6DF54DF91AB5883200197EBC /* MicRecRed2X.png */,
-				6DF54DFA1AB5883200197EBC /* MicRecRed50.png */,
-				6DF54DFB1AB5883200197EBC /* MicRecRed70.png */,
-				6DF54DFC1AB5883200197EBC /* MicRecRed90.png */,
-				6DF54DFD1AB5883200197EBC /* MicSelected.png */,
-				6DF54DFE1AB5883200197EBC /* MicSelected@2x.png */,
-				6DF54DFF1AB5883200197EBC /* Pause.png */,
-				6DF54E001AB5883200197EBC /* Pause@2x.png */,
-				6DF54E011AB5883200197EBC /* PauseOS7@2x.png */,
-				6DF54E021AB5883200197EBC /* PausePressed.png */,
-				6DF54E031AB5883200197EBC /* PhotoIcon.png */,
-				6DF54E041AB5883200197EBC /* PhotoIcon@2x.png */,
-				6DF54E051AB5883200197EBC /* Play.png */,
-				6DF54E061AB5883200197EBC /* Play@2x.png */,
-				6DF54E071AB5883200197EBC /* PlayPressed@2x.png */,
-				6DF54E081AB5883200197EBC /* save@2x.png */,
-			);
-			path = images;
 			sourceTree = "<group>";
 		};
 		6DF54E091AB5883200197EBC /* sounds */ = {
@@ -1195,7 +863,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				6DF882141BEA11B3003F7B87 /* PBXTargetDependency */,
 				6DF54E521AB5886400197EBC /* PBXTargetDependency */,
 			);
 			name = im_demo;
@@ -1293,108 +960,46 @@
 			buildActionMask = 2147483647;
 			files = (
 				6D69BD171B4449D0008EAA8A /* btn_grey@2x.png in Resources */,
-				6D69BD181B4449D0008EAA8A /* MicChats.png in Resources */,
 				6D69BD191B4449D0008EAA8A /* btn_grey.png in Resources */,
 				6D69BD1A1B4449D0008EAA8A /* ic_dustbin@3x.png in Resources */,
-				6D69BD1B1B4449D0008EAA8A /* MicChatsBlue.png in Resources */,
 				6D69BD1C1B4449D0008EAA8A /* bg@2x.png in Resources */,
 				6D69BD1D1B4449D0008EAA8A /* avater_you.png in Resources */,
 				6D69BD1E1B4449D0008EAA8A /* bottombar_inputbox.png in Resources */,
-				6D69BD1F1B4449D0008EAA8A /* MicEmpty.png in Resources */,
 				6D69BD201B4449D0008EAA8A /* bg_blue@2x.png in Resources */,
-				6D69BD211B4449D0008EAA8A /* MicOutgoing@2x.png in Resources */,
 				6D69BD221B4449D0008EAA8A /* messageSent.aiff in Resources */,
 				6D69BD231B4449D0008EAA8A /* ic_man@2x.png in Resources */,
-				6D69BD241B4449D0008EAA8A /* MicBlueIncoming.png in Resources */,
-				6D69BD251B4449D0008EAA8A /* BubbleIncoming@2x.png in Resources */,
-				6D69BD261B4449D0008EAA8A /* MicRecBtn@2x.png in Resources */,
 				6D69BD271B4449D0008EAA8A /* bottombar_bg@2x.png in Resources */,
-				6D69BD281B4449D0008EAA8A /* MicRecRed.png in Resources */,
-				6D69BD291B4449D0008EAA8A /* CheckSingleLight7@2x.png in Resources */,
-				6D69BD2A1B4449D0008EAA8A /* MicChatsSelected@2x.png in Resources */,
-				6D69BD2B1B4449D0008EAA8A /* CheckSingleLight.png in Resources */,
 				6D69BD2C1B4449D0008EAA8A /* btn_grey@3x.png in Resources */,
-				6D69BD2D1B4449D0008EAA8A /* BrdtDoubleCheck@2x.png in Resources */,
 				6D69BD2E1B4449D0008EAA8A /* bg_white@2x.png in Resources */,
-				6D69BD2F1B4449D0008EAA8A /* CheckSingleGreen.png in Resources */,
-				6D69BD301B4449D0008EAA8A /* MicRecRed90.png in Resources */,
 				6D69BD311B4449D0008EAA8A /* bottombar_inputbox@3x.png in Resources */,
-				6D69BD321B4449D0008EAA8A /* chatBack.png in Resources */,
 				6D69BD331B4449D0008EAA8A /* ic_man.png in Resources */,
 				6D69BD341B4449D0008EAA8A /* avater_you@3x.png in Resources */,
-				6D69BD351B4449D0008EAA8A /* MicIncoming.png in Resources */,
-				6D69BD361B4449D0008EAA8A /* CheckDoubleGreen.png in Resources */,
-				6D69BD371B4449D0008EAA8A /* MicBlueSent@2x.png in Resources */,
-				6D69BD381B4449D0008EAA8A /* BrdtCheck.png in Resources */,
 				6D69BD391B4449D0008EAA8A /* ic_dustbin@2x.png in Resources */,
-				6D69BD3A1B4449D0008EAA8A /* GroupChat@2x.png in Resources */,
-				6D69BD3B1B4449D0008EAA8A /* BubbleOutgoingSelected@2x.png in Resources */,
-				6D69BD3C1B4449D0008EAA8A /* MicNewSelected.png in Resources */,
 				6D69BD3D1B4449D0008EAA8A /* btn_blue@2x.png in Resources */,
-				6D69BD3E1B4449D0008EAA8A /* MicSelected@2x.png in Resources */,
-				6D69BD3F1B4449D0008EAA8A /* PhotoIcon@2x.png in Resources */,
-				6D69BD401B4449D0008EAA8A /* PausePressed.png in Resources */,
 				6D69BD411B4449D0008EAA8A /* bg_white@3x.png in Resources */,
 				6D69BD421B4449D0008EAA8A /* btn_blue@3x.png in Resources */,
-				6D69BD431B4449D0008EAA8A /* PlayPressed@2x.png in Resources */,
 				6D69BD441B4449D0008EAA8A /* 640 1136.png in Resources */,
-				6D69BD451B4449D0008EAA8A /* GroupChat.png in Resources */,
-				6D69BD461B4449D0008EAA8A /* MicRecBtn.png in Resources */,
 				6D69BD471B4449D0008EAA8A /* bg_white.png in Resources */,
-				6D69BD481B4449D0008EAA8A /* CheckDoubleGreen@2x.png in Resources */,
-				6D69BD491B4449D0008EAA8A /* MicBlueSelected@2x.png in Resources */,
-				6D69BD4A1B4449D0008EAA8A /* GroupChatRound.png in Resources */,
 				6D69BD4B1B4449D0008EAA8A /* bg@3x.png in Resources */,
 				6D69BD4C1B4449D0008EAA8A /* ic_dustbin.png in Resources */,
-				6D69BD4D1B4449D0008EAA8A /* input-bar-flat@2x.png in Resources */,
 				6D69BD4E1B4449D0008EAA8A /* avater_me@2x.png in Resources */,
-				6D69BD4F1B4449D0008EAA8A /* MessageSendError.png in Resources */,
-				6D69BD501B4449D0008EAA8A /* CheckSingleLight@2x.png in Resources */,
-				6D69BD511B4449D0008EAA8A /* CheckSingleGreen@2x.png in Resources */,
-				6D69BD521B4449D0008EAA8A /* Pause.png in Resources */,
-				6D69BD531B4449D0008EAA8A /* MicChatsSelected.png in Resources */,
-				6D69BD541B4449D0008EAA8A /* MicIncoming@2x.png in Resources */,
-				6D69BD551B4449D0008EAA8A /* BubbleIncomingSelected@2x.png in Resources */,
-				6D69BD561B4449D0008EAA8A /* MicRecRed70.png in Resources */,
-				6D69BD571B4449D0008EAA8A /* Pause@2x.png in Resources */,
 				6D69BD581B4449D0008EAA8A /* avater_me.png in Resources */,
 				6D69BD591B4449D0008EAA8A /* bottombar_inputbox@2x.png in Resources */,
 				6D69BD5A1B4449D0008EAA8A /* ic_back.png in Resources */,
 				6D69BD5B1B4449D0008EAA8A /* bottombar_bg@3x.png in Resources */,
 				6D69BD5C1B4449D0008EAA8A /* msg_state_fail@2x.png in Resources */,
-				6D69BD5D1B4449D0008EAA8A /* MicRecRed50.png in Resources */,
 				6D69BD5E1B4449D0008EAA8A /* bg_blue.png in Resources */,
 				6D69BD5F1B4449D0008EAA8A /* ic_back@3x.png in Resources */,
-				6D69BD601B4449D0008EAA8A /* MicRecGray.png in Resources */,
-				6D69BD611B4449D0008EAA8A /* BrdtDoubleCheck.png in Resources */,
-				6D69BD621B4449D0008EAA8A /* MicRecGray@2x.png in Resources */,
 				6D69BD631B4449D0008EAA8A /* bottombar_bg.png in Resources */,
 				6D69BD641B4449D0008EAA8A /* bg_blue@3x.png in Resources */,
-				6D69BD651B4449D0008EAA8A /* MicNewIncoming@2x.png in Resources */,
-				6D69BD661B4449D0008EAA8A /* MicNewIncoming.png in Resources */,
-				6D69BD671B4449D0008EAA8A /* CheckDoubleLight.png in Resources */,
-				6D69BD681B4449D0008EAA8A /* BrdtCheck@2x.png in Resources */,
-				6D69BD691B4449D0008EAA8A /* input-bar-flat.png in Resources */,
 				6D69BD6A1B4449D0008EAA8A /* avater_you@2x.png in Resources */,
-				6D69BD6B1B4449D0008EAA8A /* MicSelected.png in Resources */,
-				6D69BD6C1B4449D0008EAA8A /* PhotoIcon.png in Resources */,
-				6D69BD6D1B4449D0008EAA8A /* CheckDoubleLight7@2x.png in Resources */,
 				6D69BD6E1B4449D0008EAA8A /* btn_blue.png in Resources */,
 				6D69BD6F1B4449D0008EAA8A /* ic_man@3x.png in Resources */,
 				6D69BD711B4449D0008EAA8A /* ic_back@2x.png in Resources */,
-				6D69BD721B4449D0008EAA8A /* BubbleOutgoing@2x.png in Resources */,
-				6D69BD731B4449D0008EAA8A /* MicChats@2x.png in Resources */,
-				6D69BD741B4449D0008EAA8A /* MicBlueSent.png in Resources */,
 				6D69BD751B4449D0008EAA8A /* messageReceived.aiff in Resources */,
-				6D69BD761B4449D0008EAA8A /* save@2x.png in Resources */,
-				6D69BD771B4449D0008EAA8A /* Play.png in Resources */,
-				6D69BD781B4449D0008EAA8A /* Play@2x.png in Resources */,
 				6D69BD791B4449D0008EAA8A /* avater_me@3x.png in Resources */,
 				6D69BD7A1B4449D0008EAA8A /* Images.xcassets in Resources */,
-				6D69BD7B1B4449D0008EAA8A /* PauseOS7@2x.png in Resources */,
 				6D69BD7C1B4449D0008EAA8A /* bg.png in Resources */,
-				6D69BD7D1B4449D0008EAA8A /* MicRecRed2X.png in Resources */,
-				6D69BD7E1B4449D0008EAA8A /* CheckDoubleLight@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1403,108 +1008,46 @@
 			buildActionMask = 2147483647;
 			files = (
 				6D8E72731B750A31004E069E /* btn_grey@2x.png in Resources */,
-				6D8E72741B750A31004E069E /* MicChats.png in Resources */,
 				6D8E72751B750A31004E069E /* btn_grey.png in Resources */,
 				6D8E72761B750A31004E069E /* ic_dustbin@3x.png in Resources */,
-				6D8E72771B750A31004E069E /* MicChatsBlue.png in Resources */,
 				6D8E72781B750A31004E069E /* bg@2x.png in Resources */,
 				6D8E72791B750A31004E069E /* avater_you.png in Resources */,
 				6D8E727A1B750A31004E069E /* bottombar_inputbox.png in Resources */,
-				6D8E727B1B750A31004E069E /* MicEmpty.png in Resources */,
 				6D8E727C1B750A31004E069E /* bg_blue@2x.png in Resources */,
-				6D8E727D1B750A31004E069E /* MicOutgoing@2x.png in Resources */,
 				6D8E727E1B750A31004E069E /* messageSent.aiff in Resources */,
 				6D8E727F1B750A31004E069E /* ic_man@2x.png in Resources */,
-				6D8E72801B750A31004E069E /* MicBlueIncoming.png in Resources */,
-				6D8E72811B750A31004E069E /* BubbleIncoming@2x.png in Resources */,
-				6D8E72821B750A31004E069E /* MicRecBtn@2x.png in Resources */,
 				6D8E72831B750A31004E069E /* bottombar_bg@2x.png in Resources */,
-				6D8E72841B750A31004E069E /* MicRecRed.png in Resources */,
-				6D8E72851B750A31004E069E /* CheckSingleLight7@2x.png in Resources */,
-				6D8E72861B750A31004E069E /* MicChatsSelected@2x.png in Resources */,
-				6D8E72871B750A31004E069E /* CheckSingleLight.png in Resources */,
 				6D8E72881B750A31004E069E /* btn_grey@3x.png in Resources */,
-				6D8E72891B750A31004E069E /* BrdtDoubleCheck@2x.png in Resources */,
 				6D8E728A1B750A31004E069E /* bg_white@2x.png in Resources */,
-				6D8E728B1B750A31004E069E /* CheckSingleGreen.png in Resources */,
-				6D8E728C1B750A31004E069E /* MicRecRed90.png in Resources */,
 				6D8E728D1B750A31004E069E /* bottombar_inputbox@3x.png in Resources */,
-				6D8E728E1B750A31004E069E /* chatBack.png in Resources */,
 				6D8E728F1B750A31004E069E /* ic_man.png in Resources */,
 				6D8E72901B750A31004E069E /* avater_you@3x.png in Resources */,
-				6D8E72911B750A31004E069E /* MicIncoming.png in Resources */,
-				6D8E72921B750A31004E069E /* CheckDoubleGreen.png in Resources */,
-				6D8E72931B750A31004E069E /* MicBlueSent@2x.png in Resources */,
-				6D8E72941B750A31004E069E /* BrdtCheck.png in Resources */,
 				6D8E72951B750A31004E069E /* ic_dustbin@2x.png in Resources */,
-				6D8E72961B750A31004E069E /* GroupChat@2x.png in Resources */,
-				6D8E72971B750A31004E069E /* BubbleOutgoingSelected@2x.png in Resources */,
-				6D8E72981B750A31004E069E /* MicNewSelected.png in Resources */,
 				6D8E72991B750A31004E069E /* btn_blue@2x.png in Resources */,
-				6D8E729A1B750A31004E069E /* MicSelected@2x.png in Resources */,
-				6D8E729B1B750A31004E069E /* PhotoIcon@2x.png in Resources */,
-				6D8E729C1B750A31004E069E /* PausePressed.png in Resources */,
 				6D8E729D1B750A31004E069E /* bg_white@3x.png in Resources */,
 				6D8E729E1B750A31004E069E /* btn_blue@3x.png in Resources */,
-				6D8E729F1B750A31004E069E /* PlayPressed@2x.png in Resources */,
 				6D8E72A01B750A31004E069E /* 640 1136.png in Resources */,
-				6D8E72A11B750A31004E069E /* GroupChat.png in Resources */,
-				6D8E72A21B750A31004E069E /* MicRecBtn.png in Resources */,
 				6D8E72A31B750A31004E069E /* bg_white.png in Resources */,
-				6D8E72A41B750A31004E069E /* CheckDoubleGreen@2x.png in Resources */,
-				6D8E72A51B750A31004E069E /* MicBlueSelected@2x.png in Resources */,
-				6D8E72A61B750A31004E069E /* GroupChatRound.png in Resources */,
 				6D8E72A71B750A31004E069E /* bg@3x.png in Resources */,
 				6D8E72A81B750A31004E069E /* ic_dustbin.png in Resources */,
-				6D8E72A91B750A31004E069E /* input-bar-flat@2x.png in Resources */,
 				6D8E72AA1B750A31004E069E /* avater_me@2x.png in Resources */,
-				6D8E72AB1B750A31004E069E /* MessageSendError.png in Resources */,
-				6D8E72AC1B750A31004E069E /* CheckSingleLight@2x.png in Resources */,
-				6D8E72AD1B750A31004E069E /* CheckSingleGreen@2x.png in Resources */,
-				6D8E72AE1B750A31004E069E /* Pause.png in Resources */,
-				6D8E72AF1B750A31004E069E /* MicChatsSelected.png in Resources */,
-				6D8E72B01B750A31004E069E /* MicIncoming@2x.png in Resources */,
-				6D8E72B11B750A31004E069E /* BubbleIncomingSelected@2x.png in Resources */,
-				6D8E72B21B750A31004E069E /* MicRecRed70.png in Resources */,
-				6D8E72B31B750A31004E069E /* Pause@2x.png in Resources */,
 				6D8E72B41B750A31004E069E /* avater_me.png in Resources */,
 				6D8E72B51B750A31004E069E /* bottombar_inputbox@2x.png in Resources */,
 				6D8E72B61B750A31004E069E /* ic_back.png in Resources */,
 				6D8E72B71B750A31004E069E /* bottombar_bg@3x.png in Resources */,
 				6D8E72B81B750A31004E069E /* msg_state_fail@2x.png in Resources */,
-				6D8E72B91B750A31004E069E /* MicRecRed50.png in Resources */,
 				6D8E72BA1B750A31004E069E /* bg_blue.png in Resources */,
 				6D8E72BB1B750A31004E069E /* ic_back@3x.png in Resources */,
-				6D8E72BC1B750A31004E069E /* MicRecGray.png in Resources */,
-				6D8E72BD1B750A31004E069E /* BrdtDoubleCheck.png in Resources */,
-				6D8E72BE1B750A31004E069E /* MicRecGray@2x.png in Resources */,
 				6D8E72BF1B750A31004E069E /* bottombar_bg.png in Resources */,
 				6D8E72C01B750A31004E069E /* bg_blue@3x.png in Resources */,
-				6D8E72C11B750A31004E069E /* MicNewIncoming@2x.png in Resources */,
-				6D8E72C21B750A31004E069E /* MicNewIncoming.png in Resources */,
-				6D8E72C31B750A31004E069E /* CheckDoubleLight.png in Resources */,
-				6D8E72C41B750A31004E069E /* BrdtCheck@2x.png in Resources */,
-				6D8E72C51B750A31004E069E /* input-bar-flat.png in Resources */,
 				6D8E72C61B750A31004E069E /* avater_you@2x.png in Resources */,
-				6D8E72C71B750A31004E069E /* MicSelected.png in Resources */,
-				6D8E72C81B750A31004E069E /* PhotoIcon.png in Resources */,
-				6D8E72C91B750A31004E069E /* CheckDoubleLight7@2x.png in Resources */,
 				6D8E72CA1B750A31004E069E /* btn_blue.png in Resources */,
 				6D8E72CB1B750A31004E069E /* ic_man@3x.png in Resources */,
 				6D8E72CD1B750A31004E069E /* ic_back@2x.png in Resources */,
-				6D8E72CE1B750A31004E069E /* BubbleOutgoing@2x.png in Resources */,
-				6D8E72CF1B750A31004E069E /* MicChats@2x.png in Resources */,
-				6D8E72D01B750A31004E069E /* MicBlueSent.png in Resources */,
 				6D8E72D11B750A31004E069E /* messageReceived.aiff in Resources */,
-				6D8E72D21B750A31004E069E /* save@2x.png in Resources */,
-				6D8E72D31B750A31004E069E /* Play.png in Resources */,
-				6D8E72D41B750A31004E069E /* Play@2x.png in Resources */,
 				6D8E72D51B750A31004E069E /* avater_me@3x.png in Resources */,
 				6D8E72D61B750A31004E069E /* Images.xcassets in Resources */,
-				6D8E72D71B750A31004E069E /* PauseOS7@2x.png in Resources */,
 				6D8E72D81B750A31004E069E /* bg.png in Resources */,
-				6D8E72D91B750A31004E069E /* MicRecRed2X.png in Resources */,
-				6D8E72DA1B750A31004E069E /* CheckDoubleLight@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1512,118 +1055,53 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6D9C46EB1BEB52930053066A /* imkitResource.bundle in Resources */,
 				6DF54EFB1AB58DC500197EBC /* btn_grey@2x.png in Resources */,
-				6DF54E2C1AB5883200197EBC /* MicChats.png in Resources */,
 				6DF54EEE1AB58DC500197EBC /* btn_grey.png in Resources */,
-				6D9C47191BF082D70053066A /* PersonalChat@2x.png in Resources */,
 				6DF54F091AB58DC500197EBC /* ic_dustbin@3x.png in Resources */,
-				6DF54E2E1AB5883200197EBC /* MicChatsBlue.png in Resources */,
 				6DF54EF51AB58DC500197EBC /* bg@2x.png in Resources */,
 				6DF54EE71AB58DC500197EBC /* avater_you.png in Resources */,
 				6DF54EEC1AB58DC500197EBC /* bottombar_inputbox.png in Resources */,
-				6DF54E311AB5883200197EBC /* MicEmpty.png in Resources */,
 				6DF54EF61AB58DC500197EBC /* bg_blue@2x.png in Resources */,
-				6DF54E371AB5883200197EBC /* MicOutgoing@2x.png in Resources */,
+				6D9C471B1BF08A9A0053066A /* images.xcassets in Resources */,
 				6DF54E4E1AB5883200197EBC /* messageSent.aiff in Resources */,
 				6DF54EFE1AB58DC500197EBC /* ic_man@2x.png in Resources */,
-				6DF54E281AB5883200197EBC /* MicBlueIncoming.png in Resources */,
-				6DF54E131AB5883200197EBC /* BubbleIncoming@2x.png in Resources */,
-				6DF54E391AB5883200197EBC /* MicRecBtn@2x.png in Resources */,
 				6DF54EF81AB58DC500197EBC /* bottombar_bg@2x.png in Resources */,
-				6DF54E3C1AB5883200197EBC /* MicRecRed.png in Resources */,
-				6DF54E201AB5883200197EBC /* CheckSingleLight7@2x.png in Resources */,
-				6DF54E301AB5883200197EBC /* MicChatsSelected@2x.png in Resources */,
-				6DF54E1F1AB5883200197EBC /* CheckSingleLight.png in Resources */,
 				6DF54F071AB58DC500197EBC /* btn_grey@3x.png in Resources */,
-				6DF54E121AB5883200197EBC /* BrdtDoubleCheck@2x.png in Resources */,
 				6DF54EF71AB58DC500197EBC /* bg_white@2x.png in Resources */,
-				6DF54E1D1AB5883200197EBC /* CheckSingleGreen.png in Resources */,
-				6DF54E401AB5883200197EBC /* MicRecRed90.png in Resources */,
 				6DF54F051AB58DC500197EBC /* bottombar_inputbox@3x.png in Resources */,
-				6DF54E171AB5883200197EBC /* chatBack.png in Resources */,
 				6DF54EF11AB58DC500197EBC /* ic_man.png in Resources */,
 				6DF54F001AB58DC500197EBC /* avater_you@3x.png in Resources */,
-				6DF54E321AB5883200197EBC /* MicIncoming.png in Resources */,
-				6DF54E181AB5883200197EBC /* CheckDoubleGreen.png in Resources */,
-				6D9C47181BF082D70053066A /* PersonalChat.png in Resources */,
-				6DF54E2B1AB5883200197EBC /* MicBlueSent@2x.png in Resources */,
-				6DF54E0F1AB5883200197EBC /* BrdtCheck.png in Resources */,
 				6DF54EFD1AB58DC500197EBC /* ic_dustbin@2x.png in Resources */,
-				6DF54E231AB5883200197EBC /* GroupChat@2x.png in Resources */,
-				6DF54E161AB5883200197EBC /* BubbleOutgoingSelected@2x.png in Resources */,
-				6DF54E361AB5883200197EBC /* MicNewSelected.png in Resources */,
 				6DF54EFA1AB58DC500197EBC /* btn_blue@2x.png in Resources */,
-				6DF54E421AB5883200197EBC /* MicSelected@2x.png in Resources */,
-				6DF54E481AB5883200197EBC /* PhotoIcon@2x.png in Resources */,
-				6DF54E461AB5883200197EBC /* PausePressed.png in Resources */,
 				6DF54F031AB58DC500197EBC /* bg_white@3x.png in Resources */,
 				6DF54F061AB58DC500197EBC /* btn_blue@3x.png in Resources */,
-				6DF54E4B1AB5883200197EBC /* PlayPressed@2x.png in Resources */,
 				6DF54EF21AB58DC500197EBC /* 640 1136.png in Resources */,
 				6D9C46C91BEB09DC0053066A /* InfoPlist.strings in Resources */,
-				6DF54E221AB5883200197EBC /* GroupChat.png in Resources */,
-				6DF54E381AB5883200197EBC /* MicRecBtn.png in Resources */,
 				6DF54EEA1AB58DC500197EBC /* bg_white.png in Resources */,
-				6DF54E191AB5883200197EBC /* CheckDoubleGreen@2x.png in Resources */,
-				6DF54E291AB5883200197EBC /* MicBlueSelected@2x.png in Resources */,
-				6DF54E241AB5883200197EBC /* GroupChatRound.png in Resources */,
 				6DF54F011AB58DC500197EBC /* bg@3x.png in Resources */,
 				6DF54EF01AB58DC500197EBC /* ic_dustbin.png in Resources */,
 				6D9C47141BF0810B0053066A /* MessageConversationCell.xib in Resources */,
-				6DF54E261AB5883200197EBC /* input-bar-flat@2x.png in Resources */,
 				6D69BD921B444B79008EAA8A /* room-Info.plist in Resources */,
 				6DF54EF31AB58DC500197EBC /* avater_me@2x.png in Resources */,
-				6DF54E271AB5883200197EBC /* MessageSendError.png in Resources */,
-				6DEE567C1BDC7404002BCAB8 /* Fav_Located@2x.png in Resources */,
-				6DF54E211AB5883200197EBC /* CheckSingleLight@2x.png in Resources */,
-				6DF54E1E1AB5883200197EBC /* CheckSingleGreen@2x.png in Resources */,
-				6DF54E431AB5883200197EBC /* Pause.png in Resources */,
-				6DF54E2F1AB5883200197EBC /* MicChatsSelected.png in Resources */,
-				6DF54E331AB5883200197EBC /* MicIncoming@2x.png in Resources */,
-				6DF54E141AB5883200197EBC /* BubbleIncomingSelected@2x.png in Resources */,
-				6DF54E3F1AB5883200197EBC /* MicRecRed70.png in Resources */,
-				6DF54E441AB5883200197EBC /* Pause@2x.png in Resources */,
 				6DF54EE61AB58DC500197EBC /* avater_me.png in Resources */,
 				6DF54EF91AB58DC500197EBC /* bottombar_inputbox@2x.png in Resources */,
 				6DF54EEF1AB58DC500197EBC /* ic_back.png in Resources */,
 				6DF54F041AB58DC500197EBC /* bottombar_bg@3x.png in Resources */,
 				6DF54F0B1AB58DC500197EBC /* msg_state_fail@2x.png in Resources */,
-				6DF54E3E1AB5883200197EBC /* MicRecRed50.png in Resources */,
 				6DF54EE91AB58DC500197EBC /* bg_blue.png in Resources */,
 				6DF54F081AB58DC500197EBC /* ic_back@3x.png in Resources */,
-				6DF54E3A1AB5883200197EBC /* MicRecGray.png in Resources */,
-				6DF54E111AB5883200197EBC /* BrdtDoubleCheck.png in Resources */,
-				6DF54E3B1AB5883200197EBC /* MicRecGray@2x.png in Resources */,
 				6DF54EEB1AB58DC500197EBC /* bottombar_bg.png in Resources */,
 				6DF54F021AB58DC500197EBC /* bg_blue@3x.png in Resources */,
-				6DF54E351AB5883200197EBC /* MicNewIncoming@2x.png in Resources */,
-				6DF54E341AB5883200197EBC /* MicNewIncoming.png in Resources */,
-				6DF54E1A1AB5883200197EBC /* CheckDoubleLight.png in Resources */,
-				6DF54E101AB5883200197EBC /* BrdtCheck@2x.png in Resources */,
-				6DF54E251AB5883200197EBC /* input-bar-flat.png in Resources */,
 				6DF54EF41AB58DC500197EBC /* avater_you@2x.png in Resources */,
-				6DF54E411AB5883200197EBC /* MicSelected.png in Resources */,
-				6DF54E471AB5883200197EBC /* PhotoIcon.png in Resources */,
-				6DF54E1B1AB5883200197EBC /* CheckDoubleLight7@2x.png in Resources */,
 				6D8E72E61B750B04004E069E /* group-Info.plist in Resources */,
 				6DF54EED1AB58DC500197EBC /* btn_blue.png in Resources */,
 				6DF54F0A1AB58DC500197EBC /* ic_man@3x.png in Resources */,
 				6DF54EFC1AB58DC500197EBC /* ic_back@2x.png in Resources */,
-				6DF54E151AB5883200197EBC /* BubbleOutgoing@2x.png in Resources */,
-				6DF54E2D1AB5883200197EBC /* MicChats@2x.png in Resources */,
-				6DF54E2A1AB5883200197EBC /* MicBlueSent.png in Resources */,
 				6D9C46D41BEB0A940053066A /* Localizable.strings in Resources */,
 				6DF54E4D1AB5883200197EBC /* messageReceived.aiff in Resources */,
-				6DF54E4C1AB5883200197EBC /* save@2x.png in Resources */,
-				6DF54E491AB5883200197EBC /* Play.png in Resources */,
-				6DF54E4A1AB5883200197EBC /* Play@2x.png in Resources */,
 				6DF54EFF1AB58DC500197EBC /* avater_me@3x.png in Resources */,
 				6DF54D9C1AB5862000197EBC /* Images.xcassets in Resources */,
-				6DF54E451AB5883200197EBC /* PauseOS7@2x.png in Resources */,
 				6DF54EE81AB58DC500197EBC /* bg.png in Resources */,
-				6DF54E3D1AB5883200197EBC /* MicRecRed2X.png in Resources */,
-				6DF54E1C1AB5883200197EBC /* CheckDoubleLight@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1754,11 +1232,6 @@
 			isa = PBXTargetDependency;
 			name = imkit;
 			targetProxy = 6DF54E511AB5886400197EBC /* PBXContainerItemProxy */;
-		};
-		6DF882141BEA11B3003F7B87 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = imkitResource;
-			targetProxy = 6DF882131BEA11B3003F7B87 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

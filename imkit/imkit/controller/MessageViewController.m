@@ -13,6 +13,7 @@
 #import "HPGrowingTextView.h"
 
 #import "MessageTableSectionHeaderView.h"
+#import "Constants.h"
 
 #import "FileCache.h"
 #import "Outbox.h"
@@ -115,9 +116,7 @@
 
     CGRect tableFrame = CGRectMake(0.0f,  0.0f, w, h - [EaseChatToolbar defaultHeight]);
     
-    UIImage *backColor = [UIImage imageNamed:@"chatBack"];
-    UIColor *color = [[UIColor alloc] initWithPatternImage:backColor];
-    [self.view setBackgroundColor:color];
+    self.view.backgroundColor = RGBACOLOR(235, 235, 237, 1);
 
 	self.tableView = [[UITableView alloc] initWithFrame:tableFrame style:UITableViewStylePlain];
 	self.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;

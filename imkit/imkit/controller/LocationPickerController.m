@@ -65,11 +65,11 @@
 
     //create annotation view
     self.annotationView = [[UIView alloc] init];
-    UIImage *image = [UIImage imageNamed:@"imkitResource.bundle/PinFloatingGreen"];
+    UIImage *image = [UIImage imageNamed:@"PinFloatingGreen"];
     UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
     imageView.frame = CGRectMake(0, 0, 32, 39);
     [self.annotationView addSubview:imageView];
-    image = [UIImage imageNamed:@"imkitResource.bundle/PinHole"];
+    image = [UIImage imageNamed:@"PinHole"];
     imageView = [[UIImageView alloc] initWithImage:image];
     imageView.frame = CGRectMake(6, 49, 5, 4);
     [self.annotationView addSubview:imageView];

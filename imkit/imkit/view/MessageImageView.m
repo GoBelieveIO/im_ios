@@ -45,7 +45,7 @@
             [self.downloadIndicatorView startAnimating];
         }
 
-        UIImage *placehodler = [UIImage imageNamed:@"imkitResource.bundle/imageDownloadFail"];
+        UIImage *placehodler = [UIImage imageNamed:@"imageDownloadFail"];
         [self.imageView sd_setImageWithURL: [[NSURL alloc] initWithString:url] placeholderImage:placehodler
                                  completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
             if (self.downloadIndicatorView&&[self.downloadIndicatorView isAnimating]) {

@@ -72,7 +72,7 @@
 //    UIButton *deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
 //    [deleteButton setBackgroundColor:[UIColor clearColor]];
 //    [deleteButton setFrame:CGRectMake((maxCol - 1) * itemWidth, (maxRow - 1) * itemHeight, itemWidth, itemHeight)];
-//    [deleteButton setImage:[UIImage imageNamed:@"imkitResource.bundle/faceDelete"] forState:UIControlStateNormal];
+//    [deleteButton setImage:[UIImage imageNamed:@"faceDelete"] forState:UIControlStateNormal];
 //    deleteButton.tag = 10000;
 //    [deleteButton addTarget:self action:@selector(selected:) forControlEvents:UIControlEventTouchUpInside];
 //    [self addSubview:deleteButton];
@@ -124,8 +124,8 @@
             UIButton *deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
             [deleteButton setBackgroundColor:[UIColor clearColor]];
             [deleteButton setFrame:CGRectMake(i * CGRectGetWidth(self.frame) + (emotionManager.emotionCol - 1) * itemWidth, (emotionManager.emotionRow - 1) * itemHeight, itemWidth, itemHeight)];
-            [deleteButton setImage:[UIImage imageNamed:@"imkitResource.bundle/faceDelete"] forState:UIControlStateNormal];
-            [deleteButton setImage:[UIImage imageNamed:@"imkitResource.bundle/faceDelete_select"] forState:UIControlStateHighlighted];
+            [deleteButton setImage:[UIImage imageNamed:@"faceDelete"] forState:UIControlStateNormal];
+            [deleteButton setImage:[UIImage imageNamed:@"faceDelete_select"] forState:UIControlStateHighlighted];
             deleteButton.tag = 10000;
             [deleteButton addTarget:self action:@selector(selected:) forControlEvents:UIControlEventTouchUpInside];
             [_scrollview addSubview:deleteButton];

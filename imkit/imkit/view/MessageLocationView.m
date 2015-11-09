@@ -34,7 +34,7 @@
         self.imageView.userInteractionEnabled = YES;
         
         self.pinImageView = [[UIImageView alloc] init];
-        UIImage *image = [UIImage imageNamed:@"imkitResource.bundle/PinGreen"];
+        UIImage *image = [UIImage imageNamed:@"PinGreen"];
         self.pinImageView.image = image;
         [self addSubview:self.pinImageView];
         
@@ -50,7 +50,7 @@
     [super setMsg:msg];
     [self.msg addObserver:self forKeyPath:@"downloading" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
     
-    UIImage *placehodler = [UIImage imageNamed:@"imkitResource.bundle/chat_location_preview"];
+    UIImage *placehodler = [UIImage imageNamed:@"chat_location_preview"];
     if (self.msg.downloading) {
         [self.indicatorView startAnimating];
         self.imageView.image = placehodler;
@@ -70,7 +70,7 @@
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     if([keyPath isEqualToString:@"downloading"]) {
-        UIImage *placehodler = [UIImage imageNamed:@"imkitResource.bundle/chat_location_preview"];
+        UIImage *placehodler = [UIImage imageNamed:@"chat_location_preview"];
         if (self.msg.downloading) {
             [self.indicatorView startAnimating];
             self.imageView.image = placehodler;
