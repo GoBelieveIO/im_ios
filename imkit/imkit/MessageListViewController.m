@@ -19,20 +19,6 @@
 #import "MessageConversationCell.h"
 #import <imsdk/IMService.h>
 
-#if 0
-#import "pinyin.h"
-#import "MessageGroupConversationCell.h"
-#import "NewGroupViewController.h"
-#import "UserDB.h"
-#import "UIImageView+WebCache.h"
-#import "UserPresent.h"
-#import "JSBadgeView.h"
-
-#import "APIRequest.h"
-#import "LevelDB.h"
-#import "GroupDB.h"
-#endif
-
 
 #define kConversationCellHeight         60
 
@@ -103,7 +89,7 @@
         conversation = [iterator next];
     }
  
-    self.title = @"对话";
+    self.navigationItem.title = @"对话";
     if ([[IMService instance] connectState] == STATE_CONNECTING) {
         self.navigationItem.title = @"连接中...";
     }

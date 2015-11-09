@@ -92,7 +92,7 @@
 
 
 - (void)actionChat {
-    if (!tfSender.text.length || !tfReceiver.text.length) {
+    if (!tfSender.text.length) {
         NSLog(@"invalid input");
         return;
     }
@@ -113,9 +113,6 @@
             
             NSLog(@"login success");
             
-
-            
-            
             [IMHttpAPI instance].accessToken = token;
             [IMService instance].token = token;
             [IMService instance].uid = [tfSender.text longLongValue];
@@ -132,22 +129,20 @@
                                           NSLog(@"bind device token fail");
                                       }];
             }
-            
 
-#if 0
-            PeerMessageViewController *msgController = [[PeerMessageViewController alloc] init];
-            msgController.currentUID = [tfSender.text longLongValue];
-            msgController.peerUID = [tfReceiver.text longLongValue];
-            msgController.peerName = @"测试";
-            self.navigationController.navigationBarHidden = NO;
-            [self.navigationController pushViewController:msgController animated:YES];
-#else
-            MessageListViewController *ctrl = [[MessageListViewController alloc] init];
-            ctrl.currentUID = [tfSender.text longLongValue];
-            self.navigationController.navigationBarHidden = NO;
-            [self.navigationController pushViewController:ctrl animated:YES];
-#endif
-            
+            if (tfReceiver.text.length > 0) {
+                PeerMessageViewController *msgController = [[PeerMessageViewController alloc] init];
+                msgController.currentUID = [tfSender.text longLongValue];
+                msgController.peerUID = [tfReceiver.text longLongValue];
+                msgController.peerName = @"测试";
+                self.navigationController.navigationBarHidden = NO;
+                [self.navigationController pushViewController:msgController animated:YES];
+            } else {
+                MessageListViewController *ctrl = [[MessageListViewController alloc] init];
+                ctrl.currentUID = [tfSender.text longLongValue];
+                self.navigationController.navigationBarHidden = NO;
+                [self.navigationController pushViewController:ctrl animated:YES];
+            }
         });
     });
 }
