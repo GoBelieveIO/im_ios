@@ -14,6 +14,9 @@
 
 @implementation MessageImageView
 
+- (void)dealloc {
+    [self.msg removeObserver:self forKeyPath:@"uploading"];
+}
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];

@@ -37,6 +37,10 @@ CGFloat const kJSAvatarSize = 50.0f;
     return self;
 }
 
+- (void)dealloc {
+    [self.msg removeObserver:self forKeyPath:@"flags"];
+}
+
 #pragma mark - Setters
 -(void)setMsg:(IMessage *)msg {
     [self.msg removeObserver:self forKeyPath:@"flags"];

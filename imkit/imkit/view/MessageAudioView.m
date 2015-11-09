@@ -75,6 +75,13 @@
     return self;
 }
 
+-(void)dealloc {
+    [self.msg removeObserver:self forKeyPath:@"uploading"];
+    [self.msg removeObserver:self forKeyPath:@"downloading"];
+    [self.msg removeObserver:self forKeyPath:@"playing"];
+    [self.msg removeObserver:self forKeyPath:@"progress"];
+}
+
 -(void)setMsg:(IMessage *)msg {
     [self.msg removeObserver:self forKeyPath:@"uploading"];
     [self.msg removeObserver:self forKeyPath:@"downloading"];

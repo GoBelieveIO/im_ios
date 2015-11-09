@@ -45,6 +45,10 @@
     return self;
 }
 
+-(void)dealloc {
+    [self.msg removeObserver:self forKeyPath:@"downloading"];   
+}
+
 -(void)setMsg:(IMessage *)msg {
     [self.msg removeObserver:self forKeyPath:@"downloading"];
     [super setMsg:msg];
