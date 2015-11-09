@@ -36,10 +36,10 @@
         self.sectionHeader.textAlignment = NSTextAlignmentCenter;
         self.sectionHeader.translatesAutoresizingMaskIntoConstraints = NO;
 
+        [self addSubview:self.sectionHeader];
+        
         [self addConstraint:[NSLayoutConstraint constraintWithItem:self.sectionHeader attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
         [self addConstraint:[NSLayoutConstraint constraintWithItem:self.sectionHeader attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
-
-        [self addSubview:self.sectionHeader];
 
         self.alpha = 0.9;
     }
