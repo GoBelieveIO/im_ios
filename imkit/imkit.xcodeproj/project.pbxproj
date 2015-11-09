@@ -80,6 +80,9 @@
 		6D9C46E61BEB454F0053066A /* PinHole@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C46E21BEB454F0053066A /* PinHole@3x.png */; };
 		6D9C46E91BEB4DBD0053066A /* PinGreen@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C46E71BEB4DBD0053066A /* PinGreen@2x.png */; };
 		6D9C46EA1BEB4DBD0053066A /* PinGreen@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C46E81BEB4DBD0053066A /* PinGreen@3x.png */; };
+		6D9C47041BEF70F60053066A /* MessageListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D9C47031BEF70F60053066A /* MessageListViewController.m */; };
+		6D9C47111BEF76220053066A /* MessageConversationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D9C47101BEF76220053066A /* MessageConversationCell.m */; };
+		6D9C47151BF081660053066A /* MessageListViewController.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6D9C47021BEF70F60053066A /* MessageListViewController.h */; };
 		6DBEBA771AF77291002CAEA3 /* GroupMessageViewController.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6D4256851ABC0EEC001B7E43 /* GroupMessageViewController.h */; };
 		6DEE56851BDCF309002BCAB8 /* MessageLocationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DEE56841BDCF309002BCAB8 /* MessageLocationView.m */; };
 		6DEE56C01BDE1663002BCAB8 /* LocationPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DEE56BE1BDE1663002BCAB8 /* LocationPickerController.m */; };
@@ -185,6 +188,7 @@
 			dstPath = "include/$(PRODUCT_NAME)";
 			dstSubfolderSpec = 16;
 			files = (
+				6D9C47151BF081660053066A /* MessageListViewController.h in CopyFiles */,
 				6DBEBA771AF77291002CAEA3 /* GroupMessageViewController.h in CopyFiles */,
 				6DFDA0261AB95E7F00EF553A /* PeerMessageViewController.h in CopyFiles */,
 				6DF54F281AB82E0000197EBC /* BaseMessageViewController.h in CopyFiles */,
@@ -304,6 +308,10 @@
 		6D9C46E21BEB454F0053066A /* PinHole@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "PinHole@3x.png"; sourceTree = "<group>"; };
 		6D9C46E71BEB4DBD0053066A /* PinGreen@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "PinGreen@2x.png"; sourceTree = "<group>"; };
 		6D9C46E81BEB4DBD0053066A /* PinGreen@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "PinGreen@3x.png"; sourceTree = "<group>"; };
+		6D9C47021BEF70F60053066A /* MessageListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageListViewController.h; sourceTree = "<group>"; };
+		6D9C47031BEF70F60053066A /* MessageListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageListViewController.m; sourceTree = "<group>"; };
+		6D9C470F1BEF76220053066A /* MessageConversationCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageConversationCell.h; sourceTree = "<group>"; };
+		6D9C47101BEF76220053066A /* MessageConversationCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageConversationCell.m; sourceTree = "<group>"; };
 		6DEE56831BDCF309002BCAB8 /* MessageLocationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MessageLocationView.h; path = view/MessageLocationView.h; sourceTree = "<group>"; };
 		6DEE56841BDCF309002BCAB8 /* MessageLocationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MessageLocationView.m; path = view/MessageLocationView.m; sourceTree = "<group>"; };
 		6DEE56BD1BDE1663002BCAB8 /* LocationPickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocationPickerController.h; path = controller/LocationPickerController.h; sourceTree = "<group>"; };
@@ -518,6 +526,8 @@
 				6D42568A1ABC0F2F001B7E43 /* MessageNotificationView.m */,
 				6D03312F1AA9E734004AA39F /* MessageViewCell.h */,
 				6D0331301AA9E734004AA39F /* MessageViewCell.m */,
+				6D9C470F1BEF76220053066A /* MessageConversationCell.h */,
+				6D9C47101BEF76220053066A /* MessageConversationCell.m */,
 			);
 			name = view;
 			sourceTree = "<group>";
@@ -525,6 +535,8 @@
 		6D032FF81AA9B499004AA39F /* controller */ = {
 			isa = PBXGroup;
 			children = (
+				6D9C47021BEF70F60053066A /* MessageListViewController.h */,
+				6D9C47031BEF70F60053066A /* MessageListViewController.m */,
 				6D4256851ABC0EEC001B7E43 /* GroupMessageViewController.h */,
 				6D4256861ABC0EEC001B7E43 /* GroupMessageViewController.m */,
 				4875B1211AAC9362001D1435 /* MEESImageViewController.h */,
@@ -992,6 +1004,7 @@
 				6D18DBB11BEA0AB0006A3B66 /* EaseEmotionManager.m in Sources */,
 				6DEE56C31BDE2F5D002BCAB8 /* MapViewController.m in Sources */,
 				6D0331311AA9E734004AA39F /* BubbleView.m in Sources */,
+				6D9C47041BEF70F60053066A /* MessageListViewController.m in Sources */,
 				6D42568B1ABC0F2F001B7E43 /* MessageNotificationView.m in Sources */,
 				6DEE56851BDCF309002BCAB8 /* MessageLocationView.m in Sources */,
 				6DFDA0271AB9797500EF553A /* TextMessageViewController.m in Sources */,
@@ -1023,6 +1036,7 @@
 				4875B1231AAC9362001D1435 /* MEESImageViewController.m in Sources */,
 				6D18DBA71BEA0A7A006A3B66 /* EaseChatToolbar.m in Sources */,
 				6D0330081AA9BBC7004AA39F /* Outbox.m in Sources */,
+				6D9C47111BEF76220053066A /* MessageConversationCell.m in Sources */,
 				6D03315F1AAB6626004AA39F /* NSString+JSMessagesView.m in Sources */,
 				6D18DBAF1BEA0AA8006A3B66 /* EaseEmojiEmoticons.m in Sources */,
 				6D18DBAC1BEA0A91006A3B66 /* EaseChatBarMoreView.m in Sources */,

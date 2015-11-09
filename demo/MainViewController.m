@@ -14,7 +14,7 @@
 #import <imkit/MessageViewController.h>
 #import <imkit/IMHttpAPI.h>
 #import <imkit/PeerMessageViewController.h>
-
+#import <imkit/MessageListViewController.h>
 
 @interface MainViewController (){
     UITextField *tfSender;
@@ -112,13 +112,10 @@
             }
             
             NSLog(@"login success");
-            PeerMessageViewController *msgController = [[PeerMessageViewController alloc] init];
             
-            msgController.currentUID = [tfSender.text longLongValue];
-            msgController.peerUID = [tfReceiver.text longLongValue];
 
-            msgController.peerName = @"测试";
-
+            
+            
             [IMHttpAPI instance].accessToken = token;
             [IMService instance].token = token;
             [IMService instance].uid = [tfSender.text longLongValue];
@@ -136,8 +133,21 @@
                                       }];
             }
             
+
+#if 0
+            PeerMessageViewController *msgController = [[PeerMessageViewController alloc] init];
+            msgController.currentUID = [tfSender.text longLongValue];
+            msgController.peerUID = [tfReceiver.text longLongValue];
+            msgController.peerName = @"测试";
             self.navigationController.navigationBarHidden = NO;
             [self.navigationController pushViewController:msgController animated:YES];
+#else
+            MessageListViewController *ctrl = [[MessageListViewController alloc] init];
+            ctrl.currentUID = [tfSender.text longLongValue];
+            self.navigationController.navigationBarHidden = NO;
+            [self.navigationController pushViewController:ctrl animated:YES];
+#endif
+            
         });
     });
 }

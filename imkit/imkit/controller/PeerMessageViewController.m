@@ -161,9 +161,8 @@
                                                                  object:[NSNumber numberWithLongLong:self.peerUID]
                                                                userInfo:nil];
     [[NSNotificationCenter defaultCenter] postNotification:notification];
-    
 
-    [self.navigationController popToRootViewControllerAnimated:YES];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark - MessageObserver

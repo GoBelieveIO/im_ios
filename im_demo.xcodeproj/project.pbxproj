@@ -295,6 +295,9 @@
 		6D9C46C91BEB09DC0053066A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C46CB1BEB09DC0053066A /* InfoPlist.strings */; };
 		6D9C46D41BEB0A940053066A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C46D61BEB0A940053066A /* Localizable.strings */; };
 		6D9C46EB1BEB52930053066A /* imkitResource.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 6DF882171BEA11B4003F7B87 /* imkitResource.bundle */; };
+		6D9C47141BF0810B0053066A /* MessageConversationCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C47131BF0810B0053066A /* MessageConversationCell.xib */; };
+		6D9C47181BF082D70053066A /* PersonalChat.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C47161BF082D70053066A /* PersonalChat.png */; };
+		6D9C47191BF082D70053066A /* PersonalChat@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C47171BF082D70053066A /* PersonalChat@2x.png */; };
 		6DEE567C1BDC7404002BCAB8 /* Fav_Located@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DEE567B1BDC7404002BCAB8 /* Fav_Located@2x.png */; };
 		6DF54D911AB5862000197EBC /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54D901AB5862000197EBC /* main.m */; };
 		6DF54D941AB5862000197EBC /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54D931AB5862000197EBC /* AppDelegate.m */; };
@@ -518,6 +521,9 @@
 		6D9C46CC1BEB09E80053066A /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		6D9C46D51BEB0A940053066A /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		6D9C46D81BEB0ABB0053066A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		6D9C47131BF0810B0053066A /* MessageConversationCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MessageConversationCell.xib; sourceTree = "<group>"; };
+		6D9C47161BF082D70053066A /* PersonalChat.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PersonalChat.png; sourceTree = "<group>"; };
+		6D9C47171BF082D70053066A /* PersonalChat@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "PersonalChat@2x.png"; sourceTree = "<group>"; };
 		6DEE567B1BDC7404002BCAB8 /* Fav_Located@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Fav_Located@2x.png"; sourceTree = "<group>"; };
 		6DF54D8B1AB5862000197EBC /* im_demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = im_demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6DF54D8F1AB5862000197EBC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -747,6 +753,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6D9C47121BF0810A0053066A /* xibs */ = {
+			isa = PBXGroup;
+			children = (
+				6D9C47131BF0810B0053066A /* MessageConversationCell.xib */,
+			);
+			path = xibs;
+			sourceTree = "<group>";
+		};
 		6DF54D821AB5862000197EBC = {
 			isa = PBXGroup;
 			children = (
@@ -852,6 +866,7 @@
 		6DF54DC91AB5883200197EBC /* imKitRes */ = {
 			isa = PBXGroup;
 			children = (
+				6D9C47121BF0810A0053066A /* xibs */,
 				6DF54DCA1AB5883200197EBC /* images */,
 				6DF54E091AB5883200197EBC /* sounds */,
 			);
@@ -862,6 +877,8 @@
 		6DF54DCA1AB5883200197EBC /* images */ = {
 			isa = PBXGroup;
 			children = (
+				6D9C47161BF082D70053066A /* PersonalChat.png */,
+				6D9C47171BF082D70053066A /* PersonalChat@2x.png */,
 				6DF54DCB1AB5883200197EBC /* BrdtCheck.png */,
 				6DF54DCC1AB5883200197EBC /* BrdtCheck@2x.png */,
 				6DEE567B1BDC7404002BCAB8 /* Fav_Located@2x.png */,
@@ -1499,6 +1516,7 @@
 				6DF54EFB1AB58DC500197EBC /* btn_grey@2x.png in Resources */,
 				6DF54E2C1AB5883200197EBC /* MicChats.png in Resources */,
 				6DF54EEE1AB58DC500197EBC /* btn_grey.png in Resources */,
+				6D9C47191BF082D70053066A /* PersonalChat@2x.png in Resources */,
 				6DF54F091AB58DC500197EBC /* ic_dustbin@3x.png in Resources */,
 				6DF54E2E1AB5883200197EBC /* MicChatsBlue.png in Resources */,
 				6DF54EF51AB58DC500197EBC /* bg@2x.png in Resources */,
@@ -1528,6 +1546,7 @@
 				6DF54F001AB58DC500197EBC /* avater_you@3x.png in Resources */,
 				6DF54E321AB5883200197EBC /* MicIncoming.png in Resources */,
 				6DF54E181AB5883200197EBC /* CheckDoubleGreen.png in Resources */,
+				6D9C47181BF082D70053066A /* PersonalChat.png in Resources */,
 				6DF54E2B1AB5883200197EBC /* MicBlueSent@2x.png in Resources */,
 				6DF54E0F1AB5883200197EBC /* BrdtCheck.png in Resources */,
 				6DF54EFD1AB58DC500197EBC /* ic_dustbin@2x.png in Resources */,
@@ -1551,6 +1570,7 @@
 				6DF54E241AB5883200197EBC /* GroupChatRound.png in Resources */,
 				6DF54F011AB58DC500197EBC /* bg@3x.png in Resources */,
 				6DF54EF01AB58DC500197EBC /* ic_dustbin.png in Resources */,
+				6D9C47141BF0810B0053066A /* MessageConversationCell.xib in Resources */,
 				6DF54E261AB5883200197EBC /* input-bar-flat@2x.png in Resources */,
 				6D69BD921B444B79008EAA8A /* room-Info.plist in Resources */,
 				6DF54EF31AB58DC500197EBC /* avater_me@2x.png in Resources */,

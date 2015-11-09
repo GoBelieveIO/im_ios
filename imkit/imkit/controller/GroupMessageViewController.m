@@ -128,8 +128,7 @@
                                                                userInfo:nil];
     [[NSNotificationCenter defaultCenter] postNotification:notification];
 
-    
-    [self.navigationController popToRootViewControllerAnimated:YES];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 

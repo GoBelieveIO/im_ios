@@ -12,7 +12,7 @@
 #define kPinImageWidth 32
 #define kPinImageHeight 39
 
-#define KInComingMoveRight  8.0
+#define KInComingMoveRight  2.0
 #define kOuttingMoveRight   3.0
 
 
