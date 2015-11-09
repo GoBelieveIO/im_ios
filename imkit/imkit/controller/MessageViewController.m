@@ -19,8 +19,6 @@
 #import "Outbox.h"
 #import "AudioDownloader.h"
 
-#import "MessageInputView.h"
-
 #import "MessageTextView.h"
 #import "MessageAudioView.h"
 #import "MessageImageView.h"
@@ -45,9 +43,8 @@
 #define kTakePicActionSheetTag  101
 
 
-@interface MessageViewController()<MessageInputRecordDelegate, 
-    AudioDownloaderObserver, OutboxObserver, LocationPickerControllerDelegate,
-    EMChatToolbarDelegate>
+@interface MessageViewController()<AudioDownloaderObserver, OutboxObserver,
+    LocationPickerControllerDelegate, EMChatToolbarDelegate>
 
 @property(strong, nonatomic) EaseChatToolbar *chatToolbar;
 
