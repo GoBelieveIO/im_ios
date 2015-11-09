@@ -45,6 +45,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    UIBarButtonItem *newBackButton = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStyleBordered target:self action:@selector(home:)];
+    self.navigationItem.leftBarButtonItem=newBackButton;
+    
     CGRect rect = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
     self.tableview = [[UITableView alloc]initWithFrame:rect style:UITableViewStylePlain];
   	self.tableview.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -93,6 +96,14 @@
     if ([[IMService instance] connectState] == STATE_CONNECTING) {
         self.navigationItem.title = @"连接中...";
     }
+}
+
+-(void)home:(UIBarButtonItem *)sender {
+    [[IMService instance] removePeerMessageObserver:self];
+    [[IMService instance] removeGroupMessageObserver:self];
+    [[IMService instance] removeConnectionObserver:self];
+
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)updateNotificationDesc:(IMessage*)message {
