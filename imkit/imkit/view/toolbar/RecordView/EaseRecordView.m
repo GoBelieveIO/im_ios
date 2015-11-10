@@ -15,11 +15,13 @@
 
 @interface EaseRecordView ()
 {
-    NSTimer *_timer;
     // 显示动画的ImageView
     UIImageView *_recordAnimationView;
     // 提示文字
     UILabel *_textLabel;
+    
+    // 倒计时
+    UILabel *_countdownLabel;
 }
 
 @end
@@ -66,6 +68,14 @@
         _textLabel.layer.cornerRadius = 5;
         _textLabel.layer.borderColor = [[UIColor redColor] colorWithAlphaComponent:0.5].CGColor;
         _textLabel.layer.masksToBounds = YES;
+        
+        CGRect rect = CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height-30);
+        _countdownLabel = [[UILabel alloc] initWithFrame:rect];
+        _countdownLabel.textAlignment = NSTextAlignmentCenter;
+        _countdownLabel.hidden = YES;
+        _countdownLabel.font = [UIFont systemFontOfSize:32];
+        _countdownLabel.textColor = [UIColor whiteColor];
+        [self addSubview:_countdownLabel];
     }
     return self;
 }
@@ -93,23 +103,19 @@
     // 需要根据声音大小切换recordView动画
     _textLabel.text = _upCancelText;
     _textLabel.backgroundColor = [UIColor clearColor];
-    /*
-    _timer = [NSTimer scheduledTimerWithTimeInterval:0.05
-                                              target:self
-                                            selector:@selector(setVoiceImage)
-                                            userInfo:nil
-                                             repeats:YES];*/
     
+    _countdownLabel.hidden = YES;
+    _recordAnimationView.hidden = NO;
 }
+
 // 手指在录音按钮内部时离开
 -(void)recordButtonTouchUpInside
 {
-//    [_timer invalidate];
+
 }
 // 手指在录音按钮外部时离开
 -(void)recordButtonTouchUpOutside
 {
-//    [_timer invalidate];
 }
 // 手指移动到录音按钮内部
 -(void)recordButtonDragInside
@@ -125,8 +131,11 @@
     _textLabel.backgroundColor = [UIColor redColor];
 }
 
-
-
+-(void)setCountdown:(int)countdown {
+    _countdownLabel.text = [NSString stringWithFormat:@"%d", countdown];
+    _countdownLabel.hidden = NO;
+    _recordAnimationView.hidden = YES;
+}
 
 -(void)setVoiceImage:(double)voiceMeter {
     _recordAnimationView.image = [UIImage imageNamed:[_voiceMessageAnimationImages objectAtIndex:0]];

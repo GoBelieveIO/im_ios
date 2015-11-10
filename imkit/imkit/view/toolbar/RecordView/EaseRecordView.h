@@ -28,7 +28,7 @@ typedef enum{
 
 @property (nonatomic) NSString *loosenCancelText UI_APPEARANCE_SELECTOR;
 
-
+-(void)setCountdown:(int)countdown;
 -(void)setVoiceImage:(double)voiceMeter;
 
 // 录音按钮按下

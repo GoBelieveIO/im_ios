@@ -252,6 +252,14 @@
     int s = self.seconds%60;
     NSString *str = [NSString stringWithFormat:@"%02d:%02d", minute, s];
     NSLog(@"timer:%@", str);
+    int countdown = 60 - self.seconds;
+    if (countdown <= 10) {
+        [self.recordView setCountdown:countdown];
+    }
+    if (countdown <= 0) {
+        [self.recordView removeFromSuperview];
+        [self recordEnd];
+    }
 }
 
 - (void)pullToRefresh {
@@ -765,6 +773,7 @@
 -(void)recordEnd {
     if (self.recorder.recording) {
         NSLog(@"stop record...");
+        self.recordCanceled = NO;
         [self stopRecord];
     }
 }
