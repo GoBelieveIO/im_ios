@@ -34,6 +34,7 @@
 @property(nonatomic) NSMutableArray *timestamps;
 @property(nonatomic) NSMutableArray *messages;
 @property(nonatomic) NSMutableDictionary *names;
+@property(nonatomic) NSMutableDictionary *attachments;
 
 @property(nonatomic) UIRefreshControl *refreshControl;
 @property(nonatomic) UITableView *tableView;

@@ -698,8 +698,8 @@
     }
 }
 
-- (void)didFinishSelectAddress:(CLLocationCoordinate2D)location {
-    [self sendLocationMessage:location];
+- (void)didFinishSelectAddress:(CLLocationCoordinate2D)location address:(NSString *)address {
+    [self sendLocationMessage:location address:address];
 }
 
 #pragma mark - UIImagePickerControllerDelegate
@@ -870,6 +870,13 @@
            ![[SDImageCache sharedImageCache] diskImageExistsWithKey:url]){
             [self createMapSnapshot:msg];
         }
+        //加载附件中的地址
+        MessageContentAttachment *attachment = [self.attachments objectForKey:[NSNumber numberWithInt:msg.msgLocalID]];
+        msg.content.address = attachment.address;
+        
+        if (msg.content.address.length == 0) {
+            [self reverseGeocodeLocation:msg];
+        }
     } else if (msg.content.type == MESSAGE_IMAGE) {
         msg.uploading = [[Outbox instance] isUploading:msg];
     }
@@ -896,6 +903,28 @@
     return [NSString stringWithFormat:@"http://localhost/audios/%@.m4a", [self guid]];
 }
 
+-(void)reverseGeocodeLocation:(IMessage*)msg {
+    CLGeocoder *geocoder = [[CLGeocoder alloc] init];
+    
+    CLLocationCoordinate2D location = msg.content.location;
+    msg.geocoding = YES;
+    CLLocation *loc = [[CLLocation alloc] initWithLatitude:location.latitude longitude:location.longitude];
+    [geocoder reverseGeocodeLocation:loc completionHandler:^(NSArray *array, NSError *error) {
+        if (!error && array.count > 0) {
+            CLPlacemark *placemark = [array objectAtIndex:0];
+            msg.content.address = placemark.name;
+            
+            MessageContent *content = [[MessageContent alloc] initWithAttachment:msg.msgLocalID address:placemark.name];
+            IMessage *attachment = [[IMessage alloc] init];
+            attachment.sender = msg.sender;
+            attachment.receiver = msg.receiver;
+            attachment.content = content;
+            [self saveMessage:attachment];
+        }
+        msg.geocoding = NO;
+    }];
+}
+
 - (void)createMapSnapshot:(IMessage*)msg {
     CLLocationCoordinate2D location = msg.content.location;
     NSString *url = msg.content.snapshotURL;
@@ -904,7 +933,7 @@
     options.scale = [[UIScreen mainScreen] scale];
     options.showsPointsOfInterest = YES;
     options.showsBuildings = YES;
-    options.region = MKCoordinateRegionMakeWithDistance(location, 300, 200);
+    options.region = MKCoordinateRegionMakeWithDistance(location, 360, 200);
     options.mapType = MKMapTypeStandard;
     MKMapSnapshotter *snapshotter = [[MKMapSnapshotter alloc] initWithOptions:options];
     
@@ -922,7 +951,7 @@
 
 }
 
-- (void)sendLocationMessage:(CLLocationCoordinate2D)location {
+- (void)sendLocationMessage:(CLLocationCoordinate2D)location address:(NSString*)address {
     IMessage *msg = [[IMessage alloc] init];
     
     msg.sender = self.sender;
@@ -931,6 +960,7 @@
 
     MessageContent *content = [[MessageContent alloc] initWithLocation:location];
     msg.content = content;
+    msg.content.address = address;
     msg.timestamp = (int)time(NULL);
     
     [self saveMessage:msg];
@@ -940,6 +970,16 @@
     [[self class] playMessageSentSound];
     
     [self createMapSnapshot:msg];
+    if (msg.content.address.length == 0) {
+        [self reverseGeocodeLocation:msg];
+    } else {
+        MessageContent *content = [[MessageContent alloc] initWithAttachment:msg.msgLocalID address:msg.content.address];
+        IMessage *attachment = [[IMessage alloc] init];
+        attachment.sender = msg.sender;
+        attachment.receiver = msg.receiver;
+        attachment.content = content;
+        [self saveMessage:attachment];
+    }
     [self insertMessage:msg];
 }
 

@@ -8,6 +8,7 @@
  */
 
 #import "MessageLocationView.h"
+#import "Constants.h"
 
 #define kPinImageWidth 32
 #define kPinImageHeight 39
@@ -15,10 +16,14 @@
 #define KInComingMoveRight  2.0
 #define kOuttingMoveRight   3.0
 
+#define kAddressHeight  30
 
 @interface MessageLocationView()
 @property (nonatomic) UIActivityIndicatorView *indicatorView;
 @property (nonatomic) UIImageView *pinImageView;
+@property (nonatomic) UIView *addressBackgroundView;
+@property (nonatomic) UILabel *addressLabel;
+@property (nonatomic) UIActivityIndicatorView *geocodingIndicatorView;
 @end
 
 @implementation MessageLocationView
@@ -31,12 +36,26 @@
         UIImageView *imageView = [[UIImageView alloc] init];
         [self addSubview:imageView];
         self.imageView = imageView;
+        self.imageView.layer.cornerRadius = 6.0f;
+        self.imageView.clipsToBounds = YES;
         self.imageView.userInteractionEnabled = YES;
         
         self.pinImageView = [[UIImageView alloc] init];
         UIImage *image = [UIImage imageNamed:@"PinGreen"];
         self.pinImageView.image = image;
         [self addSubview:self.pinImageView];
+
+        self.addressBackgroundView = [[UIView alloc] init];
+        self.addressBackgroundView.backgroundColor = RGBACOLOR(0, 0, 0, 0.3);
+        [self.imageView addSubview:self.addressBackgroundView];
+        
+        self.addressLabel = [[UILabel alloc] init];
+        self.addressLabel.textColor = [UIColor whiteColor];
+        self.addressLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleFootnote];
+        [self.addressBackgroundView addSubview:self.addressLabel];
+        
+        self.geocodingIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        [self.addressBackgroundView addSubview:self.geocodingIndicatorView];
         
         self.indicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         
@@ -46,13 +65,20 @@
 }
 
 -(void)dealloc {
+    [self.msg removeObserver:self forKeyPath:@"geocoding"];
     [self.msg removeObserver:self forKeyPath:@"downloading"];   
 }
 
 -(void)setMsg:(IMessage *)msg {
+    [self.msg removeObserver:self forKeyPath:@"geocoding"];
     [self.msg removeObserver:self forKeyPath:@"downloading"];
     [super setMsg:msg];
-    [self.msg addObserver:self forKeyPath:@"downloading" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
+    [self.msg addObserver:self forKeyPath:@"geocoding"
+                          options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld
+                          context:NULL];
+    [self.msg addObserver:self forKeyPath:@"downloading"
+                  options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld
+                  context:NULL];
     
     UIImage *placehodler = [UIImage imageNamed:@"chat_location_preview"];
     if (self.msg.downloading) {
@@ -68,6 +94,14 @@
                                  completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                                  }];
     }
+    
+    if (self.msg.geocoding) {
+        [self.geocodingIndicatorView startAnimating];
+    } else {
+        [self.geocodingIndicatorView stopAnimating];
+    }
+
+    self.addressLabel.text = self.msg.content.address;
 }
 
 
@@ -88,6 +122,13 @@
                                      completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                                      }];
         }
+    } else if([keyPath isEqualToString:@"geocoding"]) {
+        if (self.msg.geocoding) {
+            [self.geocodingIndicatorView startAnimating];
+        } else {
+            [self.geocodingIndicatorView stopAnimating];
+        }
+        self.addressLabel.text = self.msg.content.address;
     }
 }
 
@@ -119,8 +160,19 @@
                                        imageSize.height);
         [self.imageView setFrame:imageFrame];
         
+        CGRect rect = imageFrame;
+        rect.origin.x = 0;
+        rect.origin.y = rect.size.height - kAddressHeight;
+        rect.size.height = kAddressHeight;
+        self.addressBackgroundView.frame = rect;
+        
+        rect.origin.y = 0;
+        rect.origin.x = 4;
+        rect.size.width -= 8;
+        self.addressLabel.frame = rect;
+        self.geocodingIndicatorView.frame = rect;
+        
         [self.indicatorView setFrame:imageFrame];
-
         //center
         CGPoint centerPoint = CGPointMake(imageFrame.origin.x + imageFrame.size.width/2, imageFrame.origin.y + imageFrame.size.height/2);
         CGRect pinFrame = CGRectMake(centerPoint.x - 8, centerPoint.y - 36, kPinImageWidth, kPinImageHeight);

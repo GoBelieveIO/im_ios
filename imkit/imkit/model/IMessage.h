@@ -16,6 +16,7 @@
 #define MESSAGE_AUDIO 3
 #define MESSAGE_LOCATION 4
 #define MESSAGE_GROUP_NOTIFICATION 5 //群通知
+#define MESSAGE_ATTACHMENT 255 //消息附件
 
 
 #define MESSAGE_FLAG_DELETE 1
@@ -55,6 +56,13 @@
 
 @end
 
+//消息附件
+@interface MessageContentAttachment : NSObject
+@property(nonatomic) int msgLocalID;
+
+@property(nonatomic) NSString *address;
+@end
+
 @interface MessageContent : NSObject
 
 - (id)initWithText:(NSString*)text;
@@ -62,21 +70,33 @@
 - (id)initWithAudio:(Audio*)audio;
 - (id)initWithNotification:(GroupNotification*)notification;
 - (id)initWithLocation:(CLLocationCoordinate2D)location;
+- (id)initWithAttachment:(int)msgLocalID address:(NSString*)address;
 - (id)initWithRaw:(NSString*)raw;
 
 @property(nonatomic) int type;
 @property(nonatomic) NSString *raw;
 
+//text message
 @property(nonatomic, readonly) NSString *text;
+
+//audio message
 @property(nonatomic, readonly) Audio *audio;
+
+//location message
 @property(nonatomic, readonly) CLLocationCoordinate2D location;
 @property(nonatomic, readonly) NSString *snapshotURL;
+@property(nonatomic, copy) NSString *address;
 
+//notification message
 @property(nonatomic, readonly) GroupNotification *notification;
 @property(nonatomic, copy) NSString *notificationDesc;
 
+//image message
 @property(nonatomic, readonly) NSString *imageURL;
 @property(nonatomic, readonly) NSString *littleImageURL;
+
+//message attachment
+@property(nonatomic, readonly) MessageContentAttachment *attachment;
 
 @end
 
@@ -97,6 +117,7 @@
 @property(nonatomic) BOOL downloading;
 @property(nonatomic) BOOL playing;
 @property(nonatomic) int progress;//[0,100]
+@property(nonatomic) BOOL geocoding;
 
 @end
 

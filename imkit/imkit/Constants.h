@@ -20,12 +20,6 @@
 #define RGBACOLOR(r,g,b,a) [UIColor colorWithRed:(r)/255.0f green:(g)/255.0f blue:(b)/255.0f \
 alpha:(a)]
 
-#define iPhone5 ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(640, 1136), [[UIScreen mainScreen] currentMode].size) : NO)
-
-//Address Book contact
-#define KPHONELABELDICDEFINE		@"KPhoneLabelDicDefine"
-#define KPHONENUMBERDICDEFINE	@"KPhoneNumberDicDefine"
-#define KPHONENAMEDICDEFINE	@"KPhoneNameDicDefine"
 
 #define KTabBarHeight  49
 #define KNavigationBarHeight 44

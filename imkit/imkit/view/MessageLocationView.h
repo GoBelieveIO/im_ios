@@ -9,7 +9,7 @@
 
 #import "BubbleView.h"
 
-#define kLocationWidth  150
+#define kLocationWidth  180
 #define kLocationHeight 100
 
 #define kMessageLocationViewHeight (kLocationHeight + kMarginTop + kMarginBottom + kPaddingTop + kPaddingBottom)

@@ -245,9 +245,14 @@
                 }
             }
         } else {
-            [self.messages insertObject:msg atIndex:0];
-            if (++count >= PAGE_COUNT) {
-                break;
+            if (msg.content.type == MESSAGE_ATTACHMENT) {
+                [self.attachments setObject:msg.content.attachment
+                                     forKey:[NSNumber numberWithInt:msg.content.attachment.msgLocalID]];
+            } else {
+                [self.messages insertObject:msg atIndex:0];
+                if (++count >= PAGE_COUNT) {
+                    break;
+                }
             }
         }
         msg = [iterator next];
@@ -270,9 +275,15 @@
     int count = 0;
     IMessage *msg = [iterator next];
     while (msg) {
-        [self.messages insertObject:msg atIndex:0];
-        if (++count >= PAGE_COUNT) {
-            break;
+        if (msg.content.type == MESSAGE_ATTACHMENT) {
+            [self.attachments setObject:msg.content.attachment
+                                 forKey:[NSNumber numberWithInt:msg.content.attachment.msgLocalID]];
+            
+        } else {
+            [self.messages insertObject:msg atIndex:0];
+            if (++count >= PAGE_COUNT) {
+                break;
+            }
         }
         msg = [iterator next];
     }

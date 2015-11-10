@@ -8,18 +8,8 @@
 */
 
 #import "BaseMessageViewController.h"
-#import <imsdk/IMService.h>
 #import <AudioToolbox/AudioServices.h>
-#import "UIImageView+WebCache.h"
 #import "IMessage.h"
-//#import "PeerMessageDB.h"
-#import "Constants.h"
-
-#import "FileCache.h"
-#import "Outbox.h"
-#import "AudioDownloader.h"
-#import "UIImage+Resize.h"
-
 
 
 @interface BaseMessageViewController ()
@@ -33,6 +23,7 @@
     if (self) {
         self.messages = [NSMutableArray array];
         self.names = [NSMutableDictionary dictionary];
+        self.attachments = [NSMutableDictionary dictionary];
     }
     return self;
 }

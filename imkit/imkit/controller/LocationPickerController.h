@@ -14,7 +14,7 @@
 
 
 @protocol LocationPickerControllerDelegate <NSObject>
-- (void)didFinishSelectAddress:(CLLocationCoordinate2D)corrdinate;
+- (void)didFinishSelectAddress:(CLLocationCoordinate2D)corrdinate address:(NSString*)address;
 @end
 
 @interface LocationPickerController : UIViewController  {

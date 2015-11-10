@@ -314,11 +314,17 @@
                 }
             }
         } else {
-            [self getUserName:msg.sender];
-            [self updateNotificationDesc:msg];
-            [self.messages insertObject:msg atIndex:0];
-            if (++count >= PAGE_COUNT) {
-                break;
+            if (msg.content.type == MESSAGE_ATTACHMENT) {
+                [self.attachments setObject:msg.content.attachment
+                                     forKey:[NSNumber numberWithInt:msg.content.attachment.msgLocalID]];
+                
+            } else {
+                [self getUserName:msg.sender];
+                [self updateNotificationDesc:msg];
+                [self.messages insertObject:msg atIndex:0];
+                if (++count >= PAGE_COUNT) {
+                    break;
+                }
             }
         }
         msg = [iterator next];
@@ -331,7 +337,6 @@
 
 
 - (void)loadEarlierData {
-    
     IMessage *last = [self.messages firstObject];
     if (last == nil) {
         return;
@@ -350,10 +355,16 @@
                 }
             }
         } else {
-            [self getUserName:msg.sender];
-            [self.messages insertObject:msg atIndex:0];
-            if (++count >= PAGE_COUNT) {
-                break;
+            if (msg.content.type == MESSAGE_ATTACHMENT) {
+                [self.attachments setObject:msg.content.attachment
+                                     forKey:[NSNumber numberWithInt:msg.content.attachment.msgLocalID]];
+                
+            } else {
+                [self getUserName:msg.sender];
+                [self.messages insertObject:msg atIndex:0];
+                if (++count >= PAGE_COUNT) {
+                    break;
+                }
             }
         }
         msg = [iterator next];

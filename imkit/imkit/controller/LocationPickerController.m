@@ -136,7 +136,7 @@
     point.x = self.mapView.bounds.size.width/2;
     point.y = self.mapView.bounds.size.height/2;
     CLLocationCoordinate2D location = [self.mapView convertPoint:point toCoordinateFromView:self.mapView];
-    [self.selectAddressdelegate didFinishSelectAddress:location];
+    [self.selectAddressdelegate didFinishSelectAddress:location address:self.annotation.title];
     [self.navigationController popViewControllerAnimated:YES];
 }
 

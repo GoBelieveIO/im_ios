@@ -78,6 +78,10 @@
 }
 
 @end
+@implementation MessageContentAttachment
+
+@end
+
 @implementation MessageContent
 -(id)initWithText:(NSString*)text {
     self = [super init];
@@ -132,6 +136,20 @@
     }
     return self;
 }
+
+- (id)initWithAttachment:(int)msgLocalID address:(NSString*)address {
+    self = [super init];
+    if (self) {
+        NSDictionary *attachment = @{@"address":address,
+                              @"msg_id":[NSNumber numberWithInt:msgLocalID]};
+        NSDictionary *dic = @{@"attachment":attachment};
+        NSString* newStr = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:dic options:0 error:nil] encoding:NSUTF8StringEncoding];
+        self.raw =  newStr;
+    }
+    return self;
+   
+}
+
 - (id)initWithRaw:(NSString*)raw {
     self = [super init];
     if (self) {
@@ -181,6 +199,14 @@
     return [[GroupNotification alloc] initWithRaw:[self.dict objectForKey:@"notification"]];
 }
 
+-(MessageContentAttachment*)attachment {
+    NSDictionary *attachment = [self.dict objectForKey:@"attachment"];
+    MessageContentAttachment *att = [[MessageContentAttachment alloc] init];
+    att.msgLocalID = [[attachment objectForKey:@"msg_id"] intValue];
+    att.address = [attachment objectForKey:@"address"];
+    return att;
+}
+
 -(void)setRaw:(NSString *)raw {
     self._raw = raw;
     const char *utf8 = [raw UTF8String];
@@ -198,6 +224,8 @@
         self.type = MESSAGE_LOCATION;
     } else if ([self.dict objectForKey:@"notification"] != nil) {
         self.type = MESSAGE_GROUP_NOTIFICATION;
+    } else if ([self.dict objectForKey:@"attachment"] != nil) {
+        self.type = MESSAGE_ATTACHMENT;
     } else {
         self.type = MESSAGE_UNKNOWN;
     }

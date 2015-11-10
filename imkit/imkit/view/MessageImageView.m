@@ -12,6 +12,9 @@
 #define KInComingMoveRight  2.0
 #define kOuttingMoveRight   3.0
 
+@interface MessageImageView()
+@property(nonatomic) UIView *maskView;
+@end
 @implementation MessageImageView
 
 - (void)dealloc {
@@ -25,6 +28,12 @@
         self.imageView = [[UIImageView alloc] init];
         [self.imageView setUserInteractionEnabled:YES];
         [self addSubview:self.imageView];
+        
+        self.maskView = [[UIView alloc] init];
+        self.maskView.backgroundColor = [UIColor blackColor];
+        self.maskView.alpha = 0.3;
+        self.maskView.hidden = YES;
+        [self addSubview:self.maskView];
         
         self.uploadIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         [self addSubview:self.uploadIndicatorView];
@@ -60,8 +69,10 @@
     [self.msg addObserver:self forKeyPath:@"uploading" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
     
     if (self.msg.uploading) {
+        self.maskView.hidden = NO;
         [self.uploadIndicatorView startAnimating];
     } else {
+        self.maskView.hidden = YES;
         [self.uploadIndicatorView stopAnimating];
     }
     
@@ -72,8 +83,10 @@
     [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     if([keyPath isEqualToString:@"uploading"]) {
         if (self.msg.uploading) {
+            self.maskView.hidden = NO;
             [self.uploadIndicatorView startAnimating];
         } else {
+            self.maskView.hidden = YES;
             [self.uploadIndicatorView stopAnimating];
         }
     }
@@ -105,6 +118,7 @@
                                    imageSize.width,
                                    imageSize.height);
     [self.imageView setFrame:imageFrame];
+    self.maskView.frame = imageFrame;
     
     [self.downloadIndicatorView setFrame:imageFrame];
     [self.uploadIndicatorView setFrame:imageFrame];

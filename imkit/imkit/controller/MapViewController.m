@@ -74,6 +74,26 @@
     
     MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(self.friendCoordinate, 300, 500);
     [self.mapView setRegion:region animated:YES];
+    
+    [self updateAddress];
+}
+
+- (void)updateAddress {
+    __weak MapViewController *wself = self;
+    CLGeocoder *geocoder = [[CLGeocoder alloc] init];
+    
+    CLLocationCoordinate2D location = self.friendCoordinate;
+    CLLocation *loc = [[CLLocation alloc] initWithLatitude:location.latitude longitude:location.longitude];
+    [geocoder reverseGeocodeLocation:loc completionHandler:^(NSArray *array, NSError *error) {
+        if (!error && array.count > 0) {
+            CLPlacemark *placemark = [array objectAtIndex:0];
+            MapAnnotation* annotation = [wself annotationWithTag:FRIEND_ANNOTATION_TAG];
+            annotation.title = placemark.name;
+            if (annotation) {
+                [wself.mapView selectAnnotation:annotation animated:YES];
+            }
+        }
+    }];
 }
 
 - (void)updateDistance {
@@ -94,7 +114,6 @@
 #pragma MKMapViewDelegate
 - (void)mapView:(MKMapView *)lmapView didUpdateUserLocation:(MKUserLocation *)userLocation {
     self.userLocation = userLocation.location;
-    [self updateDistance];
 }
 
 - (void)mapView:(MKMapView *)lmapView didAddAnnotationViews:(NSArray *)views {

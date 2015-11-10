@@ -408,8 +408,6 @@
 			children = (
 				6D9C47021BEF70F60053066A /* MessageListViewController.h */,
 				6D9C47031BEF70F60053066A /* MessageListViewController.m */,
-				6D4256851ABC0EEC001B7E43 /* GroupMessageViewController.h */,
-				6D4256861ABC0EEC001B7E43 /* GroupMessageViewController.m */,
 				4875B1211AAC9362001D1435 /* MEESImageViewController.h */,
 				4875B1221AAC9362001D1435 /* MEESImageViewController.m */,
 				6D032FFC1AA9B4D2004AA39F /* MessageViewController.h */,
@@ -420,6 +418,8 @@
 				6DF54F251AB816FB00197EBC /* BaseMessageViewController.m */,
 				6DFDA0221AB95B9800EF553A /* PeerMessageViewController.h */,
 				6DFDA0231AB95B9800EF553A /* PeerMessageViewController.m */,
+				6D4256851ABC0EEC001B7E43 /* GroupMessageViewController.h */,
+				6D4256861ABC0EEC001B7E43 /* GroupMessageViewController.m */,
 				6DEE56C11BDE2F5D002BCAB8 /* MapViewController.h */,
 				6DEE56C21BDE2F5D002BCAB8 /* MapViewController.m */,
 				6DEE56BD1BDE1663002BCAB8 /* LocationPickerController.h */,
