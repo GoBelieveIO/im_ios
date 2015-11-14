@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6D6154361BF6EB15005648FA /* images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C471A1BF08A9A0053066A /* images.xcassets */; };
+		6D6154371BF6EB16005648FA /* images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C471A1BF08A9A0053066A /* images.xcassets */; };
+		6D6154381BF6EB20005648FA /* MessageConversationCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C47131BF0810B0053066A /* MessageConversationCell.xib */; };
+		6D6154391BF6EB21005648FA /* MessageConversationCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C47131BF0810B0053066A /* MessageConversationCell.xib */; };
+		6D61543A1BF6EB5F005648FA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C46D61BEB0A940053066A /* Localizable.strings */; };
+		6D61543B1BF6EB5F005648FA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C46D61BEB0A940053066A /* Localizable.strings */; };
 		6D69BCF11B4449D0008EAA8A /* UIView+Toast.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54EA01AB58BB100197EBC /* UIView+Toast.m */; };
 		6D69BCF21B4449D0008EAA8A /* ESImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E9B1AB58BB100197EBC /* ESImageViewController.m */; };
 		6D69BCF31B4449D0008EAA8A /* SDWebImageDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E801AB58BB100197EBC /* SDWebImageDecoder.m */; };
@@ -972,8 +978,10 @@
 				6D69BD2C1B4449D0008EAA8A /* btn_grey@3x.png in Resources */,
 				6D69BD2E1B4449D0008EAA8A /* bg_white@2x.png in Resources */,
 				6D69BD311B4449D0008EAA8A /* bottombar_inputbox@3x.png in Resources */,
+				6D61543A1BF6EB5F005648FA /* Localizable.strings in Resources */,
 				6D69BD331B4449D0008EAA8A /* ic_man.png in Resources */,
 				6D69BD341B4449D0008EAA8A /* avater_you@3x.png in Resources */,
+				6D6154371BF6EB16005648FA /* images.xcassets in Resources */,
 				6D69BD391B4449D0008EAA8A /* ic_dustbin@2x.png in Resources */,
 				6D69BD3D1B4449D0008EAA8A /* btn_blue@2x.png in Resources */,
 				6D69BD411B4449D0008EAA8A /* bg_white@3x.png in Resources */,
@@ -993,6 +1001,7 @@
 				6D69BD631B4449D0008EAA8A /* bottombar_bg.png in Resources */,
 				6D69BD641B4449D0008EAA8A /* bg_blue@3x.png in Resources */,
 				6D69BD6A1B4449D0008EAA8A /* avater_you@2x.png in Resources */,
+				6D6154381BF6EB20005648FA /* MessageConversationCell.xib in Resources */,
 				6D69BD6E1B4449D0008EAA8A /* btn_blue.png in Resources */,
 				6D69BD6F1B4449D0008EAA8A /* ic_man@3x.png in Resources */,
 				6D69BD711B4449D0008EAA8A /* ic_back@2x.png in Resources */,
@@ -1020,8 +1029,10 @@
 				6D8E72881B750A31004E069E /* btn_grey@3x.png in Resources */,
 				6D8E728A1B750A31004E069E /* bg_white@2x.png in Resources */,
 				6D8E728D1B750A31004E069E /* bottombar_inputbox@3x.png in Resources */,
+				6D61543B1BF6EB5F005648FA /* Localizable.strings in Resources */,
 				6D8E728F1B750A31004E069E /* ic_man.png in Resources */,
 				6D8E72901B750A31004E069E /* avater_you@3x.png in Resources */,
+				6D6154361BF6EB15005648FA /* images.xcassets in Resources */,
 				6D8E72951B750A31004E069E /* ic_dustbin@2x.png in Resources */,
 				6D8E72991B750A31004E069E /* btn_blue@2x.png in Resources */,
 				6D8E729D1B750A31004E069E /* bg_white@3x.png in Resources */,
@@ -1041,6 +1052,7 @@
 				6D8E72BF1B750A31004E069E /* bottombar_bg.png in Resources */,
 				6D8E72C01B750A31004E069E /* bg_blue@3x.png in Resources */,
 				6D8E72C61B750A31004E069E /* avater_you@2x.png in Resources */,
+				6D6154391BF6EB21005648FA /* MessageConversationCell.xib in Resources */,
 				6D8E72CA1B750A31004E069E /* btn_blue.png in Resources */,
 				6D8E72CB1B750A31004E069E /* ic_man@3x.png in Resources */,
 				6D8E72CD1B750A31004E069E /* ic_back@2x.png in Resources */,
@@ -1302,6 +1314,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development IOS Push Services: com.beetle.im.demo";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development IOS Push Services: com.beetle.im.demo";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "demo/im_demo-prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					TEST_GROUP,
@@ -1312,7 +1325,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				"OTHER_LDFLAGS[arch=*]" = "-ObjC";
 				PRODUCT_NAME = group_demo;
-				PROVISIONING_PROFILE = "62a6cae0-985b-478c-9db4-5ae211f4be1c";
+				PROVISIONING_PROFILE = "af7ccfac-eb2d-4245-8415-3b7aef0fccf6";
 			};
 			name = Debug;
 		};
@@ -1320,6 +1333,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "demo/im_demo-prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					TEST_GROUP,
@@ -1331,7 +1345,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = group_demo;
-				PROVISIONING_PROFILE = "62a6cae0-985b-478c-9db4-5ae211f4be1c";
+				PROVISIONING_PROFILE = "af7ccfac-eb2d-4245-8415-3b7aef0fccf6";
 			};
 			name = Release;
 		};

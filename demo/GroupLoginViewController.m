@@ -10,6 +10,7 @@
 #import <imsdk/IMService.h>
 #import <imkit/IMHttpAPI.h>
 #import <imkit/GroupMessageViewController.h>
+#import <imkit/MessageDB.h>
 
 @interface GroupLoginViewController () {
     UITextField *tfSender;
@@ -84,6 +85,11 @@
     self.navigationController.navigationBarHidden = YES;
 }
 
+-(NSString*)getDocumentPath {
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *basePath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
+    return basePath;
+}
 
 - (void)actionChat {
     if (!tfSender.text.length || !tfReceiver.text.length) {
@@ -106,6 +112,28 @@
             }
             
             NSLog(@"login success");
+            
+
+            NSString *path = [self getDocumentPath];
+            NSString *dbPath = [NSString stringWithFormat:@"%@/%lld", path, [tfSender.text longLongValue]];
+            [MessageDB setDBPath:dbPath];
+            
+            [IMHttpAPI instance].accessToken = token;
+            [[IMService instance] setToken:token];
+            [IMService instance].uid = [tfSender.text longLongValue];
+            [[IMService instance] start];
+            
+            if (self.deviceToken.length > 0) {
+                
+                [IMHttpAPI bindDeviceToken:self.deviceToken
+                                   success:^{
+                                       NSLog(@"bind device token success");
+                                   }
+                                      fail:^{
+                                          NSLog(@"bind device token fail");
+                                      }];
+            }
+
 
             GroupMessageViewController *msgController = [[GroupMessageViewController alloc] init];
             
@@ -123,21 +151,6 @@
             };
             msgController.isShowUserName = YES;
             
-            [IMHttpAPI instance].accessToken = token;
-            [[IMService instance] setToken:token];
-            [IMService instance].uid = [tfSender.text longLongValue];
-            [[IMService instance] start];
-            
-            if (self.deviceToken.length > 0) {
-                
-                [IMHttpAPI bindDeviceToken:self.deviceToken
-                                   success:^{
-                                       NSLog(@"bind device token success");
-                                   }
-                                      fail:^{
-                                          NSLog(@"bind device token fail");
-                                      }];
-            }
             
             self.navigationController.navigationBarHidden = NO;
             [self.navigationController pushViewController:msgController animated:YES];

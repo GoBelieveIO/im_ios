@@ -52,10 +52,6 @@ blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     NSLog(@"remote notification:%@", [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey]);
-    //设置消息存放的路径，可以在路径中加入当前登录的uid
-    NSString *path = [self getDocumentPath];
-    NSString *dbPath = [NSString stringWithFormat:@"%@/current_uid", path];
-    [MessageDB setDBPath:dbPath];
     
     //app可以单独部署服务器，给予第三方应用更多的灵活性
     //在开发阶段也可以配置成测试环境的地址 "http://sandbox.api.gobelieve.io", "sandbox.imnode.gobelieve.io"
@@ -63,6 +59,7 @@ blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
     [IMService instance].host = @"imnode.gobelieve.io";
     
     [IMService instance].deviceID = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
+    NSLog(@"device id:%@", [[[UIDevice currentDevice] identifierForVendor] UUIDString]);
     [IMService instance].peerMessageHandler = [PeerMessageHandler instance];
     [IMService instance].groupMessageHandler = [GroupMessageHandler instance];
     [[IMService instance] startRechabilityNotifier];

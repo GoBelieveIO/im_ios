@@ -11,6 +11,7 @@
 #import <imkit/TextMessageViewController.h>
 #import <imkit/MessageViewController.h>
 #import <imkit/IMHttpAPI.h>
+#import <imkit/MessageDB.h>
 #import <imkit/PeerMessageViewController.h>
 
 #import "RoomViewController.h"
@@ -89,6 +90,11 @@
     self.navigationController.navigationBarHidden = YES;
 }
 
+-(NSString*)getDocumentPath {
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *basePath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
+    return basePath;
+}
 
 - (void)actionChat {
     if (!tfSender.text.length || !tfReceiver.text.length) {
@@ -111,14 +117,19 @@
             }
             
             NSLog(@"login success");
-            RoomViewController *msgController = [[RoomViewController alloc] init];
-            msgController.uid = [tfSender.text longLongValue];
-            msgController.roomID = [tfReceiver.text longLongValue];
+            
+            NSString *path = [self getDocumentPath];
+            NSString *dbPath = [NSString stringWithFormat:@"%@/%lld", path, [tfSender.text longLongValue]];
+            [MessageDB setDBPath:dbPath];
             
             [IMHttpAPI instance].accessToken = token;
             [[IMService instance] setToken:token];
             [IMService instance].uid = [tfSender.text longLongValue];
             [[IMService instance] start];
+            
+            RoomViewController *msgController = [[RoomViewController alloc] init];
+            msgController.uid = [tfSender.text longLongValue];
+            msgController.roomID = [tfReceiver.text longLongValue];
             
             self.navigationController.navigationBarHidden = NO;
             [self.navigationController pushViewController:msgController animated:YES];
