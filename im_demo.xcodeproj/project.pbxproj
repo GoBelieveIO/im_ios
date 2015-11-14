@@ -24,17 +24,13 @@
 		6D69BCF91B4449D0008EAA8A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54D931AB5862000197EBC /* AppDelegate.m */; };
 		6D69BCFA1B4449D0008EAA8A /* UIImageView+HighlightedWebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E931AB58BB100197EBC /* UIImageView+HighlightedWebCache.m */; };
 		6D69BCFB1B4449D0008EAA8A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54D901AB5862000197EBC /* main.m */; };
-		6D69BCFC1B4449D0008EAA8A /* FBShimmeringLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E6B1AB58BB100197EBC /* FBShimmeringLayer.m */; };
 		6D69BCFD1B4449D0008EAA8A /* UIButton+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E8B1AB58BB100197EBC /* UIButton+WebCache.m */; };
 		6D69BCFE1B4449D0008EAA8A /* SDWebImagePrefetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E891AB58BB100197EBC /* SDWebImagePrefetcher.m */; };
 		6D69BCFF1B4449D0008EAA8A /* SDWebImageDownloaderOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E841AB58BB100197EBC /* SDWebImageDownloaderOperation.m */; };
-		6D69BD001B4449D0008EAA8A /* HPGrowingTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E701AB58BB100197EBC /* HPGrowingTextView.m */; };
-		6D69BD011B4449D0008EAA8A /* FBShimmeringView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E6D1AB58BB100197EBC /* FBShimmeringView.m */; };
 		6D69BD021B4449D0008EAA8A /* UIImage+MultiFormat.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E8F1AB58BB100197EBC /* UIImage+MultiFormat.m */; };
 		6D69BD031B4449D0008EAA8A /* ESModalImageViewAnimationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E9D1AB58BB100197EBC /* ESModalImageViewAnimationController.m */; };
 		6D69BD041B4449D0008EAA8A /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E561AB588C700197EBC /* MainViewController.m */; };
 		6D69BD051B4449D0008EAA8A /* SDImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E7C1AB58BB100197EBC /* SDImageCache.m */; };
-		6D69BD061B4449D0008EAA8A /* HPTextViewInternal.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E721AB58BB100197EBC /* HPTextViewInternal.m */; };
 		6D69BD071B4449D0008EAA8A /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E751AB58BB100197EBC /* MBProgressHUD.m */; };
 		6D69BD081B4449D0008EAA8A /* UIImage+GIF.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E8D1AB58BB100197EBC /* UIImage+GIF.m */; };
 		6D69BD091B4449D0008EAA8A /* SDWebImageDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E821AB58BB100197EBC /* SDWebImageDownloader.m */; };
@@ -106,17 +102,13 @@
 		6D8E72551B750A31004E069E /* RoomLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D69BD971B444C09008EAA8A /* RoomLoginViewController.m */; };
 		6D8E72561B750A31004E069E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54D901AB5862000197EBC /* main.m */; };
 		6D8E72571B750A31004E069E /* RoomViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D69BD941B444BBA008EAA8A /* RoomViewController.m */; };
-		6D8E72581B750A31004E069E /* FBShimmeringLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E6B1AB58BB100197EBC /* FBShimmeringLayer.m */; };
 		6D8E72591B750A31004E069E /* UIButton+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E8B1AB58BB100197EBC /* UIButton+WebCache.m */; };
 		6D8E725A1B750A31004E069E /* SDWebImagePrefetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E891AB58BB100197EBC /* SDWebImagePrefetcher.m */; };
 		6D8E725B1B750A31004E069E /* SDWebImageDownloaderOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E841AB58BB100197EBC /* SDWebImageDownloaderOperation.m */; };
-		6D8E725C1B750A31004E069E /* HPGrowingTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E701AB58BB100197EBC /* HPGrowingTextView.m */; };
-		6D8E725D1B750A31004E069E /* FBShimmeringView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E6D1AB58BB100197EBC /* FBShimmeringView.m */; };
 		6D8E725E1B750A31004E069E /* UIImage+MultiFormat.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E8F1AB58BB100197EBC /* UIImage+MultiFormat.m */; };
 		6D8E725F1B750A31004E069E /* ESModalImageViewAnimationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E9D1AB58BB100197EBC /* ESModalImageViewAnimationController.m */; };
 		6D8E72601B750A31004E069E /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E561AB588C700197EBC /* MainViewController.m */; };
 		6D8E72611B750A31004E069E /* SDImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E7C1AB58BB100197EBC /* SDImageCache.m */; };
-		6D8E72621B750A31004E069E /* HPTextViewInternal.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E721AB58BB100197EBC /* HPTextViewInternal.m */; };
 		6D8E72631B750A31004E069E /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E751AB58BB100197EBC /* MBProgressHUD.m */; };
 		6D8E72641B750A31004E069E /* UIImage+GIF.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E8D1AB58BB100197EBC /* UIImage+GIF.m */; };
 		6D8E72651B750A31004E069E /* SDWebImageDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E821AB58BB100197EBC /* SDWebImageDownloader.m */; };
@@ -191,10 +183,6 @@
 		6DF54E5F1AB58AFF00197EBC /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF54E5E1AB58AFF00197EBC /* CoreAudio.framework */; };
 		6DF54E611AB58B0400197EBC /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF54E601AB58B0400197EBC /* CoreMedia.framework */; };
 		6DF54E631AB58B1900197EBC /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF54E621AB58B1900197EBC /* QuartzCore.framework */; };
-		6DF54EA11AB58BB100197EBC /* FBShimmeringLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E6B1AB58BB100197EBC /* FBShimmeringLayer.m */; };
-		6DF54EA21AB58BB100197EBC /* FBShimmeringView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E6D1AB58BB100197EBC /* FBShimmeringView.m */; };
-		6DF54EA31AB58BB100197EBC /* HPGrowingTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E701AB58BB100197EBC /* HPGrowingTextView.m */; };
-		6DF54EA41AB58BB100197EBC /* HPTextViewInternal.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E721AB58BB100197EBC /* HPTextViewInternal.m */; };
 		6DF54EA51AB58BB100197EBC /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E751AB58BB100197EBC /* MBProgressHUD.m */; };
 		6DF54EA61AB58BB100197EBC /* MKAnnotationView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E781AB58BB100197EBC /* MKAnnotationView+WebCache.m */; };
 		6DF54EA71AB58BB100197EBC /* NSData+ImageContentType.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E7A1AB58BB100197EBC /* NSData+ImageContentType.m */; };
@@ -353,16 +341,6 @@
 		6DF54E5E1AB58AFF00197EBC /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		6DF54E601AB58B0400197EBC /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		6DF54E621AB58B1900197EBC /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		6DF54E681AB58BB100197EBC /* FBShimmering-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "FBShimmering-Prefix.pch"; sourceTree = "<group>"; };
-		6DF54E691AB58BB100197EBC /* FBShimmering.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBShimmering.h; sourceTree = "<group>"; };
-		6DF54E6A1AB58BB100197EBC /* FBShimmeringLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBShimmeringLayer.h; sourceTree = "<group>"; };
-		6DF54E6B1AB58BB100197EBC /* FBShimmeringLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBShimmeringLayer.m; sourceTree = "<group>"; };
-		6DF54E6C1AB58BB100197EBC /* FBShimmeringView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBShimmeringView.h; sourceTree = "<group>"; };
-		6DF54E6D1AB58BB100197EBC /* FBShimmeringView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBShimmeringView.m; sourceTree = "<group>"; };
-		6DF54E6F1AB58BB100197EBC /* HPGrowingTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HPGrowingTextView.h; sourceTree = "<group>"; };
-		6DF54E701AB58BB100197EBC /* HPGrowingTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HPGrowingTextView.m; sourceTree = "<group>"; };
-		6DF54E711AB58BB100197EBC /* HPTextViewInternal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HPTextViewInternal.h; sourceTree = "<group>"; };
-		6DF54E721AB58BB100197EBC /* HPTextViewInternal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HPTextViewInternal.m; sourceTree = "<group>"; };
 		6DF54E741AB58BB100197EBC /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
 		6DF54E751AB58BB100197EBC /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
 		6DF54E771AB58BB100197EBC /* MKAnnotationView+WebCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MKAnnotationView+WebCache.h"; sourceTree = "<group>"; };
@@ -646,38 +624,12 @@
 		6DF54E661AB58BB100197EBC /* third-party */ = {
 			isa = PBXGroup;
 			children = (
-				6DF54E671AB58BB100197EBC /* FBShimmering */,
-				6DF54E6E1AB58BB100197EBC /* HPGrowingTextView */,
 				6DF54E731AB58BB100197EBC /* MBProgressHUD */,
 				6DF54E761AB58BB100197EBC /* SDWebImage */,
 				6DF54E981AB58BB100197EBC /* Titanium */,
 				6DF54E9E1AB58BB100197EBC /* Toast */,
 			);
 			path = "third-party";
-			sourceTree = "<group>";
-		};
-		6DF54E671AB58BB100197EBC /* FBShimmering */ = {
-			isa = PBXGroup;
-			children = (
-				6DF54E681AB58BB100197EBC /* FBShimmering-Prefix.pch */,
-				6DF54E691AB58BB100197EBC /* FBShimmering.h */,
-				6DF54E6A1AB58BB100197EBC /* FBShimmeringLayer.h */,
-				6DF54E6B1AB58BB100197EBC /* FBShimmeringLayer.m */,
-				6DF54E6C1AB58BB100197EBC /* FBShimmeringView.h */,
-				6DF54E6D1AB58BB100197EBC /* FBShimmeringView.m */,
-			);
-			path = FBShimmering;
-			sourceTree = "<group>";
-		};
-		6DF54E6E1AB58BB100197EBC /* HPGrowingTextView */ = {
-			isa = PBXGroup;
-			children = (
-				6DF54E6F1AB58BB100197EBC /* HPGrowingTextView.h */,
-				6DF54E701AB58BB100197EBC /* HPGrowingTextView.m */,
-				6DF54E711AB58BB100197EBC /* HPTextViewInternal.h */,
-				6DF54E721AB58BB100197EBC /* HPTextViewInternal.m */,
-			);
-			path = HPGrowingTextView;
 			sourceTree = "<group>";
 		};
 		6DF54E731AB58BB100197EBC /* MBProgressHUD */ = {
@@ -1137,17 +1089,13 @@
 				6D69BD981B444C09008EAA8A /* RoomLoginViewController.m in Sources */,
 				6D69BCFB1B4449D0008EAA8A /* main.m in Sources */,
 				6D69BD951B444BBA008EAA8A /* RoomViewController.m in Sources */,
-				6D69BCFC1B4449D0008EAA8A /* FBShimmeringLayer.m in Sources */,
 				6D69BCFD1B4449D0008EAA8A /* UIButton+WebCache.m in Sources */,
 				6D69BCFE1B4449D0008EAA8A /* SDWebImagePrefetcher.m in Sources */,
 				6D69BCFF1B4449D0008EAA8A /* SDWebImageDownloaderOperation.m in Sources */,
-				6D69BD001B4449D0008EAA8A /* HPGrowingTextView.m in Sources */,
-				6D69BD011B4449D0008EAA8A /* FBShimmeringView.m in Sources */,
 				6D69BD021B4449D0008EAA8A /* UIImage+MultiFormat.m in Sources */,
 				6D69BD031B4449D0008EAA8A /* ESModalImageViewAnimationController.m in Sources */,
 				6D69BD041B4449D0008EAA8A /* MainViewController.m in Sources */,
 				6D69BD051B4449D0008EAA8A /* SDImageCache.m in Sources */,
-				6D69BD061B4449D0008EAA8A /* HPTextViewInternal.m in Sources */,
 				6D69BD071B4449D0008EAA8A /* MBProgressHUD.m in Sources */,
 				6D69BD081B4449D0008EAA8A /* UIImage+GIF.m in Sources */,
 				6D69BD091B4449D0008EAA8A /* SDWebImageDownloader.m in Sources */,
@@ -1174,17 +1122,13 @@
 				6D8E72551B750A31004E069E /* RoomLoginViewController.m in Sources */,
 				6D8E72561B750A31004E069E /* main.m in Sources */,
 				6D8E72571B750A31004E069E /* RoomViewController.m in Sources */,
-				6D8E72581B750A31004E069E /* FBShimmeringLayer.m in Sources */,
 				6D8E72591B750A31004E069E /* UIButton+WebCache.m in Sources */,
 				6D8E725A1B750A31004E069E /* SDWebImagePrefetcher.m in Sources */,
 				6D8E725B1B750A31004E069E /* SDWebImageDownloaderOperation.m in Sources */,
-				6D8E725C1B750A31004E069E /* HPGrowingTextView.m in Sources */,
-				6D8E725D1B750A31004E069E /* FBShimmeringView.m in Sources */,
 				6D8E725E1B750A31004E069E /* UIImage+MultiFormat.m in Sources */,
 				6D8E725F1B750A31004E069E /* ESModalImageViewAnimationController.m in Sources */,
 				6D8E72601B750A31004E069E /* MainViewController.m in Sources */,
 				6D8E72611B750A31004E069E /* SDImageCache.m in Sources */,
-				6D8E72621B750A31004E069E /* HPTextViewInternal.m in Sources */,
 				6D8E72631B750A31004E069E /* MBProgressHUD.m in Sources */,
 				6D8E72641B750A31004E069E /* UIImage+GIF.m in Sources */,
 				6D8E72651B750A31004E069E /* SDWebImageDownloader.m in Sources */,
@@ -1208,17 +1152,13 @@
 				6DF54D941AB5862000197EBC /* AppDelegate.m in Sources */,
 				6DF54EB31AB58BB100197EBC /* UIImageView+HighlightedWebCache.m in Sources */,
 				6DF54D911AB5862000197EBC /* main.m in Sources */,
-				6DF54EA11AB58BB100197EBC /* FBShimmeringLayer.m in Sources */,
 				6DF54EAF1AB58BB100197EBC /* UIButton+WebCache.m in Sources */,
 				6DF54EAE1AB58BB100197EBC /* SDWebImagePrefetcher.m in Sources */,
 				6DF54EAC1AB58BB100197EBC /* SDWebImageDownloaderOperation.m in Sources */,
-				6DF54EA31AB58BB100197EBC /* HPGrowingTextView.m in Sources */,
-				6DF54EA21AB58BB100197EBC /* FBShimmeringView.m in Sources */,
 				6DF54EB11AB58BB100197EBC /* UIImage+MultiFormat.m in Sources */,
 				6DF54EB71AB58BB100197EBC /* ESModalImageViewAnimationController.m in Sources */,
 				6DF54E571AB588C700197EBC /* MainViewController.m in Sources */,
 				6DF54EA81AB58BB100197EBC /* SDImageCache.m in Sources */,
-				6DF54EA41AB58BB100197EBC /* HPTextViewInternal.m in Sources */,
 				6DF54EA51AB58BB100197EBC /* MBProgressHUD.m in Sources */,
 				6DF54EB01AB58BB100197EBC /* UIImage+GIF.m in Sources */,
 				6DF54EAB1AB58BB100197EBC /* SDWebImageDownloader.m in Sources */,

@@ -10,7 +10,6 @@
 #import "MessageViewController.h"
 #import <imsdk/IMService.h>
 #import <MobileCoreServices/MobileCoreServices.h>
-#import "HPGrowingTextView.h"
 
 #import "MessageTableSectionHeaderView.h"
 #import "Constants.h"
