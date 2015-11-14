@@ -23,6 +23,23 @@ static NSString *dbPath = nil;
 
 +(void)setDBPath:(NSString *)dir {
     dbPath = dir;
+
+    NSString *peerDir = [NSString stringWithFormat:@"%@/peer", dbPath];
+    [self mkdir:peerDir];
+    
+    NSString *groupDir = [NSString stringWithFormat:@"%@/group", dbPath];
+    [self mkdir:groupDir];
+}
+
++(BOOL)mkdir:(NSString*)path {
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSError *err;
+    BOOL r = [fileManager createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:&err];
+    
+    if (!r) {
+        NSLog(@"mkdir err:%@", err);
+    }
+    return r;
 }
 
 +(NSString*)getDBPath {

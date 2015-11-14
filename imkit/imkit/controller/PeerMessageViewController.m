@@ -34,7 +34,22 @@
     // Do any additional setup after loading the view.
     
     [self setNormalNavigationButtons];
-    self.navigationItem.title = self.peerName;
+    
+    if (self.peerName.length > 0) {
+        self.navigationItem.title = self.peerName;
+    } else {
+        IUser *u = [self.userDelegate getUser:self.peerUID];
+        if (u.name.length > 0) {
+            self.navigationItem.title = u.name;
+        } else {
+            self.navigationItem.title = u.identifier;
+            [self.userDelegate asyncGetUser:self.peerUID cb:^(IUser *u) {
+                if (u.name.length > 0) {
+                    self.navigationItem.title = u.name;
+                }
+            }];
+        }
+    }
     
     DraftDB *db = [DraftDB instance];
     NSString *draft = [db getDraft:self.receiver];

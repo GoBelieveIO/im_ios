@@ -154,8 +154,6 @@
     [[self class] playMessageReceivedSound];
     
     NSLog(@"receive msg:%@",im);
-    //加载第三方应用的用户名到缓存中
-    [self getUserName:im.sender];
     
     IMessage *m = [[IMessage alloc] init];
     m.sender = im.sender;
@@ -219,7 +217,10 @@
     msg.timestamp = (int)time(NULL);
     MessageContent *content = [[MessageContent alloc] initWithNotification:notification];
     msg.content = content;
-    [self updateNotificationDesc:msg];
+
+    //update notification description
+    [self downloadMessageContent:msg];
+
     [self insertMessage:msg];
 }
 
@@ -235,7 +236,9 @@
     msg.timestamp = (int)time(NULL);
     MessageContent *content = [[MessageContent alloc] initWithNotification:notification];
     msg.content = content;
-    [self updateNotificationDesc:msg];
+    
+    //update notification description
+    [self downloadMessageContent:msg];
     [self insertMessage:msg];
 }
 
@@ -251,7 +254,9 @@
     msg.timestamp = (int)time(NULL);
     MessageContent *content = [[MessageContent alloc] initWithNotification:notification];
     msg.content = content;
-    [self updateNotificationDesc:msg];
+    
+    //update notification description
+    [self downloadMessageContent:msg];
 
     [self insertMessage:msg];
 }
@@ -269,49 +274,8 @@
     MessageContent *content = [[MessageContent alloc] initWithNotification:notification];
     msg.content = content;
     
-    [self updateNotificationDesc:msg];
+    [self downloadMessageContent:msg];
     [self insertMessage:msg];
-}
-
--(NSString*)getUserName:(int64_t)uid {
-    NSNumber *key = [NSNumber numberWithLongLong:uid];
-    
-    if ([self.names objectForKey:key]) {
-        return [self.names objectForKey:key];
-    }
-
-    NSString *name = self.getUserName(uid);
-    if (name.length > 0) {
-        [self.names setObject:name forKey:key];
-    }
-    return name;
-}
-
-
-- (void)updateNotificationDesc:(IMessage*)message {
-    if (message.content.type == MESSAGE_GROUP_NOTIFICATION) {
-        GroupNotification *notification = message.content.notification;
-        int type = notification.type;
-        if (type == NOTIFICATION_GROUP_CREATED) {
-            if (self.currentUID == notification.master) {
-                NSString *desc = [NSString stringWithFormat:@"您创建了\"%@\"群组", notification.groupName];
-                message.content.notificationDesc = desc;
-            } else {
-                NSString *desc = [NSString stringWithFormat:@"您加入了\"%@\"群组", notification.groupName];
-                message.content.notificationDesc = desc;
-            }
-        } else if (type == NOTIFICATION_GROUP_DISBANDED) {
-            message.content.notificationDesc = @"群组已解散";
-        } else if (type == NOTIFICATION_GROUP_MEMBER_ADDED) {
-            NSString *name = [self getUserName:notification.member];
-            NSString *desc = [NSString stringWithFormat:@"%@加入群", name];
-            message.content.notificationDesc = desc;
-        } else if (type == NOTIFICATION_GROUP_MEMBER_LEAVED) {
-            NSString *name = [self getUserName:notification.member];
-            NSString *desc = [NSString stringWithFormat:@"%@离开群", name];
-            message.content.notificationDesc = desc;
-        }
-    }
 }
 
 
@@ -322,8 +286,6 @@
     while (msg) {
         if (self.textMode) {
             if (msg.content.type == MESSAGE_TEXT || msg.content.type == MESSAGE_GROUP_NOTIFICATION) {
-                [self getUserName:msg.sender];
-                [self updateNotificationDesc:msg];
                 [self.messages insertObject:msg atIndex:0];
                 if (++count >= PAGE_COUNT) {
                     break;
@@ -335,8 +297,6 @@
                                      forKey:[NSNumber numberWithInt:msg.content.attachment.msgLocalID]];
                 
             } else {
-                [self getUserName:msg.sender];
-                [self updateNotificationDesc:msg];
                 [self.messages insertObject:msg atIndex:0];
                 if (++count >= PAGE_COUNT) {
                     break;
@@ -364,7 +324,6 @@
     while (msg) {
         if (self.textMode) {
             if (msg.content.type == MESSAGE_TEXT || msg.content.type == MESSAGE_GROUP_NOTIFICATION) {
-                [self getUserName:msg.sender];
                 [self.messages insertObject:msg atIndex:0];
                 if (++count >= PAGE_COUNT) {
                     break;
@@ -376,7 +335,6 @@
                                      forKey:[NSNumber numberWithInt:msg.content.attachment.msgLocalID]];
                 
             } else {
-                [self getUserName:msg.sender];
                 [self.messages insertObject:msg atIndex:0];
                 if (++count >= PAGE_COUNT) {
                     break;

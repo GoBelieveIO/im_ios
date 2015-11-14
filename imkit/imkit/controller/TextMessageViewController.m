@@ -306,12 +306,10 @@
     
     if (message.sender == self.sender) {
         msgType = BubbleMessageTypeOutgoing;
-        [cell setMessage:message msgType:msgType];
+        [cell setMessage:message msgType:msgType showName:NO];
     } else {
         msgType = BubbleMessageTypeIncoming;
-        NSNumber *key = [NSNumber numberWithLongLong:message.sender];
-        NSString *name = [self.names objectForKey:key];
-        [cell setMessage:message userName:name msgType:msgType];
+        [cell setMessage:message msgType:msgType showName:self.isShowUserName];
     }
 
     return cell;

@@ -9,8 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "UIImageView+WebCache.h"
 
-@class MessageConversationCell;
+//@class MessageConversationCell;
 
+@class Conversation;
 
 @interface MessageConversationCell : UITableViewCell
 
@@ -21,7 +22,11 @@
 
 @property (weak,nonatomic) UIView *badgeFatherView;
 
--(void) showNewMessage:(int)count;
--(void) clearNewMessage;
+@property (nonatomic) Conversation *conversation;
+
+- (void)showNewMessage:(int)count;
+- (void)clearNewMessage;
+
+
 
 @end

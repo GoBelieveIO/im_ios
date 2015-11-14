@@ -17,6 +17,10 @@
 #import "MessageNotificationView.h"
 #import "MessageLocationView.h"
 
+@interface MessageViewCell()
+@property(nonatomic) IMessage *msg;
+@property(nonatomic) BOOL showName;
+@end
 
 @implementation MessageViewCell
 
@@ -102,18 +106,32 @@
     return self;
 }
 
-#pragma mark - Message Cell
 
-- (void) setMessage:(IMessage *)message msgType:(BubbleMessageType)msgType {
-    [self setMessage:message userName:nil msgType:msgType];
+- (void)dealloc {
+    [self.msg removeObserver:self forKeyPath:@"senderInfo"];
 }
 
-- (void) setMessage:(IMessage *)message userName:(NSString*)name msgType:(BubbleMessageType)msgType {
-    if (name.length > 0) {
+#pragma mark - Message Cell
+- (void) setMessage:(IMessage *)message msgType:(BubbleMessageType)msgType showName:(BOOL)showName {
+    
+    [self.msg removeObserver:self forKeyPath:@"senderInfo"];
+    
+    self.msg = message;
+    
+    [self.msg addObserver:self forKeyPath:@"senderInfo" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
+    
+
+    NSString *name = self.msg.senderInfo.name;
+    if (name.length == 0) {
+        name = self.msg.senderInfo.identifier;
+    }
+    
+    self.showName = showName;
+    if (self.showName) {
         CGRect frame = CGRectMake(0,
-                           NAME_LABEL_HEIGHT,
-                           self.contentView.frame.size.width,
-                           self.contentView.frame.size.height - NAME_LABEL_HEIGHT);
+                                  NAME_LABEL_HEIGHT,
+                                  self.contentView.frame.size.width,
+                                  self.contentView.frame.size.height - NAME_LABEL_HEIGHT);
         self.bubbleView.frame = frame;
         
         self.nameLabel.hidden = NO;
@@ -127,6 +145,7 @@
         
         self.nameLabel.hidden = YES;
     }
+    
     if (msgType == BubbleMessageTypeOutgoing) {
         self.nameLabel.textAlignment = NSTextAlignmentRight;
     } else {
@@ -158,7 +177,8 @@
         case MESSAGE_GROUP_NOTIFICATION:
         {
             MessageNotificationView *notificationView = (MessageNotificationView*)self.bubbleView;
-            notificationView.label.text = message.content.notificationDesc;
+            notificationView.type = msgType;
+            notificationView.msg = message;
         }
             break;
         case MESSAGE_LOCATION:
@@ -172,5 +192,18 @@
     }
    
 
+}
+
+
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if([keyPath isEqualToString:@"senderInfo"]) {
+        if (self.showName) {
+            if (self.msg.senderInfo.name.length > 0) {
+                self.nameLabel.text = self.msg.senderInfo.name;
+            } else {
+                self.nameLabel.text = self.msg.senderInfo.identifier;
+            }
+        }
+    }
 }
 @end

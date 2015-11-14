@@ -71,11 +71,8 @@
     [[NSNotificationCenter defaultCenter] addObserver: self selector:@selector(clearSingleGroupNewState:) name:CLEAR_GROUP_NEW_MESSAGE object:nil];
 
     id<ConversationIterator> iterator =  [[PeerMessageDB instance] newConversationIterator];
-    
     Conversation * conversation = [iterator next];
     while (conversation) {
-        conversation.name = [self getUserName:conversation.cid];
-        conversation.avatarURL = @"";
         [self.conversations addObject:conversation];
         conversation = [iterator next];
     }
@@ -83,18 +80,50 @@
     iterator = [[GroupMessageDB instance] newConversationIterator];
     conversation = [iterator next];
     while (conversation) {
-        conversation.name = [self getGroupName:conversation.cid];;
-        conversation.avatarURL = @"";
-        if (conversation.message.content.type == MESSAGE_GROUP_NOTIFICATION) {
-            [self updateNotificationDesc:conversation.message];
-        }
+        [self updateNotificationDesc:conversation.message];
         [self.conversations addObject:conversation];
         conversation = [iterator next];
     }
  
+    for (Conversation *conv in self.conversations) {
+        [self updateConversationName:conv];
+    }
+    
     self.navigationItem.title = @"对话";
     if ([[IMService instance] connectState] == STATE_CONNECTING) {
         self.navigationItem.title = @"连接中...";
+    }
+}
+
+-(void)updateConversationName:(Conversation*)conversation {
+    if (conversation.type == CONVERSATION_PEER) {
+        IUser *u = [self.userDelegate getUser:conversation.cid];
+        if (u.name.length > 0) {
+            conversation.name = u.name;
+            conversation.avatarURL = u.avatarURL;
+        } else {
+            conversation.name = u.identifier;
+            conversation.avatarURL = u.avatarURL;
+            
+            [self.userDelegate asyncGetUser:conversation.cid cb:^(IUser *u) {
+                conversation.name = u.name;
+                conversation.avatarURL = u.avatarURL;
+            }];
+        }
+    } else if (conversation.type == CONVERSATION_GROUP) {
+        IGroup *g = [self.groupDelegate getGroup:conversation.cid];
+        if (g.name.length > 0) {
+            conversation.name = g.name;
+            conversation.avatarURL = g.avatarURL;
+        } else {
+            conversation.name = g.identifier;
+            conversation.avatarURL = g.avatarURL;
+            
+            [self.groupDelegate asyncGetGroup:conversation.cid cb:^(IGroup *g) {
+                conversation.name = g.name;
+                conversation.avatarURL = g.avatarURL;
+            }];
+        }
     }
 }
 
@@ -120,25 +149,41 @@
             }
         } else if (type == NOTIFICATION_GROUP_DISBANDED) {
             message.content.notificationDesc = @"群组已解散";
+            
         } else if (type == NOTIFICATION_GROUP_MEMBER_ADDED) {
-            NSString *name = [self getUserName:notification.member];
-            NSString *desc = [NSString stringWithFormat:@"%@加入群", name];
-            message.content.notificationDesc = desc;
+            IUser *u = [self.userDelegate getUser:notification.member];
+            if (u.name.length > 0) {
+                NSString *name = u.name;
+                NSString *desc = [NSString stringWithFormat:@"%@加入群", name];
+                message.content.notificationDesc = desc;
+            } else {
+                NSString *name = u.identifier;
+                NSString *desc = [NSString stringWithFormat:@"%@加入群", name];
+                message.content.notificationDesc = desc;
+                [self.userDelegate asyncGetUser:notification.member cb:^(IUser *u) {
+                    NSString *desc = [NSString stringWithFormat:@"%@加入群", u.name];
+                    message.content.notificationDesc = desc;
+                }];
+            }
         } else if (type == NOTIFICATION_GROUP_MEMBER_LEAVED) {
-            NSString *name = [self getUserName:notification.member];
-            NSString *desc = [NSString stringWithFormat:@"%@离开群", name];
-            message.content.notificationDesc = desc;
+            IUser *u = [self.userDelegate getUser:notification.member];
+            if (u.name.length > 0) {
+                NSString *name = u.name;
+                NSString *desc = [NSString stringWithFormat:@"%@离开群", name];
+                message.content.notificationDesc = desc;
+            } else {
+                NSString *name = u.identifier;
+                NSString *desc = [NSString stringWithFormat:@"%@离开群", name];
+                message.content.notificationDesc = desc;
+                [self.userDelegate asyncGetUser:notification.member cb:^(IUser *u) {
+                    NSString *desc = [NSString stringWithFormat:@"%@离开群", u.name];
+                    message.content.notificationDesc = desc;
+                }];
+            }
         }
     }
 }
 
-- (NSString*)getUserName:(int64_t)uid {
-    return [NSString stringWithFormat:@"user:%lld", uid];
-}
-
-- (NSString*)getGroupName:(int64_t)groupID {
-    return [NSString stringWithFormat:@"group:%lld", groupID];;
-}
 
 + (NSString *)getConversationTimeString:(NSDate *)date{
     NSMutableString *outStr;
@@ -196,33 +241,9 @@
     }
     Conversation * conv = nil;
     conv = (Conversation*)[self.conversations objectAtIndex:(indexPath.row)];
+    
+    [cell setConversation:conv];
 
-    if(conv.type == CONVERSATION_PEER){
-        [cell.headView sd_setImageWithURL: [NSURL URLWithString:conv.avatarURL] placeholderImage:[UIImage imageNamed:@"PersonalChat"]];
-    }else if (conv.type == CONVERSATION_GROUP){
-        [cell.headView sd_setImageWithURL:[NSURL URLWithString:conv.avatarURL] placeholderImage:[UIImage imageNamed:@"GroupChat"]];
-    }
-    if (conv.message.content.type == MESSAGE_IMAGE) {
-        cell.messageContent.text = @"一张图片";
-    }else if(conv.message.content.type == MESSAGE_TEXT){
-       cell.messageContent.text = conv.message.content.text;
-    }else if(conv.message.content.type == MESSAGE_LOCATION){
-        cell.messageContent.text = @"一个地理位置";
-    }else if (conv.message.content.type == MESSAGE_AUDIO){
-       cell.messageContent.text = @"一个音频";
-    } else if (conv.message.content.type == MESSAGE_GROUP_NOTIFICATION) {
-        cell.messageContent.text = conv.message.content.notificationDesc;
-    }
-    
-    NSDate *date = [NSDate dateWithTimeIntervalSince1970: conv.message.timestamp];
-    NSString *str = [[self class] getConversationTimeString:date ];
-    cell.timelabel.text = str;
-    cell.namelabel.text = conv.name;
-   
-    if (conv.newMsgCount > 0) {
-        [cell showNewMessage:conv.newMsgCount];
-    }
-    
     return cell;
     
 }
@@ -272,10 +293,7 @@
     } else {
         GroupMessageViewController* msgController = [[GroupMessageViewController alloc] init];
         msgController.isShowUserName = YES;
-
-        msgController.getUserName = ^ NSString*(int64_t uid) {
-            return [NSString stringWithFormat:@"%lld", uid];
-        };
+        msgController.userDelegate = self.userDelegate;
         
         msgController.groupID = con.cid;
         msgController.groupName = con.name;
@@ -363,8 +381,7 @@
         
         con.type = CONVERSATION_GROUP;
         con.cid = cid;
-        con.name = [self getGroupName:cid];
-        con.avatarURL = @"";
+        [self updateConversationName:con];
         [self.conversations insertObject:con atIndex:0];
         NSIndexPath *path = [NSIndexPath indexPathForRow:0 inSection:0];
         NSArray *array = [NSArray arrayWithObject:path];
@@ -404,9 +421,7 @@
         
         con.type = CONVERSATION_PEER;
         con.cid = cid;
-        con.name = [self getUserName:cid];
-        con.avatarURL = @"";
-        
+        [self updateConversationName:con];
         [self.conversations insertObject:con atIndex:0];
         NSIndexPath *path = [NSIndexPath indexPathForRow:0 inSection:0];
         NSArray *array = [NSArray arrayWithObject:path];

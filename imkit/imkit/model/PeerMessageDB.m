@@ -88,23 +88,9 @@
 -(id)init {
     self = [super init];
     if (self) {
-        NSString *path = [self getMessagePath];
-        [self mkdir:path];
     }
     return self;
 }
-
--(BOOL)mkdir:(NSString*)path {
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSError *err;
-    BOOL r = [fileManager createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:&err];
-    
-    if (!r) {
-        NSLog(@"mkdir err:%@", err);
-    }
-    return r;
-}
-
 
 -(NSString*)getMessagePath {
     NSString *s = [MessageDB getDBPath];

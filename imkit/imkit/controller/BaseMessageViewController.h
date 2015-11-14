@@ -20,6 +20,8 @@
 //receiver可能代表uid或者群组id
 @property(nonatomic, readonly) int64_t receiver;
 
+@property(nonatomic) IUser *senderInfo;
+
 - (BOOL)saveMessage:(IMessage*)msg;
 - (BOOL)removeMessage:(IMessage*)msg;
 - (BOOL)markMessageFailure:(IMessage*)msg;
@@ -33,7 +35,6 @@
 @property(nonatomic) NSMutableArray *messageArray;
 @property(nonatomic) NSMutableArray *timestamps;
 @property(nonatomic) NSMutableArray *messages;
-@property(nonatomic) NSMutableDictionary *names;
 @property(nonatomic) NSMutableDictionary *attachments;
 
 @property(nonatomic) UIRefreshControl *refreshControl;

@@ -100,6 +100,14 @@
 
 @end
 
+@interface IUser : NSObject
+@property(nonatomic) int64_t uid;
+@property(nonatomic, copy) NSString *name;
+@property(nonatomic, copy) NSString *avatarURL;
+
+//name为nil时，界面显示identifier字段
+@property(nonatomic, copy) NSString *identifier;
+@end
 
 @interface IMessage : NSObject
 @property(nonatomic) int msgLocalID;
@@ -119,8 +127,19 @@
 @property(nonatomic) int progress;//[0,100]
 @property(nonatomic) BOOL geocoding;
 
+@property(nonatomic) IUser *senderInfo;
+
 @end
 
+@interface IGroup : NSObject
+@property(nonatomic, assign) int64_t gid;
+@property(nonatomic, copy) NSString *name;
+@property(nonatomic, copy) NSString *avatarURL;
+
+//name为nil时，界面显示identifier字段
+@property(nonatomic, copy) NSString *identifier;
+
+@end
 
 #define CONVERSATION_PEER 1
 #define CONVERSATION_GROUP 2

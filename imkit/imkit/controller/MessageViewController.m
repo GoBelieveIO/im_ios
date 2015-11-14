@@ -96,7 +96,8 @@
     [super viewDidLoad];
  
     [self setup];
-    
+ 
+    [self loadSenderInfo];
     [self loadConversationData];
     
     //content scroll to bottom
@@ -104,6 +105,15 @@
     [self.tableView setContentOffset:CGPointMake(0, CGFLOAT_MAX)];
 }
 
+- (void)loadSenderInfo {
+    self.senderInfo = [self.userDelegate getUser:self.sender];
+    if (self.senderInfo.name.length == 0) {
+        __weak MessageViewController *wself = self;
+        [self.userDelegate asyncGetUser:self.sender cb:^(IUser *u) {
+            wself.senderInfo = u;
+        }];
+    }
+}
 
 - (void)setup
 {
@@ -196,6 +206,16 @@
         draft = @"";
     }
     return draft;
+}
+
+-(void)setSenderInfo:(IUser *)senderInfo {
+    [super setSenderInfo:senderInfo];
+    
+    for (IMessage *msg in self.messages) {
+        if (msg.sender == self.sender) {
+            msg.senderInfo = self.senderInfo;
+        }
+    }
 }
 
 #pragma mark - View lifecycle
@@ -565,12 +585,14 @@
     
     if (message.sender == self.sender) {
         msgType = BubbleMessageTypeOutgoing;
-        [cell setMessage:message msgType:msgType];
+        [cell setMessage:message msgType:msgType showName:NO];
     } else {
         msgType = BubbleMessageTypeIncoming;
-        NSNumber *key = [NSNumber numberWithLongLong:message.sender];
-        NSString *name = [self.names objectForKey:key];
-        [cell setMessage:message userName:name msgType:msgType];
+        BOOL showName = self.isShowUserName;
+        if (message.content.type == MESSAGE_GROUP_NOTIFICATION) {
+            showName = NO;
+        }
+        [cell setMessage:message msgType:msgType showName:showName];
     }
     
     if (message.content.type == MESSAGE_AUDIO) {
@@ -850,7 +872,55 @@
     return NO;
 }
 
-    
+
+- (void)updateNotificationDesc:(IMessage*)message {
+    if (message.content.type == MESSAGE_GROUP_NOTIFICATION) {
+        GroupNotification *notification = message.content.notification;
+        int type = notification.type;
+        if (type == NOTIFICATION_GROUP_CREATED) {
+            if (self.sender == notification.master) {
+                NSString *desc = [NSString stringWithFormat:@"您创建了\"%@\"群组", notification.groupName];
+                message.content.notificationDesc = desc;
+            } else {
+                NSString *desc = [NSString stringWithFormat:@"您加入了\"%@\"群组", notification.groupName];
+                message.content.notificationDesc = desc;
+            }
+        } else if (type == NOTIFICATION_GROUP_DISBANDED) {
+            message.content.notificationDesc = @"群组已解散";
+        } else if (type == NOTIFICATION_GROUP_MEMBER_ADDED) {
+            IUser *u = [self.userDelegate getUser:notification.member];
+            if (u.name.length > 0) {
+                NSString *name = u.name;
+                NSString *desc = [NSString stringWithFormat:@"%@加入群", name];
+                message.content.notificationDesc = desc;
+            } else {
+                NSString *name = u.identifier;
+                NSString *desc = [NSString stringWithFormat:@"%@加入群", name];
+                message.content.notificationDesc = desc;
+                [self.userDelegate asyncGetUser:notification.member cb:^(IUser *u) {
+                    NSString *desc = [NSString stringWithFormat:@"%@加入群", u.name];
+                    message.content.notificationDesc = desc;
+                }];
+            }
+        } else if (type == NOTIFICATION_GROUP_MEMBER_LEAVED) {
+            IUser *u = [self.userDelegate getUser:notification.member];
+            if (u.name.length > 0) {
+                NSString *name = u.name;
+                NSString *desc = [NSString stringWithFormat:@"%@离开群", name];
+                message.content.notificationDesc = desc;
+            } else {
+                NSString *name = u.identifier;
+                NSString *desc = [NSString stringWithFormat:@"%@离开群", name];
+                message.content.notificationDesc = desc;
+                [self.userDelegate asyncGetUser:notification.member cb:^(IUser *u) {
+                    NSString *desc = [NSString stringWithFormat:@"%@离开群", u.name];
+                    message.content.notificationDesc = desc;
+                }];
+            }
+        }
+    }
+}
+
 - (void)downloadMessageContent:(IMessage*)msg {
     FileCache *cache = [FileCache instance];
     AudioDownloader *downloader = [AudioDownloader instance];
@@ -876,6 +946,24 @@
         }
     } else if (msg.content.type == MESSAGE_IMAGE) {
         msg.uploading = [[Outbox instance] isUploading:msg];
+    } else if (msg.content.type == MESSAGE_GROUP_NOTIFICATION) {
+        [self updateNotificationDesc:msg];
+    }
+    
+    if (self.isShowUserName) {
+        //群组聊天
+        if (msg.sender == self.sender) {
+            msg.senderInfo = self.senderInfo;
+        } else if (msg.sender > 0) {
+            msg.senderInfo = [self.userDelegate getUser:msg.sender];
+            if (msg.senderInfo.name.length == 0) {
+                [self.userDelegate asyncGetUser:msg.sender cb:^(IUser *u) {
+                    msg.senderInfo = u;
+                }];
+            }
+        } else {
+            //群组通知消息的sender==0
+        }
     }
 }
 

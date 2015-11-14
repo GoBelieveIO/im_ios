@@ -237,6 +237,10 @@
 
 @end
 
+@implementation IUser
+
+@end
+
 @implementation IMessage
 
 -(BOOL)isACK {
@@ -250,6 +254,10 @@
 -(BOOL)isListened{
     return self.flags&MESSAGE_FLAG_LISTENED;
 }
+
+@end
+
+@implementation IGroup
 
 @end
 

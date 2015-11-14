@@ -22,7 +22,6 @@
     self = [super init];
     if (self) {
         self.messages = [NSMutableArray array];
-        self.names = [NSMutableDictionary dictionary];
         self.attachments = [NSMutableDictionary dictionary];
     }
     return self;

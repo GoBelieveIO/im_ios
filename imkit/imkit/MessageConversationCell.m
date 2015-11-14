@@ -7,7 +7,7 @@
 //
 
 #import "MessageConversationCell.h"
-
+#import "IMessage.h"
 
 #define kCatchWidth 74.0f
 
@@ -63,5 +63,105 @@
 //    }
 }
 
+- (void)dealloc {
+    [self.conversation addObserver:self
+                        forKeyPath:@"name"
+                           options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld
+                           context:NULL];
+    
+    [self.conversation.message.content addObserver:self
+                                        forKeyPath:@"notificationDesc"
+                                           options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld
+                                           context:NULL];
+}
+
+
++ (NSString *)getConversationTimeString:(NSDate *)date{
+    NSMutableString *outStr;
+    NSCalendar *gregorian = [[NSCalendar alloc]
+                             initWithCalendarIdentifier:NSGregorianCalendar];
+    NSDateComponents *components = [gregorian components:NSUIntegerMax fromDate:date];
+    NSDateComponents *todayComponents = [gregorian components:NSIntegerMax fromDate:[NSDate date]];
+    
+    if (components.year == todayComponents.year &&
+        components.day == todayComponents.day &&
+        components.month == todayComponents.month) {
+        NSString *format = @"HH:mm";
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init] ;
+        [formatter setDateFormat:format];
+        [formatter setTimeZone:[NSTimeZone systemTimeZone]];
+        
+        NSString *timeStr = [formatter stringFromDate:date];
+        
+        if (components.hour > 11) {
+            outStr = [NSMutableString stringWithFormat:@"%@ %@",@"下午",timeStr];
+        } else {
+            outStr = [NSMutableString stringWithFormat:@"%@ %@",@"上午",timeStr];
+        }
+        return outStr;
+    } else {
+        NSString *format = @"MM-dd HH:mm";
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init] ;
+        [formatter setDateFormat:format];
+        [formatter setTimeZone:[NSTimeZone systemTimeZone]];
+        
+        return [formatter stringFromDate:date];
+    }
+}
+
+
+- (void)setConversation:(Conversation *)conversation {
+    [self.conversation removeObserver:self forKeyPath:@"name"];
+    [self.conversation.message.content removeObserver:self forKeyPath:@"notificationDesc"];
+    
+    _conversation = conversation;
+    
+    
+    Conversation *conv = self.conversation;
+    if(conv.type == CONVERSATION_PEER){
+        [self.headView sd_setImageWithURL: [NSURL URLWithString:conv.avatarURL] placeholderImage:[UIImage imageNamed:@"PersonalChat"]];
+    }else if (conv.type == CONVERSATION_GROUP){
+        [self.headView sd_setImageWithURL:[NSURL URLWithString:conv.avatarURL] placeholderImage:[UIImage imageNamed:@"GroupChat"]];
+    }
+    if (conv.message.content.type == MESSAGE_IMAGE) {
+        self.messageContent.text = @"一张图片";
+    }else if(conv.message.content.type == MESSAGE_TEXT){
+        self.messageContent.text = conv.message.content.text;
+    }else if(conv.message.content.type == MESSAGE_LOCATION){
+        self.messageContent.text = @"一个地理位置";
+    }else if (conv.message.content.type == MESSAGE_AUDIO){
+        self.messageContent.text = @"一个音频";
+    } else if (conv.message.content.type == MESSAGE_GROUP_NOTIFICATION) {
+        self.messageContent.text = conv.message.content.notificationDesc;
+    }
+    
+    NSDate *date = [NSDate dateWithTimeIntervalSince1970: conv.message.timestamp];
+    NSString *str = [[self class] getConversationTimeString:date ];
+    self.timelabel.text = str;
+    self.namelabel.text = conv.name;
+    
+    if (conv.newMsgCount > 0) {
+        [self showNewMessage:conv.newMsgCount];
+    }
+
+    
+    [self.conversation addObserver:self
+                        forKeyPath:@"name"
+                           options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld
+                           context:NULL];
+    [self.conversation.message.content addObserver:self
+                                        forKeyPath:@"notificationDesc"
+                                           options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld
+                                           context:NULL];
+
+}
+
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if([keyPath isEqualToString:@"name"]) {
+        self.namelabel.text = self.conversation.name;
+    } else if ([keyPath isEqualToString:@"notificationDesc"]) {
+        self.messageContent.text = self.conversation.message.content.notificationDesc;
+    }
+}
 
 @end

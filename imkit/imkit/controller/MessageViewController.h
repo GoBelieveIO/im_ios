@@ -12,11 +12,18 @@
 #import <imsdk/IMService.h>
 #import "BaseMessageViewController.h"
 
-typedef NSString* (^GetUserNameBlock)(int64_t uid);
+
+@protocol MessageViewControllerUserDelegate <NSObject>
+//从本地获取用户信息, IUser的name字段为空时，显示identifier字段
+- (IUser*)getUser:(int64_t)uid;
+//从服务器获取用户信息
+- (void)asyncGetUser:(int64_t)uid cb:(void(^)(IUser*))cb;
+@end
+
 
 @interface MessageViewController : BaseMessageViewController < UIImagePickerControllerDelegate, UINavigationControllerDelegate,  UITextViewDelegate, UIGestureRecognizerDelegate, AVAudioRecorderDelegate, AVAudioPlayerDelegate, UITableViewDataSource, UITableViewDelegate>
 
-@property(nonatomic, copy) GetUserNameBlock getUserName;
+@property(nonatomic, weak) id<MessageViewControllerUserDelegate> userDelegate;
 @property(nonatomic) BOOL isShowUserName;
 
 @property(nonatomic)UIView *inputBar;
