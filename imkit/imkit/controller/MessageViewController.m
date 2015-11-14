@@ -668,21 +668,10 @@
     
     CGRect rect = CGRectMake(0, 0, screenWidth, 30);
     MessageTableSectionHeaderView *sectionView = [[MessageTableSectionHeaderView alloc] initWithFrame:rect];
-    
+
     NSDate *curtDate = [self.timestamps objectAtIndex: section];
-    NSDateComponents *components = [self getComponentOfDate:curtDate];
-    NSDate *todayDate = [NSDate date];
-    NSString *timeStr = nil;
-    if ([self isSameDay:curtDate other:todayDate]) {
-        timeStr = [NSString stringWithFormat:@"%02zd:%02zd",components.hour,components.minute];
-        sectionView.sectionHeader.text = timeStr;
-    } else if ([self isInWeek:curtDate today:todayDate]) {
-        timeStr = [self getWeekDayString: components.weekday];
-        sectionView.sectionHeader.text = timeStr;
-    }else{
-        timeStr = [self getConversationTimeString:curtDate];
-        sectionView.sectionHeader.text = timeStr;
-    }
+    NSString *timeStr = [self formatSectionTime:curtDate];
+    sectionView.sectionHeader.text = timeStr;
 
     return sectionView;
 }

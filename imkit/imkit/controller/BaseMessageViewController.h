@@ -65,12 +65,14 @@
 
 - (NSString *)getWeekDayString:(NSInteger)iDay;
 - (BOOL)isSameDay:(NSDate*)date1 other:(NSDate*)date2 ;
-- (BOOL)isYestoday:(NSDate*)date1 today:(NSDate*)date2 ;
-- (BOOL)isBeforeYestoday:(NSDate*)date1 today:(NSDate*)date2;
-- (BOOL)isInWeek:(NSDate*)date1 today:(NSDate*)date2;
-- (BOOL)isInMonth:(NSDate*)date1 today:(NSDate*)date2;
+- (BOOL)isYestoday:(NSDate*)date;
+- (BOOL)isBeforeYestoday:(NSDate*)date;
+- (BOOL)isInWeek:(NSDate*)date;
+- (BOOL)isInMonth:(NSDate*)date;
+- (BOOL)isInYear:(NSDate*)date;
 - (NSDateComponents*)getComponentOfDate:(NSDate *)date ;
 - (NSString *)getConversationTimeString:(NSDate *)date;
+- (NSString*)formatSectionTime:(NSDate*)date;
 
 + (void)playMessageReceivedSound;
 + (void)playMessageSentSound;

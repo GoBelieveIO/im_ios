@@ -96,62 +96,43 @@
         return;
     }
     
-    NSDate *lastDate = nil;
-    NSDate *curtDate = nil;
-    NSMutableArray *msgBlockArray = nil;
-    
-    for (NSInteger i = count-1; i >= 0; i--) {
+    for (NSInteger i = 0; i < count; i++) {
+        NSDate *lastDate = [self.timestamps lastObject];
         IMessage *msg = [self.messages objectAtIndex:i];
         
-
-        curtDate = [NSDate dateWithTimeIntervalSince1970: msg.timestamp];
-        if ([self isSameDay:lastDate other:curtDate]) {
-            [msgBlockArray insertObject:msg atIndex:0];
-        } else {
-            msgBlockArray  = [NSMutableArray arrayWithObject:msg];
+        if (lastDate == nil || msg.timestamp - lastDate.timeIntervalSince1970 > 10*60) {
+            NSDate *date = [NSDate dateWithTimeIntervalSince1970: msg.timestamp];
+            NSMutableArray *msgBlockArray  = [NSMutableArray arrayWithObject:msg];
             
-            [self.messageArray insertObject:msgBlockArray atIndex:0];
-            [self.timestamps insertObject:curtDate atIndex:0];
-            lastDate = curtDate;
+            [self.messageArray addObject:msgBlockArray];
+            [self.timestamps addObject:date];
+
+        } else {
+            [[self.messageArray lastObject] addObject:msg];
         }
     }
 }
 
 
 - (void)insertMessage:(IMessage*)msg {
-    NSAssert(msg.msgLocalID, @"");
     [self.messages addObject:msg];
-    NSDate *curtDate = [NSDate dateWithTimeIntervalSince1970: msg.timestamp];
+    
+    NSDate *lastDate = [self.timestamps lastObject];
+    if (lastDate == nil || msg.timestamp - lastDate.timeIntervalSince1970 > 10*60) {
+        NSDate *date = [NSDate dateWithTimeIntervalSince1970: msg.timestamp];
+        NSMutableArray *msgBlockArray  = [NSMutableArray arrayWithObject:msg];
+        
+        [self.messageArray addObject:msgBlockArray];
+        [self.timestamps addObject:date];
+    } else {
+        [[self.messageArray lastObject] addObject:msg];
+    }
+    
     NSMutableArray *msgBlockArray = nil;
     NSIndexPath *indexPath = nil;
-    //收到第一个消息
-    if ([self.messageArray count] == 0 ) {
-        
-        msgBlockArray = [[NSMutableArray alloc] init];
-        [self.messageArray addObject: msgBlockArray];
-        [msgBlockArray addObject:msg];
-        
-        [self.timestamps addObject: curtDate];
-        
-        indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-        
-    }else{
-        NSDate *lastDate = [self.timestamps lastObject];
-        if ([self isSameDay:lastDate other:curtDate]) {
-            //same day
-            msgBlockArray = [self.messageArray lastObject];
-            [msgBlockArray addObject:msg];
-            
-            indexPath = [NSIndexPath indexPathForRow:[msgBlockArray count] - 1 inSection: [self.messageArray count] - 1];
-        }else{
-            //next day
-            msgBlockArray = [[NSMutableArray alloc] init];
-            [msgBlockArray addObject: msg];
-            [self.messageArray addObject: msgBlockArray];
-            [self.timestamps addObject:curtDate];
-            indexPath = [NSIndexPath indexPathForRow:[msgBlockArray count] - 1 inSection: [self.messageArray count] - 1];
-        }
-    }
+    
+    msgBlockArray = self.messageArray.lastObject;
+    indexPath = [NSIndexPath indexPathForRow:[msgBlockArray count] - 1 inSection: [self.messageArray count] - 1];
     
     [UIView beginAnimations:nil context:NULL];
     if (indexPath.row == 0 ) {
@@ -292,13 +273,44 @@
     return comps;
 }
 
-- (NSString *) getConversationTimeString:(NSDate *)date{
+- (NSString *)getConversationTimeString:(NSDate *)date{
     NSString *format = @"MM-dd HH:mm";
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init] ;
     [formatter setDateFormat:format];
     [formatter setTimeZone:[NSTimeZone systemTimeZone]];
     
     return [formatter stringFromDate:date];
+}
+
+- (NSString*)formatSectionTime:(NSDate*)date {
+    NSDate *curtDate = date;
+    NSDateComponents *components = [self getComponentOfDate:curtDate];
+    NSDate *todayDate = [NSDate date];
+    NSString *timeStr = nil;
+    if ([self isSameDay:curtDate other:todayDate]) {
+        timeStr = [NSString stringWithFormat:@"%02zd:%02zd",components.hour,components.minute];
+    } else if ([self isYestoday:curtDate]) {
+        timeStr = [NSString stringWithFormat:@"昨天 %02zd:%02zd",components.hour,components.minute];
+    } else if ([self isInWeek:curtDate]) {
+        NSString *s = [self getWeekDayString: components.weekday];
+        NSString *timeStr = [NSString stringWithFormat:@"%@ %02zd:%02zd", s, components.hour,components.minute];
+    } else if ([self isInYear:curtDate]) {
+        NSString *format = @"MM-dd HH:mm";
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init] ;
+        [formatter setDateFormat:format];
+        [formatter setTimeZone:[NSTimeZone systemTimeZone]];
+        
+        timeStr = [formatter stringFromDate:curtDate];
+    } else {
+        NSString *format = @"yyy-MM-dd HH:mm";
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init] ;
+        [formatter setDateFormat:format];
+        [formatter setTimeZone:[NSTimeZone systemTimeZone]];
+        
+        timeStr = [formatter stringFromDate:curtDate];
+    }
+    
+    return timeStr;
 }
 
 // 从数字获取对应的周时间字符串
@@ -326,7 +338,7 @@
             return @"周六";
             break;
         default:
-            return nil;
+            return @"";
     }
     return nil;
 }
@@ -337,24 +349,36 @@
     return c1.year == c2.year && c1.month == c2.month && c1.day == c2.day;
 }
 
-- (BOOL)isYestoday:(NSDate*)date1 today:(NSDate*)date2 {
-    NSDate *y = [date1 dateByAddingTimeInterval:-24*3600];
-    return [self isSameDay:y other:date2];
+- (BOOL)isYestoday:(NSDate*)date {
+    NSDate *now = [NSDate date];
+    NSDate *y = [now dateByAddingTimeInterval:-24*3600];
+    return [self isSameDay:date other:y];
 }
-- (BOOL)isBeforeYestoday:(NSDate*)date1 today:(NSDate*)date2 {
-    NSDate *y = [date1 dateByAddingTimeInterval:-2*24*3600];
-    return [self isSameDay:y other:date2];
-}
-
--(BOOL)isInWeek:(NSDate*)date1 today:(NSDate*)date2 {
-    NSDate *t = [date1 dateByAddingTimeInterval:-7*24*3600];
-    return [t compare:date2] == NSOrderedAscending && ![self isSameDay:t other:date2];
+- (BOOL)isBeforeYestoday:(NSDate*)date {
+    NSDate *now = [NSDate date];
+    NSDate *y = [now dateByAddingTimeInterval:-2*24*3600];
+    return [self isSameDay:y other:date];
 }
 
-- (BOOL)isInMonth:(NSDate*)date1 today:(NSDate*)date2 {
-    NSDate *t = [date1 dateByAddingTimeInterval:-30*24*3600];
-    return [t compare:date2] == NSOrderedAscending;
+-(BOOL)isInWeek:(NSDate*)date {
+    NSDate *now = [NSDate date];
+    NSDate *t = [now dateByAddingTimeInterval:-7*24*3600];
+    return [t compare:date] == NSOrderedAscending && ![self isSameDay:t other:date];
 }
 
+- (BOOL)isInMonth:(NSDate*)date {
+    NSDate *now = [NSDate date];
+    NSDate *t = [now dateByAddingTimeInterval:-30*24*3600];
+    return [t compare:date] == NSOrderedAscending;
+}
+
+-(BOOL)isInYear:(NSDate*)date {
+    NSDate *now = [NSDate date];
+    
+    NSDateComponents *c1 = [self getComponentOfDate:now];
+    NSDateComponents *c2 = [self getComponentOfDate:date];
+    
+    return c1.year == c2.year;
+}
 
 @end

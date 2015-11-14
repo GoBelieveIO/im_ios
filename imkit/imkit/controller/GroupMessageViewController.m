@@ -197,7 +197,7 @@
     GroupNotification *notification = [[GroupNotification alloc] initWithRaw:text];
     
     if (notification.type == NOTIFICATION_GROUP_CREATED) {
-
+        [self onGroupCreated:notification];
     } else if (notification.type == NOTIFICATION_GROUP_DISBANDED) {
         [self onGroupDisband:notification];
     } else if (notification.type == NOTIFICATION_GROUP_MEMBER_ADDED) {
@@ -205,6 +205,22 @@
     } else if (notification.type == NOTIFICATION_GROUP_MEMBER_LEAVED) {
         [self onGroupMemberLeave:notification];
     }
+}
+
+-(void)onGroupCreated:(GroupNotification*)notification {
+    int64_t groupID = notification.groupID;
+    if (groupID != self.groupID) {
+        return;
+    }
+    
+    IMessage *msg = [[IMessage alloc] init];
+    msg.sender = 0;
+    msg.receiver = groupID;
+    msg.timestamp = (int)time(NULL);
+    MessageContent *content = [[MessageContent alloc] initWithNotification:notification];
+    msg.content = content;
+    [self updateNotificationDesc:msg];
+    [self insertMessage:msg];
 }
 
 -(void)onGroupDisband:(GroupNotification*)notification {
