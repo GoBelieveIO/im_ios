@@ -12,6 +12,7 @@
 #import "../model/FileCache.h"
 #import <imsdk/IMService.h>
 #import "PeerMessageDB.h"
+#import "GroupMessageDB.h"
 #import "wav_amr.h"
 #import "UIImageView+WebCache.h"
 
@@ -118,7 +119,6 @@
 }
 
 -(void)onUploadImageFail:(IMessage*)msg {
-    [[PeerMessageDB instance] markMessageFailure:msg.msgLocalID uid:msg.receiver];
     for (id<OutboxObserver> observer in self.observers) {
         [observer onImageUploadFail:msg];
     }
@@ -133,7 +133,6 @@
 
 
 -(void)onUploadAudioFail:(IMessage*)msg {
-    [[PeerMessageDB instance] markMessageFailure:msg.msgLocalID uid:msg.receiver];
     for (id<OutboxObserver> observer in self.observers) {
         [observer onAudioUploadFail:msg];
     }
@@ -144,7 +143,6 @@
     [IMHttpAPI uploadImage:image
                    success:^(NSString *url) {
                        [self.messages removeObject:msg];
-                       
                        NSLog(@"upload image success url:%@", url);
                        [self sendImageMessage:msg URL:url];
                        [self onUploadImageSuccess:msg URL:url];
@@ -153,6 +151,7 @@
                       fail:^() {
                           NSLog(@"upload image fail");
                           [self.messages removeObject:msg];
+                          [[PeerMessageDB instance] markMessageFailure:msg.msgLocalID uid:msg.receiver];
                           [self onUploadImageFail:msg];
                       }];
     return YES;
@@ -200,6 +199,7 @@
                     }fail:^{
                         NSLog(@"upload audio fail");
                         [self.messages removeObject:msg];
+                        [[PeerMessageDB instance] markMessageFailure:msg.msgLocalID uid:msg.receiver];
                         [self onUploadAudioFail:msg];
                     }];
     
@@ -220,6 +220,7 @@
                       fail:^() {
                           NSLog(@"upload image fail");
                           [self.messages removeObject:msg];
+                          [[GroupMessageDB instance] markMessageFailure:msg.msgLocalID gid:msg.receiver];
                           [self onUploadImageFail:msg];
                       }];
     return YES;
@@ -265,6 +266,7 @@
                    }fail:^{
                        NSLog(@"upload audio fail");
                        [self.messages removeObject:msg];
+                       [[GroupMessageDB instance] markMessageFailure:msg.msgLocalID gid:msg.receiver];
                        [self onUploadAudioFail:msg];
                    }];
     
