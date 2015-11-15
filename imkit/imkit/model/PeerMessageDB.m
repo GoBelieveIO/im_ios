@@ -211,7 +211,17 @@
 -(IMessage*)getLastPeerMessage:(int64_t)uid {
     id<IMessageIterator> iter = [[PeerMessageDB instance] newMessageIterator:uid];
     IMessage *msg;
-    msg = [iter next];
+    //返回第一条不是附件的消息
+    while (YES) {
+        msg = [iter next];
+        if (msg == nil) {
+            break;
+        }
+        if (msg.content.type != MESSAGE_ATTACHMENT) {
+            break;
+        }
+    }
+
     return msg;
 }
 

@@ -186,7 +186,16 @@
 -(IMessage*)getLastGroupMessage:(int64_t)gid {
     id<IMessageIterator> iter = [[GroupMessageDB instance] newMessageIterator:gid];
     IMessage *msg;
-    msg = [iter next];
+    //返回第一条不是附件的消息
+    while (YES) {
+        msg = [iter next];
+        if (msg == nil) {
+            break;
+        }
+        if (msg.content.type != MESSAGE_ATTACHMENT) {
+            break;
+        }
+    }
     return msg;
 }
 
