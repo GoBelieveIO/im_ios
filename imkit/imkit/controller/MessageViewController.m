@@ -236,8 +236,7 @@
     NSLog(@"*** %@: didReceiveMemoryWarning ***", self.class);
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
     self.tableView.delegate = nil;
     self.tableView.dataSource = nil;
     self.tableView = nil;
@@ -433,6 +432,19 @@
     self.playingMessage.progress = 100*self.player.currentTime/self.player.duration;
 }
 
+- (void)stopPlayer {
+    if (self.player && [self.player isPlaying]) {
+        [self.player stop];
+        if ([self.playTimer isValid]) {
+            [self.playTimer invalidate];
+            self.playTimer = nil;
+        }
+        self.playingMessage.progress = 0;
+        self.playingMessage.playing = NO;
+        self.playingMessage = nil;
+    }
+}
+
 -(void)AudioAction:(UIButton*)btn{
     int row = btn.tag & 0xffff;
     int section = (int)(btn.tag >> 16);
@@ -443,28 +455,9 @@
     }
 
     if (self.playingMessage != nil && self.playingMessage.msgLocalID == message.msgLocalID) {
-        if (self.player && [self.player isPlaying]) {
-            [self.player stop];
-            if ([self.playTimer isValid]) {
-                [self.playTimer invalidate];
-                self.playTimer = nil;
-            }
-            self.playingMessage.progress = 0;
-            self.playingMessage.playing = NO;
-            self.playingMessage = nil;
-        }
+        [self stopPlayer];
     } else {
-        if (self.player && [self.player isPlaying]) {
-            [self.player stop];
-            if ([self.playTimer isValid]) {
-                [self.playTimer invalidate];
-                self.playTimer = nil;
-            }
-
-            self.playingMessage.progress = 0;
-            self.playingMessage.playing = NO;
-            self.playingMessage = nil;
-        }
+        [self stopPlayer];
 
         FileCache *fileCache = [FileCache instance];
         NSString *url = message.content.audio.url;
@@ -744,18 +737,7 @@
         return;
     }
     
-    if (self.player && [self.player isPlaying]) {
-        [self.player stop];
-        if ([self.playTimer isValid]) {
-            [self.playTimer invalidate];
-            self.playTimer = nil;
-        }
-        
-        self.playingMessage.progress = 0;
-        self.playingMessage.playing = NO;
-        self.playingMessage = nil;
-    }
-    
+    [self stopPlayer];
     
     [[AVAudioSession sharedInstance] requestRecordPermission:^(BOOL granted) {
         if (granted) {

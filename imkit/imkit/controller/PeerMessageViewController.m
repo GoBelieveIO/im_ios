@@ -158,8 +158,7 @@
     [db setDraft:self.peerUID draft:[self getDraft]];
     
     [self removeObserver];
-    
-    
+    [self stopPlayer];
     
     if (self.messages.count > 0) {
         

@@ -113,6 +113,7 @@
     [db setGroupDraft:self.groupID draft:[self getDraft]];
     
     [self removeObserver];
+    [self stopPlayer];
     
     if (self.messages.count > 0) {
         IMessage *msg = [self.messages lastObject];
