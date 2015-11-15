@@ -144,10 +144,12 @@
 #define CONVERSATION_PEER 1
 #define CONVERSATION_GROUP 2
 @interface Conversation : NSObject
-@property(nonatomic)int type;
-@property(nonatomic, assign)int64_t cid;
-@property(nonatomic, copy)NSString *name;
-@property(nonatomic, copy)NSString *avatarURL;
-@property(nonatomic)IMessage *message;
-@property(nonatomic)int newMsgCount;
+@property(nonatomic) int type;
+@property(nonatomic, assign) int64_t cid;
+@property(nonatomic, copy) NSString *name;
+@property(nonatomic, copy) NSString *avatarURL;
+@property(nonatomic) IMessage *message;
+
+@property(nonatomic) int newMsgCount;
+@property(nonatomic, copy) NSString *detail;
 @end

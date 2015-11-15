@@ -64,15 +64,9 @@
 }
 
 - (void)dealloc {
-    [self.conversation addObserver:self
-                        forKeyPath:@"name"
-                           options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld
-                           context:NULL];
-    
-    [self.conversation.message.content addObserver:self
-                                        forKeyPath:@"notificationDesc"
-                                           options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld
-                                           context:NULL];
+    [self.conversation removeObserver:self forKeyPath:@"name"];
+    [self.conversation removeObserver:self forKeyPath:@"detail"];
+    [self.conversation removeObserver:self forKeyPath:@"newMsgCount"];
 }
 
 
@@ -112,7 +106,8 @@
 
 - (void)setConversation:(Conversation *)conversation {
     [self.conversation removeObserver:self forKeyPath:@"name"];
-    [self.conversation.message.content removeObserver:self forKeyPath:@"notificationDesc"];
+    [self.conversation removeObserver:self forKeyPath:@"detail"];
+    [self.conversation removeObserver:self forKeyPath:@"newMsgCount"];
     
     _conversation = conversation;
     
@@ -123,17 +118,8 @@
     }else if (conv.type == CONVERSATION_GROUP){
         [self.headView sd_setImageWithURL:[NSURL URLWithString:conv.avatarURL] placeholderImage:[UIImage imageNamed:@"GroupChat"]];
     }
-    if (conv.message.content.type == MESSAGE_IMAGE) {
-        self.messageContent.text = @"一张图片";
-    }else if(conv.message.content.type == MESSAGE_TEXT){
-        self.messageContent.text = conv.message.content.text;
-    }else if(conv.message.content.type == MESSAGE_LOCATION){
-        self.messageContent.text = @"一个地理位置";
-    }else if (conv.message.content.type == MESSAGE_AUDIO){
-        self.messageContent.text = @"一个音频";
-    } else if (conv.message.content.type == MESSAGE_GROUP_NOTIFICATION) {
-        self.messageContent.text = conv.message.content.notificationDesc;
-    }
+    
+    self.messageContent.text = self.conversation.detail;
     
     NSDate *date = [NSDate dateWithTimeIntervalSince1970: conv.message.timestamp];
     NSString *str = [[self class] getConversationTimeString:date ];
@@ -142,6 +128,8 @@
     
     if (conv.newMsgCount > 0) {
         [self showNewMessage:conv.newMsgCount];
+    } else {
+        [self clearNewMessage];
     }
 
     
@@ -149,18 +137,29 @@
                         forKeyPath:@"name"
                            options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld
                            context:NULL];
-    [self.conversation.message.content addObserver:self
-                                        forKeyPath:@"notificationDesc"
-                                           options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld
-                                           context:NULL];
+    
+    [self.conversation addObserver:self
+                        forKeyPath:@"detail"
+                           options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld
+                           context:NULL];
+    [self.conversation addObserver:self
+                        forKeyPath:@"newMsgCount"
+                           options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld
+                           context:NULL];
 
 }
 
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if([keyPath isEqualToString:@"name"]) {
         self.namelabel.text = self.conversation.name;
-    } else if ([keyPath isEqualToString:@"notificationDesc"]) {
-        self.messageContent.text = self.conversation.message.content.notificationDesc;
+    } else if ([keyPath isEqualToString:@"detail"]) {
+        self.messageContent.text = self.conversation.detail;
+    } else if ([keyPath isEqualToString:@"newMsgCount"]) {
+        if (self.conversation.newMsgCount > 0) {
+            [self showNewMessage:self.conversation.newMsgCount];
+        } else {
+            [self clearNewMessage];
+        }
     }
 }
 
