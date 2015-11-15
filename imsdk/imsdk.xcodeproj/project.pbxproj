@@ -30,6 +30,7 @@
 		6D032F881AA9AF2C004AA39F /* Message.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6D032F411AA99456004AA39F /* Message.h */; };
 		6D69BCEB1B4433A4008EAA8A /* TCPConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D69BCEA1B4433A4008EAA8A /* TCPConnection.m */; };
 		6D69BCEC1B443D2A008EAA8A /* TCPConnection.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6D69BCE91B4433A4008EAA8A /* TCPConnection.h */; };
+		6D6F14361BF8BE5400F33E7E /* util.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6D032F441AA99456004AA39F /* util.h */; };
 		6DF0918E1AB0A21E0080AE67 /* GOReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF0918D1AB0A21E0080AE67 /* GOReachability.m */; };
 /* End PBXBuildFile section */
 
@@ -50,6 +51,7 @@
 			dstPath = "include/$(PRODUCT_NAME)";
 			dstSubfolderSpec = 16;
 			files = (
+				6D6F14361BF8BE5400F33E7E /* util.h in CopyFiles */,
 				6D69BCEC1B443D2A008EAA8A /* TCPConnection.h in CopyFiles */,
 				6D032F881AA9AF2C004AA39F /* Message.h in CopyFiles */,
 				6D032F871AA9AEB3004AA39F /* IMService.h in CopyFiles */,
