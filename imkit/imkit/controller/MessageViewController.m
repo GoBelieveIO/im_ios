@@ -121,7 +121,7 @@
     
     self.automaticallyAdjustsScrollViewInsets = NO;
 
-    CGRect tableFrame = CGRectMake(0.0f,  0.0f, w, h - [EaseChatToolbar defaultHeight]);
+    CGRect tableFrame = CGRectMake(0.0f,  64.0f, w, h - [EaseChatToolbar defaultHeight] - 64);
     
     self.view.backgroundColor = RGBACOLOR(235, 235, 237, 1);
 
