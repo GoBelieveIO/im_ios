@@ -100,8 +100,7 @@
     [self loadSenderInfo];
     [self loadConversationData];
     
-    //content scroll to bottom
-    [self.tableView reloadData];
+    //scroll tableview to bottom
     [self.tableView setContentOffset:CGPointMake(0, CGFLOAT_MAX)];
 }
 
@@ -119,6 +118,8 @@
 {
     int w = self.view.bounds.size.width;
     int h = self.view.bounds.size.height;
+    
+    self.automaticallyAdjustsScrollViewInsets = NO;
 
     CGRect tableFrame = CGRectMake(0.0f,  0.0f, w, h - [EaseChatToolbar defaultHeight]);
     
@@ -719,16 +720,14 @@
 	NSLog(@"Chose image!  Details:  %@", info);
     UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
 
-    [self dismissViewControllerAnimated:YES completion:^{
-        [self sendImageMessage:image];
-    }];
+    [self sendImageMessage:image];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
 {
-    [self dismissViewControllerAnimated:YES completion:NULL];
-    
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - MessageInputRecordDelegate
@@ -1309,9 +1308,6 @@
 
 - (void)moreViewPhotoAction:(EaseChatBarMoreView *)moreView
 {
-    // 隐藏键盘
-    [self.chatToolbar endEditing:YES];
-    
     UIImagePickerController *picker = [[UIImagePickerController alloc] init];
     picker.delegate  = self;
     picker.allowsEditing = NO;
@@ -1322,9 +1318,7 @@
 
 - (void)moreViewTakePicAction:(EaseChatBarMoreView *)moreView
 {
-    // 隐藏键盘
-    [self.chatToolbar endEditing:YES];
-    
+
 #if TARGET_IPHONE_SIMULATOR
     NSString *s = NSLocalizedString(@"message.simulatorNotSupportCamera", @"simulator does not support taking picture");
     [self.view makeToast:s];
@@ -1340,9 +1334,6 @@
 
 - (void)moreViewLocationAction:(EaseChatBarMoreView *)moreView
 {
-    // 隐藏键盘
-    [self.chatToolbar endEditing:YES];
-    
     LocationPickerController *ctl = [[LocationPickerController alloc] init];
     ctl.selectAddressdelegate = self;
     [self.navigationController pushViewController:ctl animated:YES];
