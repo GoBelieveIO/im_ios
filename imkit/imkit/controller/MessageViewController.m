@@ -121,7 +121,8 @@
     
     self.automaticallyAdjustsScrollViewInsets = NO;
 
-    CGRect tableFrame = CGRectMake(0.0f,  64.0f, w, h - [EaseChatToolbar defaultHeight] - 64);
+    int y = kStatusBarHeight + KNavigationBarHeight;
+    CGRect tableFrame = CGRectMake(0.0f, y, w, h - [EaseChatToolbar defaultHeight] - 64);
     
     self.view.backgroundColor = RGBACOLOR(235, 235, 237, 1);
 
@@ -1210,8 +1211,8 @@
 - (void)chatToolbarDidChangeFrameToHeight:(CGFloat)toHeight
 {
     CGRect rect = self.tableView.frame;
-    rect.origin.y = 0;
-    rect.size.height = self.view.frame.size.height - toHeight;
+    rect.origin.y = kStatusBarHeight + KNavigationBarHeight;
+    rect.size.height = self.view.frame.size.height - toHeight - kStatusBarHeight - KNavigationBarHeight;
     self.tableView.frame = rect;
     [self scrollToBottomAnimated:NO];
 }
