@@ -54,7 +54,11 @@
     m.receiver = obj.groupID;
     MessageContent *content = [[MessageContent alloc] initWithNotification:obj];
     m.content = content;
-    m.timestamp = (int)time(NULL);
+    if (obj.timestamp > 0) {
+        m.timestamp = obj.timestamp;
+    } else {
+        m.timestamp = (int)time(NULL);
+    }
     BOOL r = [[GroupMessageDB instance] insertMessage:m];
     return r;
 }

@@ -215,7 +215,11 @@
     IMessage *msg = [[IMessage alloc] init];
     msg.sender = 0;
     msg.receiver = groupID;
-    msg.timestamp = (int)time(NULL);
+    if (notification.timestamp > 0) {
+        msg.timestamp = notification.timestamp;
+    } else {
+        msg.timestamp = (int)time(NULL);
+    }
     MessageContent *content = [[MessageContent alloc] initWithNotification:notification];
     msg.content = content;
 
@@ -234,7 +238,11 @@
     IMessage *msg = [[IMessage alloc] init];
     msg.sender = 0;
     msg.receiver = groupID;
-    msg.timestamp = (int)time(NULL);
+    if (notification.timestamp > 0) {
+        msg.timestamp = notification.timestamp;
+    } else {
+        msg.timestamp = (int)time(NULL);
+    }
     MessageContent *content = [[MessageContent alloc] initWithNotification:notification];
     msg.content = content;
     
@@ -252,7 +260,11 @@
     
     msg.sender = 0;
     msg.receiver = groupID;
-    msg.timestamp = (int)time(NULL);
+    if (notification.timestamp > 0) {
+        msg.timestamp = notification.timestamp;
+    } else {
+        msg.timestamp = (int)time(NULL);
+    }
     MessageContent *content = [[MessageContent alloc] initWithNotification:notification];
     msg.content = content;
     
@@ -271,7 +283,11 @@
     IMessage *msg = [[IMessage alloc] init];
     msg.sender = 0;
     msg.receiver = groupID;
-    msg.timestamp = (int)time(NULL);
+    if (notification.timestamp > 0) {
+        msg.timestamp = notification.timestamp;
+    } else {
+        msg.timestamp = (int)time(NULL);
+    }
     MessageContent *content = [[MessageContent alloc] initWithNotification:notification];
     msg.content = content;
     

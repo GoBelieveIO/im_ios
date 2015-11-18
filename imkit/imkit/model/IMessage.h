@@ -44,6 +44,7 @@
 
 @property(nonatomic) int64_t groupID;
 
+@property(nonatomic) int timestamp;
 //created
 @property(nonatomic) int64_t master;
 @property(nonatomic) NSString *groupName;

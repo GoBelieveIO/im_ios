@@ -58,20 +58,24 @@
             self.groupName = [d objectForKey:@"name"];
             self.groupID = [[d objectForKey:@"group_id"] longLongValue];
             self.members = [d objectForKey:@"members"];
+            self.timestamp = [[d objectForKey:@"timestamp"] intValue];
         } else if ([dict objectForKey:@"disband"]) {
             self.type = NOTIFICATION_GROUP_DISBANDED;
             NSDictionary *obj = [dict objectForKey:@"disband"];
             self.groupID = [[obj objectForKey:@"group_id"] longLongValue];
+            self.timestamp = [[obj objectForKey:@"timestamp"] intValue];
         } else if ([dict objectForKey:@"quit_group"]) {
             self.type = NOTIFICATION_GROUP_MEMBER_LEAVED;
             NSDictionary *obj = [dict objectForKey:@"quit_group"];
             self.groupID = [[obj objectForKey:@"group_id"] longLongValue];
             self.member =[[obj objectForKey:@"member_id"] longLongValue];
+            self.timestamp = [[obj objectForKey:@"timestamp"] intValue];
         } else if ([dict objectForKey:@"add_member"]) {
             self.type = NOTIFICATION_GROUP_MEMBER_ADDED;
             NSDictionary *obj = [dict objectForKey:@"add_member"];
             self.groupID = [[obj objectForKey:@"group_id"] longLongValue];
             self.member =[[obj objectForKey:@"member_id"] longLongValue];
+            self.timestamp = [[obj objectForKey:@"timestamp"] intValue];
         }
     }
     return self;

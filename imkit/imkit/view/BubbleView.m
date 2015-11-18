@@ -81,7 +81,6 @@ CGFloat const kJSAvatarSize = 50.0f;
 
 #pragma mark - Drawing
 - (CGRect)bubbleFrame{
-    NSLog(@"act对象消息");
     return CGRectMake(0, 0, 0, 0);
 }
 
