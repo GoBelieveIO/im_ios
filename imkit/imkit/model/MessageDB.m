@@ -84,7 +84,7 @@ static NSString *dbPath = nil;
     char buf[64*1024];
     char *p = buf;
     
-    const char *raw = [msg.content.raw UTF8String];
+    const char *raw = [msg.rawContent UTF8String];
     size_t len = strlen(raw) + 8 + 8 + 4 + 4;
     
     if (4 + 4 + len + 4 + 4 > 64*1024) return NO;

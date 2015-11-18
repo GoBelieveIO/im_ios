@@ -80,7 +80,7 @@
                   options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld
                   context:NULL];
 
-    MessageLocationContent *loc = (MessageLocationContent*)msg.content;
+    MessageLocationContent *loc = msg.locationContent;
     
     UIImage *placehodler = [UIImage imageNamed:@"chat_location_preview"];
     if (self.msg.downloading) {
@@ -119,7 +119,7 @@
         } else {
             [self.indicatorView stopAnimating];
             self.pinImageView.hidden = NO;
-            MessageLocationContent *loc = (MessageLocationContent*)self.msg.content;
+            MessageLocationContent *loc = self.msg.locationContent;
             NSString *url = loc.snapshotURL;
             [self.imageView sd_setImageWithURL: [[NSURL alloc] initWithString:url]
                               placeholderImage:placehodler
@@ -132,7 +132,7 @@
         } else {
             [self.geocodingIndicatorView stopAnimating];
         }
-        MessageLocationContent *loc = (MessageLocationContent*)self.msg.content;
+        MessageLocationContent *loc = self.msg.locationContent;
         self.addressLabel.text = loc.address;
     }
 }

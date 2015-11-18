@@ -29,6 +29,11 @@
         "latitude":"经度(浮点数)"
     }
     "notification":"通知内容"
+    "link":{
+        "image":"图片url",
+        "url":"跳转url",
+        "title":"标题"
+    }
  
 }*/
 
@@ -60,6 +65,8 @@
         self.type = MESSAGE_LOCATION;
     } else if ([self.dict objectForKey:@"notification"] != nil) {
         self.type = MESSAGE_GROUP_NOTIFICATION;
+    } else if ([self.dict objectForKey:@"link"] != nil) {
+        self.type = MESSAGE_LINK;
     } else if ([self.dict objectForKey:@"attachment"] != nil) {
         self.type = MESSAGE_ATTACHMENT;
     } else {
@@ -175,6 +182,25 @@
 
 @end
 
+@implementation MessageLinkContent
+- (NSString*)imageURL {
+    return [[self.dict objectForKey:@"link"] objectForKey:@"image"];
+}
+
+- (NSString*)url {
+    return [[self.dict objectForKey:@"link"] objectForKey:@"url"];
+}
+
+- (NSString*)title {
+    return [[self.dict objectForKey:@"link"] objectForKey:@"title"];
+}
+
+- (NSString*)content {
+    return [[self.dict objectForKey:@"link"] objectForKey:@"content"];
+}
+
+@end
+
 @implementation MessageNotificationContent
 
 - (id)initWithRaw:(NSString *)raw {
@@ -269,6 +295,10 @@
 
 @end
 
+@interface IMessage()
+@property(nonatomic, readonly) MessageContent *content;
+@end
+
 @implementation IMessage
 
 -(BOOL)isACK {
@@ -293,28 +323,73 @@
     
     MessageContent *content = nil;
     if ([dict objectForKey:@"text"] != nil) {
-        _type = MESSAGE_TEXT;
+        self.type = MESSAGE_TEXT;
         content = [[MessageTextContent alloc] initWithRaw:rawContent];
     } else if ([dict objectForKey:@"image"] != nil) {
-        _type = MESSAGE_IMAGE;
+        self.type = MESSAGE_IMAGE;
         content = [[MessageImageContent alloc] initWithRaw:rawContent];
     } else if ([dict objectForKey:@"audio"] != nil) {
-        _type = MESSAGE_AUDIO;
+        self.type = MESSAGE_AUDIO;
         content = [[MessageAudioContent alloc] initWithRaw:rawContent];
     } else if ([dict objectForKey:@"location"] != nil) {
-        _type = MESSAGE_LOCATION;
+        self.type = MESSAGE_LOCATION;
         content = [[MessageLocationContent alloc] initWithRaw:rawContent];
     } else if ([dict objectForKey:@"notification"] != nil) {
-        _type = MESSAGE_GROUP_NOTIFICATION;
+        self.type = MESSAGE_GROUP_NOTIFICATION;
         content = [[MessageNotificationContent alloc] initWithRaw:rawContent];
+    } else if ([dict objectForKey:@"link"]) {
+        self.type = MESSAGE_LINK;
+        content = [[MessageLinkContent alloc] initWithRaw:rawContent];
     } else if ([dict objectForKey:@"attachment"] != nil) {
-        _type = MESSAGE_ATTACHMENT;
+        self.type = MESSAGE_ATTACHMENT;
         content = [[MessageAttachmentContent alloc] initWithRaw:rawContent];
     } else {
-        _type = MESSAGE_UNKNOWN;
+        self.type = MESSAGE_UNKNOWN;
     }
     
     _content = content;
+}
+
+-(MessageTextContent*)textContent {
+    if (self.content.type == MESSAGE_TEXT) {
+        return (MessageTextContent*)self.content;
+    }
+    return nil;
+}
+
+-(MessageImageContent*)imageContent {
+    if (self.content.type == MESSAGE_IMAGE) {
+        return (MessageImageContent*)self.content;
+    }
+    return nil;
+}
+
+-(MessageAudioContent*)audioContent {
+    if (self.content.type == MESSAGE_AUDIO) {
+        return (MessageAudioContent*)self.content;
+    }
+    return nil;
+}
+
+-(MessageLocationContent*)locationContent {
+    if (self.content.type == MESSAGE_LOCATION) {
+        return (MessageLocationContent*)self.content;
+    }
+    return nil;
+}
+
+-(MessageLinkContent*)linkContent {
+    if (self.content.type == MESSAGE_LINK) {
+        return (MessageLinkContent*)self.content;
+    }
+    return nil;
+}
+
+-(MessageAttachmentContent*)attachmentContent {
+    if (self.content.type == MESSAGE_ATTACHMENT) {
+        return (MessageAttachmentContent*)self.content;
+    }
+    return nil;
 }
 @end
 

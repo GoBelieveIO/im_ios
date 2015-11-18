@@ -294,7 +294,7 @@
     MessageViewCell *cell = (MessageViewCell *)[tableView dequeueReusableCellWithIdentifier:CellID];
     
     if(!cell) {
-        cell = [[MessageViewCell alloc] initWithType:message.content.type reuseIdentifier:CellID];
+        cell = [[MessageViewCell alloc] initWithType:message.type reuseIdentifier:CellID];
     }
     BubbleMessageType msgType;
     
@@ -348,10 +348,10 @@
         nameHeight = NAME_LABEL_HEIGHT;
     }
     
-    switch (msg.content.type) {
+    switch (msg.type) {
         case MESSAGE_TEXT:
         {
-            MessageTextContent *content = (MessageTextContent*)msg.content;
+            MessageTextContent *content = msg.textContent;
             return [BubbleView cellHeightForText:content.text] + nameHeight;
         }
         case MESSAGE_GROUP_NOTIFICATION:
@@ -415,9 +415,9 @@
  */
 - (NSString*)getMessageViewCellId:(IMessage*)msg{
     if(msg.sender == self.sender){
-        return [NSString stringWithFormat:@"MessageCell_%d%d", msg.content.type,BubbleMessageTypeOutgoing];
+        return [NSString stringWithFormat:@"MessageCell_%d%d", msg.type,BubbleMessageTypeOutgoing];
     }else{
-        return [NSString stringWithFormat:@"MessageCell_%d%d", msg.content.type,BubbleMessageTypeIncoming];
+        return [NSString stringWithFormat:@"MessageCell_%d%d", msg.type,BubbleMessageTypeIncoming];
     }
 }
 

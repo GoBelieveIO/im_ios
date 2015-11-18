@@ -54,8 +54,8 @@
     return NO;
 }
 
--(void)sendGroupAudioMessage:(IMessage*)msg URL:url{
-    MessageAudioContent *old = (MessageAudioContent*)msg.content;
+-(void)sendGroupAudioMessage:(IMessage*)msg URL:url {
+    MessageAudioContent *old = msg.audioContent;
     MessageAudioContent *audio = [[MessageAudioContent alloc] initWithAudio:url duration:old.duration];
     msg.rawContent = audio.raw;
     [self sendMessage:msg group:YES];
@@ -63,7 +63,7 @@
 }
 
 -(void)sendGroupImageMessage:(IMessage*)msg URL:url {
-    MessageImageContent *old = (MessageImageContent*)msg.content;
+    MessageImageContent *old = msg.imageContent;
     
     MessageImageContent *content = [[MessageImageContent alloc] initWithImageURL:url];
     msg.rawContent = content.raw;
@@ -72,7 +72,7 @@
 }
 
 -(void)sendAudioMessage:(IMessage*)msg URL:url{
-    MessageAudioContent *old = (MessageAudioContent*)msg.content;
+    MessageAudioContent *old = msg.audioContent;
     MessageAudioContent *audio = [[MessageAudioContent alloc] initWithAudio:url duration:old.duration];
     msg.rawContent = audio.raw;
     [self sendMessage:msg group:NO];
@@ -80,7 +80,7 @@
 }
 
 -(void)sendImageMessage:(IMessage*)msg URL:url {
-    MessageImageContent *old = (MessageImageContent*)msg.content;
+    MessageImageContent *old = msg.imageContent;
     MessageImageContent *content = [[MessageImageContent alloc] initWithImageURL:url];
     msg.rawContent = content.raw;
     [self sendMessage:msg group:NO];
@@ -94,7 +94,7 @@
     im.receiver = msg.receiver;
     im.msgLocalID = msg.msgLocalID;
     
-    im.content = msg.content.raw;
+    im.content = msg.rawContent;
     
     if (isGroup) {
         [[IMService instance] sendGroupMessage:im];
@@ -152,7 +152,7 @@
 }
 
 -(BOOL)uploadImage:(IMessage*)msg {
-    MessageImageContent *content = (MessageImageContent*)msg.content;
+    MessageImageContent *content = msg.imageContent;
     UIImage *image = [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:content.imageURL];
     if (!image) {
         NSLog(@"can't load image from image cache");
@@ -163,7 +163,7 @@
 
 -(BOOL)uploadAudio:(IMessage*)msg {
     FileCache *cache = [FileCache instance];
-    MessageAudioContent *content = (MessageAudioContent*)msg.content;
+    MessageAudioContent *content = msg.audioContent;
     NSString *path = [cache queryCacheForKey:content.url];
 
     NSString *tmp = [NSString stringWithFormat:@"%@.amr", path];
@@ -222,7 +222,7 @@
  
 }
 -(BOOL)uploadGroupImage:(IMessage*)msg {
-    MessageImageContent *content = (MessageImageContent*)msg.content;
+    MessageImageContent *content = msg.imageContent;
     UIImage *image = [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:content.imageURL];
     if (!image) {
         return NO;
@@ -232,7 +232,7 @@
 
 -(BOOL)uploadGroupAudio:(IMessage*)msg {
     FileCache *cache = [FileCache instance];
-    MessageAudioContent *content = (MessageAudioContent*)msg.content;
+    MessageAudioContent *content = msg.audioContent;
     
     NSString *path = [cache queryCacheForKey:content.url];
     

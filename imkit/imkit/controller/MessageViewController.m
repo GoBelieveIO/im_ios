@@ -22,6 +22,7 @@
 #import "MessageAudioView.h"
 #import "MessageImageView.h"
 #import "MessageLocationView.h"
+#import "MessageLinkView.h"
 #import "MessageViewCell.h"
 #import "MessageNotificationView.h"
 
@@ -32,6 +33,7 @@
 #import "UIView+Toast.h"
 #import "MapViewController.h"
 #import "LocationPickerController.h"
+#import "WebViewController.h"
 
 #import "EaseChatToolbar.h"
 #import "EaseEmoji.h"
@@ -462,7 +464,7 @@
         [self stopPlayer];
 
         FileCache *fileCache = [FileCache instance];
-        MessageAudioContent *content = (MessageAudioContent*)message.content;
+        MessageAudioContent *content = message.audioContent;
         NSString *url = content.url;
         NSString *path = [fileCache queryCacheForKey:url];
         if (path != nil) {
@@ -505,7 +507,7 @@
     if (message == nil) {
         return;
     }
-    MessageImageContent *content = (MessageImageContent*)message.content;
+    MessageImageContent *content = message.imageContent;
     NSString *littleUrl = [content littleImageURL];
     
     if ([[SDImageCache sharedImageCache] diskImageExistsWithKey:content.imageURL]) {
@@ -526,6 +528,21 @@
     }
 }
 
+- (void) handleTapLinkView:(UITapGestureRecognizer*)tap {
+    int row = tap.view.tag & 0xffff;
+    int section = (int)(tap.view.tag >> 16);
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:section];
+    IMessage *message = [self messageForRowAtIndexPath:indexPath];
+    if (message == nil) {
+        return;
+    }
+    
+    NSLog(@"click link");
+    
+    WebViewController *ctl = [[WebViewController alloc] init];
+    ctl.url = message.linkContent.url;
+    [self.navigationController pushViewController:ctl animated:YES];
+}
 
 - (void) handleTapLocationView:(UITapGestureRecognizer*)tap {
     int row = tap.view.tag & 0xffff;
@@ -536,7 +553,7 @@
         return;
     }
     
-    MessageLocationContent *content = (MessageLocationContent*)message.content;
+    MessageLocationContent *content = message.locationContent;
     MapViewController *ctl = [[MapViewController alloc] init];
     ctl.friendCoordinate = content.location;
     [self.navigationController pushViewController:ctl animated:YES];
@@ -556,22 +573,27 @@
     MessageViewCell *cell = (MessageViewCell *)[tableView dequeueReusableCellWithIdentifier:CellID];
     
     if(!cell) {
-        cell = [[MessageViewCell alloc] initWithType:message.content.type reuseIdentifier:CellID];
-        if (message.content.type == MESSAGE_AUDIO) {
+        cell = [[MessageViewCell alloc] initWithType:message.type reuseIdentifier:CellID];
+        if (message.type == MESSAGE_AUDIO) {
             MessageAudioView *audioView = (MessageAudioView*)cell.bubbleView;
             [audioView.microPhoneBtn addTarget:self action:@selector(AudioAction:) forControlEvents:UIControlEventTouchUpInside];
             [audioView.playBtn addTarget:self action:@selector(AudioAction:) forControlEvents:UIControlEventTouchUpInside];
-        } else if(message.content.type == MESSAGE_IMAGE) {
+        } else if(message.type == MESSAGE_IMAGE) {
             UITapGestureRecognizer *tap  = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapImageView:)];
             [tap setNumberOfTouchesRequired: 1];
             MessageImageView *imageView = (MessageImageView*)cell.bubbleView;
             [imageView.imageView addGestureRecognizer:tap];
-        } else if (message.content.type == MESSAGE_LOCATION) {
+        } else if (message.type == MESSAGE_LOCATION) {
             UITapGestureRecognizer *tap  = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapLocationView:)];
             [tap setNumberOfTouchesRequired: 1];
             MessageLocationView *imageView = (MessageLocationView*)cell.bubbleView;
             [imageView.imageView addGestureRecognizer:tap];
-        } else if(message.content.type == MESSAGE_TEXT){
+        } else if (message.type == MESSAGE_LINK) {
+            UITapGestureRecognizer *tap  = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapLinkView:)];
+            [tap setNumberOfTouchesRequired: 1];
+            MessageLinkView *linkView = (MessageLinkView*)cell.bubbleView;
+            [linkView addGestureRecognizer:tap];
+        } else if(message.type == MESSAGE_TEXT){
             
         }
         UILongPressGestureRecognizer *recognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self
@@ -587,23 +609,27 @@
     } else {
         msgType = BubbleMessageTypeIncoming;
         BOOL showName = self.isShowUserName;
-        if (message.content.type == MESSAGE_GROUP_NOTIFICATION) {
+        if (message.type == MESSAGE_GROUP_NOTIFICATION) {
             showName = NO;
         }
         [cell setMessage:message msgType:msgType showName:showName];
     }
     
-    if (message.content.type == MESSAGE_AUDIO) {
+    if (message.type == MESSAGE_AUDIO) {
         MessageAudioView *audioView = (MessageAudioView*)cell.bubbleView;
         audioView.microPhoneBtn.tag = indexPath.section<<16 | indexPath.row;
         audioView.playBtn.tag = indexPath.section<<16 | indexPath.row;
-    } else if (message.content.type == MESSAGE_IMAGE) {
+    } else if (message.type == MESSAGE_IMAGE) {
         MessageImageView *imageView = (MessageImageView*)cell.bubbleView;
         imageView.imageView.tag = indexPath.section<<16 | indexPath.row;
-    } else if (message.content.type == MESSAGE_LOCATION) {
+    } else if (message.type == MESSAGE_LOCATION) {
         MessageLocationView *locationView = (MessageLocationView*)cell.bubbleView;
         locationView.imageView.tag = indexPath.section<<16 | indexPath.row;
+    } else if (message.type == MESSAGE_LINK) {
+        MessageLinkView *linkView = (MessageLinkView*)cell.bubbleView;
+        linkView.tag = indexPath.section<<16 | indexPath.row;
     }
+    
     cell.tag = indexPath.section<<16 | indexPath.row;
     return cell;
 }
@@ -643,9 +669,9 @@
         nameHeight = NAME_LABEL_HEIGHT;
     }
     
-    switch (msg.content.type) {
+    switch (msg.type) {
         case MESSAGE_TEXT: {
-            MessageTextContent *content = (MessageTextContent*)msg.content;
+            MessageTextContent *content = msg.textContent;
             return [BubbleView cellHeightForText:content.text] + nameHeight;
         }
         case  MESSAGE_IMAGE:
@@ -658,6 +684,8 @@
             return kMessageLocationViewHeight + nameHeight;
         case MESSAGE_GROUP_NOTIFICATION:
             return kMessageNotificationViewHeight;
+        case MESSAGE_LINK:
+            return kMessageLinkViewHeight + nameHeight;
         default:
             return 0;
     }
@@ -710,9 +738,9 @@
  */
 - (NSString*)getMessageViewCellId:(IMessage*)msg{
     if(msg.sender == self.sender) {
-        return [NSString stringWithFormat:@"MessageCell_%d%d", msg.content.type, BubbleMessageTypeOutgoing];
+        return [NSString stringWithFormat:@"MessageCell_%d%d", msg.type, BubbleMessageTypeOutgoing];
     } else {
-        return [NSString stringWithFormat:@"MessageCell_%d%d", msg.content.type, BubbleMessageTypeIncoming];
+        return [NSString stringWithFormat:@"MessageCell_%d%d", msg.type, BubbleMessageTypeIncoming];
     }
 }
 
@@ -791,12 +819,12 @@
 
 - (void)copyText:(id)sender
 {
-    if (self.selectedMessage.content.type != MESSAGE_TEXT) {
+    if (self.selectedMessage.type != MESSAGE_TEXT) {
         return;
     }
     NSLog(@"copy...");
 
-    MessageTextContent *content = (MessageTextContent*)self.selectedMessage.content;
+    MessageTextContent *content = self.selectedMessage.textContent;
     [[UIPasteboard generalPasteboard] setString:content.text];
     [self resignFirstResponder];
 }
@@ -825,7 +853,7 @@
     NSMutableArray *menuItems = [NSMutableArray array];
 
 
-    if (message.content.type == MESSAGE_TEXT) {
+    if (message.type == MESSAGE_TEXT) {
         UIMenuItem *item = [[UIMenuItem alloc] initWithTitle:@"拷贝" action:@selector(copyText:)];
         [menuItems addObject:item];
     }
@@ -862,8 +890,8 @@
 
 
 - (void)updateNotificationDesc:(IMessage*)message {
-    MessageNotificationContent *notification = (MessageNotificationContent*)message.content;
-    if (message.content.type == MESSAGE_GROUP_NOTIFICATION) {
+    MessageNotificationContent *notification = message.notificationContent;
+    if (message.type == MESSAGE_GROUP_NOTIFICATION) {
         int type = notification.notificationType;
         if (type == NOTIFICATION_GROUP_CREATED) {
             if (self.sender == notification.master) {
@@ -912,16 +940,16 @@
 - (void)downloadMessageContent:(IMessage*)msg {
     FileCache *cache = [FileCache instance];
     AudioDownloader *downloader = [AudioDownloader instance];
-    if (msg.content.type == MESSAGE_AUDIO) {
-        MessageAudioContent *content = (MessageAudioContent*)msg.content;
+    if (msg.type == MESSAGE_AUDIO) {
+        MessageAudioContent *content = msg.audioContent;
         NSString *path = [cache queryCacheForKey:content.url];
         if (!path && ![downloader isDownloading:msg]) {
             [downloader downloadAudio:msg];
         }
         msg.downloading = [downloader isDownloading:msg];
         msg.uploading = [[Outbox instance] isUploading:msg];
-    } else if (msg.content.type == MESSAGE_LOCATION) {
-        MessageLocationContent *content = (MessageLocationContent*)msg.content;
+    } else if (msg.type == MESSAGE_LOCATION) {
+        MessageLocationContent *content = msg.locationContent;
         NSString *url = content.snapshotURL;
         if(![[SDImageCache sharedImageCache] imageFromMemoryCacheForKey:url] &&
            ![[SDImageCache sharedImageCache] diskImageExistsWithKey:url]){
@@ -934,9 +962,10 @@
         if (content.address.length == 0) {
             [self reverseGeocodeLocation:msg];
         }
-    } else if (msg.content.type == MESSAGE_IMAGE) {
+    } else if (msg.type == MESSAGE_IMAGE) {
+        NSLog(@"image url:%@", msg.imageContent.imageURL);
         msg.uploading = [[Outbox instance] isUploading:msg];
-    } else if (msg.content.type == MESSAGE_GROUP_NOTIFICATION) {
+    } else if (msg.type == MESSAGE_GROUP_NOTIFICATION) {
         [self updateNotificationDesc:msg];
     }
     
@@ -980,7 +1009,7 @@
 
 -(void)reverseGeocodeLocation:(IMessage*)msg {
     CLGeocoder *geocoder = [[CLGeocoder alloc] init];
-    MessageLocationContent *content = (MessageLocationContent*)msg.content;
+    MessageLocationContent *content = msg.locationContent;
     CLLocationCoordinate2D location = content.location;
     msg.geocoding = YES;
     CLLocation *loc = [[CLLocation alloc] initWithLatitude:location.latitude longitude:location.longitude];
@@ -1002,7 +1031,7 @@
 }
 
 - (void)createMapSnapshot:(IMessage*)msg {
-    MessageLocationContent *content = (MessageLocationContent*)msg.content;
+    MessageLocationContent *content = msg.locationContent;
     CLLocationCoordinate2D location = content.location;
     NSString *url = content.snapshotURL;
     
@@ -1037,7 +1066,7 @@
     MessageLocationContent *content = [[MessageLocationContent alloc] initWithLocation:location];
     msg.rawContent = content.raw;
     
-    content = (MessageLocationContent*)msg.content;
+    content = msg.locationContent;
     content.address = address;
     
     msg.timestamp = (int)time(NULL);

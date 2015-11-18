@@ -96,16 +96,16 @@
 }
 
 - (void)updateConversationDetail:(Conversation*)conv {
-    if (conv.message.content.type == MESSAGE_IMAGE) {
+    if (conv.message.type == MESSAGE_IMAGE) {
         conv.detail = @"一张图片";
-    }else if(conv.message.content.type == MESSAGE_TEXT){
-        MessageTextContent *content = (MessageTextContent*)conv.message.content;
+    }else if(conv.message.type == MESSAGE_TEXT){
+        MessageTextContent *content = conv.message.textContent;
         conv.detail = content.text;
-    }else if(conv.message.content.type == MESSAGE_LOCATION){
+    }else if(conv.message.type == MESSAGE_LOCATION){
         conv.detail = @"一个地理位置";
-    }else if (conv.message.content.type == MESSAGE_AUDIO){
+    }else if (conv.message.type == MESSAGE_AUDIO){
         conv.detail = @"一个音频";
-    } else if (conv.message.content.type == MESSAGE_GROUP_NOTIFICATION) {
+    } else if (conv.message.type == MESSAGE_GROUP_NOTIFICATION) {
         [self updateNotificationDesc:conv];
     }
 }
@@ -152,8 +152,8 @@
 
 - (void)updateNotificationDesc:(Conversation*)conv {
     IMessage *message = conv.message;
-    if (message.content.type == MESSAGE_GROUP_NOTIFICATION) {
-        MessageNotificationContent *notification = (MessageNotificationContent*)message.content;
+    if (message.type == MESSAGE_GROUP_NOTIFICATION) {
+        MessageNotificationContent *notification = message.notificationContent;
         int type = notification.type;
         if (type == NOTIFICATION_GROUP_CREATED) {
             if (self.currentUID == notification.master) {

@@ -90,7 +90,7 @@
         return;
     }
     [self.messages addObject:msg];
-    MessageAudioContent *audio = (MessageAudioContent*)msg.content;
+    MessageAudioContent *audio = msg.audioContent;
     [self downloadAudio: audio.url
                 success:^(NSData *data) {
                     [self.messages removeObject:msg];

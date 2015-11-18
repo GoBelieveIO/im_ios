@@ -195,7 +195,7 @@
     m.rawContent = im.content;
     m.timestamp = im.timestamp;
     
-    if (self.textMode && m.content.type != MESSAGE_TEXT) {
+    if (self.textMode && m.type != MESSAGE_TEXT) {
         return;
     }
     
@@ -250,15 +250,15 @@
     IMessage *msg = [iterator next];
     while (msg) {
         if (self.textMode) {
-            if (msg.content.type == MESSAGE_TEXT) {
+            if (msg.type == MESSAGE_TEXT) {
                 [self.messages insertObject:msg atIndex:0];
                 if (++count >= PAGE_COUNT) {
                     break;
                 }
             }
         } else {
-            if (msg.content.type == MESSAGE_ATTACHMENT) {
-                MessageAttachmentContent *att = (MessageAttachmentContent*)msg.content;
+            if (msg.type == MESSAGE_ATTACHMENT) {
+                MessageAttachmentContent *att = msg.attachmentContent;
                 [self.attachments setObject:att
                                      forKey:[NSNumber numberWithInt:att.msgLocalID]];
             } else {
@@ -288,8 +288,8 @@
     int count = 0;
     IMessage *msg = [iterator next];
     while (msg) {
-        if (msg.content.type == MESSAGE_ATTACHMENT) {
-            MessageAttachmentContent *att = (MessageAttachmentContent*)msg.content;
+        if (msg.type == MESSAGE_ATTACHMENT) {
+            MessageAttachmentContent *att = msg.attachmentContent;
             [self.attachments setObject:att
                                  forKey:[NSNumber numberWithInt:att.msgLocalID]];
             
@@ -333,16 +333,16 @@
 }
 
 - (void)sendMessage:(IMessage*)message {
-    if (message.content.type == MESSAGE_AUDIO) {
+    if (message.type == MESSAGE_AUDIO) {
         [[Outbox instance] uploadAudio:message];
-    } else if (message.content.type == MESSAGE_IMAGE) {
+    } else if (message.type == MESSAGE_IMAGE) {
         [[Outbox instance] uploadImage:message];
     } else {
         IMMessage *im = [[IMMessage alloc] init];
         im.sender = message.sender;
         im.receiver = message.receiver;
         im.msgLocalID = message.msgLocalID;
-        im.content = message.content.raw;
+        im.content = message.rawContent;
         [[IMService instance] sendPeerMessage:im];
     }
 }

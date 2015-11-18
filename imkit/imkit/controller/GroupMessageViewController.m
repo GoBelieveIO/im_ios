@@ -117,7 +117,7 @@
     
     if (self.messages.count > 0) {
         IMessage *msg = [self.messages lastObject];
-        if (msg.sender == self.currentUID || msg.content.type == MESSAGE_GROUP_NOTIFICATION) {
+        if (msg.sender == self.currentUID || msg.type == MESSAGE_GROUP_NOTIFICATION) {
             NSNotification* notification = [[NSNotification alloc] initWithName:LATEST_GROUP_MESSAGE object: msg userInfo:nil];
             
             [[NSNotificationCenter defaultCenter] postNotification:notification];
@@ -163,7 +163,7 @@
     m.rawContent = im.content;
     m.timestamp = im.timestamp;
     
-    if (self.textMode && m.content.type != MESSAGE_TEXT && m.content.type != MESSAGE_GROUP_NOTIFICATION) {
+    if (self.textMode && m.type != MESSAGE_TEXT && m.type != MESSAGE_GROUP_NOTIFICATION) {
         return;
     }
     
@@ -221,15 +221,15 @@
     IMessage *msg = [iterator next];
     while (msg) {
         if (self.textMode) {
-            if (msg.content.type == MESSAGE_TEXT || msg.content.type == MESSAGE_GROUP_NOTIFICATION) {
+            if (msg.type == MESSAGE_TEXT || msg.type == MESSAGE_GROUP_NOTIFICATION) {
                 [self.messages insertObject:msg atIndex:0];
                 if (++count >= PAGE_COUNT) {
                     break;
                 }
             }
         } else {
-            if (msg.content.type == MESSAGE_ATTACHMENT) {
-                MessageAttachmentContent *att = (MessageAttachmentContent*)msg.content;
+            if (msg.type == MESSAGE_ATTACHMENT) {
+                MessageAttachmentContent *att = msg.attachmentContent;
                 [self.attachments setObject:att
                                      forKey:[NSNumber numberWithInt:att.msgLocalID]];
                 
@@ -260,15 +260,15 @@
     IMessage *msg = [iterator next];
     while (msg) {
         if (self.textMode) {
-            if (msg.content.type == MESSAGE_TEXT || msg.content.type == MESSAGE_GROUP_NOTIFICATION) {
+            if (msg.type == MESSAGE_TEXT || msg.type == MESSAGE_GROUP_NOTIFICATION) {
                 [self.messages insertObject:msg atIndex:0];
                 if (++count >= PAGE_COUNT) {
                     break;
                 }
             }
         } else {
-            if (msg.content.type == MESSAGE_ATTACHMENT) {
-                MessageAttachmentContent *att = (MessageAttachmentContent*)msg.content;
+            if (msg.type == MESSAGE_ATTACHMENT) {
+                MessageAttachmentContent *att = msg.attachmentContent;
                 [self.attachments setObject:att
                                      forKey:[NSNumber numberWithInt:att.msgLocalID]];
             } else {
@@ -306,16 +306,16 @@
 }
 
 - (void)sendMessage:(IMessage*)message {
-    if (message.content.type == MESSAGE_AUDIO) {
+    if (message.type == MESSAGE_AUDIO) {
         [[Outbox instance] uploadGroupAudio:message];
-    } else if (message.content.type == MESSAGE_IMAGE) {
+    } else if (message.type == MESSAGE_IMAGE) {
         [[Outbox instance] uploadGroupImage:message];
     } else {
         IMMessage *im = [[IMMessage alloc] init];
         im.sender = message.sender;
         im.receiver = message.receiver;
         im.msgLocalID = message.msgLocalID;
-        im.content = message.content.raw;
+        im.content = message.rawContent;
         [[IMService instance] sendGroupMessage:im];
     }
 }

@@ -83,6 +83,8 @@
 		6DF54F181AB6EECA00197EBC /* TextMessageViewController.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6DF54F151AB6E58800197EBC /* TextMessageViewController.h */; };
 		6DF54F261AB816FB00197EBC /* BaseMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54F251AB816FB00197EBC /* BaseMessageViewController.m */; };
 		6DF54F281AB82E0000197EBC /* BaseMessageViewController.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6DF54F241AB816FB00197EBC /* BaseMessageViewController.h */; };
+		6DFD88E81BFCD2E90067D71B /* MessageLinkView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DFD88E71BFCD2E90067D71B /* MessageLinkView.m */; };
+		6DFD88ED1BFCD9990067D71B /* WebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DFD88EC1BFCD9990067D71B /* WebViewController.m */; };
 		6DFDA0241AB95B9800EF553A /* PeerMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DFDA0231AB95B9800EF553A /* PeerMessageViewController.m */; };
 		6DFDA0261AB95E7F00EF553A /* PeerMessageViewController.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6DFDA0221AB95B9800EF553A /* PeerMessageViewController.h */; };
 		6DFDA0271AB9797500EF553A /* TextMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54F161AB6E58800197EBC /* TextMessageViewController.m */; };
@@ -253,6 +255,10 @@
 		6DF54F241AB816FB00197EBC /* BaseMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BaseMessageViewController.h; path = controller/BaseMessageViewController.h; sourceTree = "<group>"; };
 		6DF54F251AB816FB00197EBC /* BaseMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BaseMessageViewController.m; path = controller/BaseMessageViewController.m; sourceTree = "<group>"; };
 		6DF8819A1BEA113F003F7B87 /* imkitResource.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = imkitResource.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		6DFD88E61BFCD2E90067D71B /* MessageLinkView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MessageLinkView.h; path = view/MessageLinkView.h; sourceTree = "<group>"; };
+		6DFD88E71BFCD2E90067D71B /* MessageLinkView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MessageLinkView.m; path = view/MessageLinkView.m; sourceTree = "<group>"; };
+		6DFD88EB1BFCD9990067D71B /* WebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WebViewController.h; path = controller/WebViewController.h; sourceTree = "<group>"; };
+		6DFD88EC1BFCD9990067D71B /* WebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WebViewController.m; path = controller/WebViewController.m; sourceTree = "<group>"; };
 		6DFDA0221AB95B9800EF553A /* PeerMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeerMessageViewController.h; path = controller/PeerMessageViewController.h; sourceTree = "<group>"; };
 		6DFDA0231AB95B9800EF553A /* PeerMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PeerMessageViewController.m; path = controller/PeerMessageViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -389,6 +395,8 @@
 				6D0331251AA9E734004AA39F /* MessageAudioView.m */,
 				6D0331261AA9E734004AA39F /* MessageImageView.h */,
 				6D0331271AA9E734004AA39F /* MessageImageView.m */,
+				6DFD88E61BFCD2E90067D71B /* MessageLinkView.h */,
+				6DFD88E71BFCD2E90067D71B /* MessageLinkView.m */,
 				6D03312D1AA9E734004AA39F /* MessageTextView.h */,
 				6D03312E1AA9E734004AA39F /* MessageTextView.m */,
 				6DEE56831BDCF309002BCAB8 /* MessageLocationView.h */,
@@ -424,6 +432,8 @@
 				6DEE56C21BDE2F5D002BCAB8 /* MapViewController.m */,
 				6DEE56BD1BDE1663002BCAB8 /* LocationPickerController.h */,
 				6DEE56BE1BDE1663002BCAB8 /* LocationPickerController.m */,
+				6DFD88EB1BFCD9990067D71B /* WebViewController.h */,
+				6DFD88EC1BFCD9990067D71B /* WebViewController.m */,
 			);
 			name = controller;
 			sourceTree = "<group>";
@@ -734,6 +744,8 @@
 				6D032FF51AA9B41C004AA39F /* PeerMessageHandler.m in Sources */,
 				6D18DBAA1BEA0A88006A3B66 /* EaseFaceView.m in Sources */,
 				6DEE56C01BDE1663002BCAB8 /* LocationPickerController.m in Sources */,
+				6DFD88ED1BFCD9990067D71B /* WebViewController.m in Sources */,
+				6DFD88E81BFCD2E90067D71B /* MessageLinkView.m in Sources */,
 				6D032FF31AA9B41C004AA39F /* MessageDB.m in Sources */,
 				6D18DBAB1BEA0A8D006A3B66 /* EaseFacialView.m in Sources */,
 				6D18DBA81BEA0A7E006A3B66 /* EaseImageView.m in Sources */,

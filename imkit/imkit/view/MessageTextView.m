@@ -29,7 +29,7 @@
 - (void)setMsg:(IMessage *)msg {
     [super setMsg:msg];
     
-    MessageTextContent *text = (MessageTextContent*)msg.content;
+    MessageTextContent *text = msg.textContent;
     self.text = text.text;
     [self setNeedsDisplay];
 }

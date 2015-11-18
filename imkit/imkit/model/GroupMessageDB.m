@@ -192,7 +192,7 @@
         if (msg == nil) {
             break;
         }
-        if (msg.content.type != MESSAGE_ATTACHMENT) {
+        if (msg.type != MESSAGE_ATTACHMENT) {
             break;
         }
     }

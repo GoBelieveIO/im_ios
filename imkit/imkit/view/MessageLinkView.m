@@ -7,19 +7,23 @@
   of patent rights can be found in the PATENTS file in the same directory.
 */
 
-#import "MessageImageView.h"
+#import "MessageLinkView.h"
 
 #define KInComingMoveRight  2.0
 #define kOuttingMoveRight   3.0
 
-@interface MessageImageView()
-@property(nonatomic) UIView *maskView;
+@interface MessageLinkView()
+@property(nonatomic) UILabel *titleLabel;
+@property(nonatomic) UILabel *contentLabel;
 @end
-@implementation MessageImageView
+@implementation MessageLinkView
 
 - (void)dealloc {
-    [self.msg removeObserver:self forKeyPath:@"uploading"];
+
 }
+
+
+
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
@@ -28,32 +32,32 @@
         self.imageView = [[UIImageView alloc] init];
         [self.imageView setUserInteractionEnabled:YES];
         [self addSubview:self.imageView];
-        
-        self.maskView = [[UIView alloc] init];
-        self.maskView.backgroundColor = [UIColor blackColor];
-        self.maskView.alpha = 0.3;
-        self.maskView.hidden = YES;
-        [self addSubview:self.maskView];
-        
-        self.uploadIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-        [self addSubview:self.uploadIndicatorView];
-        
+
         self.downloadIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         [self addSubview:self.downloadIndicatorView];
+        
+        self.titleLabel = [[UILabel alloc] init];
+        self.titleLabel.numberOfLines = 0;
+        self.titleLabel.lineBreakMode = NSLineBreakByTruncatingTail;
+        [self addSubview:self.titleLabel];
+        
+        self.contentLabel = [[UILabel alloc] init];
+        self.contentLabel.textAlignment = NSTextAlignmentCenter;
+        self.contentLabel.lineBreakMode = NSLineBreakByTruncatingTail;
+        self.contentLabel.numberOfLines = 0;
+        self.contentLabel.font = [UIFont systemFontOfSize:14];
+        [self addSubview:self.contentLabel];
     }
     return self;
 }
 
 - (void)setMsg:(IMessage*)msg {
-    [self.msg removeObserver:self forKeyPath:@"uploading"];
     
     [super setMsg:msg];
     
-    MessageImageContent *content = msg.imageContent;
-    NSString *originURL = content.imageURL;
-    if (originURL) {
-        //在原图URL后面添加"@{width}w_{heigth}h_{1|0}c", 支持128x128, 256x256
-        NSString *url = [NSString stringWithFormat:@"%@@128w_128h_0c", originURL];
+    MessageLinkContent *content = msg.linkContent;
+    NSString *url = content.imageURL;
+    if (url.length > 0) {
         if(![[SDImageCache sharedImageCache] diskImageExistsWithKey:url]){
             [self.downloadIndicatorView startAnimating];
         }
@@ -67,35 +71,18 @@
         }];
     }
     
-    [self.msg addObserver:self forKeyPath:@"uploading" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
-    
-    if (self.msg.uploading) {
-        self.maskView.hidden = NO;
-        [self.uploadIndicatorView startAnimating];
-    } else {
-        self.maskView.hidden = YES;
-        [self.uploadIndicatorView stopAnimating];
-    }
-    
-    [self setNeedsDisplay];
+    self.titleLabel.text = content.title;
+    self.contentLabel.text = content.content;
+    [self setNeedsLayout];
 }
 
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-    if([keyPath isEqualToString:@"uploading"]) {
-        if (self.msg.uploading) {
-            self.maskView.hidden = NO;
-            [self.uploadIndicatorView startAnimating];
-        } else {
-            self.maskView.hidden = YES;
-            [self.uploadIndicatorView stopAnimating];
-        }
-    }
 }
 
 #pragma mark - Drawing
 - (CGRect)bubbleFrame {
-    CGSize bubbleSize = CGSizeMake(kImageWidth + kBubblePaddingRight, kImageHeight + kPaddingTop + kPaddingBottom);
+    CGSize bubbleSize = CGSizeMake(kLinkWidth + kBubblePaddingRight, kLinkHeight + kPaddingTop + kPaddingBottom);
     return CGRectMake(floorf(self.type == BubbleMessageTypeOutgoing ? self.frame.size.width - bubbleSize.width : 0.0f),
                       floorf(kMarginTop),
                       floorf(bubbleSize.width),
@@ -111,18 +98,22 @@
     UIImage *image = [self bubbleImage];
     CGRect bubbleFrame = [self bubbleFrame];
 
-    CGSize imageSize = CGSizeMake(kImageWidth, kImageHeight);
     CGFloat imgX = image.leftCapWidth + (self.type == BubbleMessageTypeOutgoing ? bubbleFrame.origin.x + kOuttingMoveRight: KInComingMoveRight);
-    
+
     CGRect imageFrame = CGRectMake(imgX,
-                                   kMarginTop + kPaddingTop,
-                                   imageSize.width,
-                                   imageSize.height);
+                                   kMarginTop + kPaddingTop + 30,
+                                   70,
+                                   70);
     [self.imageView setFrame:imageFrame];
-    self.maskView.frame = imageFrame;
+
     
     [self.downloadIndicatorView setFrame:imageFrame];
-    [self.uploadIndicatorView setFrame:imageFrame];
+    
+    CGRect rect = CGRectMake(imgX, 8, 180, 30);
+    self.titleLabel.frame = rect;
+    
+    rect = CGRectMake(imgX + 70 + 4, 42, 130, 70);
+    self.contentLabel.frame = rect;
     
 }
 @end

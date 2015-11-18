@@ -16,6 +16,7 @@
 #import "MessageAudioView.h"
 #import "MessageNotificationView.h"
 #import "MessageLocationView.h"
+#import "MessageLinkView.h"
 
 @interface MessageViewCell()
 @property(nonatomic) IMessage *msg;
@@ -92,6 +93,12 @@
                 self.bubbleView = locationView;
             }
                 break;
+            case MESSAGE_LINK:
+            {
+                MessageLinkView *linkView = [[MessageLinkView alloc] initWithFrame:frame];
+                self.bubbleView = linkView;
+            }
+                break;
             default:
                 self.bubbleView = nil;
                 break;
@@ -152,7 +159,7 @@
         self.nameLabel.textAlignment = NSTextAlignmentLeft;
     }
 
-    switch (message.content.type) {
+    switch (message.type) {
         case MESSAGE_TEXT:
         {
             MessageTextView *textView = (MessageTextView*)self.bubbleView;
@@ -187,11 +194,17 @@
             locationView.type = msgType;
             locationView.msg = message;
         }
+            break;
+        case MESSAGE_LINK:
+        {
+            MessageLinkView *linkView = (MessageLinkView*)self.bubbleView;
+            linkView.type = msgType;
+            linkView.msg = message;
+        }
+            break;
         default:
             break;
     }
-   
-
 }
 
 

@@ -10,15 +10,17 @@
 #import <Foundation/Foundation.h>
 #import <CoreLocation/CLLocation.h>
 
+//消息类型
 #define MESSAGE_UNKNOWN 0
 #define MESSAGE_TEXT 1
 #define MESSAGE_IMAGE 2
 #define MESSAGE_AUDIO 3
 #define MESSAGE_LOCATION 4
 #define MESSAGE_GROUP_NOTIFICATION 5 //群通知
+#define MESSAGE_LINK 6
 #define MESSAGE_ATTACHMENT 255 //消息附件
 
-
+//消息标志
 #define MESSAGE_FLAG_DELETE 1
 #define MESSAGE_FLAG_ACK 2
 //#define MESSAGE_FLAG_PEER_ACK 4
@@ -27,23 +29,28 @@
 #define MESSAGE_FLAG_SENDING 32
 #define MESSAGE_FLAG_LISTENED 64
 
+//群组通知消息类型
 #define NOTIFICATION_GROUP_CREATED 1
 #define NOTIFICATION_GROUP_DISBANDED 2
 #define NOTIFICATION_GROUP_MEMBER_ADDED 3
 #define NOTIFICATION_GROUP_MEMBER_LEAVED 4
 
+//会话类型
+#define CONVERSATION_PEER 1
+#define CONVERSATION_GROUP 2
+
+
+@class IUser;
+@class IGroup;
 
 @interface MessageContent : NSObject
-
 @property(nonatomic) int type;
 @property(nonatomic) NSString *raw;
-
 @end
-
 
 @interface MessageTextContent : MessageContent
 - (id)initWithText:(NSString*)text;
-//text message
+
 @property(nonatomic, readonly) NSString *text;
 @end
 
@@ -58,16 +65,20 @@
 @interface MessageImageContent : MessageContent
 - (id)initWithImageURL:(NSString*)imageURL;
 
-//image message
 @property(nonatomic, readonly) NSString *imageURL;
 @property(nonatomic, readonly) NSString *littleImageURL;
+@end
+
+@interface MessageLinkContent : MessageContent
+@property(nonatomic, readonly) NSString *imageURL;
+@property(nonatomic, readonly) NSString *url;
+@property(nonatomic, readonly) NSString *title;
+@property(nonatomic, readonly) NSString *content;
 @end
 
 @interface MessageLocationContent : MessageContent
 - (id)initWithLocation:(CLLocationCoordinate2D)location;
 
-
-//location message
 @property(nonatomic, readonly) CLLocationCoordinate2D location;
 @property(nonatomic, readonly) NSString *snapshotURL;
 @property(nonatomic, copy) NSString *address;
@@ -96,8 +107,6 @@
 
 -(id)initWithNotification:(NSString*)raw;
 
-
-
 @end
 
 @interface MessageAttachmentContent : MessageContent
@@ -110,14 +119,6 @@
 
 @end
 
-@interface IUser : NSObject
-@property(nonatomic) int64_t uid;
-@property(nonatomic, copy) NSString *name;
-@property(nonatomic, copy) NSString *avatarURL;
-
-//name为nil时，界面显示identifier字段
-@property(nonatomic, copy) NSString *identifier;
-@end
 
 @interface IMessage : NSObject
 @property(nonatomic) int msgLocalID;
@@ -126,8 +127,15 @@
 @property(nonatomic) int64_t receiver;
 
 @property(nonatomic, copy) NSString *rawContent;
-@property(nonatomic, readonly) int type;
-@property(nonatomic, readonly) MessageContent *content;
+@property(nonatomic) int type;
+
+@property(nonatomic, readonly) MessageTextContent *textContent;
+@property(nonatomic, readonly) MessageAudioContent *audioContent;
+@property(nonatomic, readonly) MessageImageContent *imageContent;
+@property(nonatomic, readonly) MessageLocationContent *locationContent;
+@property(nonatomic, readonly) MessageNotificationContent *notificationContent;
+@property(nonatomic, readonly) MessageLinkContent *linkContent;
+@property(nonatomic, readonly) MessageAttachmentContent *attachmentContent;
 
 @property(nonatomic) int timestamp;
 @property(nonatomic, readonly) BOOL isACK;
@@ -145,18 +153,6 @@
 
 @end
 
-@interface IGroup : NSObject
-@property(nonatomic, assign) int64_t gid;
-@property(nonatomic, copy) NSString *name;
-@property(nonatomic, copy) NSString *avatarURL;
-
-//name为nil时，界面显示identifier字段
-@property(nonatomic, copy) NSString *identifier;
-
-@end
-
-#define CONVERSATION_PEER 1
-#define CONVERSATION_GROUP 2
 @interface Conversation : NSObject
 @property(nonatomic) int type;
 @property(nonatomic, assign) int64_t cid;
@@ -167,3 +163,24 @@
 @property(nonatomic) int newMsgCount;
 @property(nonatomic, copy) NSString *detail;
 @end
+
+
+@interface IUser : NSObject
+@property(nonatomic) int64_t uid;
+@property(nonatomic, copy) NSString *name;
+@property(nonatomic, copy) NSString *avatarURL;
+
+//name为nil时，界面显示identifier字段
+@property(nonatomic, copy) NSString *identifier;
+@end
+
+@interface IGroup : NSObject
+@property(nonatomic, assign) int64_t gid;
+@property(nonatomic, copy) NSString *name;
+@property(nonatomic, copy) NSString *avatarURL;
+
+//name为nil时，界面显示identifier字段
+@property(nonatomic, copy) NSString *identifier;
+
+@end
+
