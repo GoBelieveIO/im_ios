@@ -160,8 +160,7 @@
     m.sender = im.sender;
     m.receiver = im.receiver;
     m.msgLocalID = im.msgLocalID;
-    MessageContent *content = [[MessageContent alloc] initWithRaw:im.content];
-    m.content = content;
+    m.rawContent = im.content;
     m.timestamp = im.timestamp;
     
     if (self.textMode && m.content.type != MESSAGE_TEXT && m.content.type != MESSAGE_GROUP_NOTIFICATION) {
@@ -193,20 +192,7 @@
 
 
 -(void)onGroupNotification:(NSString *)text {
-    GroupNotification *notification = [[GroupNotification alloc] initWithRaw:text];
-    
-    if (notification.type == NOTIFICATION_GROUP_CREATED) {
-        [self onGroupCreated:notification];
-    } else if (notification.type == NOTIFICATION_GROUP_DISBANDED) {
-        [self onGroupDisband:notification];
-    } else if (notification.type == NOTIFICATION_GROUP_MEMBER_ADDED) {
-        [self onGroupMemberAdd:notification];
-    } else if (notification.type == NOTIFICATION_GROUP_MEMBER_LEAVED) {
-        [self onGroupMemberLeave:notification];
-    }
-}
-
--(void)onGroupCreated:(GroupNotification*)notification {
+    MessageNotificationContent *notification = [[MessageNotificationContent alloc] initWithNotification:text];
     int64_t groupID = notification.groupID;
     if (groupID != self.groupID) {
         return;
@@ -220,78 +206,11 @@
     } else {
         msg.timestamp = (int)time(NULL);
     }
-    MessageContent *content = [[MessageContent alloc] initWithNotification:notification];
-    msg.content = content;
-
-    //update notification description
-    [self downloadMessageContent:msg];
-
-    [self insertMessage:msg];
-}
-
--(void)onGroupDisband:(GroupNotification*)notification {
-    int64_t groupID = notification.groupID;
-    if (groupID != self.groupID) {
-        return;
-    }
-    
-    IMessage *msg = [[IMessage alloc] init];
-    msg.sender = 0;
-    msg.receiver = groupID;
-    if (notification.timestamp > 0) {
-        msg.timestamp = notification.timestamp;
-    } else {
-        msg.timestamp = (int)time(NULL);
-    }
-    MessageContent *content = [[MessageContent alloc] initWithNotification:notification];
-    msg.content = content;
+    msg.rawContent = notification.raw;
     
     //update notification description
     [self downloadMessageContent:msg];
-    [self insertMessage:msg];
-}
-
--(void)onGroupMemberAdd:(GroupNotification*)notification {
-    int64_t groupID = notification.groupID;
-    if (groupID != self.groupID) {
-        return;
-    }
-    IMessage *msg = [[IMessage alloc] init];
     
-    msg.sender = 0;
-    msg.receiver = groupID;
-    if (notification.timestamp > 0) {
-        msg.timestamp = notification.timestamp;
-    } else {
-        msg.timestamp = (int)time(NULL);
-    }
-    MessageContent *content = [[MessageContent alloc] initWithNotification:notification];
-    msg.content = content;
-    
-    //update notification description
-    [self downloadMessageContent:msg];
-
-    [self insertMessage:msg];
-}
-
--(void)onGroupMemberLeave:(GroupNotification*)notification {
-    int64_t groupID = notification.groupID;
-    if (groupID != self.groupID) {
-        return;
-    }
-    
-    IMessage *msg = [[IMessage alloc] init];
-    msg.sender = 0;
-    msg.receiver = groupID;
-    if (notification.timestamp > 0) {
-        msg.timestamp = notification.timestamp;
-    } else {
-        msg.timestamp = (int)time(NULL);
-    }
-    MessageContent *content = [[MessageContent alloc] initWithNotification:notification];
-    msg.content = content;
-    
-    [self downloadMessageContent:msg];
     [self insertMessage:msg];
 }
 
@@ -310,8 +229,9 @@
             }
         } else {
             if (msg.content.type == MESSAGE_ATTACHMENT) {
-                [self.attachments setObject:msg.content.attachment
-                                     forKey:[NSNumber numberWithInt:msg.content.attachment.msgLocalID]];
+                MessageAttachmentContent *att = (MessageAttachmentContent*)msg.content;
+                [self.attachments setObject:att
+                                     forKey:[NSNumber numberWithInt:att.msgLocalID]];
                 
             } else {
                 [self.messages insertObject:msg atIndex:0];
@@ -348,9 +268,9 @@
             }
         } else {
             if (msg.content.type == MESSAGE_ATTACHMENT) {
-                [self.attachments setObject:msg.content.attachment
-                                     forKey:[NSNumber numberWithInt:msg.content.attachment.msgLocalID]];
-                
+                MessageAttachmentContent *att = (MessageAttachmentContent*)msg.content;
+                [self.attachments setObject:att
+                                     forKey:[NSNumber numberWithInt:att.msgLocalID]];
             } else {
                 [self.messages insertObject:msg atIndex:0];
                 if (++count >= PAGE_COUNT) {

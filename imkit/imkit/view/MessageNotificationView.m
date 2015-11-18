@@ -32,7 +32,8 @@
 - (void)setMsg:(IMessage*)msg {
     [self.msg.content removeObserver:self forKeyPath:@"notificationDesc"];
     [super setMsg:msg];
-    self.label.text = self.msg.content.notificationDesc;
+    MessageNotificationContent *notification = (MessageNotificationContent*)self.msg.content;
+    self.label.text = notification.notificationDesc;
     [self.msg.content addObserver:self forKeyPath:@"notificationDesc" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
     
 }
@@ -40,7 +41,8 @@
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     if([keyPath isEqualToString:@"notificationDesc"]) {
-        self.label.text = self.msg.content.notificationDesc;
+        MessageNotificationContent *notification = (MessageNotificationContent*)self.msg.content;
+        self.label.text = notification.notificationDesc;
     }
 }
 

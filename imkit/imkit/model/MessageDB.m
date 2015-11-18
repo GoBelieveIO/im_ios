@@ -236,9 +236,7 @@ static NSString *dbPath = nil;
     p += 8;
     msg.receiver = readInt64(p);
     p += 8;
-    MessageContent *content = [[MessageContent alloc] init];
-    content.raw = [[NSString alloc] initWithBytes:p length:len - 24 encoding:NSUTF8StringEncoding];
-    msg.content = content;
+    msg.rawContent = [[NSString alloc] initWithBytes:p length:len - 24 encoding:NSUTF8StringEncoding];
     return msg;
 }
 

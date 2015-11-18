@@ -90,8 +90,9 @@
 
     [super setMsg:msg];
     
-    int minute = self.msg.content.audio.duration/60;
-    int second = self.msg.content.audio.duration%60;
+    MessageAudioContent *audio = (MessageAudioContent*)self.msg.content;
+    int minute = audio.duration/60;
+    int second = audio.duration%60;
     NSString *str = [NSString stringWithFormat:@"%02d:%02d",minute,second];
     [self.timeLengthLabel setText:str];
     

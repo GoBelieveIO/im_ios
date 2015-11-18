@@ -11,6 +11,6 @@
 #import "BubbleView.h"
 
 @interface MessageTextView : BubbleView
-@property (nonatomic, copy) NSString *text;
+
 
 @end

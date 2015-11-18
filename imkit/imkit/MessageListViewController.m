@@ -99,7 +99,8 @@
     if (conv.message.content.type == MESSAGE_IMAGE) {
         conv.detail = @"一张图片";
     }else if(conv.message.content.type == MESSAGE_TEXT){
-        conv.detail = conv.message.content.text;
+        MessageTextContent *content = (MessageTextContent*)conv.message.content;
+        conv.detail = content.text;
     }else if(conv.message.content.type == MESSAGE_LOCATION){
         conv.detail = @"一个地理位置";
     }else if (conv.message.content.type == MESSAGE_AUDIO){
@@ -152,39 +153,39 @@
 - (void)updateNotificationDesc:(Conversation*)conv {
     IMessage *message = conv.message;
     if (message.content.type == MESSAGE_GROUP_NOTIFICATION) {
-        GroupNotification *notification = message.content.notification;
+        MessageNotificationContent *notification = (MessageNotificationContent*)message.content;
         int type = notification.type;
         if (type == NOTIFICATION_GROUP_CREATED) {
             if (self.currentUID == notification.master) {
                 NSString *desc = [NSString stringWithFormat:@"您创建了\"%@\"群组", notification.groupName];
-                message.content.notificationDesc = desc;
-                conv.detail = message.content.notificationDesc;
+                notification.notificationDesc = desc;
+                conv.detail = notification.notificationDesc;
             } else {
                 NSString *desc = [NSString stringWithFormat:@"您加入了\"%@\"群组", notification.groupName];
-                message.content.notificationDesc = desc;
-                conv.detail = message.content.notificationDesc;
+                notification.notificationDesc = desc;
+                conv.detail = notification.notificationDesc;
             }
         } else if (type == NOTIFICATION_GROUP_DISBANDED) {
-            message.content.notificationDesc = @"群组已解散";
-            conv.detail = message.content.notificationDesc;
+            notification.notificationDesc = @"群组已解散";
+            conv.detail = notification.notificationDesc;
         } else if (type == NOTIFICATION_GROUP_MEMBER_ADDED) {
             IUser *u = [self.userDelegate getUser:notification.member];
             if (u.name.length > 0) {
                 NSString *name = u.name;
                 NSString *desc = [NSString stringWithFormat:@"%@加入群", name];
-                message.content.notificationDesc = desc;
-                conv.detail = message.content.notificationDesc;
+                notification.notificationDesc = desc;
+                conv.detail = notification.notificationDesc;
             } else {
                 NSString *name = u.identifier;
                 NSString *desc = [NSString stringWithFormat:@"%@加入群", name];
-                message.content.notificationDesc = desc;
-                conv.detail = message.content.notificationDesc;
+                notification.notificationDesc = desc;
+                conv.detail = notification.notificationDesc;
                 [self.userDelegate asyncGetUser:notification.member cb:^(IUser *u) {
                     NSString *desc = [NSString stringWithFormat:@"%@加入群", u.name];
-                    message.content.notificationDesc = desc;
+                    notification.notificationDesc = desc;
                     //会话的最新消息未改变
                     if (conv.message == message) {
-                        conv.detail = message.content.notificationDesc;
+                        conv.detail = notification.notificationDesc;
                     }
                 }];
             }
@@ -193,19 +194,19 @@
             if (u.name.length > 0) {
                 NSString *name = u.name;
                 NSString *desc = [NSString stringWithFormat:@"%@离开群", name];
-                message.content.notificationDesc = desc;
-                conv.detail = message.content.notificationDesc;
+                notification.notificationDesc = desc;
+                conv.detail = notification.notificationDesc;
             } else {
                 NSString *name = u.identifier;
                 NSString *desc = [NSString stringWithFormat:@"%@离开群", name];
-                message.content.notificationDesc = desc;
-                conv.detail = message.content.notificationDesc;
+                notification.notificationDesc = desc;
+                conv.detail = notification.notificationDesc;
                 [self.userDelegate asyncGetUser:notification.member cb:^(IUser *u) {
                     NSString *desc = [NSString stringWithFormat:@"%@离开群", u.name];
-                    message.content.notificationDesc = desc;
+                    notification.notificationDesc = desc;
                     //会话的最新消息未改变
                     if (conv.message == message) {
-                        conv.detail = message.content.notificationDesc;
+                        conv.detail = notification.notificationDesc;
                     }
                 }];
             }
@@ -461,15 +462,9 @@
     m.sender = im.sender;
     m.receiver = im.receiver;
     m.msgLocalID = im.msgLocalID;
-    MessageContent *content = [[MessageContent alloc] init];
-    content.raw = im.content;
-    m.content = content;
-    m.timestamp = (int)time(NULL);
-    
-    MessageContent *c = m.content;
-    if (c.type == MESSAGE_TEXT) {
-        NSLog(@"message:%@", c.text);
-    }
+    m.rawContent = im.content;
+    m.timestamp = im.timestamp;
+
     [self onNewMessage:m cid:m.sender];
 }
 
@@ -478,78 +473,25 @@
     m.sender = im.sender;
     m.receiver = im.receiver;
     m.msgLocalID = im.msgLocalID;
-    MessageContent *content = [[MessageContent alloc] init];
-    content.raw = im.content;
-    m.content = content;
-    m.timestamp = (int)time(NULL);
-    
-    MessageContent *c = m.content;
-    if (c.type == MESSAGE_TEXT) {
-        NSLog(@"message:%@", c.text);
-    }
+    m.rawContent = im.content;
+    m.timestamp = im.timestamp;
+
     [self onNewGroupMessage:m cid:m.receiver];
 }
 
 -(void)onGroupNotification:(NSString*)text {
-    GroupNotification *notification = [[GroupNotification alloc] initWithRaw:text];
-    if (notification.type == NOTIFICATION_GROUP_CREATED) {
-        [self onGroupCreated:notification];
-    } else if (notification.type == NOTIFICATION_GROUP_DISBANDED) {
-        [self onGroupDisband:notification];
-    } else if (notification.type == NOTIFICATION_GROUP_MEMBER_ADDED) {
-        [self onGroupMemberAdd:notification];
-    } else if (notification.type == NOTIFICATION_GROUP_MEMBER_LEAVED) {
-        [self onGroupMemberLeave:notification];
+    MessageNotificationContent *notification = [[MessageNotificationContent alloc] initWithNotification:text];
+    int64_t groupID = notification.groupID;
+    
+    IMessage *msg = [[IMessage alloc] init];
+    msg.sender = 0;
+    msg.receiver = groupID;
+    if (notification.timestamp > 0) {
+        msg.timestamp = notification.timestamp;
+    } else {
+        msg.timestamp = (int)time(NULL);
     }
-}
--(void)onGroupCreated:(GroupNotification*)notification {
-    int64_t groupID = notification.groupID;
-
-    IMessage *msg = [[IMessage alloc] init];
-    msg.sender = 0;
-    msg.receiver = groupID;
-    msg.timestamp = (int)time(NULL);
-    MessageContent *content = [[MessageContent alloc] initWithNotification:notification];
-    msg.content = content;
-
-    [self onNewGroupMessage:msg cid:msg.receiver];
-}
-
--(void)onGroupDisband:(GroupNotification*)notification {
-    int64_t groupID = notification.groupID;
-    
-    IMessage *msg = [[IMessage alloc] init];
-    msg.sender = 0;
-    msg.receiver = groupID;
-    msg.timestamp = (int)time(NULL);
-    MessageContent *content = [[MessageContent alloc] initWithNotification:notification];
-    msg.content = content;
-
-    [self onNewGroupMessage:msg cid:msg.receiver];
-}
-
--(void)onGroupMemberAdd:(GroupNotification*)notification {
-    int64_t groupID = notification.groupID;
-    
-    IMessage *msg = [[IMessage alloc] init];
-    msg.sender = 0;
-    msg.receiver = groupID;
-    msg.timestamp = (int)time(NULL);
-    MessageContent *content = [[MessageContent alloc] initWithNotification:notification];
-    msg.content = content;
-    
-    [self onNewGroupMessage:msg cid:msg.receiver];
-}
-
--(void)onGroupMemberLeave:(GroupNotification*)notification {
-    int64_t groupID = notification.groupID;
-    
-    IMessage *msg = [[IMessage alloc] init];
-    msg.sender = 0;
-    msg.receiver = groupID;
-    msg.timestamp = (int)time(NULL);
-    MessageContent *content = [[MessageContent alloc] initWithNotification:notification];
-    msg.content = content;
+    msg.rawContent = notification.rawNotification;
     
     [self onNewGroupMessage:msg cid:msg.receiver];
 }

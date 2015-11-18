@@ -462,7 +462,8 @@
         [self stopPlayer];
 
         FileCache *fileCache = [FileCache instance];
-        NSString *url = message.content.audio.url;
+        MessageAudioContent *content = (MessageAudioContent*)message.content;
+        NSString *url = content.url;
         NSString *path = [fileCache queryCacheForKey:url];
         if (path != nil) {
             if (!message.isListened) {
@@ -504,10 +505,11 @@
     if (message == nil) {
         return;
     }
-    NSString *littleUrl = [message.content littleImageURL];
+    MessageImageContent *content = (MessageImageContent*)message.content;
+    NSString *littleUrl = [content littleImageURL];
     
-    if ([[SDImageCache sharedImageCache] diskImageExistsWithKey:message.content.imageURL]) {
-        UIImage *cacheImg = [[SDImageCache sharedImageCache] imageFromDiskCacheForKey: message.content.imageURL];
+    if ([[SDImageCache sharedImageCache] diskImageExistsWithKey:content.imageURL]) {
+        UIImage *cacheImg = [[SDImageCache sharedImageCache] imageFromDiskCacheForKey: content.imageURL];
         MEESImageViewController * imgcontroller = [[MEESImageViewController alloc] init];
         [imgcontroller setImage:cacheImg];
         [imgcontroller setTappedThumbnail:tap.view];
@@ -518,7 +520,7 @@
         MEESImageViewController * imgcontroller = [[MEESImageViewController alloc] init];
         [imgcontroller setImage:cacheImg];
         imgcontroller.isFullSize = NO;
-        [imgcontroller setImgUrl:message.content.imageURL];
+        [imgcontroller setImgUrl:content.imageURL];
         [imgcontroller setTappedThumbnail:tap.view];
         [self presentViewController:imgcontroller animated:YES completion:nil];
     }
@@ -534,8 +536,9 @@
         return;
     }
     
+    MessageLocationContent *content = (MessageLocationContent*)message.content;
     MapViewController *ctl = [[MapViewController alloc] init];
-    ctl.friendCoordinate = message.content.location;
+    ctl.friendCoordinate = content.location;
     [self.navigationController pushViewController:ctl animated:YES];
 }
 
@@ -641,8 +644,10 @@
     }
     
     switch (msg.content.type) {
-        case MESSAGE_TEXT:
-            return [BubbleView cellHeightForText:msg.content.text] + nameHeight;
+        case MESSAGE_TEXT: {
+            MessageTextContent *content = (MessageTextContent*)msg.content;
+            return [BubbleView cellHeightForText:content.text] + nameHeight;
+        }
         case  MESSAGE_IMAGE:
             return kMessageImagViewHeight + nameHeight;
             break;
@@ -791,7 +796,8 @@
     }
     NSLog(@"copy...");
 
-    [[UIPasteboard generalPasteboard] setString:self.selectedMessage.content.text];
+    MessageTextContent *content = (MessageTextContent*)self.selectedMessage.content;
+    [[UIPasteboard generalPasteboard] setString:content.text];
     [self resignFirstResponder];
 }
 
@@ -856,32 +862,32 @@
 
 
 - (void)updateNotificationDesc:(IMessage*)message {
+    MessageNotificationContent *notification = (MessageNotificationContent*)message.content;
     if (message.content.type == MESSAGE_GROUP_NOTIFICATION) {
-        GroupNotification *notification = message.content.notification;
-        int type = notification.type;
+        int type = notification.notificationType;
         if (type == NOTIFICATION_GROUP_CREATED) {
             if (self.sender == notification.master) {
                 NSString *desc = [NSString stringWithFormat:@"您创建了\"%@\"群组", notification.groupName];
-                message.content.notificationDesc = desc;
+                notification.notificationDesc = desc;
             } else {
                 NSString *desc = [NSString stringWithFormat:@"您加入了\"%@\"群组", notification.groupName];
-                message.content.notificationDesc = desc;
+                notification.notificationDesc = desc;
             }
         } else if (type == NOTIFICATION_GROUP_DISBANDED) {
-            message.content.notificationDesc = @"群组已解散";
+            notification.notificationDesc = @"群组已解散";
         } else if (type == NOTIFICATION_GROUP_MEMBER_ADDED) {
             IUser *u = [self.userDelegate getUser:notification.member];
             if (u.name.length > 0) {
                 NSString *name = u.name;
                 NSString *desc = [NSString stringWithFormat:@"%@加入群", name];
-                message.content.notificationDesc = desc;
+                notification.notificationDesc = desc;
             } else {
                 NSString *name = u.identifier;
                 NSString *desc = [NSString stringWithFormat:@"%@加入群", name];
-                message.content.notificationDesc = desc;
+                notification.notificationDesc = desc;
                 [self.userDelegate asyncGetUser:notification.member cb:^(IUser *u) {
                     NSString *desc = [NSString stringWithFormat:@"%@加入群", u.name];
-                    message.content.notificationDesc = desc;
+                    notification.notificationDesc = desc;
                 }];
             }
         } else if (type == NOTIFICATION_GROUP_MEMBER_LEAVED) {
@@ -889,14 +895,14 @@
             if (u.name.length > 0) {
                 NSString *name = u.name;
                 NSString *desc = [NSString stringWithFormat:@"%@离开群", name];
-                message.content.notificationDesc = desc;
+                notification.notificationDesc = desc;
             } else {
                 NSString *name = u.identifier;
                 NSString *desc = [NSString stringWithFormat:@"%@离开群", name];
-                message.content.notificationDesc = desc;
+                notification.notificationDesc = desc;
                 [self.userDelegate asyncGetUser:notification.member cb:^(IUser *u) {
                     NSString *desc = [NSString stringWithFormat:@"%@离开群", u.name];
-                    message.content.notificationDesc = desc;
+                    notification.notificationDesc = desc;
                 }];
             }
         }
@@ -907,23 +913,25 @@
     FileCache *cache = [FileCache instance];
     AudioDownloader *downloader = [AudioDownloader instance];
     if (msg.content.type == MESSAGE_AUDIO) {
-        NSString *path = [cache queryCacheForKey:msg.content.audio.url];
+        MessageAudioContent *content = (MessageAudioContent*)msg.content;
+        NSString *path = [cache queryCacheForKey:content.url];
         if (!path && ![downloader isDownloading:msg]) {
             [downloader downloadAudio:msg];
         }
         msg.downloading = [downloader isDownloading:msg];
         msg.uploading = [[Outbox instance] isUploading:msg];
     } else if (msg.content.type == MESSAGE_LOCATION) {
-        NSString *url = msg.content.snapshotURL;
+        MessageLocationContent *content = (MessageLocationContent*)msg.content;
+        NSString *url = content.snapshotURL;
         if(![[SDImageCache sharedImageCache] imageFromMemoryCacheForKey:url] &&
            ![[SDImageCache sharedImageCache] diskImageExistsWithKey:url]){
             [self createMapSnapshot:msg];
         }
         //加载附件中的地址
-        MessageContentAttachment *attachment = [self.attachments objectForKey:[NSNumber numberWithInt:msg.msgLocalID]];
-        msg.content.address = attachment.address;
+        MessageAttachmentContent *attachment = [self.attachments objectForKey:[NSNumber numberWithInt:msg.msgLocalID]];
+        content.address = attachment.address;
         
-        if (msg.content.address.length == 0) {
+        if (content.address.length == 0) {
             [self reverseGeocodeLocation:msg];
         }
     } else if (msg.content.type == MESSAGE_IMAGE) {
@@ -972,20 +980,21 @@
 
 -(void)reverseGeocodeLocation:(IMessage*)msg {
     CLGeocoder *geocoder = [[CLGeocoder alloc] init];
-    
-    CLLocationCoordinate2D location = msg.content.location;
+    MessageLocationContent *content = (MessageLocationContent*)msg.content;
+    CLLocationCoordinate2D location = content.location;
     msg.geocoding = YES;
     CLLocation *loc = [[CLLocation alloc] initWithLatitude:location.latitude longitude:location.longitude];
     [geocoder reverseGeocodeLocation:loc completionHandler:^(NSArray *array, NSError *error) {
         if (!error && array.count > 0) {
             CLPlacemark *placemark = [array objectAtIndex:0];
-            msg.content.address = placemark.name;
-            
-            MessageContent *content = [[MessageContent alloc] initWithAttachment:msg.msgLocalID address:placemark.name];
+            content.address = placemark.name;
+
+            //以附件的形式存储，以免第二次查询
+            MessageAttachmentContent *att = [[MessageAttachmentContent alloc] initWithAttachment:msg.msgLocalID address:placemark.name];
             IMessage *attachment = [[IMessage alloc] init];
             attachment.sender = msg.sender;
             attachment.receiver = msg.receiver;
-            attachment.content = content;
+            attachment.rawContent = att.raw;
             [self saveMessage:attachment];
         }
         msg.geocoding = NO;
@@ -993,8 +1002,9 @@
 }
 
 - (void)createMapSnapshot:(IMessage*)msg {
-    CLLocationCoordinate2D location = msg.content.location;
-    NSString *url = msg.content.snapshotURL;
+    MessageLocationContent *content = (MessageLocationContent*)msg.content;
+    CLLocationCoordinate2D location = content.location;
+    NSString *url = content.snapshotURL;
     
     MKMapSnapshotOptions *options = [[MKMapSnapshotOptions alloc] init];
     options.scale = [[UIScreen mainScreen] scale];
@@ -1024,10 +1034,12 @@
     msg.sender = self.sender;
     msg.receiver = self.receiver;
 
-
-    MessageContent *content = [[MessageContent alloc] initWithLocation:location];
-    msg.content = content;
-    msg.content.address = address;
+    MessageLocationContent *content = [[MessageLocationContent alloc] initWithLocation:location];
+    msg.rawContent = content.raw;
+    
+    content = (MessageLocationContent*)msg.content;
+    content.address = address;
+    
     msg.timestamp = (int)time(NULL);
     
     [self saveMessage:msg];
@@ -1037,14 +1049,15 @@
     [[self class] playMessageSentSound];
     
     [self createMapSnapshot:msg];
-    if (msg.content.address.length == 0) {
+    if (content.address.length == 0) {
         [self reverseGeocodeLocation:msg];
     } else {
-        MessageContent *content = [[MessageContent alloc] initWithAttachment:msg.msgLocalID address:msg.content.address];
+        MessageAttachmentContent *att = [[MessageAttachmentContent alloc] initWithAttachment:msg.msgLocalID address:content.address];
         IMessage *attachment = [[IMessage alloc] init];
         attachment.sender = msg.sender;
         attachment.receiver = msg.receiver;
-        attachment.content = content;
+        attachment.rawContent = att.raw;
+        
         [self saveMessage:attachment];
     }
     [self insertMessage:msg];
@@ -1056,18 +1069,15 @@
     msg.sender = self.sender;
     msg.receiver = self.receiver;
     
+    MessageAudioContent *content = [[MessageAudioContent alloc] initWithAudio:[self localAudioURL] duration:second];
     
-    Audio *audio = [[Audio alloc] init];
-    audio.url = [self localAudioURL];
-    audio.duration = second;
-    MessageContent *content = [[MessageContent alloc] initWithAudio:audio];
-    msg.content = content;
+    msg.rawContent = content.raw;
     msg.timestamp = (int)time(NULL);
     
     //todo 优化读文件次数
     NSData *data = [NSData dataWithContentsOfFile:path];
     FileCache *fileCache = [FileCache instance];
-    [fileCache storeFile:data forKey:audio.url];
+    [fileCache storeFile:data forKey:content.url];
     
     [self saveMessage:msg];
     
@@ -1091,8 +1101,8 @@
     msg.sender = self.sender;
     msg.receiver = self.receiver;
     
-    MessageContent *content = [[MessageContent alloc] initWithImageURL:[self localImageURL]];
-    msg.content = content;
+    MessageImageContent *content = [[MessageImageContent alloc] initWithImageURL:[self localImageURL]];
+    msg.rawContent = content.raw;
     msg.timestamp = (int)time(NULL);
    
     CGRect screenRect = [[UIScreen mainScreen] bounds];
@@ -1104,8 +1114,8 @@
     UIImage *sizeImage = [image resizedImage:CGSizeMake(128, 128) interpolationQuality:kCGInterpolationDefault];
     image = [image resizedImage:CGSizeMake(newWidth, newHeigth) interpolationQuality:kCGInterpolationDefault];
     
-    [[SDImageCache sharedImageCache] storeImage:image forKey:msg.content.imageURL];
-    NSString *littleUrl =  [msg.content littleImageURL];
+    [[SDImageCache sharedImageCache] storeImage:image forKey:content.imageURL];
+    NSString *littleUrl =  [content littleImageURL];
     [[SDImageCache sharedImageCache] storeImage:sizeImage forKey: littleUrl];
     
     [self saveMessage:msg];
@@ -1124,8 +1134,8 @@
     msg.sender = self.sender;
     msg.receiver = self.receiver;
     
-    MessageContent *content = [[MessageContent alloc] initWithText:text];
-    msg.content = content;
+    MessageTextContent *content = [[MessageTextContent alloc] initWithText:text];
+    msg.rawContent = content.raw;
     msg.timestamp = (int)time(NULL);
     
     [self saveMessage:msg];

@@ -292,7 +292,7 @@
         timeStr = [NSString stringWithFormat:@"昨天 %02zd:%02zd",components.hour,components.minute];
     } else if ([self isInWeek:curtDate]) {
         NSString *s = [self getWeekDayString: components.weekday];
-        NSString *timeStr = [NSString stringWithFormat:@"%@ %02zd:%02zd", s, components.hour,components.minute];
+        timeStr = [NSString stringWithFormat:@"%@ %02zd:%02zd", s, components.hour,components.minute];
     } else if ([self isInYear:curtDate]) {
         NSString *format = @"MM-dd HH:mm";
         NSDateFormatter *formatter = [[NSDateFormatter alloc] init] ;

@@ -32,19 +32,56 @@
 #define NOTIFICATION_GROUP_MEMBER_ADDED 3
 #define NOTIFICATION_GROUP_MEMBER_LEAVED 4
 
-@interface Audio : NSObject
-@property(nonatomic, copy) NSString *url;
-@property(nonatomic) int duration;
+
+@interface MessageContent : NSObject
+
+@property(nonatomic) int type;
+@property(nonatomic) NSString *raw;
+
 @end
 
-@interface GroupNotification : NSObject
 
-@property(nonatomic, copy) NSString *raw;
-@property(nonatomic) int type;
+@interface MessageTextContent : MessageContent
+- (id)initWithText:(NSString*)text;
+//text message
+@property(nonatomic, readonly) NSString *text;
+@end
+
+@interface MessageAudioContent : MessageContent
+- (id)initWithAudio:(NSString*)url duration:(int)duration;
+
+@property(nonatomic, copy) NSString *url;
+@property(nonatomic) int duration;
+
+@end
+
+@interface MessageImageContent : MessageContent
+- (id)initWithImageURL:(NSString*)imageURL;
+
+//image message
+@property(nonatomic, readonly) NSString *imageURL;
+@property(nonatomic, readonly) NSString *littleImageURL;
+@end
+
+@interface MessageLocationContent : MessageContent
+- (id)initWithLocation:(CLLocationCoordinate2D)location;
+
+
+//location message
+@property(nonatomic, readonly) CLLocationCoordinate2D location;
+@property(nonatomic, readonly) NSString *snapshotURL;
+@property(nonatomic, copy) NSString *address;
+
+@end
+
+@interface MessageNotificationContent : MessageContent
+
+@property(nonatomic) int notificationType;
 
 @property(nonatomic) int64_t groupID;
 
 @property(nonatomic) int timestamp;
+
 //created
 @property(nonatomic) int64_t master;
 @property(nonatomic) NSString *groupName;
@@ -53,51 +90,23 @@
 //GROUP_MEMBER_ADDED,GROUP_MEMBER_LEAVED
 @property(nonatomic) int64_t member;
 
--(id)initWithRaw:(NSString*)raw;
+@property(nonatomic, copy) NSString *rawNotification;
+
+@property(nonatomic, copy) NSString *notificationDesc;
+
+-(id)initWithNotification:(NSString*)raw;
+
+
 
 @end
 
-//消息附件
-@interface MessageContentAttachment : NSObject
+@interface MessageAttachmentContent : MessageContent
+
 @property(nonatomic) int msgLocalID;
 
 @property(nonatomic) NSString *address;
-@end
 
-@interface MessageContent : NSObject
-
-- (id)initWithText:(NSString*)text;
-- (id)initWithImageURL:(NSString*)imageURL;
-- (id)initWithAudio:(Audio*)audio;
-- (id)initWithNotification:(GroupNotification*)notification;
-- (id)initWithLocation:(CLLocationCoordinate2D)location;
 - (id)initWithAttachment:(int)msgLocalID address:(NSString*)address;
-- (id)initWithRaw:(NSString*)raw;
-
-@property(nonatomic) int type;
-@property(nonatomic) NSString *raw;
-
-//text message
-@property(nonatomic, readonly) NSString *text;
-
-//audio message
-@property(nonatomic, readonly) Audio *audio;
-
-//location message
-@property(nonatomic, readonly) CLLocationCoordinate2D location;
-@property(nonatomic, readonly) NSString *snapshotURL;
-@property(nonatomic, copy) NSString *address;
-
-//notification message
-@property(nonatomic, readonly) GroupNotification *notification;
-@property(nonatomic, copy) NSString *notificationDesc;
-
-//image message
-@property(nonatomic, readonly) NSString *imageURL;
-@property(nonatomic, readonly) NSString *littleImageURL;
-
-//message attachment
-@property(nonatomic, readonly) MessageContentAttachment *attachment;
 
 @end
 
@@ -115,7 +124,11 @@
 @property(nonatomic) int flags;
 @property(nonatomic) int64_t sender;
 @property(nonatomic) int64_t receiver;
-@property(nonatomic) MessageContent *content;
+
+@property(nonatomic, copy) NSString *rawContent;
+@property(nonatomic, readonly) int type;
+@property(nonatomic, readonly) MessageContent *content;
+
 @property(nonatomic) int timestamp;
 @property(nonatomic, readonly) BOOL isACK;
 @property(nonatomic, readonly) BOOL isFailure;

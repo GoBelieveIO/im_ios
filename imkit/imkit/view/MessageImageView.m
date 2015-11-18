@@ -49,7 +49,8 @@
     
     [super setMsg:msg];
     
-    NSString *originURL = msg.content.imageURL;
+    MessageImageContent *content = (MessageImageContent*)msg.content;
+    NSString *originURL = content.imageURL;
     if (originURL) {
         //在原图URL后面添加"@{width}w_{heigth}h_{1|0}c", 支持128x128, 256x256
         NSString *url = [NSString stringWithFormat:@"%@@128w_128h_0c", originURL];

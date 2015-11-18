@@ -157,7 +157,7 @@
         {
             MessageTextView *textView = (MessageTextView*)self.bubbleView;
             textView.type = msgType;
-            textView.text = message.content.text;
+            textView.msg = message;
         }
             break;
         case MESSAGE_IMAGE:

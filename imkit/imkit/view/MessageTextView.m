@@ -10,6 +10,9 @@
 #import "MessageTextView.h"
 #import "Constants.h"
 
+@interface MessageTextView()
+@property(nonatomic, copy) NSString *text;
+@end
 
 @implementation MessageTextView
 
@@ -22,10 +25,12 @@
     return self;
 }
 
-- (void)setText:(NSString *)newText
-{
-    _text = newText;
-    [self setNeedsLayout];
+
+- (void)setMsg:(IMessage *)msg {
+    [super setMsg:msg];
+    
+    MessageTextContent *text = (MessageTextContent*)msg.content;
+    self.text = text.text;
     [self setNeedsDisplay];
 }
 

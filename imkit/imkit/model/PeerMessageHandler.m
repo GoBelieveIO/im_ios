@@ -29,9 +29,7 @@
     IMessage *m = [[IMessage alloc] init];
     m.sender = im.sender;
     m.receiver = im.receiver;
-    MessageContent *content = [[MessageContent alloc] init];
-    content.raw = im.content;
-    m.content = content;
+    m.rawContent = im.content;
     m.timestamp = msg.timestamp;
     BOOL r = [[PeerMessageDB instance] insertMessage:m uid:uid];
     if (r) {

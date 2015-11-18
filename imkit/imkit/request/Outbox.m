@@ -55,43 +55,36 @@
 }
 
 -(void)sendGroupAudioMessage:(IMessage*)msg URL:url{
-    MessageContent *old = msg.content;
-    Audio *audio = [[Audio alloc] init];
-    audio.url = url;
-    audio.duration = old.audio.duration;
-    
-    MessageContent *content = [[MessageContent alloc] initWithAudio:audio];
-    msg.content = content;
+    MessageAudioContent *old = (MessageAudioContent*)msg.content;
+    MessageAudioContent *audio = [[MessageAudioContent alloc] initWithAudio:url duration:old.duration];
+    msg.rawContent = audio.raw;
     [self sendMessage:msg group:YES];
-    msg.content = old;
+    msg.rawContent = old.raw;
 }
 
 -(void)sendGroupImageMessage:(IMessage*)msg URL:url {
-    MessageContent *old = msg.content;
-    MessageContent *content = [[MessageContent alloc] initWithImageURL:url];
-    msg.content = content;
+    MessageImageContent *old = (MessageImageContent*)msg.content;
+    
+    MessageImageContent *content = [[MessageImageContent alloc] initWithImageURL:url];
+    msg.rawContent = content.raw;
     [self sendMessage:msg group:YES];
-    msg.content = old;
+    msg.rawContent = old.raw;
 }
 
 -(void)sendAudioMessage:(IMessage*)msg URL:url{
-    MessageContent *old = msg.content;
-    Audio *audio = [[Audio alloc] init];
-    audio.url = url;
-    audio.duration = old.audio.duration;
-    
-    MessageContent *content = [[MessageContent alloc] initWithAudio:audio];
-    msg.content = content;
+    MessageAudioContent *old = (MessageAudioContent*)msg.content;
+    MessageAudioContent *audio = [[MessageAudioContent alloc] initWithAudio:url duration:old.duration];
+    msg.rawContent = audio.raw;
     [self sendMessage:msg group:NO];
-    msg.content = old;
+    msg.rawContent = old.raw;
 }
 
 -(void)sendImageMessage:(IMessage*)msg URL:url {
-    MessageContent *old = msg.content;
-    MessageContent *content = [[MessageContent alloc] initWithImageURL:url];
-    msg.content = content;
+    MessageImageContent *old = (MessageImageContent*)msg.content;
+    MessageImageContent *content = [[MessageImageContent alloc] initWithImageURL:url];
+    msg.rawContent = content.raw;
     [self sendMessage:msg group:NO];
-    msg.content = old;
+    msg.rawContent = old.raw;
 }
 
 - (void)sendMessage:(IMessage*)msg group:(BOOL)isGroup {
@@ -159,7 +152,8 @@
 }
 
 -(BOOL)uploadImage:(IMessage*)msg {
-    UIImage *image = [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:msg.content.imageURL];
+    MessageImageContent *content = (MessageImageContent*)msg.content;
+    UIImage *image = [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:content.imageURL];
     if (!image) {
         NSLog(@"can't load image from image cache");
         return NO;
@@ -169,7 +163,8 @@
 
 -(BOOL)uploadAudio:(IMessage*)msg {
     FileCache *cache = [FileCache instance];
-    NSString *path = [cache queryCacheForKey:msg.content.audio.url];
+    MessageAudioContent *content = (MessageAudioContent*)msg.content;
+    NSString *path = [cache queryCacheForKey:content.url];
 
     NSString *tmp = [NSString stringWithFormat:@"%@.amr", path];
     
@@ -227,7 +222,8 @@
  
 }
 -(BOOL)uploadGroupImage:(IMessage*)msg {
-    UIImage *image = [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:msg.content.imageURL];
+    MessageImageContent *content = (MessageImageContent*)msg.content;
+    UIImage *image = [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:content.imageURL];
     if (!image) {
         return NO;
     }
@@ -236,7 +232,9 @@
 
 -(BOOL)uploadGroupAudio:(IMessage*)msg {
     FileCache *cache = [FileCache instance];
-    NSString *path = [cache queryCacheForKey:msg.content.audio.url];
+    MessageAudioContent *content = (MessageAudioContent*)msg.content;
+    
+    NSString *path = [cache queryCacheForKey:content.url];
     
     NSString *tmp = [NSString stringWithFormat:@"%@.amr", path];
     

@@ -90,13 +90,14 @@
         return;
     }
     [self.messages addObject:msg];
-    [self downloadAudio: msg.content.audio.url
+    MessageAudioContent *audio = (MessageAudioContent*)msg.content;
+    [self downloadAudio: audio.url
                 success:^(NSData *data) {
                     [self.messages removeObject:msg];
                     FileCache *cache = [FileCache instance];
-                    [cache storeFile:data forKey:msg.content.audio.url];
+                    [cache storeFile:data forKey:audio.url];
                     
-                    NSString *amr_path = [cache queryCacheForKey:msg.content.audio.url];
+                    NSString *amr_path = [cache queryCacheForKey:audio.url];
                     NSString *wav_path = [NSString stringWithFormat:@"%@.wav", amr_path];
                     int r = decode_amr([amr_path UTF8String], [wav_path UTF8String]);
                     if (r != 0) {

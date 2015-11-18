@@ -28,9 +28,7 @@
     IMessage *m = [[IMessage alloc] init];
     m.sender = im.sender;
     m.receiver = im.receiver;
-    MessageContent *content = [[MessageContent alloc] init];
-    content.raw = im.content;
-    m.content = content;
+    m.rawContent = im.content;
     m.timestamp = im.timestamp;
     BOOL r = [[GroupMessageDB instance] insertMessage:m];
     if (r) {
@@ -48,12 +46,13 @@
 }
 
 -(BOOL)handleGroupNotification:(NSString*)notification {
-    GroupNotification *obj = [[GroupNotification alloc] initWithRaw:notification];
+    MessageNotificationContent *obj = [[MessageNotificationContent alloc] initWithNotification:notification];
+    
     IMessage *m = [[IMessage alloc] init];
     m.sender = 0;
     m.receiver = obj.groupID;
-    MessageContent *content = [[MessageContent alloc] initWithNotification:obj];
-    m.content = content;
+    m.rawContent = obj.raw;
+
     if (obj.timestamp > 0) {
         m.timestamp = obj.timestamp;
     } else {

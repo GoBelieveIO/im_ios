@@ -192,9 +192,7 @@
     m.sender = im.sender;
     m.receiver = im.receiver;
     m.msgLocalID = im.msgLocalID;
-    MessageContent *content = [[MessageContent alloc] init];
-    content.raw = im.content;
-    m.content = content;
+    m.rawContent = im.content;
     m.timestamp = im.timestamp;
     
     if (self.textMode && m.content.type != MESSAGE_TEXT) {
@@ -260,8 +258,9 @@
             }
         } else {
             if (msg.content.type == MESSAGE_ATTACHMENT) {
-                [self.attachments setObject:msg.content.attachment
-                                     forKey:[NSNumber numberWithInt:msg.content.attachment.msgLocalID]];
+                MessageAttachmentContent *att = (MessageAttachmentContent*)msg.content;
+                [self.attachments setObject:att
+                                     forKey:[NSNumber numberWithInt:att.msgLocalID]];
             } else {
                 [self.messages insertObject:msg atIndex:0];
                 if (++count >= PAGE_COUNT) {
@@ -290,8 +289,9 @@
     IMessage *msg = [iterator next];
     while (msg) {
         if (msg.content.type == MESSAGE_ATTACHMENT) {
-            [self.attachments setObject:msg.content.attachment
-                                 forKey:[NSNumber numberWithInt:msg.content.attachment.msgLocalID]];
+            MessageAttachmentContent *att = (MessageAttachmentContent*)msg.content;
+            [self.attachments setObject:att
+                                 forKey:[NSNumber numberWithInt:att.msgLocalID]];
             
         } else {
             [self.messages insertObject:msg atIndex:0];

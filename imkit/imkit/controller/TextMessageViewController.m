@@ -350,7 +350,10 @@
     
     switch (msg.content.type) {
         case MESSAGE_TEXT:
-            return [BubbleView cellHeightForText:msg.content.text] + nameHeight;
+        {
+            MessageTextContent *content = (MessageTextContent*)msg.content;
+            return [BubbleView cellHeightForText:content.text] + nameHeight;
+        }
         case MESSAGE_GROUP_NOTIFICATION:
             return 40;
         default:
@@ -425,8 +428,8 @@
     msg.sender = self.sender;
     msg.receiver = self.receiver;
     
-    MessageContent *content = [[MessageContent alloc] initWithText:text];
-    msg.content = content;
+    MessageTextContent *content = [[MessageTextContent alloc] initWithText:text];
+    msg.rawContent = content.raw;
     msg.timestamp = (int)time(NULL);
     
     [self saveMessage:msg];
