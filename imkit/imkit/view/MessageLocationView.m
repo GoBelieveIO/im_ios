@@ -150,8 +150,7 @@
 
 -(void)layoutSubviews {
     [super layoutSubviews];
-    
-    UIImage *image = (self.selectedToShowCopyMenu) ? [self bubbleImageHighlighted] : [self bubbleImage];
+
     CGRect bubbleFrame = [self bubbleFrame];
     
     if (self.imageView) {

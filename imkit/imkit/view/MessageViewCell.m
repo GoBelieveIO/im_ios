@@ -21,6 +21,7 @@
 @property(nonatomic) IMessage *msg;
 @property(nonatomic) BOOL showName;
 @property(nonatomic) BOOL showHead;
+@property(nonatomic) BubbleMessageType bubbleMessageType;
 @end
 
 @implementation MessageViewCell
@@ -132,59 +133,32 @@
     [self.msg addObserver:self forKeyPath:@"senderInfo" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
     
 
+    self.bubbleMessageType = msgType;
+    
     NSString *name = self.msg.senderInfo.name;
     if (name.length == 0) {
         name = self.msg.senderInfo.identifier;
     }
-    
-    self.showName = showName;
-    
-    self.nameLabel.text = name;
-    
-    CGRect bubbleFrame = CGRectMake(0,
-                              0,
-                              self.contentView.frame.size.width,
-                              self.contentView.frame.size.height);
-    
-    CGRect headFrame = CGRectMake(2, kMarginTop+kPaddingTop, 40, 40);
-    
-    if (self.showName) {
-        bubbleFrame.origin.y = NAME_LABEL_HEIGHT;
-        bubbleFrame.size.height -= NAME_LABEL_HEIGHT;
-    }
-    
 
-    BOOL showHead = NO;
+    self.nameLabel.text = name;
+
+    self.showName = showName;
     if (self.msg.type == MESSAGE_TEXT || self.msg.type == MESSAGE_IMAGE ||
         self.msg.type == MESSAGE_LOCATION || self.msg.type == MESSAGE_AUDIO ||
         self.msg.type == MESSAGE_LINK) {
-        showHead = YES;
+        self.showHead = YES;
+    } else {
+        self.showHead = NO;
     }
-
-    self.showHead = showHead;
     
     if (msgType == BubbleMessageTypeOutgoing) {
         self.nameLabel.textAlignment = NSTextAlignmentRight;
-        if (showHead) {
-            bubbleFrame.size.width -= 44;
-        }
-        
-        headFrame.origin.x = self.bounds.size.width - 42;
     } else {
         self.nameLabel.textAlignment = NSTextAlignmentLeft;
-        
-        if (showHead) {
-            bubbleFrame.origin.x = 44;
-            bubbleFrame.size.width -= 44;
-        }
     }
-
-    self.bubbleView.frame = bubbleFrame;
     
     self.nameLabel.hidden = !showName;
-    self.headView.frame = headFrame;
-
-    self.headView.hidden = !showHead;
+    self.headView.hidden = !self.showHead;
 
     UIImage *placehodler = [UIImage imageNamed:@"PersonalChat"];
     NSURL *url = [NSURL URLWithString:self.msg.senderInfo.avatarURL];
@@ -240,6 +214,7 @@
         default:
             break;
     }
+    [self setNeedsLayout];
 }
 
 
@@ -262,5 +237,37 @@
                                     }];
         }
     }
+}
+
+-(void)layoutSubviews {
+    [super layoutSubviews];
+    
+    CGRect bubbleFrame = CGRectMake(0,
+                                    0,
+                                    self.contentView.frame.size.width,
+                                    self.contentView.frame.size.height);
+    
+    CGRect headFrame = CGRectMake(2, kMarginTop+kPaddingTop, 40, 40);
+    
+    if (self.showName) {
+        bubbleFrame.origin.y = NAME_LABEL_HEIGHT;
+        bubbleFrame.size.height -= NAME_LABEL_HEIGHT;
+    }
+    
+    if (self.bubbleMessageType == BubbleMessageTypeOutgoing) {
+        if (self.showHead) {
+            bubbleFrame.size.width -= 44;
+        }
+        
+        headFrame.origin.x = self.bounds.size.width - 42;
+    } else {
+        if (self.showHead) {
+            bubbleFrame.origin.x = 44;
+            bubbleFrame.size.width -= 44;
+        }
+    }
+    
+    self.bubbleView.frame = bubbleFrame;
+    self.headView.frame = headFrame;
 }
 @end
