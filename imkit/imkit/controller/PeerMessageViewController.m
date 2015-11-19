@@ -184,7 +184,11 @@
     if (im.sender != self.peerUID && im.receiver != self.peerUID) {
         return;
     }
-    [[self class] playMessageReceivedSound];
+    int now = (int)time(NULL);
+    if (now - self.lastReceivedTimestamp > 1) {
+        [[self class] playMessageReceivedSound];
+        self.lastReceivedTimestamp = now;
+    }
     
     NSLog(@"receive msg:%@",im);
     

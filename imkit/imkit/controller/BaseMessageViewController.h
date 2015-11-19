@@ -40,6 +40,7 @@
 @property(nonatomic) UIRefreshControl *refreshControl;
 @property(nonatomic) UITableView *tableView;
 
+@property(nonatomic) int lastReceivedTimestamp;
 
 //是否只展示文本消息
 @property(nonatomic) BOOL textMode;

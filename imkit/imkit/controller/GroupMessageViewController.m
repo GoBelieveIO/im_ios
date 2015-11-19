@@ -152,7 +152,11 @@
     if (im.receiver != self.groupID) {
         return;
     }
-    [[self class] playMessageReceivedSound];
+    int now = (int)time(NULL);
+    if (now - self.lastReceivedTimestamp > 1) {
+        [[self class] playMessageReceivedSound];
+        self.lastReceivedTimestamp = now;
+    }
     
     NSLog(@"receive msg:%@",im);
     
