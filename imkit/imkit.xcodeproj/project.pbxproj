@@ -57,7 +57,6 @@
 		6D03315C1AAB64B1004AA39F /* UIImage+Resize.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D03315B1AAB64B1004AA39F /* UIImage+Resize.m */; };
 		6D03315F1AAB6626004AA39F /* NSString+JSMessagesView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D03315E1AAB6626004AA39F /* NSString+JSMessagesView.m */; };
 		6D0331621AAB6702004AA39F /* TAHttpOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D0331611AAB6702004AA39F /* TAHttpOperation.m */; };
-		6D0331651AAB6781004AA39F /* UIImage+JSMessagesView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D0331641AAB6781004AA39F /* UIImage+JSMessagesView.m */; };
 		6D18DBA61BEA0A76006A3B66 /* EaseChatToolbarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D18DB7A1BEA06D8006A3B66 /* EaseChatToolbarItem.m */; };
 		6D18DBA71BEA0A7A006A3B66 /* EaseChatToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D18DB781BEA06D8006A3B66 /* EaseChatToolbar.m */; };
 		6D18DBA81BEA0A7E006A3B66 /* EaseImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D18DB7C1BEA06D8006A3B66 /* EaseImageView.m */; };
@@ -208,8 +207,6 @@
 		6D03315E1AAB6626004AA39F /* NSString+JSMessagesView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+JSMessagesView.m"; sourceTree = "<group>"; };
 		6D0331601AAB6702004AA39F /* TAHttpOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TAHttpOperation.h; sourceTree = "<group>"; };
 		6D0331611AAB6702004AA39F /* TAHttpOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TAHttpOperation.m; sourceTree = "<group>"; };
-		6D0331631AAB6781004AA39F /* UIImage+JSMessagesView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+JSMessagesView.h"; sourceTree = "<group>"; };
-		6D0331641AAB6781004AA39F /* UIImage+JSMessagesView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+JSMessagesView.m"; sourceTree = "<group>"; };
 		6D18DB771BEA06D8006A3B66 /* EaseChatToolbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EaseChatToolbar.h; sourceTree = "<group>"; };
 		6D18DB781BEA06D8006A3B66 /* EaseChatToolbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EaseChatToolbar.m; sourceTree = "<group>"; };
 		6D18DB791BEA06D8006A3B66 /* EaseChatToolbarItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EaseChatToolbarItem.h; sourceTree = "<group>"; };
@@ -489,8 +486,6 @@
 		6D0331591AAB64B1004AA39F /* category */ = {
 			isa = PBXGroup;
 			children = (
-				6D0331631AAB6781004AA39F /* UIImage+JSMessagesView.h */,
-				6D0331641AAB6781004AA39F /* UIImage+JSMessagesView.m */,
 				6D03315D1AAB6626004AA39F /* NSString+JSMessagesView.h */,
 				6D03315E1AAB6626004AA39F /* NSString+JSMessagesView.m */,
 				6D9C46DC1BEB32530053066A /* UIViewController+HUD.h */,
@@ -726,7 +721,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				6D03301C1AA9BCD8004AA39F /* FileCache.m in Sources */,
-				6D0331651AAB6781004AA39F /* UIImage+JSMessagesView.m in Sources */,
 				6D032FF41AA9B41C004AA39F /* PeerMessageDB.m in Sources */,
 				6D18DBB11BEA0AB0006A3B66 /* EaseEmotionManager.m in Sources */,
 				6DEE56C31BDE2F5D002BCAB8 /* MapViewController.m in Sources */,

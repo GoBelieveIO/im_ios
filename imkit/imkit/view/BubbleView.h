@@ -14,9 +14,12 @@ extern CGFloat const kJSAvatarSize;
 
 #define kMarginTop 4.0f
 #define kMarginBottom 4.0f
-#define kPaddingTop 8.0f
-#define kPaddingBottom 8.0f
-#define kBubblePaddingRight 36.0f
+#define kPaddingTop 2.0f
+#define kPaddingBottom 11.0f
+#define kBubblePaddingHead 8.0f
+#define kBubblePaddingTail 7.0f
+
+//#define kBubblePaddingRight 31.0f
 
 typedef enum {
     BubbleMessageTypeIncoming = 0,
@@ -51,9 +54,7 @@ typedef enum {
 + (UIFont *)font;
 
 + (CGSize)textSizeForText:(NSString *)txt withFont:(UIFont*)font;
-+ (CGSize)bubbleSizeForText:(NSString *)txt withFont:(UIFont*)font;
 
-+ (CGFloat)cellHeightForText:(NSString *)txt;
 
 + (int)maxCharactersPerLine;
 + (int)numberOfLinesForMessage:(NSString *)txt;

@@ -35,9 +35,26 @@
 }
 
 #pragma mark - Drawing
+
+
++ (CGFloat)cellHeightForText:(NSString *)txt
+{
+    return [MessageTextView bubbleSizeForText:txt withFont:[BubbleView font]].height + kMarginTop + kMarginBottom;
+}
+
++ (CGSize)bubbleSizeForText:(NSString *)txt withFont:(UIFont*)font
+{
+    CGSize textSize = [BubbleView textSizeForText:txt withFont:font];
+    return CGSizeMake(textSize.width + kBubblePaddingHead + kBubblePaddingTail + 16,
+                      textSize.height + kPaddingTop + kPaddingBottom + 16);
+}
+
+
+
 - (CGRect)bubbleFrame{
 
-    CGSize bubbleSize = [BubbleView bubbleSizeForText:self.text withFont:[BubbleView font]];
+    CGSize bubbleSize = [MessageTextView bubbleSizeForText:self.text withFont:[BubbleView font]];
+    bubbleSize.height = MAX(bubbleSize.height, 40);
     return CGRectMake(floorf(self.type == BubbleMessageTypeOutgoing ? self.frame.size.width - bubbleSize.width : 0.0f),
                       floorf(kMarginTop),
                       floorf(bubbleSize.width),
@@ -48,16 +65,19 @@
 - (void)drawRect:(CGRect)frame{
     [super drawRect:frame];
     
-    UIImage *image = (self.selectedToShowCopyMenu) ? [self bubbleImageHighlighted] : [self bubbleImage];
-    
     CGRect bubbleFrame = [self bubbleFrame];
     
     CGSize textSize = [BubbleView textSizeForText:self.text withFont:[BubbleView font]];
     
-    CGFloat textX = image.leftCapWidth  + (self.type == BubbleMessageTypeOutgoing ? bubbleFrame.origin.x : 0.0f);
+    CGFloat textX;
+    if (self.type == BubbleMessageTypeOutgoing) {
+        textX = (bubbleFrame.origin.x + 7 + 8);
+    } else {
+        textX = (8 + 8);
+    }
     
     CGRect textFrame = CGRectMake(textX,
-                                  kPaddingTop + kMarginTop - 2,
+                                  kPaddingTop + kMarginTop + 8,
                                   textSize.width,
                                   textSize.height);
     

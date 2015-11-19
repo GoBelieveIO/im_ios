@@ -9,7 +9,7 @@
 
 #import "MessageLinkView.h"
 
-#define KInComingMoveRight  2.0
+#define KInComingMoveRight  0.0
 #define kOuttingMoveRight   3.0
 
 @interface MessageLinkView()
@@ -54,7 +54,7 @@
 - (void)setMsg:(IMessage*)msg {
     
     [super setMsg:msg];
-    
+
     MessageLinkContent *content = msg.linkContent;
     NSString *url = content.imageURL;
     if (url.length > 0) {
@@ -82,7 +82,7 @@
 
 #pragma mark - Drawing
 - (CGRect)bubbleFrame {
-    CGSize bubbleSize = CGSizeMake(kLinkWidth + kBubblePaddingRight, kLinkHeight + kPaddingTop + kPaddingBottom);
+    CGSize bubbleSize = CGSizeMake(kLinkWidth + kBubblePaddingHead + kBubblePaddingTail + 16, kLinkHeight + kPaddingTop + kPaddingBottom + 8);
     return CGRectMake(floorf(self.type == BubbleMessageTypeOutgoing ? self.frame.size.width - bubbleSize.width : 0.0f),
                       floorf(kMarginTop),
                       floorf(bubbleSize.width),
@@ -94,25 +94,23 @@
 
 -(void)layoutSubviews {
     [super layoutSubviews];
-    
-    UIImage *image = [self bubbleImage];
+
     CGRect bubbleFrame = [self bubbleFrame];
 
-    CGFloat imgX = image.leftCapWidth + (self.type == BubbleMessageTypeOutgoing ? bubbleFrame.origin.x + kOuttingMoveRight: KInComingMoveRight);
-
+    CGFloat imgX = (self.type == BubbleMessageTypeOutgoing ? bubbleFrame.origin.x + kBubblePaddingTail + 8: kBubblePaddingHead + 8);
     CGRect imageFrame = CGRectMake(imgX,
-                                   kMarginTop + kPaddingTop + 30,
+                                   kMarginTop + kPaddingTop + 34,
                                    70,
                                    70);
     [self.imageView setFrame:imageFrame];
-
     
     [self.downloadIndicatorView setFrame:imageFrame];
     
-    CGRect rect = CGRectMake(imgX, 8, 180, 30);
+    CGRect rect = CGRectMake(imgX, kMarginTop + kPaddingTop + 4, 180, 30);
     self.titleLabel.frame = rect;
     
-    rect = CGRectMake(imgX + 70 + 4, 42, 130, 70);
+    rect = CGRectMake(imgX + 70 + 4, kMarginTop + kPaddingTop + 34,
+                      bubbleFrame.size.width - kBubblePaddingHead - kBubblePaddingTail - 8 - 70 - 8, 70);
     self.contentLabel.frame = rect;
     
 }

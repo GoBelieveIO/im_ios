@@ -11,7 +11,7 @@
 #import "BubbleView.h"
 #import "IMessage.h"
 
-#define kLinkWidth  200
+#define kLinkWidth  224
 #define kLinkHeight 110
 #define  kMessageLinkViewHeight (kLinkHeight + kMarginTop + kMarginBottom + kPaddingTop + kPaddingBottom)
 

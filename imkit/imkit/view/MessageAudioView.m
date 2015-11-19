@@ -59,13 +59,10 @@
         [self.timeLengthLabel setFont:[UIFont systemFontOfSize:12.0f]];
         [self addSubview:self.timeLengthLabel];
         
-        rect.origin.x = kAudioCellWidth - kmicroBtnWidth  - kblank;
-        rect.origin.y = kAudioViewCellHeight - kmicroBtnHeight - kPaddingBottom;
-        rect.size.width = kmicroBtnWidth;
-        rect.size.height = kmicroBtnHeight;
-        self.microPhoneBtn = [[UIButton alloc] initWithFrame:rect ];
-
-        [self addSubview:self.microPhoneBtn];
+        self.unreadImageView = [[UIImageView alloc] init];
+        self.unreadImageView.hidden = YES;
+        [self.unreadImageView setImage:[UIImage imageNamed:@"VoiceNodeUnread"]];
+        [self addSubview:self.unreadImageView];
         
         self.downloadIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         [self addSubview:self.downloadIndicatorView];
@@ -97,15 +94,11 @@
     [self.timeLengthLabel setText:str];
     
     if ([self.msg isListened]) {
-        [self.microPhoneBtn setImage:[UIImage imageNamed:@"MicBlueIncoming"] forState:UIControlStateNormal];
-    }else{
-        [self.microPhoneBtn setImage:[UIImage imageNamed:@"MicNewIncoming"] forState:UIControlStateNormal];
-    }
-    
-    if (self.type == BubbleMessageTypeOutgoing) {
-        [self.microPhoneBtn setHidden:YES];
+        self.unreadImageView.hidden = YES;
+    } else if (self.type == BubbleMessageTypeIncoming){
+        self.unreadImageView.hidden = NO;
     } else {
-        [self.microPhoneBtn setHidden:NO];
+        self.unreadImageView.hidden = YES;
     }
     
     [self.msg addObserver:self forKeyPath:@"uploading" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
@@ -161,10 +154,12 @@
     } else if ([keyPath isEqualToString:@"progress"]) {
         self.progressView.progress = self.msg.progress/100.0;
     } else if([keyPath isEqualToString:@"flags"]) {
-        if (self.msg.isListened) {
-            [self.microPhoneBtn setImage:[UIImage imageNamed:@"MicBlueIncoming"] forState:UIControlStateNormal];
+        if ([self.msg isListened]) {
+            self.unreadImageView.hidden = YES;
+        } else if (self.type == BubbleMessageTypeIncoming){
+            self.unreadImageView.hidden = NO;
         } else {
-            [self.microPhoneBtn setImage:[UIImage imageNamed:@"MicNewIncoming"] forState:UIControlStateNormal];
+            self.unreadImageView.hidden = YES;
         }
     }
 }
@@ -184,27 +179,29 @@
 -(void)layoutSubviews {
     [super layoutSubviews];
     
-    UIImage *image = (self.selectedToShowCopyMenu) ? [self bubbleImageHighlighted] : [self bubbleImage];
-    CGSize bubbleSize = CGSizeMake(kAudioCellWidth, kAudioViewCellHeight);
+    CGRect bubbleFrame = [self bubbleFrame];
     
     CGRect rect = self.playBtn.frame;
-    rect.origin.x = image.leftCapWidth + floorf(self.type == BubbleMessageTypeOutgoing ? self.frame.size.width - bubbleSize.width  : 0.0f);
+    rect.size.width = kPlayBtnWidth;
+    rect.size.height = kPlayBtnHeight;
+    rect.origin.x = (self.type == BubbleMessageTypeOutgoing) ? (bubbleFrame.origin.x + kBubblePaddingTail + 8) : (kBubblePaddingHead + 8);
     self.playBtn.frame = rect;
     
     rect = self.progressView.frame;
     rect.origin.x = self.playBtn.frame.origin.x + self.playBtn.frame.size.width;
-    rect.size.width = kAudioCellWidth - image.leftCapWidth - kPlayBtnWidth - 2*kblank   - (self.type == BubbleMessageTypeOutgoing ?  2*image.leftCapWidth  : 10);
+    rect.size.width = kAudioCellWidth - kBubblePaddingHead - kBubblePaddingTail - 8 - kPlayBtnWidth - 8  - (self.type == BubbleMessageTypeOutgoing ?  0  : 8);
     self.progressView.frame = rect;
     
     rect = self.timeLengthLabel.frame;
     rect.origin.x = self.progressView.frame.origin.x ;
     self.timeLengthLabel.frame = rect;
-    
-    rect = self.microPhoneBtn.frame;
-    rect.origin.x = kAudioCellWidth - image.leftCapWidth - kmicroBtnWidth + floorf(self.type == BubbleMessageTypeOutgoing ? self.frame.size.width - bubbleSize.width - 20 : 0.0f);
-    self.microPhoneBtn.frame = rect;
-    
-    CGRect bubbleFrame = [self bubbleFrame];
+
+    //右上角
+    rect.origin.x = CGRectGetMaxX(bubbleFrame) - kBubblePaddingTail - 13;
+    rect.origin.y = bubbleFrame.origin.y + kPaddingTop + 2;
+    rect.size.width = 11;
+    rect.size.height = 11;
+    self.unreadImageView.frame = rect;
     
     self.uploadIndicatorView.frame = bubbleFrame;
     self.downloadIndicatorView.frame = bubbleFrame;

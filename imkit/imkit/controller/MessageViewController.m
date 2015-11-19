@@ -576,7 +576,6 @@
         cell = [[MessageViewCell alloc] initWithType:message.type reuseIdentifier:CellID];
         if (message.type == MESSAGE_AUDIO) {
             MessageAudioView *audioView = (MessageAudioView*)cell.bubbleView;
-            [audioView.microPhoneBtn addTarget:self action:@selector(AudioAction:) forControlEvents:UIControlEventTouchUpInside];
             [audioView.playBtn addTarget:self action:@selector(AudioAction:) forControlEvents:UIControlEventTouchUpInside];
         } else if(message.type == MESSAGE_IMAGE) {
             UITapGestureRecognizer *tap  = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapImageView:)];
@@ -617,7 +616,6 @@
     
     if (message.type == MESSAGE_AUDIO) {
         MessageAudioView *audioView = (MessageAudioView*)cell.bubbleView;
-        audioView.microPhoneBtn.tag = indexPath.section<<16 | indexPath.row;
         audioView.playBtn.tag = indexPath.section<<16 | indexPath.row;
     } else if (message.type == MESSAGE_IMAGE) {
         MessageImageView *imageView = (MessageImageView*)cell.bubbleView;
@@ -672,7 +670,9 @@
     switch (msg.type) {
         case MESSAGE_TEXT: {
             MessageTextContent *content = msg.textContent;
-            return [BubbleView cellHeightForText:content.text] + nameHeight;
+            int h = [MessageTextView cellHeightForText:content.text];
+            h = MAX(40, h);
+            return  h + nameHeight;
         }
         case  MESSAGE_IMAGE:
             return kMessageImagViewHeight + nameHeight;
@@ -969,7 +969,7 @@
         [self updateNotificationDesc:msg];
     }
     
-    if (self.isShowUserName) {
+//    if (self.isShowUserName) {
         //群组聊天
         if (msg.sender == self.sender) {
             msg.senderInfo = self.senderInfo;
@@ -983,7 +983,7 @@
         } else {
             //群组通知消息的sender==0
         }
-    }
+//    }
 }
 
 - (void)downloadMessageContent:(NSArray*)messages count:(int)count {

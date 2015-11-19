@@ -8,7 +8,6 @@
 */
 #import "BubbleView.h"
 #import "NSString+JSMessagesView.h"
-#import "UIImage+JSMessagesView.h"
 
 CGFloat const kJSAvatarSize = 50.0f;
 
@@ -79,6 +78,33 @@ CGFloat const kJSAvatarSize = 50.0f;
     }
 }
 
+
++ (UIImage *)bubbleDefaultIncoming{
+    UIImage *image = [UIImage imageNamed:@"ReceiverTextNodeBkg"];
+    return [image resizableImageWithCapInsets:UIEdgeInsetsMake(28.0f, 14.0f, 17.0f, 12.0f)
+                          resizingMode:UIImageResizingModeStretch];
+}
+
++ (UIImage *)bubbleDefaultIncomingSelected{
+    UIImage *image = [UIImage imageNamed:@"ReceiverTextNodeBkgHL"];
+    return [image resizableImageWithCapInsets:UIEdgeInsetsMake(28.0f, 14.0f, 17.0f, 12.0f)
+                                 resizingMode:UIImageResizingModeStretch];
+}
+
++ (UIImage *)bubbleDefaultOutgoing{
+    UIImage *image = [UIImage imageNamed:@"SenderTextNodeBkg"];
+    return [image resizableImageWithCapInsets:UIEdgeInsetsMake(28.0f, 11.0f, 15.0f, 12.0f)
+                                 resizingMode:UIImageResizingModeStretch];
+}
+
++ (UIImage *)bubbleDefaultOutgoingSelected{
+    UIImage *image = [UIImage imageNamed:@"SenderTextNodeBkgHL"];
+    return [image resizableImageWithCapInsets:UIEdgeInsetsMake(28.0f, 11.0f, 15.0f, 12.0f)
+                         resizingMode:UIImageResizingModeStretch];
+}
+
+
+
 #pragma mark - Drawing
 - (CGRect)bubbleFrame{
     return CGRectMake(0, 0, 0, 0);
@@ -89,7 +115,7 @@ CGFloat const kJSAvatarSize = 50.0f;
 }
 
 - (UIImage *)bubbleImageHighlighted{
-    return (self.type == BubbleMessageTypeIncoming) ? [UIImage bubbleDefaultIncomingSelected] : [UIImage bubbleDefaultOutgoingSelected];
+    return (self.type == BubbleMessageTypeIncoming) ? [[self class] bubbleDefaultIncomingSelected] : [[self class] bubbleDefaultOutgoingSelected];
 }
 
 -(void) showSendErrorBtn:(BOOL)show{
@@ -133,11 +159,11 @@ CGFloat const kJSAvatarSize = 50.0f;
 }
 
 + (UIImage *)bubbleImageTypeIncoming{
-    return [UIImage bubbleDefaultIncoming];
+    return [self bubbleDefaultIncoming];
 }
 
 + (UIImage *)bubbleImageTypeOutgoing{
-    return [UIImage bubbleDefaultOutgoing];
+    return [self bubbleDefaultOutgoing];
 }
 
 + (UIFont *)font{
@@ -159,17 +185,8 @@ CGFloat const kJSAvatarSize = 50.0f;
     return  [gettingSizeLabel sizeThatFits:maximumLabelSize];
 }
 
-+ (CGSize)bubbleSizeForText:(NSString *)txt withFont:(UIFont*)font
-{
-    CGSize textSize = [BubbleView textSizeForText:txt withFont:font];
-    return CGSizeMake(textSize.width + kBubblePaddingRight,
-                      textSize.height + kPaddingTop + kPaddingBottom);
-}
 
-+ (CGFloat)cellHeightForText:(NSString *)txt
-{
-    return [BubbleView bubbleSizeForText:txt withFont:[BubbleView font]].height + kMarginTop + kMarginBottom;
-}
+
 
 + (int)maxCharactersPerLine
 {

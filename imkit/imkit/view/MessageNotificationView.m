@@ -46,6 +46,14 @@
     }
 }
 
++ (CGSize)bubbleSizeForText:(NSString *)txt withFont:(UIFont*)font
+{
+    CGSize textSize = [BubbleView textSizeForText:txt withFont:font];
+    return CGSizeMake(textSize.width + kBubblePaddingHead + kBubblePaddingTail + 16,
+                      textSize.height + kPaddingTop + kPaddingBottom + 16);
+}
+
+
 -(void)layoutSubviews {
     [super layoutSubviews];
     

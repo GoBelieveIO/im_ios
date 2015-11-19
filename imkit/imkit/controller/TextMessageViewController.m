@@ -15,6 +15,7 @@
 #import "MessageTableSectionHeaderView.h"
 #import "MessageViewCell.h"
 #import "Constants.h"
+#import "MessageTextView.h"
 
 #define INPUT_HEIGHT 52.0f
 
@@ -352,7 +353,7 @@
         case MESSAGE_TEXT:
         {
             MessageTextContent *content = msg.textContent;
-            return [BubbleView cellHeightForText:content.text] + nameHeight;
+            return [MessageTextView cellHeightForText:content.text] + nameHeight;
         }
         case MESSAGE_GROUP_NOTIFICATION:
             return 40;

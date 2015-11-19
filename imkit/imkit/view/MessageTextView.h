@@ -11,6 +11,6 @@
 #import "BubbleView.h"
 
 @interface MessageTextView : BubbleView
-
++ (CGFloat)cellHeightForText:(NSString *)txt;
 
 @end

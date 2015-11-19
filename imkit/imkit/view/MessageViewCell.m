@@ -10,7 +10,6 @@
 
 
 #import "MessageViewCell.h"
-#import "UIImage+JSMessagesView.h"
 #import "MessageTextView.h"
 #import "MessageImageView.h"
 #import "MessageAudioView.h"
@@ -21,6 +20,7 @@
 @interface MessageViewCell()
 @property(nonatomic) IMessage *msg;
 @property(nonatomic) BOOL showName;
+@property(nonatomic) BOOL showHead;
 @end
 
 @implementation MessageViewCell
@@ -56,6 +56,10 @@
         self.nameLabel.textColor = [UIColor grayColor];
 
         [self.contentView addSubview:self.nameLabel];
+        
+        frame = CGRectMake(2, 0, 40, 40);
+        self.headView = [[UIImageView alloc] initWithFrame:frame];
+        [self.contentView addSubview:self.headView];
         
         frame = CGRectMake(0,
                            NAME_LABEL_HEIGHT,
@@ -134,31 +138,62 @@
     }
     
     self.showName = showName;
+    
+    self.nameLabel.text = name;
+    
+    CGRect bubbleFrame = CGRectMake(0,
+                              0,
+                              self.contentView.frame.size.width,
+                              self.contentView.frame.size.height);
+    
+    CGRect headFrame = CGRectMake(2, kMarginTop+kPaddingTop, 40, 40);
+    
     if (self.showName) {
-        CGRect frame = CGRectMake(0,
-                                  NAME_LABEL_HEIGHT,
-                                  self.contentView.frame.size.width,
-                                  self.contentView.frame.size.height - NAME_LABEL_HEIGHT);
-        self.bubbleView.frame = frame;
-        
-        self.nameLabel.hidden = NO;
-        self.nameLabel.text = name;
-    } else {
-        CGRect frame = CGRectMake(0,
-                                  0,
-                                  self.contentView.frame.size.width,
-                                  self.contentView.frame.size.height);
-        self.bubbleView.frame = frame;
-        
-        self.nameLabel.hidden = YES;
+        bubbleFrame.origin.y = NAME_LABEL_HEIGHT;
+        bubbleFrame.size.height -= NAME_LABEL_HEIGHT;
     }
+    
+
+    BOOL showHead = NO;
+    if (self.msg.type == MESSAGE_TEXT || self.msg.type == MESSAGE_IMAGE ||
+        self.msg.type == MESSAGE_LOCATION || self.msg.type == MESSAGE_AUDIO ||
+        self.msg.type == MESSAGE_LINK) {
+        showHead = YES;
+    }
+
+    self.showHead = showHead;
     
     if (msgType == BubbleMessageTypeOutgoing) {
         self.nameLabel.textAlignment = NSTextAlignmentRight;
+        if (showHead) {
+            bubbleFrame.size.width -= 44;
+        }
+        
+        headFrame.origin.x = self.bounds.size.width - 42;
     } else {
         self.nameLabel.textAlignment = NSTextAlignmentLeft;
+        
+        if (showHead) {
+            bubbleFrame.origin.x = 44;
+            bubbleFrame.size.width -= 44;
+        }
     }
 
+    self.bubbleView.frame = bubbleFrame;
+    
+    self.nameLabel.hidden = !showName;
+    self.headView.frame = headFrame;
+
+    self.headView.hidden = !showHead;
+
+    UIImage *placehodler = [UIImage imageNamed:@"PersonalChat"];
+    NSURL *url = [NSURL URLWithString:self.msg.senderInfo.avatarURL];
+    [self.headView sd_setImageWithURL: url placeholderImage:placehodler
+                             completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+
+                             }];
+    
+    
     switch (message.type) {
         case MESSAGE_TEXT:
         {
@@ -216,6 +251,15 @@
             } else {
                 self.nameLabel.text = self.msg.senderInfo.identifier;
             }
+        }
+        
+        if (self.showHead) {
+            UIImage *placehodler = [UIImage imageNamed:@"PersonalChat"];
+            NSURL *url = [NSURL URLWithString:self.msg.senderInfo.avatarURL];
+            [self.headView sd_setImageWithURL: url placeholderImage:placehodler
+                                    completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                                        
+                                    }];
         }
     }
 }

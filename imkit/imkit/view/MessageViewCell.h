@@ -17,6 +17,7 @@
 
 @property (strong, nonatomic) BubbleView *bubbleView;
 @property (strong, nonatomic) UILabel *nameLabel;
+@property (strong, nonatomic) UIImageView *headView;
 
 - (id)initWithType:(int)type reuseIdentifier:(NSString *)reuseIdentifier;
 

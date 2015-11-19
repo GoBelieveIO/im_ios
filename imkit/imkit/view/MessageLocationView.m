@@ -139,7 +139,7 @@
 
 #pragma mark - Drawing
 - (CGRect)bubbleFrame {
-    CGSize bubbleSize = CGSizeMake(kLocationWidth + kBubblePaddingRight, kLocationHeight + kPaddingTop + kPaddingBottom);
+    CGSize bubbleSize = CGSizeMake(kLocationWidth + kBubblePaddingHead + kBubblePaddingTail + 8, kLocationHeight + kPaddingTop + kPaddingBottom + 8);
     return CGRectMake(floorf(self.type == BubbleMessageTypeOutgoing ? self.frame.size.width - bubbleSize.width : 0.0f),
                       floorf(kMarginTop),
                       floorf(bubbleSize.width),
@@ -157,10 +157,10 @@
     if (self.imageView) {
         
         CGSize imageSize = CGSizeMake(kLocationWidth, kLocationHeight);
-        CGFloat imgX = image.leftCapWidth + (self.type == BubbleMessageTypeOutgoing ? bubbleFrame.origin.x + kOuttingMoveRight: KInComingMoveRight);
+        CGFloat imgX = (self.type == BubbleMessageTypeOutgoing ? bubbleFrame.origin.x + kBubblePaddingTail + 4: kBubblePaddingHead + 4);
         
         CGRect imageFrame = CGRectMake(imgX,
-                                       kMarginTop + kPaddingTop,
+                                       kMarginTop + kPaddingTop + 4,
                                        imageSize.width,
                                        imageSize.height);
         [self.imageView setFrame:imageFrame];
