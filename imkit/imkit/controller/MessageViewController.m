@@ -112,6 +112,11 @@
         __weak MessageViewController *wself = self;
         [self.userDelegate asyncGetUser:self.sender cb:^(IUser *u) {
             wself.senderInfo = u;
+            for (IMessage *msg in self.messages) {
+                if (msg.sender == wself.sender) {
+                    msg.senderInfo = wself.senderInfo;
+                }
+            }
         }];
     }
 }
@@ -968,22 +973,20 @@
     } else if (msg.type == MESSAGE_GROUP_NOTIFICATION) {
         [self updateNotificationDesc:msg];
     }
-    
-//    if (self.isShowUserName) {
-        //群组聊天
-        if (msg.sender == self.sender) {
-            msg.senderInfo = self.senderInfo;
-        } else if (msg.sender > 0) {
-            msg.senderInfo = [self.userDelegate getUser:msg.sender];
-            if (msg.senderInfo.name.length == 0) {
-                [self.userDelegate asyncGetUser:msg.sender cb:^(IUser *u) {
-                    msg.senderInfo = u;
-                }];
-            }
-        } else {
-            //群组通知消息的sender==0
+
+    //群组聊天
+    if (msg.sender == self.sender) {
+        msg.senderInfo = self.senderInfo;
+    } else if (msg.sender > 0) {
+        msg.senderInfo = [self.userDelegate getUser:msg.sender];
+        if (msg.senderInfo.name.length == 0) {
+            [self.userDelegate asyncGetUser:msg.sender cb:^(IUser *u) {
+                msg.senderInfo = u;
+            }];
         }
-//    }
+    } else {
+        //群组通知消息的sender==0
+    }
 }
 
 - (void)downloadMessageContent:(NSArray*)messages count:(int)count {
@@ -1070,6 +1073,7 @@
     content.address = address;
     
     msg.timestamp = (int)time(NULL);
+    msg.senderInfo = self.senderInfo;
     
     [self saveMessage:msg];
     
@@ -1102,6 +1106,7 @@
     
     msg.rawContent = content.raw;
     msg.timestamp = (int)time(NULL);
+    msg.senderInfo = self.senderInfo;
     
     //todo 优化读文件次数
     NSData *data = [NSData dataWithContentsOfFile:path];
@@ -1133,6 +1138,7 @@
     MessageImageContent *content = [[MessageImageContent alloc] initWithImageURL:[self localImageURL]];
     msg.rawContent = content.raw;
     msg.timestamp = (int)time(NULL);
+    msg.senderInfo = self.senderInfo;
    
     CGRect screenRect = [[UIScreen mainScreen] bounds];
     CGFloat screenHeight = screenRect.size.height;
@@ -1166,6 +1172,7 @@
     MessageTextContent *content = [[MessageTextContent alloc] initWithText:text];
     msg.rawContent = content.raw;
     msg.timestamp = (int)time(NULL);
+    msg.senderInfo = self.senderInfo;
     
     [self saveMessage:msg];
     

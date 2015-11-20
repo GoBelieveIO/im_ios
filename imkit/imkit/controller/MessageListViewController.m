@@ -315,6 +315,7 @@
     Conversation *con = [self.conversations objectAtIndex:indexPath.row];
     if (con.type == CONVERSATION_PEER) {
         PeerMessageViewController* msgController = [[PeerMessageViewController alloc] init];
+        msgController.userDelegate = self.userDelegate;
         msgController.peerUID = con.cid;
         msgController.peerName = con.name;
         msgController.currentUID = self.currentUID;
