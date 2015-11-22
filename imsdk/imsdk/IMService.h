@@ -67,6 +67,12 @@
 
 @end
 
+@protocol SystemMessageObserver <NSObject>
+@optional
+-(void)onSystemMessage:(NSString*)sm;
+
+@end
+
 @interface IMService : TCPConnection
 @property(nonatomic, copy) NSString *deviceID;
 @property(nonatomic, copy) NSString *token;
@@ -97,6 +103,10 @@
 
 -(void)addRoomMessageObserver:(id<RoomMessageObserver>)ob;
 -(void)removeRoomMessageObserver:(id<RoomMessageObserver>)ob;
+
+-(void)addSystemMessageObserver:(id<SystemMessageObserver>)ob;
+-(void)removeSystemMessageObserver:(id<SystemMessageObserver>)ob;
+
 
 @end
 

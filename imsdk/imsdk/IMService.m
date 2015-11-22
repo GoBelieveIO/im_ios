@@ -27,6 +27,7 @@
 @property(nonatomic)NSMutableArray *groupObservers;
 @property(nonatomic)NSMutableArray *roomObservers;
 @property(nonatomic)NSMutableArray *loginPointObservers;
+@property(nonatomic)NSMutableArray *systemObservers;
 
 @property(nonatomic)NSMutableData *data;
 @property(nonatomic)NSMutableDictionary *peerMessages;
@@ -55,6 +56,7 @@
         self.groupObservers = [NSMutableArray array];
         self.roomObservers = [NSMutableArray array];
         self.loginPointObservers = [NSMutableArray array];
+        self.systemObservers = [NSMutableArray array];
         
         self.data = [NSMutableData data];
         self.peerMessages = [NSMutableDictionary dictionary];
@@ -182,6 +184,11 @@
     [self publishRoomMessage:rm];
 }
 
+-(void)handleSystemMessage:(Message*)msg {
+    NSString *sys = (NSString*)msg.body;
+    [self publishSystemMessage:sys];
+}
+
 -(void)publishPeerMessage:(IMMessage*)msg {
     for (id<PeerMessageObserver> ob in self.peerObservers) {
         if ([ob respondsToSelector:@selector(onPeerMessage:)]) {
@@ -260,6 +267,13 @@
     }
 }
 
+-(void)publishSystemMessage:(NSString*)sys {
+    for (id<SystemMessageObserver> ob in self.systemObservers) {
+        if ([ob respondsToSelector:@selector(onSystemMessage:)]) {
+            [ob onSystemMessage:sys];
+        }
+    }
+}
 -(void)handleMessage:(Message*)msg {
     if (msg.cmd == MSG_AUTH_STATUS) {
         [self handleAuthStatus:msg];
@@ -281,6 +295,8 @@
         [self handleLoginPoint:msg];
     } else if (msg.cmd == MSG_ROOM_IM) {
         [self handleRoomMessage:msg];
+    } else if (msg.cmd == MSG_SYSTEM) {
+        [self handleSystemMessage:msg];
     }
 }
 
@@ -340,6 +356,14 @@
 
 -(void)removeRoomMessageObserver:(id<RoomMessageObserver>)ob {
     [self.roomObservers removeObject:ob];
+}
+
+-(void)addSystemMessageObserver:(id<SystemMessageObserver>)ob {
+    [self.systemObservers addObject:ob];
+}
+
+-(void)removeSystemMessageObserver:(id<SystemMessageObserver>)ob {
+    [self.systemObservers removeObject:ob];
 }
 
 -(BOOL)sendPeerMessage:(IMMessage *)im {

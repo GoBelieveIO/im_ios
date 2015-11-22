@@ -23,7 +23,7 @@
 #define kConversationCellHeight         60
 
 @interface MessageListViewController()<UITableViewDelegate, UITableViewDataSource,
-    TCPConnectionObserver, PeerMessageObserver, GroupMessageObserver>
+    TCPConnectionObserver, PeerMessageObserver, GroupMessageObserver, SystemMessageObserver>
 @property (strong , nonatomic) NSMutableArray *conversations;
 @property (strong , nonatomic) UITableView *tableview;
 @end
@@ -63,7 +63,8 @@
     [[IMService instance] addPeerMessageObserver:self];
     [[IMService instance] addGroupMessageObserver:self];
     [[IMService instance] addConnectionObserver:self];
-
+    [[IMService instance] addSystemMessageObserver:self];
+    
     [[NSNotificationCenter defaultCenter] addObserver: self selector:@selector(newGroupMessage:) name:LATEST_GROUP_MESSAGE object:nil];
     [[NSNotificationCenter defaultCenter] addObserver: self selector:@selector(newMessage:) name:LATEST_PEER_MESSAGE object:nil];
     
@@ -146,7 +147,8 @@
     [[IMService instance] removePeerMessageObserver:self];
     [[IMService instance] removeGroupMessageObserver:self];
     [[IMService instance] removeConnectionObserver:self];
-
+    [[IMService instance] removeSystemMessageObserver:self];
+    
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -509,6 +511,10 @@
     } else if (state == STATE_UNCONNECTED) {
         
     }
+}
+
+-(void) onSystemMessage:(NSString *)sm {
+    NSLog(@"system message:%@", sm);
 }
 
 #pragma mark - function

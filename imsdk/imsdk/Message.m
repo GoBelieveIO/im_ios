@@ -185,6 +185,9 @@
         rm.content = [[NSString alloc] initWithBytes:p length:data.length-24 encoding:NSUTF8StringEncoding];
         self.body = rm;
         return YES;
+    } else if (self.cmd == MSG_SYSTEM) {
+        self.body = [[NSString alloc] initWithBytes:p length:data.length-HEAD_SIZE encoding:NSUTF8StringEncoding];
+        return YES;
     } else {
         self.body = [NSData dataWithBytes:p length:data.length-8];
         return YES;
