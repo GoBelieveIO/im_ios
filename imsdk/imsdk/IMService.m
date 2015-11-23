@@ -187,6 +187,11 @@
 -(void)handleSystemMessage:(Message*)msg {
     NSString *sys = (NSString*)msg.body;
     [self publishSystemMessage:sys];
+    
+    Message *ack = [[Message alloc] init];
+    ack.cmd = MSG_ACK;
+    ack.body = [NSNumber numberWithInt:msg.seq];
+    [self sendMessage:ack];
 }
 
 -(void)publishPeerMessage:(IMMessage*)msg {
