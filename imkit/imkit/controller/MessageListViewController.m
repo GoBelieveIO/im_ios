@@ -90,6 +90,24 @@
         [self updateConversationDetail:conv];
     }
     
+    NSArray *sortedArray = [self.conversations sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+        Conversation *c1 = obj1;
+        Conversation *c2 = obj2;
+        
+        int t1 = c1.message.timestamp;
+        int t2 = c2.message.timestamp;
+        
+        if (t1 < t2) {
+            return NSOrderedDescending;
+        } else if (t1 == t2) {
+            return NSOrderedSame;
+        } else {
+            return NSOrderedAscending;
+        }
+    }];
+    
+    self.conversations = [NSMutableArray arrayWithArray:sortedArray];
+    
     self.navigationItem.title = @"对话";
     if ([[IMService instance] connectState] == STATE_CONNECTING) {
         self.navigationItem.title = @"连接中...";
@@ -400,8 +418,13 @@
             con.newMsgCount += 1;
             [self setNewOnTabBar];
         }
-        NSIndexPath *path = [NSIndexPath indexPathForRow:index inSection:0];
-        [self.tableview reloadRowsAtIndexPaths:[NSArray arrayWithObject:path] withRowAnimation:UITableViewRowAnimationNone];
+        
+        if (index != 0) {
+            //置顶
+            [self.conversations removeObjectAtIndex:index];
+            [self.conversations insertObject:con atIndex:0];
+            [self.tableview reloadData];
+        }
     } else {
         Conversation *con = [[Conversation alloc] init];
         con.message = msg;
@@ -443,6 +466,13 @@
             con.newMsgCount += 1;
             [self setNewOnTabBar];
         }
+        
+        if (index != 0) {
+            //置顶
+            [self.conversations removeObjectAtIndex:index];
+            [self.conversations insertObject:con atIndex:0];
+            [self.tableview reloadData];
+        }
     } else {
         Conversation *con = [[Conversation alloc] init];
         con.type = CONVERSATION_PEER;
@@ -472,7 +502,14 @@
     m.rawContent = im.content;
     m.timestamp = im.timestamp;
 
-    [self onNewMessage:m cid:m.sender];
+    int64_t cid;
+    if (self.currentUID == m.sender) {
+        cid = m.receiver;
+    } else {
+        cid = m.sender;
+    }
+    
+    [self onNewMessage:m cid:cid];
 }
 
 -(void)onGroupMessage:(IMMessage *)im {

@@ -115,15 +115,6 @@
     [self removeObserver];
     [self stopPlayer];
     
-    if (self.messages.count > 0) {
-        IMessage *msg = [self.messages lastObject];
-        if (msg.sender == self.currentUID || msg.type == MESSAGE_GROUP_NOTIFICATION) {
-            NSNotification* notification = [[NSNotification alloc] initWithName:LATEST_GROUP_MESSAGE object: msg userInfo:nil];
-            
-            [[NSNotificationCenter defaultCenter] postNotification:notification];
-        }
-    }
-    
     NSNotification* notification = [[NSNotification alloc] initWithName:CLEAR_GROUP_NEW_MESSAGE
                                                                  object:[NSNumber numberWithLongLong:self.groupID]
                                                                userInfo:nil];
@@ -322,10 +313,20 @@
         im.content = message.rawContent;
         [[IMService instance] sendGroupMessage:im];
     }
+    
+    NSNotification* notification = [[NSNotification alloc] initWithName:LATEST_GROUP_MESSAGE
+                                                                 object:message userInfo:nil];
+    
+    [[NSNotificationCenter defaultCenter] postNotification:notification];
 }
 
 - (void)sendMessage:(IMessage *)msg withImage:(UIImage*)image {
     [[Outbox instance] uploadGroupImage:msg withImage:image];
+    
+    NSNotification* notification = [[NSNotification alloc] initWithName:LATEST_GROUP_MESSAGE
+                                                                 object:msg userInfo:nil];
+    
+    [[NSNotificationCenter defaultCenter] postNotification:notification];
 }
 
 
