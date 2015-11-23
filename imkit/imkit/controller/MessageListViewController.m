@@ -86,16 +86,20 @@
     }
  
     for (Conversation *conv in self.conversations) {
+        conv.timestamp = conv.message.timestamp;
         [self updateConversationName:conv];
         [self updateConversationDetail:conv];
     }
+    
+    //todo 从本地数据库加载最新的系统消息
+    
     
     NSArray *sortedArray = [self.conversations sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
         Conversation *c1 = obj1;
         Conversation *c2 = obj2;
         
-        int t1 = c1.message.timestamp;
-        int t2 = c2.message.timestamp;
+        int t1 = c1.timestamp;
+        int t2 = c2.timestamp;
         
         if (t1 < t2) {
             return NSOrderedDescending;
@@ -108,6 +112,8 @@
     
     self.conversations = [NSMutableArray arrayWithArray:sortedArray];
     
+
+
     self.navigationItem.title = @"对话";
     if ([[IMService instance] connectState] == STATE_CONNECTING) {
         self.navigationItem.title = @"连接中...";
@@ -345,7 +351,7 @@
         msgController.currentUID = self.currentUID;
         msgController.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:msgController animated:YES];
-    } else {
+    } else if (con.type == CONVERSATION_GROUP) {
         GroupMessageViewController* msgController = [[GroupMessageViewController alloc] init];
         msgController.isShowUserName = YES;
         msgController.userDelegate = self.userDelegate;
@@ -556,6 +562,40 @@
 
 -(void) onSystemMessage:(NSString *)sm {
     NSLog(@"system message:%@", sm);
+    NSUInteger index = [self.conversations indexOfObjectPassingTest:^BOOL(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        Conversation *conv = obj;
+        return conv.type == CONVERSATION_SYSTEM;
+    }];
+    if (index == NSNotFound) {
+        Conversation *conv = [[Conversation alloc] init];
+        //todo maybe 从系统消息体中获取时间
+        conv.timestamp = (int)time(NULL);
+        //todo 解析系统消息格式
+        conv.detail = sm;
+        
+        conv.name = @"新朋友";
+        
+        conv.type = CONVERSATION_SYSTEM;
+        conv.cid = 0;
+        
+        [self.conversations insertObject:conv atIndex:0];
+        
+        NSIndexPath *path = [NSIndexPath indexPathForRow:0 inSection:0];
+        NSArray *array = [NSArray arrayWithObject:path];
+        [self.tableview insertRowsAtIndexPaths:array withRowAnimation:UITableViewRowAnimationMiddle];
+    } else {
+        Conversation *conv = [self.conversations objectAtIndex:index];
+        
+        conv.detail = sm;
+        conv.timestamp = (int)time(NULL);
+        
+        if (index != 0) {
+            //置顶
+            [self.conversations removeObjectAtIndex:index];
+            [self.conversations insertObject:conv atIndex:0];
+            [self.tableview reloadData];
+        }
+    }
 }
 
 #pragma mark - function

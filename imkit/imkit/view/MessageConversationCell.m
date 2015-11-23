@@ -67,6 +67,8 @@
     [self.conversation removeObserver:self forKeyPath:@"name"];
     [self.conversation removeObserver:self forKeyPath:@"detail"];
     [self.conversation removeObserver:self forKeyPath:@"newMsgCount"];
+    [self.conversation removeObserver:self forKeyPath:@"timestamp"];
+    [self.conversation removeObserver:self forKeyPath:@"avatarURL"];
 }
 
 
@@ -108,6 +110,8 @@
     [self.conversation removeObserver:self forKeyPath:@"name"];
     [self.conversation removeObserver:self forKeyPath:@"detail"];
     [self.conversation removeObserver:self forKeyPath:@"newMsgCount"];
+    [self.conversation removeObserver:self forKeyPath:@"timestamp"];
+    [self.conversation removeObserver:self forKeyPath:@"avatarURL"];
     
     _conversation = conversation;
     
@@ -115,13 +119,15 @@
     Conversation *conv = self.conversation;
     if(conv.type == CONVERSATION_PEER){
         [self.headView sd_setImageWithURL: [NSURL URLWithString:conv.avatarURL] placeholderImage:[UIImage imageNamed:@"PersonalChat"]];
-    }else if (conv.type == CONVERSATION_GROUP){
+    } else if (conv.type == CONVERSATION_GROUP){
         [self.headView sd_setImageWithURL:[NSURL URLWithString:conv.avatarURL] placeholderImage:[UIImage imageNamed:@"GroupChat"]];
+    } else if (self.conversation.type == CONVERSATION_SYSTEM) {
+        //todo
     }
     
     self.messageContent.text = self.conversation.detail;
     
-    NSDate *date = [NSDate dateWithTimeIntervalSince1970: conv.message.timestamp];
+    NSDate *date = [NSDate dateWithTimeIntervalSince1970: conv.timestamp];
     NSString *str = [[self class] getConversationTimeString:date ];
     self.timelabel.text = str;
     self.namelabel.text = conv.name;
@@ -146,7 +152,14 @@
                         forKeyPath:@"newMsgCount"
                            options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld
                            context:NULL];
-
+    [self.conversation addObserver:self
+                        forKeyPath:@"timestamp"
+                           options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld
+                           context:NULL];
+    [self.conversation addObserver:self
+                        forKeyPath:@"avatarURL"
+                           options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld
+                           context:NULL];
 }
 
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
@@ -160,6 +173,21 @@
         } else {
             [self clearNewMessage];
         }
+    } else if ([keyPath isEqualToString:@"timestamp"]) {
+        NSDate *date = [NSDate dateWithTimeIntervalSince1970: self.conversation.timestamp];
+        NSString *str = [[self class] getConversationTimeString:date ];
+        self.timelabel.text = str;
+    } else if ([keyPath isEqualToString:@"avatarURL"]) {
+        if(self.conversation.type == CONVERSATION_PEER){
+            [self.headView sd_setImageWithURL: [NSURL URLWithString:self.conversation.avatarURL]
+                             placeholderImage:[UIImage imageNamed:@"PersonalChat"]];
+        } else if (self.conversation.type == CONVERSATION_GROUP){
+            [self.headView sd_setImageWithURL:[NSURL URLWithString:self.conversation.avatarURL]
+                             placeholderImage:[UIImage imageNamed:@"GroupChat"]];
+        } else if (self.conversation.type == CONVERSATION_SYSTEM) {
+            //todo
+        }
+
     }
 }
 

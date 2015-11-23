@@ -39,7 +39,7 @@
 //会话类型
 #define CONVERSATION_PEER 1
 #define CONVERSATION_GROUP 2
-
+#define CONVERSATION_SYSTEM 3
 
 @class IUser;
 @class IGroup;
@@ -165,6 +165,7 @@
 
 @property(nonatomic) int newMsgCount;
 @property(nonatomic, copy) NSString *detail;
+@property(nonatomic) int timestamp;
 @end
 
 
