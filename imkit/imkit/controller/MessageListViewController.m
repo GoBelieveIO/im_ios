@@ -156,7 +156,7 @@
     IMessage *message = conv.message;
     if (message.type == MESSAGE_GROUP_NOTIFICATION) {
         MessageNotificationContent *notification = message.notificationContent;
-        int type = notification.type;
+        int type = notification.notificationType;
         if (type == NOTIFICATION_GROUP_CREATED) {
             if (self.currentUID == notification.master) {
                 NSString *desc = [NSString stringWithFormat:@"您创建了\"%@\"群组", notification.groupName];
@@ -212,6 +212,10 @@
                     }
                 }];
             }
+        } else if (type == NOTIFICATION_GROUP_NAME_UPDATED) {
+            NSString *desc = [NSString stringWithFormat:@"群组更名为%@", notification.groupName];
+            notification.notificationDesc = desc;
+            conv.detail = notification.notificationDesc;
         }
     }
 }
@@ -494,7 +498,7 @@
     } else {
         msg.timestamp = (int)time(NULL);
     }
-    msg.rawContent = notification.rawNotification;
+    msg.rawContent = notification.raw;
     
     [self onNewGroupMessage:msg cid:msg.receiver];
 }

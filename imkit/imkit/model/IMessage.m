@@ -37,6 +37,9 @@
  
 }*/
 
+@interface MessageContent()
+@property(nonatomic) int type;
+@end
 
 @implementation MessageContent
 
@@ -261,6 +264,12 @@
         self.groupID = [[obj objectForKey:@"group_id"] longLongValue];
         self.member =[[obj objectForKey:@"member_id"] longLongValue];
         self.timestamp = [[obj objectForKey:@"timestamp"] intValue];
+    } else if ([dict objectForKey:@"update_name"]) {
+        self.notificationType = NOTIFICATION_GROUP_NAME_UPDATED;
+        NSDictionary *obj = [dict objectForKey:@"update_name"];
+        self.groupID = [[obj objectForKey:@"group_id"] longLongValue];
+        self.timestamp = [[obj objectForKey:@"timestamp"] intValue];
+        self.groupName = [obj objectForKey:@"name"];
     }
 }
 
@@ -374,6 +383,13 @@
 -(MessageLocationContent*)locationContent {
     if (self.content.type == MESSAGE_LOCATION) {
         return (MessageLocationContent*)self.content;
+    }
+    return nil;
+}
+
+-(MessageNotificationContent*)notificationContent {
+    if (self.content.type == MESSAGE_GROUP_NOTIFICATION) {
+        return (MessageNotificationContent*)self.content;
     }
     return nil;
 }

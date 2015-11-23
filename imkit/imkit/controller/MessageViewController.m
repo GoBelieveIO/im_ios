@@ -938,6 +938,9 @@
                     notification.notificationDesc = desc;
                 }];
             }
+        } else if (type == NOTIFICATION_GROUP_NAME_UPDATED) {
+            NSString *desc = [NSString stringWithFormat:@"群组更名为%@", notification.groupName];
+            notification.notificationDesc = desc;
         }
     }
 }
