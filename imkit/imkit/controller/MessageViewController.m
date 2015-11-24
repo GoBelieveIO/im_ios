@@ -945,6 +945,15 @@
     }
 }
 
+- (BOOL)isMessageOutgoing:(IMessage*)msg {
+    return msg.sender == self.sender;
+}
+
+- (BOOL)isMessageSending:(IMessage*)msg {
+    NSAssert(NO, @"not implement");
+    return NO;
+}
+
 - (void)downloadMessageContent:(IMessage*)msg {
     FileCache *cache = [FileCache instance];
     AudioDownloader *downloader = [AudioDownloader instance];
@@ -975,6 +984,15 @@
         msg.uploading = [[Outbox instance] isUploading:msg];
     } else if (msg.type == MESSAGE_GROUP_NOTIFICATION) {
         [self updateNotificationDesc:msg];
+    }
+    
+    if ([self isMessageOutgoing:msg]) {
+        //消息发送过程中，程序异常关闭
+        if (!msg.isACK && !msg.uploading &&
+            !msg.isFailure && ![self isMessageSending:msg]) {
+            [self markMessageFailure:msg];
+            msg.flags = msg.flags|MESSAGE_FLAG_FAILURE;
+        }
     }
 
     //群组聊天
@@ -1121,8 +1139,7 @@
     [self sendMessage:msg];
     
     [[self class] playMessageSentSound];
-    
-    msg.uploading = YES;
+
     [self insertMessage:msg];
 }
 
@@ -1160,7 +1177,6 @@
 
     [self sendMessage:msg withImage:image];
 
-    msg.uploading = YES;
     [self insertMessage:msg];
     
     [[self class] playMessageSentSound];

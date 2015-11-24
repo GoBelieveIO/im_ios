@@ -371,6 +371,26 @@
     [self.systemObservers removeObject:ob];
 }
 
+-(BOOL)isPeerMessageSending:(int)msgLocalID {
+    for (NSNumber *s in self.peerMessages) {
+        IMMessage *im = [self.peerMessages objectForKey:s];
+        if (im.msgLocalID == msgLocalID) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
+-(BOOL)isGroupMessageSending:(int)msgLocalID {
+    for (NSNumber *s in self.groupMessages) {
+        IMMessage *im = [self.groupMessages objectForKey:s];
+        if (im.msgLocalID == msgLocalID) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
 -(BOOL)sendPeerMessage:(IMMessage *)im {
     Message *m = [[Message alloc] init];
     m.cmd = MSG_IM;

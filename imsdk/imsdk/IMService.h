@@ -82,6 +82,9 @@
 @property(nonatomic, weak)id<IMGroupMessageHandler> groupMessageHandler;
 +(IMService*)instance;
 
+-(BOOL)isPeerMessageSending:(int)msgLocalID;
+-(BOOL)isGroupMessageSending:(int)msgLocalID;
+
 -(BOOL)sendPeerMessage:(IMMessage*)msg;
 -(BOOL)sendGroupMessage:(IMMessage*)msg;
 -(BOOL)sendRoomMessage:(RoomMessage*)msg;

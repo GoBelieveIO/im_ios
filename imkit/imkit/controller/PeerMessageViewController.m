@@ -86,6 +86,10 @@
     return self.peerUID;
 }
 
+- (BOOL)isMessageSending:(IMessage*)msg {
+    return [[IMService instance] isPeerMessageSending:msg.msgLocalID];
+}
+
 - (BOOL)isInConversation:(IMessage*)msg {
    BOOL r =  (msg.sender == self.currentUID && msg.receiver == self.peerUID) ||
                 (msg.receiver == self.currentUID && msg.sender == self.peerUID);
@@ -322,6 +326,7 @@
 }
 
 - (void)sendMessage:(IMessage *)msg withImage:(UIImage*)image {
+    msg.uploading = YES;
     [[Outbox instance] uploadImage:msg withImage:image];
     NSNotification* notification = [[NSNotification alloc] initWithName:LATEST_PEER_MESSAGE object:msg userInfo:nil];
     [[NSNotificationCenter defaultCenter] postNotification:notification];
@@ -329,8 +334,10 @@
 
 - (void)sendMessage:(IMessage*)message {
     if (message.type == MESSAGE_AUDIO) {
+        message.uploading = YES;
         [[Outbox instance] uploadAudio:message];
     } else if (message.type == MESSAGE_IMAGE) {
+        message.uploading = YES;
         [[Outbox instance] uploadImage:message];
     } else {
         IMMessage *im = [[IMMessage alloc] init];

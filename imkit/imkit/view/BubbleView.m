@@ -13,6 +13,8 @@ CGFloat const kJSAvatarSize = 50.0f;
 
 @interface BubbleView()
 
+@property (nonatomic) UIActivityIndicatorView *sendingIndicatorView;
+
 + (UIImage *)bubbleImageTypeIncoming;
 + (UIImage *)bubbleImageTypeOutgoing;
 
@@ -32,6 +34,9 @@ CGFloat const kJSAvatarSize = 50.0f;
         [self.msgSendErrorBtn setImage:[UIImage imageNamed:@"MessageSendError"]  forState: UIControlStateHighlighted];
         self.msgSendErrorBtn.hidden = YES;
         [self addSubview:self.msgSendErrorBtn];
+        
+        self.sendingIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        [self addSubview:self.sendingIndicatorView];
     }
     return self;
 }
@@ -46,14 +51,26 @@ CGFloat const kJSAvatarSize = 50.0f;
     _msg = msg;
     [self.msg addObserver:self forKeyPath:@"flags" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
     
-    if (self.msg.isFailure) {
-        if (self.type == BubbleMessageTypeOutgoing) {
-            [self showSendErrorBtn:YES];
+    if (self.type == BubbleMessageTypeOutgoing) {
+        if (self.msg.isFailure) {
+            self.msgSendErrorBtn.hidden = NO;
+            [self.sendingIndicatorView stopAnimating];
+        } else if (self.msg.isACK) {
+            self.msgSendErrorBtn.hidden = YES;
+            [self.sendingIndicatorView stopAnimating];
+        } else if (self.msg.uploading) {
+            self.msgSendErrorBtn.hidden = YES;
+            [self.sendingIndicatorView stopAnimating];
+        } else {
+            self.msgSendErrorBtn.hidden = YES;
+            [self.sendingIndicatorView startAnimating];
         }
-    }else{
-        [self showSendErrorBtn:NO];
+    } else {
+        self.msgSendErrorBtn.hidden = YES;
+        [self.sendingIndicatorView stopAnimating];
     }
 }
+
 - (void)setType:(BubbleMessageType)newType
 {
     _type = newType;
@@ -67,13 +84,24 @@ CGFloat const kJSAvatarSize = 50.0f;
 
 
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if([keyPath isEqualToString:@"flags"]) {
-        if (self.msg.isFailure) {
-            if (self.type == BubbleMessageTypeOutgoing) {
-                [self.msgSendErrorBtn setHidden:NO];
+    if([keyPath isEqualToString:@"flags"] || [keyPath isEqualToString:@"uploading"]) {
+        if (self.type == BubbleMessageTypeOutgoing) {
+            if (self.msg.isFailure) {
+                self.msgSendErrorBtn.hidden = NO;
+                [self.sendingIndicatorView stopAnimating];
+            } else if (self.msg.isACK) {
+                self.msgSendErrorBtn.hidden = YES;
+                [self.sendingIndicatorView stopAnimating];
+            } else if (self.msg.uploading) {
+                self.msgSendErrorBtn.hidden = YES;
+                [self.sendingIndicatorView stopAnimating];
+            } else {
+                self.msgSendErrorBtn.hidden = YES;
+                [self.sendingIndicatorView startAnimating];
             }
         } else {
-            [self.msgSendErrorBtn setHidden:YES];
+            self.msgSendErrorBtn.hidden = YES;
+            [self.sendingIndicatorView stopAnimating];
         }
     }
 }
@@ -139,8 +167,9 @@ CGFloat const kJSAvatarSize = 50.0f;
     CGFloat imgX = bubbleFrame.origin.x;
     CGRect rect = self.msgSendErrorBtn.frame;
     rect.origin.x = imgX - self.msgSendErrorBtn.frame.size.width + 2;
-    rect.origin.y = bubbleFrame.origin.y + bubbleFrame.size.height  - self.msgSendErrorBtn.frame.size.height - kMarginBottom;
+    rect.origin.y = bubbleFrame.origin.y + bubbleFrame.size.height  - self.msgSendErrorBtn.frame.size.height - kPaddingBottom;
     [self.msgSendErrorBtn setFrame:rect];
+    [self.sendingIndicatorView setFrame:rect];
 }
 
 #pragma mark - Bubble view
@@ -184,8 +213,6 @@ CGFloat const kJSAvatarSize = 50.0f;
     
     return  [gettingSizeLabel sizeThatFits:maximumLabelSize];
 }
-
-
 
 
 + (int)maxCharactersPerLine

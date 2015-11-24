@@ -69,6 +69,10 @@
     return self.groupID;
 }
 
+- (BOOL)isMessageSending:(IMessage*)msg {
+    return [[IMService instance] isGroupMessageSending:msg.msgLocalID];
+}
+
 - (BOOL)isInConversation:(IMessage*)msg {
     BOOL r = (msg.receiver == self.groupID);
     return r;
@@ -302,8 +306,10 @@
 
 - (void)sendMessage:(IMessage*)message {
     if (message.type == MESSAGE_AUDIO) {
+        message.uploading = YES;
         [[Outbox instance] uploadGroupAudio:message];
     } else if (message.type == MESSAGE_IMAGE) {
+        message.uploading = YES;
         [[Outbox instance] uploadGroupImage:message];
     } else {
         IMMessage *im = [[IMMessage alloc] init];
@@ -321,6 +327,7 @@
 }
 
 - (void)sendMessage:(IMessage *)msg withImage:(UIImage*)image {
+    msg.uploading = YES;
     [[Outbox instance] uploadGroupImage:msg withImage:image];
     
     NSNotification* notification = [[NSNotification alloc] initWithName:LATEST_GROUP_MESSAGE
