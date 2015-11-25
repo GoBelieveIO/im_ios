@@ -36,6 +36,9 @@
 - (void)addObserver;
 - (void)removeObserver;
 
+-(void)checkMessageFailureFlag:(IMessage*)msg;
+-(void)checkMessageFailureFlag:(NSArray*)messages count:(int)count;
+
 - (void)downloadMessageContent:(IMessage*)message;
 - (void)downloadMessageContent:(NSArray*)messages count:(int)count;
 

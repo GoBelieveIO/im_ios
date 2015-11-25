@@ -69,6 +69,7 @@ CGFloat const kJSAvatarSize = 50.0f;
         self.msgSendErrorBtn.hidden = YES;
         [self.sendingIndicatorView stopAnimating];
     }
+    [self setNeedsLayout];
 }
 
 - (void)setType:(BubbleMessageType)newType

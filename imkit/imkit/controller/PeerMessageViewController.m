@@ -268,6 +268,7 @@
         msg = [iterator next];
     }
     
+    [self checkMessageFailureFlag:self.messages count:count];
     [self downloadMessageContent:self.messages count:count];
     
     [self initTableViewData];
@@ -302,7 +303,7 @@
         return;
     }
     
-
+    [self checkMessageFailureFlag:self.messages count:count];
     [self downloadMessageContent:self.messages count:count];
     
     [self initTableViewData];

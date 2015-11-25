@@ -949,9 +949,27 @@
     return msg.sender == self.sender;
 }
 
-- (BOOL)isMessageSending:(IMessage*)msg {
+-(BOOL)isMessageSending:(IMessage*)msg {
     NSAssert(NO, @"not implement");
     return NO;
+}
+
+-(void)checkMessageFailureFlag:(IMessage*)msg {
+    if ([self isMessageOutgoing:msg]) {
+        //消息发送过程中，程序异常关闭
+        if (!msg.isACK && !msg.uploading &&
+            !msg.isFailure && ![self isMessageSending:msg]) {
+            [self markMessageFailure:msg];
+            msg.flags = msg.flags|MESSAGE_FLAG_FAILURE;
+        }
+    }
+}
+
+-(void)checkMessageFailureFlag:(NSArray*)messages count:(int)count {
+    for (int i = 0; i < count; i++) {
+        IMessage *msg = [messages objectAtIndex:i];
+        [self checkMessageFailureFlag:msg];
+    }
 }
 
 - (void)downloadMessageContent:(IMessage*)msg {
@@ -986,14 +1004,7 @@
         [self updateNotificationDesc:msg];
     }
     
-    if ([self isMessageOutgoing:msg]) {
-        //消息发送过程中，程序异常关闭
-        if (!msg.isACK && !msg.uploading &&
-            !msg.isFailure && ![self isMessageSending:msg]) {
-            [self markMessageFailure:msg];
-            msg.flags = msg.flags|MESSAGE_FLAG_FAILURE;
-        }
-    }
+
 
     //群组聊天
     if (msg.sender == self.sender) {
