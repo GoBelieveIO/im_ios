@@ -70,6 +70,8 @@
     
     [[NSNotificationCenter defaultCenter] addObserver: self selector:@selector(clearSinglePeerNewState:) name:CLEAR_PEER_NEW_MESSAGE object:nil];
     [[NSNotificationCenter defaultCenter] addObserver: self selector:@selector(clearSingleGroupNewState:) name:CLEAR_GROUP_NEW_MESSAGE object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillResignActive) name:UIApplicationWillResignActiveNotification object:nil];
 
     id<ConversationIterator> iterator =  [[PeerMessageDB instance] newConversationIterator];
     Conversation * conversation = [iterator next];
@@ -86,7 +88,6 @@
     }
  
     for (Conversation *conv in self.conversations) {
-        conv.timestamp = conv.message.timestamp;
         [self updateConversationName:conv];
         [self updateConversationDetail:conv];
     }
@@ -121,6 +122,7 @@
 }
 
 - (void)updateConversationDetail:(Conversation*)conv {
+    conv.timestamp = conv.message.timestamp;
     if (conv.message.type == MESSAGE_IMAGE) {
         conv.detail = @"一张图片";
     }else if(conv.message.type == MESSAGE_TEXT){
@@ -611,6 +613,7 @@
     if (shouldClearNewCount) {
         [self clearNewOnTarBar];
     }
+
 }
 
 - (void)setNewOnTabBar {
@@ -619,6 +622,17 @@
 
 - (void)clearNewOnTarBar {
 
+}
+
+- (void)appWillResignActive {
+    NSLog(@"app will resign active");
+    int c = 0;
+    for (Conversation *conv in self.conversations) {
+        c += conv.newMsgCount;
+    }
+    NSLog(@"unread count:%d", c);
+    [[IMService instance] sendUnreadCount:c];
+    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:c];
 }
 
 @end

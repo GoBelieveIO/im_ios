@@ -30,6 +30,7 @@
 #define MSG_LEAVE_ROOM 19
 #define MSG_ROOM_IM 20
 #define MSG_SYSTEM 21
+#define MSG_UNREAD_COUNT 22
 
 #define PLATFORM_IOS  1
 #define PLATFORM_ANDROID 2

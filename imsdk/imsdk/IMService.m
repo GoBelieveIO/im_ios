@@ -501,6 +501,13 @@
     [self sendMessage:msg];
 }
 
+-(void)sendUnreadCount:(int)unread {
+    Message *msg = [[Message alloc] init];
+    msg.cmd = MSG_UNREAD_COUNT;
+    msg.body = [NSNumber numberWithInt:unread];
+    [self sendMessage:msg];
+}
+
 -(void)sendEnterRoom:(int64_t)roomID {
     Message *msg = [[Message alloc] init];
     msg.cmd = MSG_ENTER_ROOM;

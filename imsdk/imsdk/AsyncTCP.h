@@ -18,6 +18,7 @@ typedef void(^CloseCB)(AsyncTCP *tcp, int err);
 -(BOOL)connect:(NSString*)host port:(int)port cb:(ConnectCB)cb;
 -(void)close;
 -(void)write:(NSData*)data;
+-(void)flush;
 -(void)startRead:(ReadCB)cb;
 @end
 

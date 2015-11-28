@@ -154,6 +154,16 @@
     }
 }
 
+-(void)flush {
+    const char *p = [self.data bytes];
+    int n = write_data(self.sock, (uint8_t*)p, (int)self.data.length);
+    if (n < 0) {
+        NSLog(@"sock write error:%d", errno);
+        return;
+    }
+    self.data = [NSMutableData dataWithBytes:p+n length:self.data.length - n];
+}
+
 #define BUF_SIZE (64*1024)
 -(void)onRead {
     while (1) {

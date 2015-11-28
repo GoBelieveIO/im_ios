@@ -178,6 +178,7 @@
 -(void)close {
     if (self.tcp) {
         NSLog(@"im service on close");
+        [self.tcp flush];
         [self.tcp close];
         self.tcp = nil;
     }

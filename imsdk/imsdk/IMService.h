@@ -94,6 +94,8 @@
 
 //正在输入
 -(void)sendInputing:(MessageInputing*)inputing;
+//更新未读的消息数目
+-(void)sendUnreadCount:(int)unread;
 
 -(void)addPeerMessageObserver:(id<PeerMessageObserver>)ob;
 -(void)removePeerMessageObserver:(id<PeerMessageObserver>)ob;

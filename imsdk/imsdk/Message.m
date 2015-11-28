@@ -113,6 +113,11 @@
         }
         memcpy(p, s, l);
         return [NSData dataWithBytes:buf length:HEAD_SIZE + 16 +l];
+    } else if (self.cmd == MSG_UNREAD_COUNT) {
+        NSNumber *u = (NSNumber*)self.body;
+        writeInt32([u intValue], p);
+        p += 4;
+        return [NSData dataWithBytes:buf length:HEAD_SIZE + 4];
     }
     return nil;
 }
