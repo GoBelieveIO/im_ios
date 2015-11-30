@@ -47,7 +47,7 @@
     self =  [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
     if (self) {
         [self setup];
-        CGRect frame = CGRectMake(12,
+        CGRect frame = CGRectMake(54,
                                   0,
                                   self.contentView.frame.size.width - 24,
                                   NAME_LABEL_HEIGHT);
