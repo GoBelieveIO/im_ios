@@ -54,10 +54,9 @@ blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
     NSLog(@"remote notification:%@", [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey]);
     
     //app可以单独部署服务器，给予第三方应用更多的灵活性
-    //在开发阶段也可以配置成测试环境的地址 "http://sandbox.api.gobelieve.io", "sandbox.imnode.gobelieve.io"
     [IMHttpAPI instance].apiURL = @"http://api.gobelieve.io";
     [IMService instance].host = @"imnode.gobelieve.io";
-    
+
     [IMService instance].deviceID = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
     NSLog(@"device id:%@", [[[UIDevice currentDevice] identifierForVendor] UUIDString]);
     [IMService instance].peerMessageHandler = [PeerMessageHandler instance];
@@ -90,7 +89,22 @@ blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
             [UIFont systemFontOfSize:21],NSFontAttributeName, nil]];
     }
     
-    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeNewsstandContentAvailability)];
+#ifdef __IPHONE_8_0
+    if ([application respondsToSelector:@selector(registerUserNotificationSettings:)]) {
+
+        UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeAlert
+                                                                                             | UIUserNotificationTypeBadge
+                                                                                             | UIUserNotificationTypeSound) categories:nil];
+        [application registerUserNotificationSettings:settings];
+
+    } else {
+        UIRemoteNotificationType myTypes = UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound;
+        [application registerForRemoteNotificationTypes:myTypes];
+    }
+#else
+    UIRemoteNotificationType myTypes = UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound;
+    [application registerForRemoteNotificationTypes:myTypes];
+#endif
     return YES;
 }
 
@@ -124,7 +138,7 @@ blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-    
+
     [[IMService instance] enterBackground];
 }
 
