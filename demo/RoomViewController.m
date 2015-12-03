@@ -89,9 +89,7 @@
     m.receiver = rm.receiver;
     self.msgID = self.msgID + 1;
     m.msgLocalID = self.msgID;
-    MessageContent *content = [[MessageContent alloc] init];
-    content.raw = rm.content;
-    m.content = content;
+    m.rawContent = rm.content;
     m.timestamp = [[NSDate date] timeIntervalSince1970];
     
     [self insertMessage:m];
@@ -147,7 +145,7 @@
     RoomMessage *im = [[RoomMessage alloc] init];
     im.sender = message.sender;
     im.receiver = message.receiver;
-    im.content = message.content.raw;
+    im.content = message.rawContent;
     [[IMService instance] sendRoomMessage:im];
     
     NSNumber *o = [NSNumber numberWithLongLong:message.msgLocalID];

@@ -1213,8 +1213,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "Apple Development IOS Push Services: com.beetle.im.demo";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development IOS Push Services: com.beetle.im.demo";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Zhifeng Zhou (PV548P44SL)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Zhifeng Zhou (PV548P44SL)";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "demo/im_demo-prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					TEST_ROOM,
@@ -1225,7 +1226,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				"OTHER_LDFLAGS[arch=*]" = "-ObjC";
 				PRODUCT_NAME = room_demo;
-				PROVISIONING_PROFILE = "62a6cae0-985b-478c-9db4-5ae211f4be1c";
+				PROVISIONING_PROFILE = "6447afee-e97c-42f1-8030-39c807777b65";
 			};
 			name = Debug;
 		};
@@ -1233,6 +1234,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "demo/im_demo-prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					TEST_ROOM,
@@ -1252,7 +1254,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "Apple Development IOS Push Services: com.beetle.im.demo";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Zhifeng Zhou (HB5A8TLKYL)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development IOS Push Services: com.beetle.im.demo";
 				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "demo/im_demo-prefix.pch";
@@ -1265,7 +1267,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				"OTHER_LDFLAGS[arch=*]" = "-ObjC";
 				PRODUCT_NAME = group_demo;
-				PROVISIONING_PROFILE = "af7ccfac-eb2d-4245-8415-3b7aef0fccf6";
+				PROVISIONING_PROFILE = "6447afee-e97c-42f1-8030-39c807777b65";
 			};
 			name = Debug;
 		};

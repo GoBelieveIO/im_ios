@@ -164,9 +164,8 @@
 
 -(NSString*)login:(long long)uid {
     //调用app自身的服务器获取连接im服务必须的access token
-    //sandbox地址："http://sandbox.demo.gobelieve.io/auth/token"
     NSString *url = @"http://demo.gobelieve.io/auth/token";
-
+    
     NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]
                                                               cachePolicy:NSURLRequestUseProtocolCachePolicy
                                                           timeoutInterval:60];
@@ -225,7 +224,7 @@
     IUser *u = [[IUser alloc] init];
     u.uid = uid;
     u.name = @"";
-    u.avatarURL = @"";
+    u.avatarURL = @"http://api.gobelieve.io/images/e837c4c84f706a7988d43d62d190e2a1.png";
     u.identifier = [NSString stringWithFormat:@"uid:%lld", uid];
     return u;
 }
@@ -235,7 +234,7 @@
         IUser *u = [[IUser alloc] init];
         u.uid = uid;
         u.name = [NSString stringWithFormat:@"name:%lld", uid];
-        u.avatarURL = @"";
+        u.avatarURL = @"http://api.gobelieve.io/images/e837c4c84f706a7988d43d62d190e2a1.png";
         u.identifier = [NSString stringWithFormat:@"uid:%lld", uid];
         dispatch_async(dispatch_get_main_queue(), ^{
             cb(u);
