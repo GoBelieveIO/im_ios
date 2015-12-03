@@ -71,6 +71,7 @@
 		6D18DBB11BEA0AB0006A3B66 /* EaseEmotionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D18DB9C1BEA08E8006A3B66 /* EaseEmotionManager.m */; };
 		6D4256871ABC0EEC001B7E43 /* GroupMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D4256861ABC0EEC001B7E43 /* GroupMessageViewController.m */; };
 		6D42568B1ABC0F2F001B7E43 /* MessageNotificationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D42568A1ABC0F2F001B7E43 /* MessageNotificationView.m */; };
+		6D78B80D1C0FECDD006F3251 /* MessageListViewController.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6DFD88F61BFE2B220067D71B /* MessageListViewController.h */; };
 		6D9C46DE1BEB32530053066A /* UIViewController+HUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D9C46DD1BEB32530053066A /* UIViewController+HUD.m */; };
 		6DBEBA771AF77291002CAEA3 /* GroupMessageViewController.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6D4256851ABC0EEC001B7E43 /* GroupMessageViewController.h */; };
 		6DEE56851BDCF309002BCAB8 /* MessageLocationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DEE56841BDCF309002BCAB8 /* MessageLocationView.m */; };
@@ -126,6 +127,7 @@
 			dstPath = "include/$(PRODUCT_NAME)";
 			dstSubfolderSpec = 16;
 			files = (
+				6D78B80D1C0FECDD006F3251 /* MessageListViewController.h in CopyFiles */,
 				6DBEBA771AF77291002CAEA3 /* GroupMessageViewController.h in CopyFiles */,
 				6DFDA0261AB95E7F00EF553A /* PeerMessageViewController.h in CopyFiles */,
 				6DF54F281AB82E0000197EBC /* BaseMessageViewController.h in CopyFiles */,
