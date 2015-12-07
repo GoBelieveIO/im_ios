@@ -15,7 +15,6 @@
 #import "Constants.h"
 
 #import "FileCache.h"
-#import "Outbox.h"
 #import "AudioDownloader.h"
 
 #import "MessageTextView.h"
@@ -44,7 +43,7 @@
 #define kTakePicActionSheetTag  101
 
 
-@interface MessageViewController()<AudioDownloaderObserver, OutboxObserver,
+@interface MessageViewController()<AudioDownloaderObserver, 
     LocationPickerControllerDelegate, EMChatToolbarDelegate>
 
 @property(strong, nonatomic) EaseChatToolbar *chatToolbar;
@@ -194,12 +193,10 @@
 
 
 -(void)addObserver {
-    [[Outbox instance] addBoxObserver:self];
     [[AudioDownloader instance] addDownloaderObserver:self];
 }
 
 -(void)removeObserver {
-    [[Outbox instance] removeBoxObserver:self];
     [[AudioDownloader instance] removeDownloaderObserver:self];
 }
 
@@ -949,29 +946,6 @@
     return msg.sender == self.sender;
 }
 
--(BOOL)isMessageSending:(IMessage*)msg {
-    NSAssert(NO, @"not implement");
-    return NO;
-}
-
--(void)checkMessageFailureFlag:(IMessage*)msg {
-    if ([self isMessageOutgoing:msg]) {
-        //消息发送过程中，程序异常关闭
-        if (!msg.isACK && !msg.uploading &&
-            !msg.isFailure && ![self isMessageSending:msg]) {
-            [self markMessageFailure:msg];
-            msg.flags = msg.flags|MESSAGE_FLAG_FAILURE;
-        }
-    }
-}
-
--(void)checkMessageFailureFlag:(NSArray*)messages count:(int)count {
-    for (int i = 0; i < count; i++) {
-        IMessage *msg = [messages objectAtIndex:i];
-        [self checkMessageFailureFlag:msg];
-    }
-}
-
 - (void)downloadMessageContent:(IMessage*)msg {
     FileCache *cache = [FileCache instance];
     AudioDownloader *downloader = [AudioDownloader instance];
@@ -982,7 +956,6 @@
             [downloader downloadAudio:msg];
         }
         msg.downloading = [downloader isDownloading:msg];
-        msg.uploading = [[Outbox instance] isUploading:msg];
     } else if (msg.type == MESSAGE_LOCATION) {
         MessageLocationContent *content = msg.locationContent;
         NSString *url = content.snapshotURL;
@@ -999,7 +972,6 @@
         }
     } else if (msg.type == MESSAGE_IMAGE) {
         NSLog(@"image url:%@", msg.imageContent.imageURL);
-        msg.uploading = [[Outbox instance] isUploading:msg];
     } else if (msg.type == MESSAGE_GROUP_NOTIFICATION) {
         [self updateNotificationDesc:msg];
     }
@@ -1221,36 +1193,6 @@
 }
 
 
-#pragma mark - Outbox Observer
-- (void)onAudioUploadSuccess:(IMessage*)msg URL:(NSString*)url {
-    if ([self isInConversation:msg]) {
-        IMessage *m = [self getMessageWithID:msg.msgLocalID];
-        m.uploading = NO;
-    }
-}
-
--(void)onAudioUploadFail:(IMessage*)msg {
-    if ([self isInConversation:msg]) {
-        IMessage *m = [self getMessageWithID:msg.msgLocalID];
-        m.flags = m.flags|MESSAGE_FLAG_FAILURE;
-        m.uploading = NO;
-    }
-}
-
-- (void)onImageUploadSuccess:(IMessage*)msg URL:(NSString*)url {
-    if ([self isInConversation:msg]) {
-        IMessage *m = [self getMessageWithID:msg.msgLocalID];
-        m.uploading = NO;
-    }
-}
-
-- (void)onImageUploadFail:(IMessage*)msg {
-    if ([self isInConversation:msg]) {
-        IMessage *m = [self getMessageWithID:msg.msgLocalID];
-        m.flags = m.flags|MESSAGE_FLAG_FAILURE;
-        m.uploading = NO;
-    }
-}
 
 #pragma mark - Audio Downloader Observer
 - (void)onAudioDownloadSuccess:(IMessage*)msg {

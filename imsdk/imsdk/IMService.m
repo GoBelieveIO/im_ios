@@ -371,20 +371,20 @@
     [self.systemObservers removeObject:ob];
 }
 
--(BOOL)isPeerMessageSending:(int)msgLocalID {
+-(BOOL)isPeerMessageSending:(int64_t)peer id:(int)msgLocalID {
     for (NSNumber *s in self.peerMessages) {
         IMMessage *im = [self.peerMessages objectForKey:s];
-        if (im.msgLocalID == msgLocalID) {
+        if (im.receiver == peer && im.msgLocalID == msgLocalID) {
             return YES;
         }
     }
     return NO;
 }
 
--(BOOL)isGroupMessageSending:(int)msgLocalID {
+-(BOOL)isGroupMessageSending:(int64_t)groupID id:(int)msgLocalID {
     for (NSNumber *s in self.groupMessages) {
         IMMessage *im = [self.groupMessages objectForKey:s];
-        if (im.msgLocalID == msgLocalID) {
+        if (im.receiver == groupID && im.msgLocalID == msgLocalID) {
             return YES;
         }
     }

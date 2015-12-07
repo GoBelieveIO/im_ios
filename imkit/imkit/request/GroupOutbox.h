@@ -11,7 +11,7 @@
 #import <UIKit/UIKit.h>
 #import "IMessage.h"
 
-@protocol OutboxObserver <NSObject>
+@protocol GroupOutboxObserver <NSObject>
 
 -(void)onAudioUploadSuccess:(IMessage*)msg URL:(NSString*)url;
 -(void)onAudioUploadFail:(IMessage*)msg;
@@ -20,20 +20,18 @@
 
 @end
 
-@interface Outbox : NSObject
+@interface GroupOutbox : NSObject
 
-+(Outbox*)instance;
++(GroupOutbox*)instance;
 
 -(BOOL)isUploading:(IMessage*)msg;
 
--(BOOL)uploadImage:(IMessage*)msg;
--(BOOL)uploadImage:(IMessage*)msg withImage:(UIImage*)image;
--(BOOL)uploadAudio:(IMessage*)msg;
+
 
 -(BOOL)uploadGroupImage:(IMessage*)msg;
 -(BOOL)uploadGroupImage:(IMessage*)msg withImage:(UIImage*)image;
 -(BOOL)uploadGroupAudio:(IMessage*)msg;
 
--(void)addBoxObserver:(id<OutboxObserver>)ob;
--(void)removeBoxObserver:(id<OutboxObserver>)ob;
+-(void)addBoxObserver:(id<GroupOutboxObserver>)ob;
+-(void)removeBoxObserver:(id<GroupOutboxObserver>)ob;
 @end
