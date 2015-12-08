@@ -12,7 +12,7 @@
 #import "IMessage.h"
 
 #define kImageWidth  90
-#define kImageHeight 130
+#define kImageHeight 110
 #define  kMessageImagViewHeight (kImageHeight + kMarginTop + kMarginBottom + kPaddingTop + kPaddingBottom)
 
 @interface MessageImageView : BubbleView
