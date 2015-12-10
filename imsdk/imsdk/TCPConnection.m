@@ -143,6 +143,7 @@
     dispatch_suspend(self.connectTimer);
     dispatch_suspend(self.heartbeatTimer);
     
+    [self onClose];
     self.connectState = STATE_UNCONNECTED;
     [self publishConnectState:STATE_UNCONNECTED];
     [self close];
