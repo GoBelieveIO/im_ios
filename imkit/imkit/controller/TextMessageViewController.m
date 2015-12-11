@@ -12,7 +12,6 @@
 
 #import "IMessage.h"
 #import "PeerMessageDB.h"
-#import "MessageTableSectionHeaderView.h"
 #import "MessageViewCell.h"
 #import "Constants.h"
 #import "MessageTextView.h"
@@ -318,21 +317,12 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    if (self.timestamps != nil) {
-        return [self.timestamps count];
-    }
     return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if (self.messageArray != nil) {
-        
-        NSMutableArray *array = [self.messageArray objectAtIndex: section];
-        return [array count];
-    }
-    
-    return 1;
+    return self.messages.count;
 }
 
 #pragma mark -  UITableViewDelegate
@@ -388,18 +378,18 @@
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
-    
-    CGRect screenRect = [[UIScreen mainScreen] bounds];
-    CGFloat screenWidth = screenRect.size.width;
-    
-    CGRect rect = CGRectMake(0, 0, screenWidth, 30);
-    MessageTableSectionHeaderView *sectionView = [[MessageTableSectionHeaderView alloc] initWithFrame:rect];
-    
-    NSDate *curtDate = [self.timestamps objectAtIndex: section];
-    NSString *timeStr = [self formatSectionTime:curtDate];
-    sectionView.sectionHeader.text = timeStr;
-    
-    return sectionView;
+    return nil;
+//    CGRect screenRect = [[UIScreen mainScreen] bounds];
+//    CGFloat screenWidth = screenRect.size.width;
+//    
+//    CGRect rect = CGRectMake(0, 0, screenWidth, 30);
+//    MessageTableSectionHeaderView *sectionView = [[MessageTableSectionHeaderView alloc] initWithFrame:rect];
+//    
+//    NSDate *curtDate = [self.timestamps objectAtIndex: section];
+//    NSString *timeStr = [self formatSectionTime:curtDate];
+//    sectionView.sectionHeader.text = timeStr;
+//    
+//    return sectionView;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{

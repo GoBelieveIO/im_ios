@@ -164,6 +164,7 @@ CGFloat const kJSAvatarSize = 50.0f;
 }
 
 -(void)layoutSubviews {
+    [super layoutSubviews];
     CGRect bubbleFrame = [self bubbleFrame];
     CGFloat imgX = bubbleFrame.origin.x;
     CGRect rect = self.msgSendErrorBtn.frame;

@@ -16,6 +16,7 @@
 #import "MessageNotificationView.h"
 #import "MessageLocationView.h"
 #import "MessageLinkView.h"
+#import "MessageTimeBaseView.h"
 
 @interface MessageViewCell()
 @property(nonatomic) IMessage *msg;
@@ -102,6 +103,12 @@
             {
                 MessageLinkView *linkView = [[MessageLinkView alloc] initWithFrame:frame];
                 self.bubbleView = linkView;
+            }
+                break;
+            case MESSAGE_TIME_BASE:
+            {
+                MessageTimeBaseView *timeBaseView = [[MessageTimeBaseView alloc] initWithFrame:frame];
+                self.bubbleView = timeBaseView;
             }
                 break;
             default:
@@ -209,6 +216,13 @@
             MessageLinkView *linkView = (MessageLinkView*)self.bubbleView;
             linkView.type = msgType;
             linkView.msg = message;
+        }
+            break;
+        case MESSAGE_TIME_BASE:
+        {
+            MessageTimeBaseView *timeBaseView = (MessageTimeBaseView*)self.bubbleView;
+            timeBaseView.type = msgType;
+            timeBaseView.msg = message;
         }
             break;
         default:

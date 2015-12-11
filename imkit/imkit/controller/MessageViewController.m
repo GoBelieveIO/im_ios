@@ -11,9 +11,7 @@
 #import <imsdk/IMService.h>
 #import <MobileCoreServices/MobileCoreServices.h>
 
-#import "MessageTableSectionHeaderView.h"
 #import "Constants.h"
-
 #import "FileCache.h"
 #import "AudioDownloader.h"
 
@@ -24,6 +22,7 @@
 #import "MessageLinkView.h"
 #import "MessageViewCell.h"
 #import "MessageNotificationView.h"
+#import "MessageTimeBaseView.h"
 
 #import "MEESImageViewController.h"
 
@@ -604,13 +603,19 @@
     }
     BubbleMessageType msgType;
     
+    if (message.type == MESSAGE_TIME_BASE) {
+        MessageTimeBaseContent *timeBase = message.timeBaseContent;
+        timeBase.timeDesc = [self formatSectionTime:[NSDate dateWithTimeIntervalSince1970:timeBase.timestamp]];
+        NSLog(@"time...:%@", timeBase.timeDesc);
+    }
+    
     if (message.sender == self.sender) {
         msgType = BubbleMessageTypeOutgoing;
         [cell setMessage:message msgType:msgType showName:NO];
     } else {
         msgType = BubbleMessageTypeIncoming;
         BOOL showName = self.isShowUserName;
-        if (message.type == MESSAGE_GROUP_NOTIFICATION) {
+        if (message.type == MESSAGE_GROUP_NOTIFICATION || message.type == MESSAGE_TIME_BASE) {
             showName = NO;
         }
         [cell setMessage:message msgType:msgType showName:showName];
@@ -636,23 +641,13 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    if (self.timestamps != nil) {
-        return [self.timestamps count];
-    }
     return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if (self.messageArray != nil) {
-        
-        NSMutableArray *array = [self.messageArray objectAtIndex: section];
-        return [array count];
-    }
-    
-    return 1;
+    return self.messages.count;
 }
-
 
 
 #pragma mark -  UITableViewDelegate
@@ -688,6 +683,8 @@
             return kMessageNotificationViewHeight;
         case MESSAGE_LINK:
             return kMessageLinkViewHeight + nameHeight;
+        case MESSAGE_TIME_BASE:
+            return kMessageTimeBaseViewHeight;
         default:
             return 0;
     }
@@ -695,13 +692,6 @@
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath{
-    if (tableView == self.tableView) {
-        if (indexPath.section == 0 &&  indexPath.row == 0) {
-            return NO;
-        }else{
-            return YES;
-        }
-    }
     return NO;
 }
 
@@ -714,21 +704,11 @@
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
-    CGRect screenRect = [[UIScreen mainScreen] bounds];
-    CGFloat screenWidth = screenRect.size.width;
-    
-    CGRect rect = CGRectMake(0, 0, screenWidth, 30);
-    MessageTableSectionHeaderView *sectionView = [[MessageTableSectionHeaderView alloc] initWithFrame:rect];
-
-    NSDate *curtDate = [self.timestamps objectAtIndex: section];
-    NSString *timeStr = [self formatSectionTime:curtDate];
-    sectionView.sectionHeader.text = timeStr;
-
-    return sectionView;
+    return nil;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return 30;
+    return 0;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -951,7 +931,9 @@
     AudioDownloader *downloader = [AudioDownloader instance];
     if (msg.type == MESSAGE_AUDIO) {
         MessageAudioContent *content = msg.audioContent;
+
         NSString *path = [cache queryCacheForKey:content.url];
+        NSLog(@"url:%@, %@", content.url, path);
         if (!path && ![downloader isDownloading:msg]) {
             [downloader downloadAudio:msg];
         }

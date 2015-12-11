@@ -179,7 +179,6 @@
     }
     IMessage *msg = [self getMessageWithID:msgLocalID];
     msg.flags = msg.flags|MESSAGE_FLAG_ACK;
-    [self reloadMessage:msgLocalID];
 }
 
 -(void)onGroupMessageFailure:(int)msgLocalID gid:(int64_t)gid {
@@ -188,7 +187,6 @@
     }
     IMessage *msg = [self getMessageWithID:msgLocalID];
     msg.flags = msg.flags|MESSAGE_FLAG_FAILURE;
-    [self reloadMessage:msgLocalID];
 }
 
 
@@ -252,10 +250,19 @@
 
 
 - (void)loadEarlierData {
-    IMessage *last = [self.messages firstObject];
+    //找出第一条实体消息
+    IMessage *last = nil;
+    for (NSInteger i = 0; i < self.messages.count; i++) {
+        IMessage *m = [self.messages objectAtIndex:i];
+        if (m.type != MESSAGE_TIME_BASE) {
+            last = m;
+            break;
+        }
+    }
     if (last == nil) {
         return;
     }
+    
     id<IMessageIterator> iterator =  [[GroupMessageDB instance] newMessageIterator:self.groupID last:last.msgLocalID];
     
     int count = 0;
@@ -292,15 +299,19 @@
     
     [self.tableView reloadData];
     
+    int c = 0;
     int section = 0;
     int row = 0;
-    for (NSArray *block in self.messageArray) {
-        if (count < block.count) {
-            row = count;
+    for (NSInteger i = 0; i < self.messages.count; i++) {
+        row++;
+        IMessage *m = [self.messages objectAtIndex:i];
+        if (m.type == MESSAGE_TIME_BASE) {
+            continue;
+        }
+        c++;
+        if (c >= count) {
             break;
         }
-        count -= [block count];
-        section++;
     }
     NSLog(@"scroll to row:%d section:%d", row, section);
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:section];

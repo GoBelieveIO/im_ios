@@ -99,9 +99,7 @@
 		6D8E72521B750A31004E069E /* UIImage+WebP.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E911AB58BB100197EBC /* UIImage+WebP.m */; };
 		6D8E72531B750A31004E069E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54D931AB5862000197EBC /* AppDelegate.m */; };
 		6D8E72541B750A31004E069E /* UIImageView+HighlightedWebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E931AB58BB100197EBC /* UIImageView+HighlightedWebCache.m */; };
-		6D8E72551B750A31004E069E /* RoomLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D69BD971B444C09008EAA8A /* RoomLoginViewController.m */; };
 		6D8E72561B750A31004E069E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54D901AB5862000197EBC /* main.m */; };
-		6D8E72571B750A31004E069E /* RoomViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D69BD941B444BBA008EAA8A /* RoomViewController.m */; };
 		6D8E72591B750A31004E069E /* UIButton+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E8B1AB58BB100197EBC /* UIButton+WebCache.m */; };
 		6D8E725A1B750A31004E069E /* SDWebImagePrefetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E891AB58BB100197EBC /* SDWebImagePrefetcher.m */; };
 		6D8E725B1B750A31004E069E /* SDWebImageDownloaderOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E841AB58BB100197EBC /* SDWebImageDownloaderOperation.m */; };
@@ -1119,9 +1117,7 @@
 				6D8E72521B750A31004E069E /* UIImage+WebP.m in Sources */,
 				6D8E72531B750A31004E069E /* AppDelegate.m in Sources */,
 				6D8E72541B750A31004E069E /* UIImageView+HighlightedWebCache.m in Sources */,
-				6D8E72551B750A31004E069E /* RoomLoginViewController.m in Sources */,
 				6D8E72561B750A31004E069E /* main.m in Sources */,
-				6D8E72571B750A31004E069E /* RoomViewController.m in Sources */,
 				6D8E72591B750A31004E069E /* UIButton+WebCache.m in Sources */,
 				6D8E725A1B750A31004E069E /* SDWebImagePrefetcher.m in Sources */,
 				6D8E725B1B750A31004E069E /* SDWebImageDownloaderOperation.m in Sources */,

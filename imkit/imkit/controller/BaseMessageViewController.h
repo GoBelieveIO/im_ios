@@ -32,8 +32,6 @@
 - (void)sendMessage:(IMessage *)msg withImage:(UIImage*)image;
 
 //protected
-@property(nonatomic) NSMutableArray *messageArray;
-@property(nonatomic) NSMutableArray *timestamps;
 @property(nonatomic) NSMutableArray *messages;
 @property(nonatomic) NSMutableDictionary *attachments;
 
@@ -56,14 +54,11 @@
 
 - (void)initTableViewData;
 
-- (void)reloadMessage:(int)msgLocalID;
 - (void)insertMessage:(IMessage*)msg;
 - (void)scrollToBottomAnimated:(BOOL)animated;
 
-- (IMessage*) getMessageWithID:(int)msgLocalID;
+- (IMessage*)getMessageWithID:(int)msgLocalID;
 - (IMessage*)messageForRowAtIndexPath:(NSIndexPath *)indexPath;
-- (NSDate *)timestampForRowAtIndexPath:(NSIndexPath *)indexPath;
-- (NSIndexPath*)getIndexPathById:(int)msgLocalID;
 
 - (NSString *)getWeekDayString:(NSInteger)iDay;
 - (BOOL)isSameDay:(NSDate*)date1 other:(NSDate*)date2 ;

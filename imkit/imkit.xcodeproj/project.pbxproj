@@ -42,7 +42,6 @@
 		6D0331311AA9E734004AA39F /* BubbleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D0331201AA9E734004AA39F /* BubbleView.m */; };
 		6D0331331AA9E734004AA39F /* MessageAudioView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D0331251AA9E734004AA39F /* MessageAudioView.m */; };
 		6D0331341AA9E734004AA39F /* MessageImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D0331271AA9E734004AA39F /* MessageImageView.m */; };
-		6D0331361AA9E734004AA39F /* MessageTableSectionHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D03312B1AA9E734004AA39F /* MessageTableSectionHeaderView.m */; };
 		6D0331371AA9E734004AA39F /* MessageTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D03312E1AA9E734004AA39F /* MessageTextView.m */; };
 		6D0331381AA9E734004AA39F /* MessageViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D0331301AA9E734004AA39F /* MessageViewCell.m */; };
 		6D03313E1AAA3904004AA39F /* MessageViewController.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6D032FFC1AA9B4D2004AA39F /* MessageViewController.h */; };
@@ -68,6 +67,7 @@
 		6D18DBAF1BEA0AA8006A3B66 /* EaseEmojiEmoticons.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D18DB981BEA08E8006A3B66 /* EaseEmojiEmoticons.m */; };
 		6D18DBB01BEA0AAC006A3B66 /* EaseEmotionEscape.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D18DB9A1BEA08E8006A3B66 /* EaseEmotionEscape.m */; };
 		6D18DBB11BEA0AB0006A3B66 /* EaseEmotionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D18DB9C1BEA08E8006A3B66 /* EaseEmotionManager.m */; };
+		6D2754931C1ACD3F008E5EB7 /* MessageTimeBaseView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D2754921C1ACD3F008E5EB7 /* MessageTimeBaseView.m */; };
 		6D4256871ABC0EEC001B7E43 /* GroupMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D4256861ABC0EEC001B7E43 /* GroupMessageViewController.m */; };
 		6D42568B1ABC0F2F001B7E43 /* MessageNotificationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D42568A1ABC0F2F001B7E43 /* MessageNotificationView.m */; };
 		6D78B80D1C0FECDD006F3251 /* MessageListViewController.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6DFD88F61BFE2B220067D71B /* MessageListViewController.h */; };
@@ -194,8 +194,6 @@
 		6D0331251AA9E734004AA39F /* MessageAudioView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MessageAudioView.m; path = view/MessageAudioView.m; sourceTree = "<group>"; };
 		6D0331261AA9E734004AA39F /* MessageImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MessageImageView.h; path = view/MessageImageView.h; sourceTree = "<group>"; };
 		6D0331271AA9E734004AA39F /* MessageImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MessageImageView.m; path = view/MessageImageView.m; sourceTree = "<group>"; };
-		6D03312A1AA9E734004AA39F /* MessageTableSectionHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MessageTableSectionHeaderView.h; path = view/MessageTableSectionHeaderView.h; sourceTree = "<group>"; };
-		6D03312B1AA9E734004AA39F /* MessageTableSectionHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MessageTableSectionHeaderView.m; path = view/MessageTableSectionHeaderView.m; sourceTree = "<group>"; };
 		6D03312D1AA9E734004AA39F /* MessageTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MessageTextView.h; path = view/MessageTextView.h; sourceTree = "<group>"; };
 		6D03312E1AA9E734004AA39F /* MessageTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MessageTextView.m; path = view/MessageTextView.m; sourceTree = "<group>"; };
 		6D03312F1AA9E734004AA39F /* MessageViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MessageViewCell.h; path = view/MessageViewCell.h; sourceTree = "<group>"; };
@@ -230,6 +228,8 @@
 		6D18DB9A1BEA08E8006A3B66 /* EaseEmotionEscape.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EaseEmotionEscape.m; sourceTree = "<group>"; };
 		6D18DB9B1BEA08E8006A3B66 /* EaseEmotionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EaseEmotionManager.h; sourceTree = "<group>"; };
 		6D18DB9C1BEA08E8006A3B66 /* EaseEmotionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EaseEmotionManager.m; sourceTree = "<group>"; };
+		6D2754911C1ACD3F008E5EB7 /* MessageTimeBaseView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MessageTimeBaseView.h; path = view/MessageTimeBaseView.h; sourceTree = "<group>"; };
+		6D2754921C1ACD3F008E5EB7 /* MessageTimeBaseView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MessageTimeBaseView.m; path = view/MessageTimeBaseView.m; sourceTree = "<group>"; };
 		6D4256851ABC0EEC001B7E43 /* GroupMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GroupMessageViewController.h; path = controller/GroupMessageViewController.h; sourceTree = "<group>"; };
 		6D4256861ABC0EEC001B7E43 /* GroupMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GroupMessageViewController.m; path = controller/GroupMessageViewController.m; sourceTree = "<group>"; };
 		6D4256891ABC0F2F001B7E43 /* MessageNotificationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MessageNotificationView.h; path = view/MessageNotificationView.h; sourceTree = "<group>"; };
@@ -389,8 +389,6 @@
 				6DFD88F91BFE2B500067D71B /* MessageConversationCell.h */,
 				6DFD88FA1BFE2B500067D71B /* MessageConversationCell.m */,
 				6D18DB761BEA06D8006A3B66 /* toolbar */,
-				6D03312A1AA9E734004AA39F /* MessageTableSectionHeaderView.h */,
-				6D03312B1AA9E734004AA39F /* MessageTableSectionHeaderView.m */,
 				6D03311F1AA9E734004AA39F /* BubbleView.h */,
 				6D0331201AA9E734004AA39F /* BubbleView.m */,
 				6D0331241AA9E734004AA39F /* MessageAudioView.h */,
@@ -405,6 +403,8 @@
 				6DEE56841BDCF309002BCAB8 /* MessageLocationView.m */,
 				6D4256891ABC0F2F001B7E43 /* MessageNotificationView.h */,
 				6D42568A1ABC0F2F001B7E43 /* MessageNotificationView.m */,
+				6D2754911C1ACD3F008E5EB7 /* MessageTimeBaseView.h */,
+				6D2754921C1ACD3F008E5EB7 /* MessageTimeBaseView.m */,
 				6D03312F1AA9E734004AA39F /* MessageViewCell.h */,
 				6D0331301AA9E734004AA39F /* MessageViewCell.m */,
 			);
@@ -731,6 +731,7 @@
 				6DEE56C31BDE2F5D002BCAB8 /* MapViewController.m in Sources */,
 				6D0331311AA9E734004AA39F /* BubbleView.m in Sources */,
 				6D42568B1ABC0F2F001B7E43 /* MessageNotificationView.m in Sources */,
+				6D2754931C1ACD3F008E5EB7 /* MessageTimeBaseView.m in Sources */,
 				6DFD88F81BFE2B220067D71B /* MessageListViewController.m in Sources */,
 				6DEE56851BDCF309002BCAB8 /* MessageLocationView.m in Sources */,
 				6DFDA0271AB9797500EF553A /* TextMessageViewController.m in Sources */,
@@ -748,7 +749,6 @@
 				6D032FF31AA9B41C004AA39F /* MessageDB.m in Sources */,
 				6D18DBAB1BEA0A8D006A3B66 /* EaseFacialView.m in Sources */,
 				6D18DBA81BEA0A7E006A3B66 /* EaseImageView.m in Sources */,
-				6D0331361AA9E734004AA39F /* MessageTableSectionHeaderView.m in Sources */,
 				6D0330061AA9BBC7004AA39F /* AudioDownloader.m in Sources */,
 				6D78B81B1C15933A006F3251 /* PeerOutbox.m in Sources */,
 				6D032FF01AA9B41C004AA39F /* GroupMessageDB.m in Sources */,

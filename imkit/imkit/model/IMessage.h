@@ -18,7 +18,9 @@
 #define MESSAGE_LOCATION 4
 #define MESSAGE_GROUP_NOTIFICATION 5 //群通知
 #define MESSAGE_LINK 6
-#define MESSAGE_ATTACHMENT 255 //消息附件
+
+#define MESSAGE_TIME_BASE  254 //虚拟的消息，不会存入磁盘
+#define MESSAGE_ATTACHMENT 255 //消息附件， 只存在本地磁盘
 
 //消息标志
 #define MESSAGE_FLAG_DELETE 1
@@ -122,6 +124,13 @@
 
 @end
 
+@interface MessageTimeBaseContent : MessageContent
+@property(nonatomic, readonly) int timestamp;
+@property(nonatomic, copy) NSString *timeDesc;
+
+-(id)initWithTimestamp:(int)ts;
+
+@end
 
 @interface IMessage : NSObject
 @property(nonatomic) int msgLocalID;
@@ -139,6 +148,7 @@
 @property(nonatomic, readonly) MessageNotificationContent *notificationContent;
 @property(nonatomic, readonly) MessageLinkContent *linkContent;
 @property(nonatomic, readonly) MessageAttachmentContent *attachmentContent;
+@property(nonatomic, readonly) MessageTimeBaseContent *timeBaseContent;
 
 @property(nonatomic) int timestamp;
 @property(nonatomic, readonly) BOOL isACK;

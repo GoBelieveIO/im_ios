@@ -8,13 +8,9 @@
 */
 
 #import <UIKit/UIKit.h>
+#import "BubbleView.h"
+#define  kMessageTimeBaseViewHeight 30
 
-
-#define MES_SECTION_TIMER_FONT_SIZE 14.0f
-
-@interface MessageTableSectionHeaderView : UIView
-
-//@property (nonatomic,weak) IBOutlet UILabel* sectionHeader;
-
-@property (nonatomic)  UILabel* sectionHeader;
+@interface MessageTimeBaseView : BubbleView
+@property(nonatomic) UILabel *label;
 @end

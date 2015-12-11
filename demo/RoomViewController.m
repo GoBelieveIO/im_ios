@@ -102,7 +102,6 @@
     
     IMessage *msg = [self getMessageWithID:msgLocalID];
     msg.flags = msg.flags|MESSAGE_FLAG_ACK;
-    [self reloadMessage:msgLocalID];
 }
 
 -(void)onRoomMessageFailure:(RoomMessage*)rm {
@@ -112,7 +111,6 @@
     
     IMessage *msg = [self getMessageWithID:msgLocalID];
     msg.flags = msg.flags|MESSAGE_FLAG_FAILURE;
-    [self reloadMessage:msgLocalID];
 }
 
 

@@ -72,6 +72,8 @@
         self.type = MESSAGE_LINK;
     } else if ([self.dict objectForKey:@"attachment"] != nil) {
         self.type = MESSAGE_ATTACHMENT;
+    } else if ([self.dict objectForKey:@"timestamp"] != nil) {
+        self.type = MESSAGE_TIME_BASE;
     } else {
         self.type = MESSAGE_UNKNOWN;
     }
@@ -300,6 +302,24 @@
 
 @end
 
+@implementation MessageTimeBaseContent
+
+-(id)initWithTimestamp:(int)ts {
+    self = [super init];
+    if (self) {
+        NSDictionary *dic = @{@"timestamp":[NSNumber numberWithInt:ts]};
+        NSString* newStr = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:dic options:0 error:nil] encoding:NSUTF8StringEncoding];
+        self.raw =  newStr;
+    }
+    return self;
+}
+
+-(int)timestamp {
+    return [[self.dict objectForKey:@"timestamp"] intValue];
+}
+
+@end
+
 @implementation IUser
 
 @end
@@ -352,6 +372,9 @@
     } else if ([dict objectForKey:@"attachment"] != nil) {
         self.type = MESSAGE_ATTACHMENT;
         content = [[MessageAttachmentContent alloc] initWithRaw:rawContent];
+    } else if ([dict objectForKey:@"timestamp"] != nil) {
+        self.type = MESSAGE_TIME_BASE;
+        content = [[MessageTimeBaseContent alloc] initWithRaw:rawContent];
     } else {
         self.type = MESSAGE_UNKNOWN;
     }
@@ -407,6 +430,14 @@
     }
     return nil;
 }
+
+-(MessageTimeBaseContent*)timeBaseContent {
+    if (self.content.type == MESSAGE_TIME_BASE) {
+        return (MessageTimeBaseContent*)self.content;
+    }
+    return nil;
+}
+
 @end
 
 @implementation IGroup

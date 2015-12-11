@@ -87,8 +87,8 @@
 
 
 -(void)initTableViewData {
-    self.messageArray = [NSMutableArray array];
-    self.timestamps = [NSMutableArray array];
+    NSMutableArray *newMessages = [NSMutableArray array];
+    NSDate *lastDate = nil;
     
     NSInteger count = [self.messages count];
     if (count == 0) {
@@ -96,140 +96,79 @@
     }
     
     for (NSInteger i = 0; i < count; i++) {
-        NSDate *lastDate = [self.timestamps lastObject];
         IMessage *msg = [self.messages objectAtIndex:i];
-        
-        if (lastDate == nil || msg.timestamp - lastDate.timeIntervalSince1970 > 10*60) {
-            NSDate *date = [NSDate dateWithTimeIntervalSince1970: msg.timestamp];
-            NSMutableArray *msgBlockArray  = [NSMutableArray arrayWithObject:msg];
-            
-            [self.messageArray addObject:msgBlockArray];
-            [self.timestamps addObject:date];
-
-        } else {
-            [[self.messageArray lastObject] addObject:msg];
+        if (msg.type == MESSAGE_TIME_BASE) {
+            continue;
         }
+        
+        if (lastDate == nil || msg.timestamp - lastDate.timeIntervalSince1970 > 1*60) {
+            MessageTimeBaseContent *tb = [[MessageTimeBaseContent alloc] initWithTimestamp:msg.timestamp];
+            IMessage *m = [[IMessage alloc] init];
+            m.rawContent = tb.raw;
+            [newMessages addObject:m];
+            lastDate = [NSDate dateWithTimeIntervalSince1970:msg.timestamp];
+        }
+        
+        [newMessages addObject:msg];
     }
+    
+    self.messages = newMessages;
 }
 
 
 - (void)insertMessage:(IMessage*)msg {
-    [self.messages addObject:msg];
+    NSDate *lastDate = nil;
+    NSInteger count = [self.messages count];
     
-    NSDate *lastDate = [self.timestamps lastObject];
-    if (lastDate == nil || msg.timestamp - lastDate.timeIntervalSince1970 > 10*60) {
-        NSDate *date = [NSDate dateWithTimeIntervalSince1970: msg.timestamp];
-        NSMutableArray *msgBlockArray  = [NSMutableArray arrayWithObject:msg];
-        
-        [self.messageArray addObject:msgBlockArray];
-        [self.timestamps addObject:date];
-    } else {
-        [[self.messageArray lastObject] addObject:msg];
+    for (NSInteger i = count; i > 0; i--) {
+        IMessage *m = [self.messages objectAtIndex:i-1];
+        if (m.type == MESSAGE_TIME_BASE) {
+            lastDate = [NSDate dateWithTimeIntervalSince1970:m.timeBaseContent.timestamp];
+            break;
+        }
     }
     
-    NSMutableArray *msgBlockArray = nil;
-    NSIndexPath *indexPath = nil;
-    
-    msgBlockArray = self.messageArray.lastObject;
-    indexPath = [NSIndexPath indexPathForRow:[msgBlockArray count] - 1 inSection: [self.messageArray count] - 1];
-    
-    [UIView beginAnimations:nil context:NULL];
-    if (indexPath.row == 0 ) {
-        NSUInteger sectionCount = indexPath.section;
-        NSIndexSet *indices = [NSIndexSet indexSetWithIndex: sectionCount];
-        [self.tableView beginUpdates];
-        [self.tableView insertSections:indices withRowAnimation:UITableViewRowAnimationNone];
-        [self.tableView endUpdates];
-    } else {
-        NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
+    NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
+    if (lastDate == nil || msg.timestamp - lastDate.timeIntervalSince1970 > 1*60) {
+        MessageTimeBaseContent *tb = [[MessageTimeBaseContent alloc] initWithTimestamp:msg.timestamp];
+        IMessage *m = [[IMessage alloc] init];
+        m.rawContent = tb.raw;
+        [self.messages addObject:m];
+        NSIndexPath *indexPath = nil;
+        indexPath = [NSIndexPath indexPathForRow:self.messages.count - 1 inSection:0];
         [indexPaths addObject:indexPath];
-        [self.tableView beginUpdates];
-        [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
-        [self.tableView endUpdates];
     }
+    [self.messages addObject:msg];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.messages.count - 1 inSection:0];
+    [indexPaths addObject:indexPath];
 
+    [UIView beginAnimations:nil context:NULL];
+    [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
     [self scrollToBottomAnimated:NO];
     [UIView commitAnimations];
+
 }
 
 - (void)scrollToBottomAnimated:(BOOL)animated
 {
-    if([self.messageArray count] == 0){
+    if (self.messages.count == 0) {
         return;
     }
-    
-    long lastSection = [self.messageArray count] - 1;
-    NSMutableArray *array = [self.messageArray objectAtIndex: lastSection];
-    long lastRow = [array count]-1;
-    
-    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:lastRow inSection:lastSection]
+    long lastRow = [self.messages count] - 1;
+    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:lastRow inSection:0]
                           atScrollPosition:UITableViewScrollPositionBottom
                                   animated:animated];
 }
 
 - (IMessage*)messageForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    NSMutableArray *array = [self.messageArray objectAtIndex: indexPath.section];
-    IMessage *msg =  ((IMessage*)[array objectAtIndex:indexPath.row]);
-    if(msg){
-        return msg;
-    }
-    return nil;
+    IMessage *msg = [self.messages objectAtIndex: indexPath.row];
+    return msg;
 }
-
-
-- (NSDate *)timestampForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return [self.timestamps objectAtIndex:indexPath.row];
-}
-
 
 - (IMessage*)getMessageWithID:(int)msgLocalID {
-    
-    for ( long sectionIndex = [self.messageArray count] - 1; sectionIndex >= 0; sectionIndex--) {
-        
-        NSMutableArray *rowArrays = [self.messageArray objectAtIndex:sectionIndex];
-        for (long rowindex = [rowArrays count ] - 1;rowindex >= 0 ; rowindex--) {
-            
-            IMessage *tmpMsg = (IMessage*) [rowArrays objectAtIndex:rowindex];
-            if (tmpMsg.msgLocalID == msgLocalID) {
-                return tmpMsg;
-            }
-        }
-    }
-    return nil;
-}
-
-- (void)reloadMessage:(int)msgLocalID {
-    
-    for (long sectionIndex = [self.messageArray count] - 1; sectionIndex >= 0; sectionIndex--) {
-        
-        NSMutableArray *rowArrays = [self.messageArray objectAtIndex:sectionIndex];
-        for (long rowindex = [rowArrays count ] - 1;rowindex >= 0 ; rowindex--) {
-            
-            IMMessage *tmpMsg = [rowArrays objectAtIndex:rowindex];
-            if (tmpMsg.msgLocalID == msgLocalID) {
-                
-                NSIndexPath *findpath = [NSIndexPath indexPathForRow:rowindex inSection: sectionIndex];
-                NSArray *array = [NSArray arrayWithObject:findpath];
-                [self.tableView reloadRowsAtIndexPaths:array withRowAnimation:UITableViewRowAnimationNone];
-            }
-        }
-    }
-}
-
-
-- (NSIndexPath*)getIndexPathById:(int)msgLocalID {
-    for ( long sectionIndex = [self.messageArray count] - 1; sectionIndex >= 0; sectionIndex--) {
-        
-        NSMutableArray *rowArrays = [self.messageArray objectAtIndex:sectionIndex];
-        for (long rowindex = [rowArrays count ] - 1;rowindex >= 0 ; rowindex--) {
-            
-            IMMessage *tmpMsg = [rowArrays objectAtIndex:rowindex];
-            if (tmpMsg.msgLocalID == msgLocalID) {
-                
-                NSIndexPath *findpath = [NSIndexPath indexPathForRow:rowindex inSection: sectionIndex];
-                return findpath;
-            }
+    for (IMessage *msg in self.messages) {
+        if (msg.msgLocalID == msgLocalID) {
+            return msg;
         }
     }
     return nil;
