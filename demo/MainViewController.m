@@ -178,7 +178,10 @@
     [urlRequest setAllHTTPHeaderFields:headers];
 
 
-    NSDictionary *obj = [NSDictionary dictionaryWithObject:[NSNumber numberWithLongLong:uid] forKey:@"uid"];
+    NSMutableDictionary *obj = [NSMutableDictionary dictionary];
+    [obj setObject:[NSNumber numberWithLongLong:uid] forKey:@"uid"];
+    [obj setObject:[NSString stringWithFormat:@"测试用户%lld", uid] forKey:@"user_name"];
+    
     NSData *postBody = [NSJSONSerialization dataWithJSONObject:obj options:0 error:nil];
 
     [urlRequest setHTTPBody:postBody];
