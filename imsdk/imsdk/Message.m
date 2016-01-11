@@ -38,6 +38,14 @@
 
 @end
 
+@implementation NatPortMap
+
+@end
+
+@implementation VOIPControl
+
+@end
+
 @implementation Message
 -(NSData*)pack {
     char buf[64*1024] = {0};
@@ -118,6 +126,38 @@
         writeInt32([u intValue], p);
         p += 4;
         return [NSData dataWithBytes:buf length:HEAD_SIZE + 4];
+    } else if (self.cmd == MSG_VOIP_CONTROL) {
+        VOIPControl *ctl = (VOIPControl*)self.body;
+        writeInt64(ctl.sender, p);
+        p += 8;
+        writeInt64(ctl.receiver, p);
+        p += 8;
+        
+        writeInt32(ctl.cmd, p);
+        p += 4;
+        if (ctl.cmd == VOIP_COMMAND_DIAL || ctl.cmd == VOIP_COMMAND_DIAL_VIDEO) {
+            writeInt32(ctl.dialCount, p);
+            p += 4;
+            return [NSData dataWithBytes:buf length:HEAD_SIZE+24];
+        } else if (ctl.cmd == VOIP_COMMAND_ACCEPT) {
+            NSLog(@"nat map ip:%x", ctl.natMap.ip);
+            writeInt32(ctl.natMap.ip, p);
+            p += 4;
+            writeInt16(ctl.natMap.port, p);
+            p += 2;
+            return [NSData dataWithBytes:buf length:HEAD_SIZE+26];
+        } else if (ctl.cmd == VOIP_COMMAND_CONNECTED) {
+            NSLog(@"nat map ip:%x", ctl.natMap.ip);
+            writeInt32(ctl.natMap.ip, p);
+            p += 4;
+            writeInt16(ctl.natMap.port, p);
+            p += 2;
+            writeInt32(ctl.relayIP, p);
+            p += 4;
+            return [NSData dataWithBytes:buf length:HEAD_SIZE+30];
+        } else {
+            return [NSData dataWithBytes:buf length:HEAD_SIZE+20];
+        }
     }
     return nil;
 }
@@ -192,6 +232,39 @@
         return YES;
     } else if (self.cmd == MSG_SYSTEM) {
         self.body = [[NSString alloc] initWithBytes:p length:data.length-HEAD_SIZE encoding:NSUTF8StringEncoding];
+        return YES;
+    } else if (self.cmd == MSG_VOIP_CONTROL) {
+        VOIPControl *ctl = [[VOIPControl alloc] init];
+        ctl.sender = readInt64(p);
+        p += 8;
+        ctl.receiver = readInt64(p);
+        p += 8;
+        ctl.cmd = readInt32(p);
+        p += 4;
+        if (ctl.cmd == VOIP_COMMAND_DIAL || ctl.cmd == VOIP_COMMAND_DIAL_VIDEO) {
+            ctl.dialCount = readInt32(p);
+        } else if (ctl.cmd == VOIP_COMMAND_ACCEPT) {
+            if (data.length >= HEAD_SIZE + 26) {
+                ctl.natMap = [[NatPortMap alloc] init];
+                ctl.natMap.ip = readInt32(p);
+                p += 4;
+                ctl.natMap.port = readInt16(p);
+                p += 2;
+            }
+        } else if (ctl.cmd == VOIP_COMMAND_CONNECTED) {
+            if (data.length >= HEAD_SIZE + 26) {
+                ctl.natMap = [[NatPortMap alloc] init];
+                ctl.natMap.ip = readInt32(p);
+                p += 4;
+                ctl.natMap.port = readInt16(p);
+                p += 2;
+            }
+            if (data.length >= HEAD_SIZE + 30) {
+                ctl.relayIP = readInt32(p);
+                p += 4;
+            }
+        }
+        self.body = ctl;
         return YES;
     } else {
         self.body = [NSData dataWithBytes:p length:data.length-8];

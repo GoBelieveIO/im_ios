@@ -1397,7 +1397,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = im_demo;
-				PROVISIONING_PROFILE = "78357e0e-4e88-45ff-b0d8-12a8565ed908";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};

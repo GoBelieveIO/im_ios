@@ -28,6 +28,7 @@
 @property(nonatomic)NSMutableArray *roomObservers;
 @property(nonatomic)NSMutableArray *loginPointObservers;
 @property(nonatomic)NSMutableArray *systemObservers;
+@property(nonatomic)NSMutableArray *voipObservers;
 
 @property(nonatomic)NSMutableData *data;
 @property(nonatomic)NSMutableDictionary *peerMessages;
@@ -57,12 +58,13 @@
         self.roomObservers = [NSMutableArray array];
         self.loginPointObservers = [NSMutableArray array];
         self.systemObservers = [NSMutableArray array];
+        self.voipObservers = [NSMutableArray array];
         
         self.data = [NSMutableData data];
         self.peerMessages = [NSMutableDictionary dictionary];
         self.groupMessages = [NSMutableDictionary dictionary];
         self.roomMessages = [NSMutableDictionary dictionary];
-        
+
         self.host = HOST;
         self.port = PORT;
         self.heartbeatHZ = HEARTBEAT_HZ;
@@ -194,6 +196,14 @@
     [self sendMessage:ack];
 }
 
+-(void)handleVOIPControl:(Message*)msg {
+    VOIPControl *ctl = (VOIPControl*)msg.body;
+    id<VOIPObserver> ob = [self.voipObservers lastObject];
+    if (ob) {
+        [ob onVOIPControl:ctl];
+    }
+}
+
 -(void)publishPeerMessage:(IMMessage*)msg {
     for (id<PeerMessageObserver> ob in self.peerObservers) {
         if ([ob respondsToSelector:@selector(onPeerMessage:)]) {
@@ -302,6 +312,8 @@
         [self handleRoomMessage:msg];
     } else if (msg.cmd == MSG_SYSTEM) {
         [self handleSystemMessage:msg];
+    } else if (msg.cmd == MSG_VOIP_CONTROL) {
+        [self handleVOIPControl:msg];
     }
 }
 
@@ -370,6 +382,30 @@
 -(void)removeSystemMessageObserver:(id<SystemMessageObserver>)ob {
     [self.systemObservers removeObject:ob];
 }
+
+
+-(void)pushVOIPObserver:(id<VOIPObserver>)ob {
+    [self.voipObservers addObject:ob];
+}
+
+-(void)popVOIPObserver:(id<VOIPObserver>)ob {
+    NSInteger count = [self.voipObservers count];
+    if (count == 0) {
+        return;
+    }
+    id<VOIPObserver> top = [self.voipObservers objectAtIndex:count-1];
+    if (top == ob) {
+        [self.voipObservers removeObject:top];
+    }
+}
+
+-(BOOL)sendVOIPControl:(VOIPControl*)ctl {
+    Message *m = [[Message alloc] init];
+    m.cmd = MSG_VOIP_CONTROL;
+    m.body = ctl;
+    return [self sendMessage:m];
+}
+
 
 -(BOOL)isPeerMessageSending:(int64_t)peer id:(int)msgLocalID {
     for (NSNumber *s in self.peerMessages) {

@@ -67,6 +67,17 @@ int64_t readInt64(const void *p) {
     return ntoh64(v);
 }
 
+void writeInt16(int16_t v, void *p) {
+    v = htons(v);
+    memcpy(p, &v, 2);
+}
+
+int16_t readInt16(const void *p) {
+    int16_t v;
+    memcpy(&v, p, 2);
+    return ntohs(v);
+}
+
 int lookupAddr(const char *host, int port, struct sockaddr_in *addr) {
     struct addrinfo hints;
     struct addrinfo *result, *rp;

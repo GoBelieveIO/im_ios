@@ -73,6 +73,12 @@
 
 @end
 
+@protocol VOIPObserver <NSObject>
+
+-(void)onVOIPControl:(VOIPControl*)ctl;
+
+@end
+
 @interface IMService : TCPConnection
 @property(nonatomic, copy) NSString *deviceID;
 @property(nonatomic, copy) NSString *token;
@@ -112,6 +118,10 @@
 -(void)addSystemMessageObserver:(id<SystemMessageObserver>)ob;
 -(void)removeSystemMessageObserver:(id<SystemMessageObserver>)ob;
 
+-(void)pushVOIPObserver:(id<VOIPObserver>)ob;
+-(void)popVOIPObserver:(id<VOIPObserver>)ob;
+
+-(BOOL)sendVOIPControl:(VOIPControl*)ctl;
 
 @end
 
