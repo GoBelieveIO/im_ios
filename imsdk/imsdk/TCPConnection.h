@@ -27,9 +27,6 @@
 @property(nonatomic, assign)int connectState;
 @property(nonatomic, copy) NSString *host;
 
-//音视频数据的中转服务器ip
-@property(nonatomic, copy) NSString *relayIP;
-
 //protect
 @property(nonatomic)int port;
 @property(nonatomic, assign)int heartbeatHZ;
