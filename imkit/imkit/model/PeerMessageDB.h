@@ -11,13 +11,10 @@
 #import "IMessage.h"
 #import "MessageDB.h"
 
-@interface PeerConversationIterator : NSObject<ConversationIterator>
 
-@end
+#import "ConversationIterator.h"
+#import "IMessageIterator.h"
 
-@interface PeerMessageIterator : NSObject<IMessageIterator>
-
-@end
 
 @interface PeerMessageDB : NSObject
 

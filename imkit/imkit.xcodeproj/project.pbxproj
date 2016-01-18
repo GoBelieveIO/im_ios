@@ -74,6 +74,10 @@
 		6D78B81B1C15933A006F3251 /* PeerOutbox.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D78B8191C15933A006F3251 /* PeerOutbox.m */; };
 		6D9C46DE1BEB32530053066A /* UIViewController+HUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D9C46DD1BEB32530053066A /* UIViewController+HUD.m */; };
 		6DB34C141C4CFA2E006D78D4 /* Outbox.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DB34C131C4CFA2E006D78D4 /* Outbox.m */; };
+		6DB34C271C4D5152006D78D4 /* IMessageIterator.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DB34C261C4D5152006D78D4 /* IMessageIterator.m */; };
+		6DB34C2A1C4D5191006D78D4 /* ConversationIterator.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DB34C291C4D5191006D78D4 /* ConversationIterator.m */; };
+		6DB34C2B1C4D52C9006D78D4 /* IMessageIterator.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6DB34C251C4D5151006D78D4 /* IMessageIterator.h */; };
+		6DB34C2C1C4D52C9006D78D4 /* ConversationIterator.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6DB34C281C4D5191006D78D4 /* ConversationIterator.h */; };
 		6DBEBA771AF77291002CAEA3 /* GroupMessageViewController.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6D4256851ABC0EEC001B7E43 /* GroupMessageViewController.h */; };
 		6DEE56851BDCF309002BCAB8 /* MessageLocationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DEE56841BDCF309002BCAB8 /* MessageLocationView.m */; };
 		6DEE56C01BDE1663002BCAB8 /* LocationPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DEE56BE1BDE1663002BCAB8 /* LocationPickerController.m */; };
@@ -126,6 +130,8 @@
 			dstPath = "include/$(PRODUCT_NAME)";
 			dstSubfolderSpec = 16;
 			files = (
+				6DB34C2B1C4D52C9006D78D4 /* IMessageIterator.h in CopyFiles */,
+				6DB34C2C1C4D52C9006D78D4 /* ConversationIterator.h in CopyFiles */,
 				6DBEBA771AF77291002CAEA3 /* GroupMessageViewController.h in CopyFiles */,
 				6DFDA0261AB95E7F00EF553A /* PeerMessageViewController.h in CopyFiles */,
 				6DF54F281AB82E0000197EBC /* BaseMessageViewController.h in CopyFiles */,
@@ -239,6 +245,10 @@
 		6D9C46DD1BEB32530053066A /* UIViewController+HUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+HUD.m"; sourceTree = "<group>"; };
 		6DB34C121C4CFA2E006D78D4 /* Outbox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Outbox.h; sourceTree = "<group>"; };
 		6DB34C131C4CFA2E006D78D4 /* Outbox.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Outbox.m; sourceTree = "<group>"; };
+		6DB34C251C4D5151006D78D4 /* IMessageIterator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IMessageIterator.h; path = model/IMessageIterator.h; sourceTree = "<group>"; };
+		6DB34C261C4D5152006D78D4 /* IMessageIterator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IMessageIterator.m; path = model/IMessageIterator.m; sourceTree = "<group>"; };
+		6DB34C281C4D5191006D78D4 /* ConversationIterator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ConversationIterator.h; path = model/ConversationIterator.h; sourceTree = "<group>"; };
+		6DB34C291C4D5191006D78D4 /* ConversationIterator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ConversationIterator.m; path = model/ConversationIterator.m; sourceTree = "<group>"; };
 		6DEE56831BDCF309002BCAB8 /* MessageLocationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MessageLocationView.h; path = view/MessageLocationView.h; sourceTree = "<group>"; };
 		6DEE56841BDCF309002BCAB8 /* MessageLocationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MessageLocationView.m; path = view/MessageLocationView.m; sourceTree = "<group>"; };
 		6DEE56BD1BDE1663002BCAB8 /* LocationPickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocationPickerController.h; path = controller/LocationPickerController.h; sourceTree = "<group>"; };
@@ -374,6 +384,10 @@
 				6D032FED1AA9B41C004AA39F /* PeerMessageHandler.m */,
 				6D032FEE1AA9B41C004AA39F /* ReverseFile.h */,
 				6D032FEF1AA9B41C004AA39F /* ReverseFile.m */,
+				6DB34C251C4D5151006D78D4 /* IMessageIterator.h */,
+				6DB34C261C4D5152006D78D4 /* IMessageIterator.m */,
+				6DB34C281C4D5191006D78D4 /* ConversationIterator.h */,
+				6DB34C291C4D5191006D78D4 /* ConversationIterator.m */,
 			);
 			name = model;
 			sourceTree = "<group>";
@@ -731,6 +745,7 @@
 				6D032FF11AA9B41C004AA39F /* GroupMessageHandler.m in Sources */,
 				6D0331331AA9E734004AA39F /* MessageAudioView.m in Sources */,
 				6D03301B1AA9BCD8004AA39F /* DraftDB.m in Sources */,
+				6DB34C2A1C4D5191006D78D4 /* ConversationIterator.m in Sources */,
 				6D4256871ABC0EEC001B7E43 /* GroupMessageViewController.m in Sources */,
 				6D0331381AA9E734004AA39F /* MessageViewCell.m in Sources */,
 				6D032FF51AA9B41C004AA39F /* PeerMessageHandler.m in Sources */,
@@ -767,6 +782,7 @@
 				6D03310B1AA9BDB8004AA39F /* wavreader.c in Sources */,
 				6D0331621AAB6702004AA39F /* TAHttpOperation.m in Sources */,
 				6D03310C1AA9BDB8004AA39F /* wavwriter.c in Sources */,
+				6DB34C271C4D5152006D78D4 /* IMessageIterator.m in Sources */,
 				6D78B81A1C15933A006F3251 /* GroupOutbox.m in Sources */,
 				6D18DBB01BEA0AAC006A3B66 /* EaseEmotionEscape.m in Sources */,
 			);

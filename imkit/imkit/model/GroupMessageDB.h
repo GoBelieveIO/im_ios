@@ -11,14 +11,9 @@
 
 #import "IMessage.h"
 #import "MessageDB.h"
+#import "IMessageIterator.h"
+#import "ConversationIterator.h"
 
-@interface GroupConversationIterator : NSObject<ConversationIterator>
-
-@end
-
-@interface GroupMessageIterator : NSObject<IMessageIterator>
-
-@end
 
 @interface GroupMessageDB : NSObject
 +(GroupMessageDB*)instance;

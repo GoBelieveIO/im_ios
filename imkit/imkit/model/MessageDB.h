@@ -18,14 +18,7 @@
 #import <Foundation/Foundation.h>
 #import "IMessage.h"
 
-//由近到远遍历消息
-@protocol IMessageIterator
--(IMessage*)next;
-@end
 
-@protocol ConversationIterator
--(Conversation*)next;
-@end
 
 @class ReverseFile;
 
