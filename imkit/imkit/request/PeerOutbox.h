@@ -9,28 +9,11 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import "IMessage.h"
+#import "Outbox.h"
 
-@protocol PeerOutboxObserver <NSObject>
 
--(void)onAudioUploadSuccess:(IMessage*)msg URL:(NSString*)url;
--(void)onAudioUploadFail:(IMessage*)msg;
--(void)onImageUploadSuccess:(IMessage*)msg URL:(NSString*)url;
--(void)onImageUploadFail:(IMessage*)msg;
-
-@end
-
-@interface PeerOutbox : NSObject
+@interface PeerOutbox : Outbox
 
 +(PeerOutbox*)instance;
 
--(BOOL)isUploading:(IMessage*)msg;
-
--(BOOL)uploadImage:(IMessage*)msg;
--(BOOL)uploadImage:(IMessage*)msg withImage:(UIImage*)image;
--(BOOL)uploadAudio:(IMessage*)msg;
-
-
--(void)addBoxObserver:(id<PeerOutboxObserver>)ob;
--(void)removeBoxObserver:(id<PeerOutboxObserver>)ob;
 @end

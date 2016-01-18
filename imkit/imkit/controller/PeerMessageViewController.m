@@ -19,7 +19,7 @@
 
 #define PAGE_COUNT 10
 
-@interface PeerMessageViewController ()<PeerOutboxObserver>
+@interface PeerMessageViewController ()<OutboxObserver>
 
 @end
 

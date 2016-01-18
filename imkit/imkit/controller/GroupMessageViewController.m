@@ -20,7 +20,7 @@
 
 #define PAGE_COUNT 10
 
-@interface GroupMessageViewController ()<GroupOutboxObserver>
+@interface GroupMessageViewController ()<OutboxObserver>
 
 @end
 
@@ -347,10 +347,10 @@
 - (void)sendMessage:(IMessage*)message {
     if (message.type == MESSAGE_AUDIO) {
         message.uploading = YES;
-        [[GroupOutbox instance] uploadGroupAudio:message];
+        [[GroupOutbox instance] uploadAudio:message];
     } else if (message.type == MESSAGE_IMAGE) {
         message.uploading = YES;
-        [[GroupOutbox instance] uploadGroupImage:message];
+        [[GroupOutbox instance] uploadImage:message];
     } else {
         IMMessage *im = [[IMMessage alloc] init];
         im.sender = message.sender;
@@ -368,7 +368,7 @@
 
 - (void)sendMessage:(IMessage *)msg withImage:(UIImage*)image {
     msg.uploading = YES;
-    [[GroupOutbox instance] uploadGroupImage:msg withImage:image];
+    [[GroupOutbox instance] uploadImage:msg withImage:image];
     
     NSNotification* notification = [[NSNotification alloc] initWithName:LATEST_GROUP_MESSAGE
                                                                  object:msg userInfo:nil];

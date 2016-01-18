@@ -74,6 +74,7 @@
 		6D78B81A1C15933A006F3251 /* GroupOutbox.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D78B8171C15933A006F3251 /* GroupOutbox.m */; };
 		6D78B81B1C15933A006F3251 /* PeerOutbox.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D78B8191C15933A006F3251 /* PeerOutbox.m */; };
 		6D9C46DE1BEB32530053066A /* UIViewController+HUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D9C46DD1BEB32530053066A /* UIViewController+HUD.m */; };
+		6DB34C141C4CFA2E006D78D4 /* Outbox.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DB34C131C4CFA2E006D78D4 /* Outbox.m */; };
 		6DBEBA771AF77291002CAEA3 /* GroupMessageViewController.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6D4256851ABC0EEC001B7E43 /* GroupMessageViewController.h */; };
 		6DEE56851BDCF309002BCAB8 /* MessageLocationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DEE56841BDCF309002BCAB8 /* MessageLocationView.m */; };
 		6DEE56C01BDE1663002BCAB8 /* LocationPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DEE56BE1BDE1663002BCAB8 /* LocationPickerController.m */; };
@@ -240,6 +241,8 @@
 		6D78B8191C15933A006F3251 /* PeerOutbox.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PeerOutbox.m; sourceTree = "<group>"; };
 		6D9C46DC1BEB32530053066A /* UIViewController+HUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+HUD.h"; sourceTree = "<group>"; };
 		6D9C46DD1BEB32530053066A /* UIViewController+HUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+HUD.m"; sourceTree = "<group>"; };
+		6DB34C121C4CFA2E006D78D4 /* Outbox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Outbox.h; sourceTree = "<group>"; };
+		6DB34C131C4CFA2E006D78D4 /* Outbox.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Outbox.m; sourceTree = "<group>"; };
 		6DEE56831BDCF309002BCAB8 /* MessageLocationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MessageLocationView.h; path = view/MessageLocationView.h; sourceTree = "<group>"; };
 		6DEE56841BDCF309002BCAB8 /* MessageLocationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MessageLocationView.m; path = view/MessageLocationView.m; sourceTree = "<group>"; };
 		6DEE56BD1BDE1663002BCAB8 /* LocationPickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocationPickerController.h; path = controller/LocationPickerController.h; sourceTree = "<group>"; };
@@ -451,6 +454,8 @@
 				6D0330011AA9BBC7004AA39F /* AudioDownloader.m */,
 				6D0330021AA9BBC7004AA39F /* IMHttpAPI.h */,
 				6D0330031AA9BBC7004AA39F /* IMHttpAPI.m */,
+				6DB34C121C4CFA2E006D78D4 /* Outbox.h */,
+				6DB34C131C4CFA2E006D78D4 /* Outbox.m */,
 			);
 			path = request;
 			sourceTree = "<group>";
@@ -751,6 +756,7 @@
 				6D18DBA81BEA0A7E006A3B66 /* EaseImageView.m in Sources */,
 				6D0330061AA9BBC7004AA39F /* AudioDownloader.m in Sources */,
 				6D78B81B1C15933A006F3251 /* PeerOutbox.m in Sources */,
+				6DB34C141C4CFA2E006D78D4 /* Outbox.m in Sources */,
 				6D032FF01AA9B41C004AA39F /* GroupMessageDB.m in Sources */,
 				6D18DBAE1BEA0AA4006A3B66 /* EaseEmoji.m in Sources */,
 				6D18DBAD1BEA0A96006A3B66 /* EaseRecordView.m in Sources */,
