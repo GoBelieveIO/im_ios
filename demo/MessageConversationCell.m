@@ -7,7 +7,7 @@
 //
 
 #import "MessageConversationCell.h"
-#import "IMessage.h"
+#import <imkit/IMessage.h>
 
 #define kCatchWidth 74.0f
 

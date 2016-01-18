@@ -23,6 +23,11 @@
 #import <imkit/GroupMessageDB.h>
 #import <imkit/IMHttpAPI.H>
 
+#include <netdb.h>
+#include <arpa/inet.h>
+#include <netinet/in.h>
+
+
 #define UIColorFromRGBHex(rgbValue) [UIColor \
 colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 \
 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 \
@@ -105,6 +110,8 @@ blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
     UIRemoteNotificationType myTypes = UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound;
     [application registerForRemoteNotificationTypes:myTypes];
 #endif
+    
+    [self refreshHost];
     return YES;
 }
 
@@ -140,13 +147,19 @@ blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
 
     [[IMService instance] enterBackground];
+    
+    
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
     
     [[IMService instance] enterForeground];
+
+    [self refreshHost];
 }
+
+
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
@@ -154,6 +167,70 @@ blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+}
+
+
+-(void)refreshHost {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        NSLog(@"refresh host ip...");
+        
+        for (int i = 0; i < 10; i++) {
+            NSString *host = @"imnode.gobelieve.io";
+            NSString *ip = [self resolveIP:host];
+            
+            NSString *apiHost = @"api.gobelieve.io";
+            NSString *apiIP = [self resolveIP:apiHost];
+            
+            
+            NSLog(@"host:%@ ip:%@", host, ip);
+            NSLog(@"api host:%@ ip:%@", apiHost, apiIP);
+            
+            if (ip.length == 0 || apiIP.length == 0) {
+                continue;
+            } else {
+                break;
+            }
+        }
+    });
+}
+
+-(NSString*)IP2String:(struct in_addr)addr {
+    char buf[64] = {0};
+    const char *p = inet_ntop(AF_INET, &addr, buf, 64);
+    if (p) {
+        return [NSString stringWithUTF8String:p];
+    }
+    return nil;
+    
+}
+
+-(NSString*)resolveIP:(NSString*)host {
+    struct addrinfo hints;
+    struct addrinfo *result, *rp;
+    int s;
+    
+    char buf[32];
+    snprintf(buf, 32, "%d", 0);
+    
+    memset(&hints, 0, sizeof(struct addrinfo));
+    hints.ai_family = AF_INET;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_protocol = IPPROTO_TCP;
+    hints.ai_flags = 0;
+    
+    s = getaddrinfo([host UTF8String], buf, &hints, &result);
+    if (s != 0) {
+        NSLog(@"get addr info error:%s", gai_strerror(s));
+        return nil;
+    }
+    NSString *ip = nil;
+    rp = result;
+    if (rp != NULL) {
+        struct sockaddr_in *addr = (struct sockaddr_in*)rp->ai_addr;
+        ip = [self IP2String:addr->sin_addr];
+    }
+    freeaddrinfo(result);
+    return ip;
 }
 
 @end

@@ -70,7 +70,6 @@
 		6D2754931C1ACD3F008E5EB7 /* MessageTimeBaseView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D2754921C1ACD3F008E5EB7 /* MessageTimeBaseView.m */; };
 		6D4256871ABC0EEC001B7E43 /* GroupMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D4256861ABC0EEC001B7E43 /* GroupMessageViewController.m */; };
 		6D42568B1ABC0F2F001B7E43 /* MessageNotificationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D42568A1ABC0F2F001B7E43 /* MessageNotificationView.m */; };
-		6D78B80D1C0FECDD006F3251 /* MessageListViewController.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6DFD88F61BFE2B220067D71B /* MessageListViewController.h */; };
 		6D78B81A1C15933A006F3251 /* GroupOutbox.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D78B8171C15933A006F3251 /* GroupOutbox.m */; };
 		6D78B81B1C15933A006F3251 /* PeerOutbox.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D78B8191C15933A006F3251 /* PeerOutbox.m */; };
 		6D9C46DE1BEB32530053066A /* UIViewController+HUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D9C46DD1BEB32530053066A /* UIViewController+HUD.m */; };
@@ -84,8 +83,6 @@
 		6DF54F281AB82E0000197EBC /* BaseMessageViewController.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6DF54F241AB816FB00197EBC /* BaseMessageViewController.h */; };
 		6DFD88E81BFCD2E90067D71B /* MessageLinkView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DFD88E71BFCD2E90067D71B /* MessageLinkView.m */; };
 		6DFD88ED1BFCD9990067D71B /* WebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DFD88EC1BFCD9990067D71B /* WebViewController.m */; };
-		6DFD88F81BFE2B220067D71B /* MessageListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DFD88F71BFE2B220067D71B /* MessageListViewController.m */; };
-		6DFD88FB1BFE2B500067D71B /* MessageConversationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DFD88FA1BFE2B500067D71B /* MessageConversationCell.m */; };
 		6DFDA0241AB95B9800EF553A /* PeerMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DFDA0231AB95B9800EF553A /* PeerMessageViewController.m */; };
 		6DFDA0261AB95E7F00EF553A /* PeerMessageViewController.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6DFDA0221AB95B9800EF553A /* PeerMessageViewController.h */; };
 		6DFDA0271AB9797500EF553A /* TextMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54F161AB6E58800197EBC /* TextMessageViewController.m */; };
@@ -129,7 +126,6 @@
 			dstPath = "include/$(PRODUCT_NAME)";
 			dstSubfolderSpec = 16;
 			files = (
-				6D78B80D1C0FECDD006F3251 /* MessageListViewController.h in CopyFiles */,
 				6DBEBA771AF77291002CAEA3 /* GroupMessageViewController.h in CopyFiles */,
 				6DFDA0261AB95E7F00EF553A /* PeerMessageViewController.h in CopyFiles */,
 				6DF54F281AB82E0000197EBC /* BaseMessageViewController.h in CopyFiles */,
@@ -258,10 +254,6 @@
 		6DFD88E71BFCD2E90067D71B /* MessageLinkView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MessageLinkView.m; path = view/MessageLinkView.m; sourceTree = "<group>"; };
 		6DFD88EB1BFCD9990067D71B /* WebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WebViewController.h; path = controller/WebViewController.h; sourceTree = "<group>"; };
 		6DFD88EC1BFCD9990067D71B /* WebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WebViewController.m; path = controller/WebViewController.m; sourceTree = "<group>"; };
-		6DFD88F61BFE2B220067D71B /* MessageListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MessageListViewController.h; path = controller/MessageListViewController.h; sourceTree = "<group>"; };
-		6DFD88F71BFE2B220067D71B /* MessageListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MessageListViewController.m; path = controller/MessageListViewController.m; sourceTree = "<group>"; };
-		6DFD88F91BFE2B500067D71B /* MessageConversationCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MessageConversationCell.h; path = view/MessageConversationCell.h; sourceTree = "<group>"; };
-		6DFD88FA1BFE2B500067D71B /* MessageConversationCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MessageConversationCell.m; path = view/MessageConversationCell.m; sourceTree = "<group>"; };
 		6DFDA0221AB95B9800EF553A /* PeerMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeerMessageViewController.h; path = controller/PeerMessageViewController.h; sourceTree = "<group>"; };
 		6DFDA0231AB95B9800EF553A /* PeerMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PeerMessageViewController.m; path = controller/PeerMessageViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -389,8 +381,6 @@
 		6D032FF71AA9B493004AA39F /* view */ = {
 			isa = PBXGroup;
 			children = (
-				6DFD88F91BFE2B500067D71B /* MessageConversationCell.h */,
-				6DFD88FA1BFE2B500067D71B /* MessageConversationCell.m */,
 				6D18DB761BEA06D8006A3B66 /* toolbar */,
 				6D03311F1AA9E734004AA39F /* BubbleView.h */,
 				6D0331201AA9E734004AA39F /* BubbleView.m */,
@@ -417,8 +407,6 @@
 		6D032FF81AA9B499004AA39F /* controller */ = {
 			isa = PBXGroup;
 			children = (
-				6DFD88F61BFE2B220067D71B /* MessageListViewController.h */,
-				6DFD88F71BFE2B220067D71B /* MessageListViewController.m */,
 				4875B1211AAC9362001D1435 /* MEESImageViewController.h */,
 				4875B1221AAC9362001D1435 /* MEESImageViewController.m */,
 				6D032FFC1AA9B4D2004AA39F /* MessageViewController.h */,
@@ -737,7 +725,6 @@
 				6D0331311AA9E734004AA39F /* BubbleView.m in Sources */,
 				6D42568B1ABC0F2F001B7E43 /* MessageNotificationView.m in Sources */,
 				6D2754931C1ACD3F008E5EB7 /* MessageTimeBaseView.m in Sources */,
-				6DFD88F81BFE2B220067D71B /* MessageListViewController.m in Sources */,
 				6DEE56851BDCF309002BCAB8 /* MessageLocationView.m in Sources */,
 				6DFDA0271AB9797500EF553A /* TextMessageViewController.m in Sources */,
 				6D18DBA61BEA0A76006A3B66 /* EaseChatToolbarItem.m in Sources */,
@@ -769,7 +756,6 @@
 				6D0330071AA9BBC7004AA39F /* IMHttpAPI.m in Sources */,
 				4875B1231AAC9362001D1435 /* MEESImageViewController.m in Sources */,
 				6D18DBA71BEA0A7A006A3B66 /* EaseChatToolbar.m in Sources */,
-				6DFD88FB1BFE2B500067D71B /* MessageConversationCell.m in Sources */,
 				6D03315F1AAB6626004AA39F /* NSString+JSMessagesView.m in Sources */,
 				6D18DBAF1BEA0AA8006A3B66 /* EaseEmojiEmoticons.m in Sources */,
 				6D18DBAC1BEA0A91006A3B66 /* EaseChatBarMoreView.m in Sources */,

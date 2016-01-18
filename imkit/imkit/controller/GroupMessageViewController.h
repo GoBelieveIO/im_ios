@@ -10,6 +10,13 @@
 #import "MessageViewController.h"
 #import "TextMessageViewController.h"
 
+
+//最近发出的消息
+#define LATEST_GROUP_MESSAGE       @"latest_group_message"
+
+//清空会话的未读消息数
+#define CLEAR_GROUP_NEW_MESSAGE @"clear_group_single_conv_new_message_notify"
+
 #undef TEXT_MODE
 #ifdef TEXT_MODE
 @interface GroupMessageViewController : TextMessageViewController<GroupMessageObserver,  TCPConnectionObserver, LoginPointObserver>

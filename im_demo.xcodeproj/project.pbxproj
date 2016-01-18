@@ -9,8 +9,6 @@
 /* Begin PBXBuildFile section */
 		6D6154361BF6EB15005648FA /* images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C471A1BF08A9A0053066A /* images.xcassets */; };
 		6D6154371BF6EB16005648FA /* images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C471A1BF08A9A0053066A /* images.xcassets */; };
-		6D6154381BF6EB20005648FA /* MessageConversationCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C47131BF0810B0053066A /* MessageConversationCell.xib */; };
-		6D6154391BF6EB21005648FA /* MessageConversationCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C47131BF0810B0053066A /* MessageConversationCell.xib */; };
 		6D61543A1BF6EB5F005648FA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C46D61BEB0A940053066A /* Localizable.strings */; };
 		6D61543B1BF6EB5F005648FA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C46D61BEB0A940053066A /* Localizable.strings */; };
 		6D69BCF11B4449D0008EAA8A /* UIView+Toast.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54EA01AB58BB100197EBC /* UIView+Toast.m */; };
@@ -166,8 +164,10 @@
 		6D8E72E91B750B79004E069E /* GroupLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D8E72E81B750B79004E069E /* GroupLoginViewController.m */; };
 		6D9C46C91BEB09DC0053066A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C46CB1BEB09DC0053066A /* InfoPlist.strings */; };
 		6D9C46D41BEB0A940053066A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C46D61BEB0A940053066A /* Localizable.strings */; };
-		6D9C47141BF0810B0053066A /* MessageConversationCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C47131BF0810B0053066A /* MessageConversationCell.xib */; };
 		6D9C471B1BF08A9A0053066A /* images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C471A1BF08A9A0053066A /* images.xcassets */; };
+		6DB34C1B1C4D18D4006D78D4 /* MessageConversationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DB34C181C4D18D4006D78D4 /* MessageConversationCell.m */; };
+		6DB34C1C1C4D18D4006D78D4 /* MessageListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DB34C1A1C4D18D4006D78D4 /* MessageListViewController.m */; };
+		6DB34C241C4D1C5F006D78D4 /* MessageConversationCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6DB34C231C4D1C5F006D78D4 /* MessageConversationCell.xib */; };
 		6DF54D911AB5862000197EBC /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54D901AB5862000197EBC /* main.m */; };
 		6DF54D941AB5862000197EBC /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54D931AB5862000197EBC /* AppDelegate.m */; };
 		6DF54D9C1AB5862000197EBC /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54D9B1AB5862000197EBC /* Images.xcassets */; };
@@ -317,8 +317,12 @@
 		6D9C46CC1BEB09E80053066A /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		6D9C46D51BEB0A940053066A /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		6D9C46D81BEB0ABB0053066A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
-		6D9C47131BF0810B0053066A /* MessageConversationCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MessageConversationCell.xib; sourceTree = "<group>"; };
 		6D9C471A1BF08A9A0053066A /* images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = images.xcassets; sourceTree = "<group>"; };
+		6DB34C171C4D18D4006D78D4 /* MessageConversationCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageConversationCell.h; sourceTree = "<group>"; };
+		6DB34C181C4D18D4006D78D4 /* MessageConversationCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageConversationCell.m; sourceTree = "<group>"; };
+		6DB34C191C4D18D4006D78D4 /* MessageListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageListViewController.h; sourceTree = "<group>"; };
+		6DB34C1A1C4D18D4006D78D4 /* MessageListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageListViewController.m; sourceTree = "<group>"; };
+		6DB34C231C4D1C5F006D78D4 /* MessageConversationCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MessageConversationCell.xib; sourceTree = "<group>"; };
 		6DF54D8B1AB5862000197EBC /* im_demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = im_demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6DF54D8F1AB5862000197EBC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6DF54D901AB5862000197EBC /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -475,14 +479,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		6D9C47121BF0810A0053066A /* xibs */ = {
-			isa = PBXGroup;
-			children = (
-				6D9C47131BF0810B0053066A /* MessageConversationCell.xib */,
-			);
-			path = xibs;
-			sourceTree = "<group>";
-		};
 		6DF54D821AB5862000197EBC = {
 			isa = PBXGroup;
 			children = (
@@ -510,6 +506,11 @@
 			children = (
 				6DF54EBC1AB58DC500197EBC /* Resources */,
 				6DF54EB91AB58CAA00197EBC /* im_demo-prefix.pch */,
+				6DB34C171C4D18D4006D78D4 /* MessageConversationCell.h */,
+				6DB34C181C4D18D4006D78D4 /* MessageConversationCell.m */,
+				6DB34C231C4D1C5F006D78D4 /* MessageConversationCell.xib */,
+				6DB34C191C4D18D4006D78D4 /* MessageListViewController.h */,
+				6DB34C1A1C4D18D4006D78D4 /* MessageListViewController.m */,
 				6DF54E551AB588C700197EBC /* MainViewController.h */,
 				6DF54E561AB588C700197EBC /* MainViewController.m */,
 				6D69BD931B444BBA008EAA8A /* RoomViewController.h */,
@@ -589,7 +590,6 @@
 			isa = PBXGroup;
 			children = (
 				6D9C471A1BF08A9A0053066A /* images.xcassets */,
-				6D9C47121BF0810A0053066A /* xibs */,
 				6DF54E091AB5883200197EBC /* sounds */,
 			);
 			name = imKitRes;
@@ -951,7 +951,6 @@
 				6D69BD631B4449D0008EAA8A /* bottombar_bg.png in Resources */,
 				6D69BD641B4449D0008EAA8A /* bg_blue@3x.png in Resources */,
 				6D69BD6A1B4449D0008EAA8A /* avater_you@2x.png in Resources */,
-				6D6154381BF6EB20005648FA /* MessageConversationCell.xib in Resources */,
 				6D69BD6E1B4449D0008EAA8A /* btn_blue.png in Resources */,
 				6D69BD6F1B4449D0008EAA8A /* ic_man@3x.png in Resources */,
 				6D69BD711B4449D0008EAA8A /* ic_back@2x.png in Resources */,
@@ -1002,7 +1001,6 @@
 				6D8E72BF1B750A31004E069E /* bottombar_bg.png in Resources */,
 				6D8E72C01B750A31004E069E /* bg_blue@3x.png in Resources */,
 				6D8E72C61B750A31004E069E /* avater_you@2x.png in Resources */,
-				6D6154391BF6EB21005648FA /* MessageConversationCell.xib in Resources */,
 				6D8E72CA1B750A31004E069E /* btn_blue.png in Resources */,
 				6D8E72CB1B750A31004E069E /* ic_man@3x.png in Resources */,
 				6D8E72CD1B750A31004E069E /* ic_back@2x.png in Resources */,
@@ -1017,6 +1015,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6DB34C241C4D1C5F006D78D4 /* MessageConversationCell.xib in Resources */,
 				6DF54EFB1AB58DC500197EBC /* btn_grey@2x.png in Resources */,
 				6DF54EEE1AB58DC500197EBC /* btn_grey.png in Resources */,
 				6DF54F091AB58DC500197EBC /* ic_dustbin@3x.png in Resources */,
@@ -1042,7 +1041,6 @@
 				6DF54EEA1AB58DC500197EBC /* bg_white.png in Resources */,
 				6DF54F011AB58DC500197EBC /* bg@3x.png in Resources */,
 				6DF54EF01AB58DC500197EBC /* ic_dustbin.png in Resources */,
-				6D9C47141BF0810B0053066A /* MessageConversationCell.xib in Resources */,
 				6D69BD921B444B79008EAA8A /* room-Info.plist in Resources */,
 				6DF54EF31AB58DC500197EBC /* avater_me@2x.png in Resources */,
 				6DF54EE61AB58DC500197EBC /* avater_me.png in Resources */,
@@ -1143,6 +1141,7 @@
 				6DF54EAD1AB58BB100197EBC /* SDWebImageManager.m in Sources */,
 				6DF54EA71AB58BB100197EBC /* NSData+ImageContentType.m in Sources */,
 				6DF54EA91AB58BB100197EBC /* SDWebImageCompat.m in Sources */,
+				6DB34C1C1C4D18D4006D78D4 /* MessageListViewController.m in Sources */,
 				6DF54EB51AB58BB100197EBC /* UIView+WebCacheOperation.m in Sources */,
 				6DF54EB21AB58BB100197EBC /* UIImage+WebP.m in Sources */,
 				6DF54D941AB5862000197EBC /* AppDelegate.m in Sources */,
@@ -1157,6 +1156,7 @@
 				6DF54EA81AB58BB100197EBC /* SDImageCache.m in Sources */,
 				6DF54EA51AB58BB100197EBC /* MBProgressHUD.m in Sources */,
 				6DF54EB01AB58BB100197EBC /* UIImage+GIF.m in Sources */,
+				6DB34C1B1C4D18D4006D78D4 /* MessageConversationCell.m in Sources */,
 				6DF54EAB1AB58BB100197EBC /* SDWebImageDownloader.m in Sources */,
 				6DF54EB41AB58BB100197EBC /* UIImageView+WebCache.m in Sources */,
 				6DF54EA61AB58BB100197EBC /* MKAnnotationView+WebCache.m in Sources */,
