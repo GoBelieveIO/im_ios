@@ -19,8 +19,7 @@
 #import <imsdk/IMService.h>
 #import <imkit/PeerMessageHandler.h>
 #import <imkit/GroupMessageHandler.h>
-#import <imkit/PeerMessageDB.h>
-#import <imkit/GroupMessageDB.h>
+#import <imkit/CustomerMessageHandler.h>
 #import <imkit/IMHttpAPI.H>
 
 #include <netdb.h>
@@ -66,6 +65,7 @@ blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
     NSLog(@"device id:%@", [[[UIDevice currentDevice] identifierForVendor] UUIDString]);
     [IMService instance].peerMessageHandler = [PeerMessageHandler instance];
     [IMService instance].groupMessageHandler = [GroupMessageHandler instance];
+    [IMService instance].customerMessageHandler = [CustomerMessageHandler instance];
     [[IMService instance] startRechabilityNotifier];
     
     

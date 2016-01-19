@@ -31,6 +31,7 @@
 #define MSG_ROOM_IM 20
 #define MSG_SYSTEM 21
 #define MSG_UNREAD_COUNT 22
+#define MSG_CUSTOMER_SERVICE 23
 
 #define MSG_VOIP_CONTROL 64
 

@@ -83,6 +83,13 @@
                 NSString *path = [NSString stringWithFormat:@"%@/%@", self.path, name];
                 c.message = [self getLastMessage:path];
                 return c;
+            } else if (self.type == CONVERSATION_CUSTOMER_SERVICE && [name hasPrefix:@"c_"]) {
+                Conversation *c = [[Conversation alloc] init];
+                int64_t uid = [[name substringFromIndex:2] longLongValue];
+                c.cid = uid;
+                c.type = self.type;
+                NSString *path = [NSString stringWithFormat:@"%@/%@", self.path, name];
+                c.message = [self getLastMessage:path];
             } else {
                 NSLog(@"skip file:%@", name);
             }

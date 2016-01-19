@@ -93,6 +93,21 @@
         }
         memcpy(p, s, l);
         return [NSData dataWithBytes:buf length:HEAD_SIZE + 24 +l];
+    } else if (self.cmd == MSG_CUSTOMER_SERVICE) {
+        IMMessage *m = (IMMessage*)self.body;
+        writeInt64(m.sender, p);
+        p += 8;
+        writeInt64(m.receiver, p);
+        p += 8;
+        writeInt32(m.timestamp, p);
+        p += 4;
+        const char *s = [m.content UTF8String];
+        size_t l = strlen(s);
+        if ((l + 32) > 64*1024) {
+            return nil;
+        }
+        memcpy(p, s, l);
+        return [NSData dataWithBytes:buf length:HEAD_SIZE + 20 +l];
     } else if (self.cmd == MSG_ACK) {
         writeInt32([(NSNumber*)self.body intValue], p);
         return [NSData dataWithBytes:buf length:HEAD_SIZE+4];
@@ -186,6 +201,17 @@
         m.msgLocalID = readInt32(p);
         p += 4;
         m.content = [[NSString alloc] initWithBytes:p length:data.length-32 encoding:NSUTF8StringEncoding];
+        self.body = m;
+        return YES;
+    } else if (self.cmd == MSG_CUSTOMER_SERVICE) {
+        IMMessage *m = [[IMMessage alloc] init];
+        m.sender = readInt64(p);
+        p += 8;
+        m.receiver = readInt64(p);
+        p += 8;
+        m.timestamp = readInt32(p);
+        p += 4;
+        m.content = [[NSString alloc] initWithBytes:p length:data.length-28 encoding:NSUTF8StringEncoding];
         self.body = m;
         return YES;
     } else if (self.cmd == MSG_ACK) {

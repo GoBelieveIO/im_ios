@@ -18,6 +18,7 @@
 @interface GroupMessageDB : NSObject
 +(GroupMessageDB*)instance;
 
+@property(nonatomic, copy) NSString *dbPath;
 
 -(id<IMessageIterator>)newMessageIterator:(int64_t)uid;
 -(id<IMessageIterator>)newMessageIterator:(int64_t)uid last:(int)lastMsgID;

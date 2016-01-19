@@ -28,12 +28,14 @@
 @property(nonatomic)NSMutableArray *roomObservers;
 @property(nonatomic)NSMutableArray *loginPointObservers;
 @property(nonatomic)NSMutableArray *systemObservers;
+@property(nonatomic)NSMutableArray *customerServiceObservers;
 @property(nonatomic)NSMutableArray *voipObservers;
 
 @property(nonatomic)NSMutableData *data;
 @property(nonatomic)NSMutableDictionary *peerMessages;
 @property(nonatomic)NSMutableDictionary *groupMessages;
 @property(nonatomic)NSMutableDictionary *roomMessages;
+@property(nonatomic)NSMutableDictionary *customerServiceMessages;
 
 
 @end
@@ -58,12 +60,14 @@
         self.roomObservers = [NSMutableArray array];
         self.loginPointObservers = [NSMutableArray array];
         self.systemObservers = [NSMutableArray array];
+        self.customerServiceObservers = [NSMutableArray array];
         self.voipObservers = [NSMutableArray array];
         
         self.data = [NSMutableData data];
         self.peerMessages = [NSMutableDictionary dictionary];
         self.groupMessages = [NSMutableDictionary dictionary];
         self.roomMessages = [NSMutableDictionary dictionary];
+        self.customerServiceMessages = [NSMutableDictionary dictionary];
 
         self.host = HOST;
         self.port = PORT;
@@ -77,7 +81,8 @@
     IMMessage *m = (IMMessage*)[self.peerMessages objectForKey:seq];
     IMMessage *m2 = (IMMessage*)[self.groupMessages objectForKey:seq];
     RoomMessage *m3 = (RoomMessage*)[self.roomMessages objectForKey:seq];
-    if (!m && !m2 && !m3) {
+    IMMessage *m4 = [self.customerServiceMessages objectForKey:seq];
+    if (!m && !m2 && !m3 && !m4) {
         return;
     }
     if (m) {
@@ -91,6 +96,10 @@
     } else if (m3) {
         [self.roomMessages removeObjectForKey:seq];
         [self publishRoomMessageACK:m3];
+    } else if (m4) {
+        [self.customerMessageHandler handleMessageACK:m4.msgLocalID uid:m4.receiver];
+        [self.customerServiceMessages removeObjectForKey:seq];
+        [self publishCustomerMessageACK:m4.msgLocalID uid:m4.receiver];
     }
 }
 
@@ -131,6 +140,29 @@
     }
 }
 
+-(void)handleCustomerServiceMessage:(Message*)msg {
+    IMMessage *im = (IMMessage*)msg.body;
+    if (self.uid == im.sender) {
+        [self.customerMessageHandler handleMessage:im uid:im.receiver];
+    } else {
+        [self.customerMessageHandler handleMessage:im uid:im.sender];
+    }
+    NSLog(@"customer service message sender:%lld receiver:%lld content:%s", im.sender, im.receiver, [im.content UTF8String]);
+    
+    
+    Message *ack = [[Message alloc] init];
+    ack.cmd = MSG_ACK;
+    ack.body = [NSNumber numberWithInt:msg.seq];
+    [self sendMessage:ack];
+    [self publishCustomerMessage:im];
+    
+    if (im.sender == self.uid) {
+        [self.customerMessageHandler handleMessageACK:im.msgLocalID uid:im.receiver];
+        [self publishCustomerMessageACK:im.msgLocalID uid:im.receiver];
+    }
+}
+
+
 -(void)handleAuthStatus:(Message*)msg {
     int status = [(NSNumber*)msg.body intValue];
     NSLog(@"auth status:%d", status);
@@ -151,10 +183,6 @@
             [ob onPeerInputing:inputing.sender];
         }
     }
-}
-
--(void)handlePeerACK:(Message*)msg {
-    return;
 }
 
 -(void)handlePong:(Message*)msg {
@@ -195,6 +223,7 @@
     ack.body = [NSNumber numberWithInt:msg.seq];
     [self sendMessage:ack];
 }
+
 
 -(void)handleVOIPControl:(Message*)msg {
     VOIPControl *ctl = (VOIPControl*)msg.body;
@@ -289,6 +318,31 @@
         }
     }
 }
+
+-(void)publishCustomerMessage:(IMMessage*)msg {
+    for (id<CustomerMessageObserver> ob in self.customerServiceObservers) {
+        if ([ob respondsToSelector:@selector(onCustomerMessage:)]) {
+            [ob onCustomerMessage:msg];
+        }
+    }
+}
+
+-(void)publishCustomerMessageACK:(int)msgLocalID uid:(int64_t)uid {
+    for (id<CustomerMessageObserver> ob in self.customerServiceObservers) {
+        if ([ob respondsToSelector:@selector(onCustomerMessageACK:uid:)]) {
+            [ob onCustomerMessageACK:msgLocalID uid:uid];
+        }
+    }
+}
+
+-(void)publishCustomerMessageFailure:(IMMessage*)msg {
+    for (id<CustomerMessageObserver> ob in self.customerServiceObservers) {
+        if ([ob respondsToSelector:@selector(onCustomerMessageFailure:uid:)]) {
+            [ob onCustomerMessageFailure:msg.msgLocalID uid:msg.receiver];
+        }
+    }
+}
+
 -(void)handleMessage:(Message*)msg {
     if (msg.cmd == MSG_AUTH_STATUS) {
         [self handleAuthStatus:msg];
@@ -300,8 +354,6 @@
         [self handleGroupIMMessage:msg];
     } else if (msg.cmd == MSG_INPUTING) {
         [self handleInputing:msg];
-    } else if (msg.cmd == MSG_PEER_ACK) {
-        [self handlePeerACK:msg];
     } else if (msg.cmd == MSG_PONG) {
         [self handlePong:msg];
     } else if (msg.cmd == MSG_GROUP_NOTIFICATION) {
@@ -312,6 +364,8 @@
         [self handleRoomMessage:msg];
     } else if (msg.cmd == MSG_SYSTEM) {
         [self handleSystemMessage:msg];
+    } else if (msg.cmd == MSG_CUSTOMER_SERVICE) {
+        [self handleCustomerServiceMessage:msg];
     } else if (msg.cmd == MSG_VOIP_CONTROL) {
         [self handleVOIPControl:msg];
     }
@@ -383,6 +437,13 @@
     [self.systemObservers removeObject:ob];
 }
 
+-(void)addCustomerMessageObserver:(id<CustomerMessageObserver>)ob {
+    [self.customerServiceObservers addObject:ob];
+}
+
+-(void)removeCustomerMessageObserver:(id<CustomerMessageObserver>)ob {
+    [self.customerServiceObservers removeObject:ob];
+}
 
 -(void)pushVOIPObserver:(id<VOIPObserver>)ob {
     [self.voipObservers addObject:ob];
@@ -427,6 +488,16 @@
     return NO;
 }
 
+-(BOOL)isCustomerMessageSending:(int64_t)peer id:(int)msgLocalID {
+    for (NSNumber *s in self.customerServiceMessages) {
+        IMMessage *im = [self.customerServiceMessages objectForKey:s];
+        if (im.receiver == peer && im.msgLocalID == msgLocalID) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
 -(BOOL)sendPeerMessage:(IMMessage *)im {
     Message *m = [[Message alloc] init];
     m.cmd = MSG_IM;
@@ -458,6 +529,19 @@
     BOOL r = [self sendMessage:m];
     if (!r) return r;
     [self.roomMessages setObject:rm forKey:[NSNumber numberWithInt:m.seq]];
+    return r;
+}
+
+-(BOOL)sendCustomerMessage:(IMMessage*)im {
+    Message *m = [[Message alloc] init];
+    m.cmd = MSG_CUSTOMER_SERVICE;
+    m.body = im;
+    BOOL r = [self sendMessage:m];
+    
+    if (!r) {
+        return r;
+    }
+    [self.customerServiceMessages setObject:im forKey:[NSNumber numberWithInt:m.seq]];
     return r;
 }
 
@@ -518,9 +602,15 @@
         [self publishRoomMessageFailure:msg];
     }
     
+    for (NSNumber *seq in self.customerServiceMessages) {
+        IMMessage *msg = [self.customerServiceMessages objectForKey:seq];
+        [self publishCustomerMessageFailure:msg];
+    }
+    
     [self.peerMessages removeAllObjects];
     [self.groupMessages removeAllObjects];
     [self.roomMessages removeAllObjects];
+    [self.customerServiceMessages removeAllObjects];
 }
 
 -(void)sendPing {

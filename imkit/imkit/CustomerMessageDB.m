@@ -1,41 +1,27 @@
-/*                                                                            
-  Copyright (c) 2014-2015, GoBelieve     
-    All rights reserved.		    				     			
- 
-  This source code is licensed under the BSD-style license found in the
-  LICENSE file in the root directory of this source tree. An additional grant
-  of patent rights can be found in the PATENTS file in the same directory.
-*/
+//
+//  CustomerMessageDB.m
+//  imkit
+//
+//  Created by houxh on 16/1/19.
+//  Copyright © 2016年 beetle. All rights reserved.
+//
 
-#import "PeerMessageDB.h"
+#import "CustomerMessageDB.h"
 #import "MessageDB.h"
 #include <sys/stat.h>
 #include <dirent.h>
-#import "ReverseFile.h"
 
-
-
-
-
-@implementation PeerMessageDB
-+(PeerMessageDB*)instance {
-    static PeerMessageDB *m;
+@implementation CustomerMessageDB
++(CustomerMessageDB*)instance {
+    static CustomerMessageDB *m;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         if (!m) {
-            m = [[PeerMessageDB alloc] init];
+            m = [[CustomerMessageDB alloc] init];
         }
     });
     return m;
 }
-
--(id)init {
-    self = [super init];
-    if (self) {
-    }
-    return self;
-}
-
 
 
 +(BOOL)mkdir:(NSString*)path {
@@ -57,12 +43,25 @@
     [[self class] mkdir:dbPath];
 }
 
+-(id)init {
+    self = [super init];
+    if (self) {
+        self.aggregationMode = YES;
+    }
+    return self;
+}
+
 -(NSString*)getMessagePath {
     return self.dbPath;
 }
+
 -(NSString*)getPeerPath:(int64_t)uid {
     NSString *s = self.dbPath;
-    return [NSString stringWithFormat:@"%@/p_%lld", s, uid];
+    if (self.aggregationMode) {
+        return [NSString stringWithFormat:@"%@/c_%lld", s, 0LL];
+    } else {
+        return [NSString stringWithFormat:@"%@/c_%lld", s, uid];
+    }
 }
 
 
@@ -82,19 +81,19 @@
 }
 
 -(BOOL)clear {
-    NSString *path = [[PeerMessageDB instance] getMessagePath];
+    NSString *path = [self getMessagePath];
     DIR *dirp = opendir([path UTF8String]);
     if (dirp == NULL) {
         NSLog(@"readdir error:%d", errno);
         return NO;
     }
-
+    
     struct dirent *dp;
     while ((dp = readdir(dirp)) != NULL) {
         NSString *name = [[NSString alloc] initWithBytes:dp->d_name length:dp->d_namlen encoding:NSUTF8StringEncoding];
         NSLog(@"type:%d name:%@", dp->d_type, name);
         if (dp->d_type == DT_REG) {
-            if ([name hasPrefix:@"p_"]) {
+            if ([name hasPrefix:@"c_"]) {
                 int64_t uid = [[name substringFromIndex:2] longLongValue];
                 NSString *path = [self getPeerPath:uid];
                 [MessageDB clearMessages:path];
@@ -139,9 +138,7 @@
 
 -(id<ConversationIterator>)newConversationIterator {
     NSString *path = [self getMessagePath];
-    return [[ConversationIterator alloc] initWithPath:path type:CONVERSATION_PEER];
+    return [[ConversationIterator alloc] initWithPath:path type:CONVERSATION_CUSTOMER_SERVICE];
 }
 
 @end
-
-

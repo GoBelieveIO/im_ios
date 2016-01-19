@@ -35,6 +35,27 @@
     }
     return self;
 }
+
+
++(BOOL)mkdir:(NSString*)path {
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSError *err;
+    BOOL r = [fileManager createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:&err];
+    
+    if (!r) {
+        NSLog(@"mkdir err:%@", err);
+    }
+    return r;
+}
+
+
+
+-(void)setDbPath:(NSString *)dbPath {
+    _dbPath = [dbPath copy];
+    
+    [[self class] mkdir:dbPath];
+}
+
 -(id<IMessageIterator>)newMessageIterator:(int64_t)gid {
     NSString *path = [self getGroupPath:gid];
     return [[IMessageIterator alloc] initWithPath:path];
@@ -52,13 +73,12 @@
 
 
 -(NSString*)getMessagePath {
-    NSString *s = [MessageDB getDBPath];
-    return [NSString stringWithFormat:@"%@/group", s];
+    return self.dbPath;
 }
 
 -(NSString*)getGroupPath:(int64_t)gid {
-    NSString *s = [MessageDB getDBPath];
-    return [NSString stringWithFormat:@"%@/group/g_%lld", s, gid];
+    NSString *s = self.dbPath;
+    return [NSString stringWithFormat:@"%@/g_%lld", s, gid];
 }
 
 -(BOOL)clearConversation:(int64_t)gid {
