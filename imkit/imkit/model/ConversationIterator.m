@@ -90,6 +90,7 @@
                 c.type = self.type;
                 NSString *path = [NSString stringWithFormat:@"%@/%@", self.path, name];
                 c.message = [self getLastMessage:path];
+                return c;
             } else {
                 NSLog(@"skip file:%@", name);
             }

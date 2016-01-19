@@ -12,4 +12,7 @@
 
 +(CustomerOutbox*)instance;
 
+//当前登录用户是否为客服人员,默认为NO
+@property(nonatomic) BOOL  isStaff;
+
 @end

@@ -141,14 +141,11 @@
 }
 
 -(void)handleCustomerServiceMessage:(Message*)msg {
-    IMMessage *im = (IMMessage*)msg.body;
-    if (self.uid == im.sender) {
-        [self.customerMessageHandler handleMessage:im uid:im.receiver];
-    } else {
-        [self.customerMessageHandler handleMessage:im uid:im.sender];
-    }
-    NSLog(@"customer service message sender:%lld receiver:%lld content:%s", im.sender, im.receiver, [im.content UTF8String]);
+    CustomerMessage *im = (CustomerMessage*)msg.body;
+    [self.customerMessageHandler handleMessage:im];
     
+    NSLog(@"customer service message customer:%lld sender:%lld receiver:%lld content:%s",
+          im.customer, im.sender, im.receiver, [im.content UTF8String]);
     
     Message *ack = [[Message alloc] init];
     ack.cmd = MSG_ACK;
@@ -532,7 +529,7 @@
     return r;
 }
 
--(BOOL)sendCustomerMessage:(IMMessage*)im {
+-(BOOL)sendCustomerMessage:(CustomerMessage*)im {
     Message *m = [[Message alloc] init];
     m.cmd = MSG_CUSTOMER_SERVICE;
     m.body = im;

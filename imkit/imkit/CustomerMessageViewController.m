@@ -247,7 +247,6 @@
 }
 
 
-
 -(BOOL)saveMessage:(IMessage*)msg {
     int64_t cid = 0;
     if (msg.sender == self.currentUID) {
@@ -299,7 +298,11 @@
 }
 
 
--(void)onCustomerMessage:(IMMessage*)im {
+-(void)onCustomerMessage:(CustomerMessage*)im {
+    if (self.isStaff && im.customer != self.peerUID) {
+        return;
+    }
+    
     NSLog(@"receive msg:%@",im);
     IMessage *m = [[IMessage alloc] init];
     m.sender = im.sender;
@@ -312,11 +315,9 @@
         return;
     }
     
-    if (![self isInConversation:m]) {
-        return;
-    }
 
     if (!self.isStaff && m.sender != self.currentUID) {
+        //普通用户收到客服的回复消息,记录下客服的id
         self.peerUID = m.sender;
     }
     
@@ -363,11 +364,16 @@
         message.uploading = YES;
         [[CustomerOutbox instance] uploadImage:message];
     } else {
-        IMMessage *im = [[IMMessage alloc] init];
+        CustomerMessage *im = [[CustomerMessage alloc] init];
         im.sender = message.sender;
         im.receiver = message.receiver;
         im.msgLocalID = message.msgLocalID;
         im.content = message.rawContent;
+        if (self.isStaff) {
+            im.customer = message.receiver;
+        } else {
+            im.customer = message.sender;
+        }
         [[IMService instance] sendCustomerMessage:im];
     }
     

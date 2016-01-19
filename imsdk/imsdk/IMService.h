@@ -29,7 +29,7 @@
 @end
 
 @protocol IMCustomerMessageHandler <NSObject>
--(BOOL)handleMessage:(IMMessage*)msg uid:(int64_t)uid;
+-(BOOL)handleMessage:(CustomerMessage*)msg;
 -(BOOL)handleMessageACK:(int)msgLocalID uid:(int64_t)uid;
 -(BOOL)handleMessageFailure:(int)msgLocalID uid:(int64_t)uid;
 @end
@@ -80,7 +80,7 @@
 
 @protocol CustomerMessageObserver <NSObject>
 @optional
--(void)onCustomerMessage:(IMMessage*)msg;
+-(void)onCustomerMessage:(CustomerMessage*)msg;
 //服务器ack
 -(void)onCustomerMessageACK:(int)msgLocalID uid:(int64_t)uid;
 //消息发送失败
@@ -111,7 +111,7 @@
 -(BOOL)sendPeerMessage:(IMMessage*)msg;
 -(BOOL)sendGroupMessage:(IMMessage*)msg;
 -(BOOL)sendRoomMessage:(RoomMessage*)msg;
--(BOOL)sendCustomerMessage:(IMMessage*)im;
+-(BOOL)sendCustomerMessage:(CustomerMessage*)im;
 
 -(void)enterRoom:(int64_t)roomID;
 -(void)leaveRoom:(int64_t)roomID;

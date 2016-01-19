@@ -65,6 +65,10 @@ enum VOIPCommand {
 @property(nonatomic, copy)NSString *content;
 @end
 
+@interface CustomerMessage : IMMessage
+@property(nonatomic, assign)int64_t customer;//普通用户id
+@end
+
 @interface RoomMessage : NSObject
 @property(nonatomic, assign)int64_t sender;
 @property(nonatomic, assign)int64_t receiver;

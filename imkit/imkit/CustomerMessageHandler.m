@@ -23,14 +23,14 @@
     return m;
 }
 
--(BOOL)handleMessage:(IMMessage*)msg uid:(int64_t)uid{
+-(BOOL)handleMessage:(CustomerMessage*)msg {
     IMMessage *im = msg;
     IMessage *m = [[IMessage alloc] init];
     m.sender = im.sender;
     m.receiver = im.receiver;
     m.rawContent = im.content;
     m.timestamp = msg.timestamp;
-    BOOL r = [[CustomerMessageDB instance] insertMessage:m uid:uid];
+    BOOL r = [[CustomerMessageDB instance] insertMessage:m uid:msg.customer];
     if (r) {
         msg.msgLocalID = m.msgLocalID;
     }

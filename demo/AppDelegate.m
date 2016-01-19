@@ -12,6 +12,9 @@
 #import "RoomLoginViewController.h"
 #elif defined TEST_GROUP
 #import "GroupLoginViewController.h"
+#elif defined TEST_CUSTOMER
+#import "CustomerLoginViewController.h"
+
 #else
 #import "MainViewController.h"
 #endif
@@ -20,6 +23,8 @@
 #import <imkit/PeerMessageHandler.h>
 #import <imkit/GroupMessageHandler.h>
 #import <imkit/CustomerMessageHandler.h>
+#import <imkit/CustomerMessageDB.h>
+#import <imkit/CustomerOutbox.h>
 #import <imkit/IMHttpAPI.H>
 
 #include <netdb.h>
@@ -36,9 +41,10 @@ blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 
 #ifdef TEST_ROOM
 
+#elif defined TEST_CUSTOMER
+
 #elif defined TEST_GROUP
 @property(nonatomic) GroupLoginViewController *mainViewController;
-
 #else
 @property(nonatomic) MainViewController *mainViewController;
 #endif
@@ -69,6 +75,12 @@ blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
     [[IMService instance] startRechabilityNotifier];
     
     
+#ifdef TEST_CUSTOMER
+    //客服
+    [CustomerMessageDB instance].aggregationMode = NO;
+    [CustomerOutbox instance].isStaff = YES;
+#endif
+    
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
@@ -81,18 +93,15 @@ blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
     GroupLoginViewController *mainViewController = [[GroupLoginViewController alloc] init];
     self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:mainViewController];
     self.mainViewController = mainViewController;
+#elif defined TEST_CUSTOMER
+    CustomerLoginViewController *mainViewController = [[CustomerLoginViewController alloc] init];
+    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:mainViewController];
 #else
     MainViewController *mainViewController = [[MainViewController alloc] init];
     self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:mainViewController];
     self.mainViewController = mainViewController;
 #endif
-    if ([UIDevice currentDevice].systemVersion.floatValue >= 7.0) {
-        [[UINavigationBar appearance] setBarTintColor:UIColorFromRGBHex(0x00abf1)];
-        [[UINavigationBar appearance] setTitleTextAttributes:
-         [NSDictionary dictionaryWithObjectsAndKeys:[UIColor whiteColor],
-            NSForegroundColorAttributeName,
-            [UIFont systemFontOfSize:21],NSFontAttributeName, nil]];
-    }
+
     
 #ifdef __IPHONE_8_0
     if ([application respondsToSelector:@selector(registerUserNotificationSettings:)]) {
@@ -122,10 +131,12 @@ blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
   
     NSLog(@"device token is: %@:%@", deviceToken, newToken);
     
-#ifndef TEST_ROOM
+#ifdef TEST_ROOM
+#elif defined TEST_CUSTOMER
+#elif defined TEST_GROUP
+#else
     self.mainViewController.deviceToken = newToken;
 #endif
-    
 }
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {

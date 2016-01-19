@@ -85,6 +85,8 @@
 		6DB34C391C4E10F1006D78D4 /* CustomerMessageDB.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6DB34C2D1C4D5786006D78D4 /* CustomerMessageDB.h */; };
 		6DB34C3A1C4E10F1006D78D4 /* CustomerMessageHandler.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6DB34C301C4D5A77006D78D4 /* CustomerMessageHandler.h */; };
 		6DB34C3B1C4E1314006D78D4 /* CustomerMessageViewController.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6DB34C331C4D5B3F006D78D4 /* CustomerMessageViewController.h */; };
+		6DB34CA81C4E71A3006D78D4 /* CustomerOutbox.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6DB34C361C4D5BB7006D78D4 /* CustomerOutbox.h */; };
+		6DB34CAB1C4E71CC006D78D4 /* Outbox.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6DB34C121C4CFA2E006D78D4 /* Outbox.h */; };
 		6DBEBA771AF77291002CAEA3 /* GroupMessageViewController.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6D4256851ABC0EEC001B7E43 /* GroupMessageViewController.h */; };
 		6DEE56851BDCF309002BCAB8 /* MessageLocationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DEE56841BDCF309002BCAB8 /* MessageLocationView.m */; };
 		6DEE56C01BDE1663002BCAB8 /* LocationPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DEE56BE1BDE1663002BCAB8 /* LocationPickerController.m */; };
@@ -137,6 +139,8 @@
 			dstPath = "include/$(PRODUCT_NAME)";
 			dstSubfolderSpec = 16;
 			files = (
+				6DB34CAB1C4E71CC006D78D4 /* Outbox.h in CopyFiles */,
+				6DB34CA81C4E71A3006D78D4 /* CustomerOutbox.h in CopyFiles */,
 				6DB34C3B1C4E1314006D78D4 /* CustomerMessageViewController.h in CopyFiles */,
 				6DB34C391C4E10F1006D78D4 /* CustomerMessageDB.h in CopyFiles */,
 				6DB34C3A1C4E10F1006D78D4 /* CustomerMessageHandler.h in CopyFiles */,
