@@ -124,7 +124,7 @@
         writeInt64(roomID, p);
         p += 8;
         return [NSData dataWithBytes:buf length:HEAD_SIZE + 8];
-    } else if (self.cmd == MSG_ROOM_IM) {
+    } else if (self.cmd == MSG_ROOM_IM || self.cmd == MSG_RT) {
         RoomMessage *rm = (RoomMessage*)self.body;
         writeInt64(rm.sender, p);
         p += 8;
@@ -241,7 +241,7 @@
         lp.deviceID = [[NSString alloc] initWithBytes:p length:data.length-13 encoding:NSUTF8StringEncoding];
         self.body = lp;
         return YES;
-    } else if (self.cmd == MSG_ROOM_IM) {
+    } else if (self.cmd == MSG_ROOM_IM || self.cmd == MSG_RT) {
         RoomMessage *rm = [[RoomMessage alloc] init];
         rm.sender = readInt64(p);
         p += 8;

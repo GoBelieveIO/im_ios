@@ -75,6 +75,7 @@ enum VOIPCommand {
 @property(nonatomic, copy)NSString *content;
 @end
 
+typedef RoomMessage RTMessage;
 
 @interface MessageInputing : NSObject
 @property(nonatomic, assign)int64_t sender;

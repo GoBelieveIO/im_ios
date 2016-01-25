@@ -72,6 +72,13 @@
 
 @end
 
+@protocol RTMessageObserver <NSObject>
+
+@optional
+-(void)onRTMessage:(RTMessage*)rt;
+
+@end
+
 @protocol SystemMessageObserver <NSObject>
 @optional
 -(void)onSystemMessage:(NSString*)sm;
@@ -112,6 +119,7 @@
 -(BOOL)sendGroupMessage:(IMMessage*)msg;
 -(BOOL)sendRoomMessage:(RoomMessage*)msg;
 -(BOOL)sendCustomerMessage:(CustomerMessage*)im;
+-(BOOL)sendRTMessage:(RTMessage*)msg;
 
 -(void)enterRoom:(int64_t)roomID;
 -(void)leaveRoom:(int64_t)roomID;
@@ -139,6 +147,9 @@
 -(void)addCustomerMessageObserver:(id<CustomerMessageObserver>)ob;
 -(void)removeCustomerMessageObserver:(id<CustomerMessageObserver>)ob;
 
+-(void)addRTMessageObserver:(id<RTMessageObserver>)ob;
+-(void)removeRTMessageObserver:(id<RTMessageObserver>)ob;
+    
 -(void)pushVOIPObserver:(id<VOIPObserver>)ob;
 -(void)popVOIPObserver:(id<VOIPObserver>)ob;
 

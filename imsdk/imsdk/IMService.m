@@ -30,6 +30,7 @@
 @property(nonatomic)NSMutableArray *systemObservers;
 @property(nonatomic)NSMutableArray *customerServiceObservers;
 @property(nonatomic)NSMutableArray *voipObservers;
+@property(nonatomic)NSMutableArray *rtObservers;
 
 @property(nonatomic)NSMutableData *data;
 @property(nonatomic)NSMutableDictionary *peerMessages;
@@ -62,6 +63,7 @@
         self.systemObservers = [NSMutableArray array];
         self.customerServiceObservers = [NSMutableArray array];
         self.voipObservers = [NSMutableArray array];
+        self.rtObservers = [NSMutableArray array];
         
         self.data = [NSMutableData data];
         self.peerMessages = [NSMutableDictionary dictionary];
@@ -159,6 +161,14 @@
     }
 }
 
+-(void)handleRTMessage:(Message*)msg {
+    RTMessage *rt = (RTMessage*)msg.body;
+    for (id<RTMessageObserver> ob in self.rtObservers) {
+        if ([ob respondsToSelector:@selector(onRTMessage:)]) {
+            [ob onRTMessage:rt];
+        }
+    }
+}
 
 -(void)handleAuthStatus:(Message*)msg {
     int status = [(NSNumber*)msg.body intValue];
@@ -365,6 +375,8 @@
         [self handleCustomerServiceMessage:msg];
     } else if (msg.cmd == MSG_VOIP_CONTROL) {
         [self handleVOIPControl:msg];
+    } else if (msg.cmd == MSG_RT) {
+        [self handleRTMessage:msg];
     }
 }
 
@@ -440,6 +452,14 @@
 
 -(void)removeCustomerMessageObserver:(id<CustomerMessageObserver>)ob {
     [self.customerServiceObservers removeObject:ob];
+}
+
+-(void)addRTMessageObserver:(id<RTMessageObserver>)ob {
+    [self.rtObservers addObject:ob];
+}
+
+-(void)removeRTMessageObserver:(id<RTMessageObserver>)ob {
+    [self.rtObservers removeObject:ob];
 }
 
 -(void)pushVOIPObserver:(id<VOIPObserver>)ob {
@@ -539,6 +559,14 @@
         return r;
     }
     [self.customerServiceMessages setObject:im forKey:[NSNumber numberWithInt:m.seq]];
+    return r;
+}
+
+-(BOOL)sendRTMessage:(RTMessage *)rt {
+    Message *m = [[Message alloc] init];
+    m.cmd = MSG_RT;
+    m.body = rt;
+    BOOL r = [self sendMessage:m];
     return r;
 }
 
