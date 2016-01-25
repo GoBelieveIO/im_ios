@@ -81,7 +81,7 @@
     IMMessage *m = (IMMessage*)[self.peerMessages objectForKey:seq];
     IMMessage *m2 = (IMMessage*)[self.groupMessages objectForKey:seq];
     RoomMessage *m3 = (RoomMessage*)[self.roomMessages objectForKey:seq];
-    IMMessage *m4 = [self.customerServiceMessages objectForKey:seq];
+    CustomerMessage *m4 = [self.customerServiceMessages objectForKey:seq];
     if (!m && !m2 && !m3 && !m4) {
         return;
     }
@@ -316,7 +316,7 @@
     }
 }
 
--(void)publishCustomerMessage:(IMMessage*)msg {
+-(void)publishCustomerMessage:(CustomerMessage*)msg {
     for (id<CustomerMessageObserver> ob in self.customerServiceObservers) {
         if ([ob respondsToSelector:@selector(onCustomerMessage:)]) {
             [ob onCustomerMessage:msg];
@@ -332,7 +332,7 @@
     }
 }
 
--(void)publishCustomerMessageFailure:(IMMessage*)msg {
+-(void)publishCustomerMessageFailure:(CustomerMessage*)msg {
     for (id<CustomerMessageObserver> ob in self.customerServiceObservers) {
         if ([ob respondsToSelector:@selector(onCustomerMessageFailure:uid:)]) {
             [ob onCustomerMessageFailure:msg.msgLocalID uid:msg.receiver];
@@ -600,7 +600,7 @@
     }
     
     for (NSNumber *seq in self.customerServiceMessages) {
-        IMMessage *msg = [self.customerServiceMessages objectForKey:seq];
+        CustomerMessage *msg = [self.customerServiceMessages objectForKey:seq];
         [self publishCustomerMessageFailure:msg];
     }
     
