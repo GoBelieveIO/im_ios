@@ -29,11 +29,6 @@
 
 @end
 
-@implementation MessagePeerACK
-
-@end
-
-
 @implementation AuthenticationToken
 
 @end
@@ -225,15 +220,6 @@
     } else if (self.cmd == MSG_ACK) {
         int seq = readInt32(p);
         self.body = [NSNumber numberWithInt:seq];
-        return YES;
-    } else if (self.cmd == MSG_PEER_ACK) {
-        MessagePeerACK *ack = [[MessagePeerACK alloc] init];
-        ack.sender = readInt64(p);
-        p += 8;
-        ack.receiver = readInt64(p);
-        p += 8;
-        ack.msgLocalID = readInt32(p);
-        self.body = ack;
         return YES;
     } else if (self.cmd == MSG_INPUTING) {
         MessageInputing *inputing = [[MessageInputing alloc] init];

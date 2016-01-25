@@ -81,13 +81,6 @@ enum VOIPCommand {
 @property(nonatomic, assign)int64_t receiver;
 @end
 
-
-@interface MessagePeerACK : NSObject
-@property(nonatomic, assign)int64_t sender;
-@property(nonatomic, assign)int64_t receiver;
-@property(nonatomic, assign)int32_t msgLocalID;
-@end
-
 @interface AuthenticationToken : NSObject
 @property(nonatomic, copy) NSString *token;
 @property(nonatomic, assign) int8_t platformID;
