@@ -73,6 +73,8 @@
             NSLog(@"internet reachable");
             wself.reachable = YES;
             if (wself != nil && !wself.stopped && !wself.isBackground) {
+                NSLog(@"reconnect im service");
+                [wself suspend];
                 [wself resume];
             }
         });
@@ -186,6 +188,9 @@
 }
 
 -(void)startConnectTimer {
+    if (self.stopped || self.suspended || self.isBackground) {
+        return;
+    }
     //重连
     int64_t t = 0;
     if (self.connectFailCount > 60) {
@@ -225,6 +230,7 @@
         [self handleClose];
         return;
     } else {
+        self.pingTimestamp = 0;
         BOOL r = [self handleData:data];
         if (!r) {
             [self handleClose];
@@ -349,18 +355,18 @@
 }
 
 -(void)ping {
-    time_t now = time(NULL);
-    if (self.pingTimestamp > 0 && now - self.pingTimestamp > 60) {
-        NSLog(@"ping timeout");
-        [self handleClose];
-        return;
-    }
-    
     NSLog(@"send ping");
     [self sendPing];
     
     if (self.tcp != nil && self.pingTimestamp == 0) {
-        self.pingTimestamp = now;
+        self.pingTimestamp = time(NULL);
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            time_t now = time(NULL);
+            if (self.pingTimestamp > 0 && now - self.pingTimestamp >= 3) {
+                NSLog(@"ping timeout");
+                [self handleClose];
+            }
+        });
     }
 }
 
