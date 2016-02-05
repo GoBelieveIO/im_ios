@@ -351,6 +351,7 @@
 }
 
 -(void)handleMessage:(Message*)msg {
+    NSLog(@"message cmd:%d", msg.cmd);
     if (msg.cmd == MSG_AUTH_STATUS) {
         [self handleAuthStatus:msg];
     } else if (msg.cmd == MSG_ACK) {
