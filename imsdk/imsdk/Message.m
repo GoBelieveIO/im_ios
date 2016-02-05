@@ -37,9 +37,7 @@
 
 @end
 
-@implementation NatPortMap
 
-@end
 
 @implementation VOIPControl
 
@@ -148,32 +146,11 @@
         p += 8;
         writeInt64(ctl.receiver, p);
         p += 8;
-        
-        writeInt32(ctl.cmd, p);
-        p += 4;
-        if (ctl.cmd == VOIP_COMMAND_DIAL || ctl.cmd == VOIP_COMMAND_DIAL_VIDEO) {
-            writeInt32(ctl.dialCount, p);
-            p += 4;
-            return [NSData dataWithBytes:buf length:HEAD_SIZE+24];
-        } else if (ctl.cmd == VOIP_COMMAND_ACCEPT) {
-            NSLog(@"nat map ip:%x", ctl.natMap.ip);
-            writeInt32(ctl.natMap.ip, p);
-            p += 4;
-            writeInt16(ctl.natMap.port, p);
-            p += 2;
-            return [NSData dataWithBytes:buf length:HEAD_SIZE+26];
-        } else if (ctl.cmd == VOIP_COMMAND_CONNECTED) {
-            NSLog(@"nat map ip:%x", ctl.natMap.ip);
-            writeInt32(ctl.natMap.ip, p);
-            p += 4;
-            writeInt16(ctl.natMap.port, p);
-            p += 2;
-            writeInt32(ctl.relayIP, p);
-            p += 4;
-            return [NSData dataWithBytes:buf length:HEAD_SIZE+30];
-        } else {
-            return [NSData dataWithBytes:buf length:HEAD_SIZE+20];
+        if (ctl.content.length > 0) {
+            [ctl.content getBytes:p length:ctl.content.length];
+            p += ctl.content.length;
         }
+        return [NSData dataWithBytes:buf length:HEAD_SIZE + 16 + ctl.content.length];
     }
     return nil;
 }
@@ -259,31 +236,7 @@
         p += 8;
         ctl.receiver = readInt64(p);
         p += 8;
-        ctl.cmd = readInt32(p);
-        p += 4;
-        if (ctl.cmd == VOIP_COMMAND_DIAL || ctl.cmd == VOIP_COMMAND_DIAL_VIDEO) {
-            ctl.dialCount = readInt32(p);
-        } else if (ctl.cmd == VOIP_COMMAND_ACCEPT) {
-            if (data.length >= HEAD_SIZE + 26) {
-                ctl.natMap = [[NatPortMap alloc] init];
-                ctl.natMap.ip = readInt32(p);
-                p += 4;
-                ctl.natMap.port = readInt16(p);
-                p += 2;
-            }
-        } else if (ctl.cmd == VOIP_COMMAND_CONNECTED) {
-            if (data.length >= HEAD_SIZE + 26) {
-                ctl.natMap = [[NatPortMap alloc] init];
-                ctl.natMap.ip = readInt32(p);
-                p += 4;
-                ctl.natMap.port = readInt16(p);
-                p += 2;
-            }
-            if (data.length >= HEAD_SIZE + 30) {
-                ctl.relayIP = readInt32(p);
-                p += 4;
-            }
-        }
+        ctl.content = [NSData dataWithBytes:p length:data.length - 24];
         self.body = ctl;
         return YES;
     } else {
