@@ -155,6 +155,9 @@
 }
 
 -(void)flush {
+    if (self.data.length == 0) {
+        return;
+    }
     const char *p = [self.data bytes];
     int n = write_data(self.sock, (uint8_t*)p, (int)self.data.length);
     if (n < 0) {
