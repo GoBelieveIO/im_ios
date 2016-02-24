@@ -1652,7 +1652,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				"OTHER_LDFLAGS[arch=*]" = "-ObjC";
 				PRODUCT_NAME = im_demo;
-				PROVISIONING_PROFILE = "6447afee-e97c-42f1-8030-39c807777b65";
+				PROVISIONING_PROFILE = "9de03416-ec01-4a89-8c15-380674abc03f";
 			};
 			name = Debug;
 		};
