@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6D4AB3E61C87104300AFE234 /* GroupLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D8E72E81B750B79004E069E /* GroupLoginViewController.m */; };
 		6D6154361BF6EB15005648FA /* images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C471A1BF08A9A0053066A /* images.xcassets */; };
 		6D6154371BF6EB16005648FA /* images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C471A1BF08A9A0053066A /* images.xcassets */; };
 		6D61543A1BF6EB5F005648FA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C46D61BEB0A940053066A /* Localizable.strings */; };
@@ -27,7 +28,6 @@
 		6D69BCFF1B4449D0008EAA8A /* SDWebImageDownloaderOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E841AB58BB100197EBC /* SDWebImageDownloaderOperation.m */; };
 		6D69BD021B4449D0008EAA8A /* UIImage+MultiFormat.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E8F1AB58BB100197EBC /* UIImage+MultiFormat.m */; };
 		6D69BD031B4449D0008EAA8A /* ESModalImageViewAnimationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E9D1AB58BB100197EBC /* ESModalImageViewAnimationController.m */; };
-		6D69BD041B4449D0008EAA8A /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E561AB588C700197EBC /* MainViewController.m */; };
 		6D69BD051B4449D0008EAA8A /* SDImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E7C1AB58BB100197EBC /* SDImageCache.m */; };
 		6D69BD071B4449D0008EAA8A /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E751AB58BB100197EBC /* MBProgressHUD.m */; };
 		6D69BD081B4449D0008EAA8A /* UIImage+GIF.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E8D1AB58BB100197EBC /* UIImage+GIF.m */; };
@@ -103,7 +103,6 @@
 		6D8E725B1B750A31004E069E /* SDWebImageDownloaderOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E841AB58BB100197EBC /* SDWebImageDownloaderOperation.m */; };
 		6D8E725E1B750A31004E069E /* UIImage+MultiFormat.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E8F1AB58BB100197EBC /* UIImage+MultiFormat.m */; };
 		6D8E725F1B750A31004E069E /* ESModalImageViewAnimationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E9D1AB58BB100197EBC /* ESModalImageViewAnimationController.m */; };
-		6D8E72601B750A31004E069E /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E561AB588C700197EBC /* MainViewController.m */; };
 		6D8E72611B750A31004E069E /* SDImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E7C1AB58BB100197EBC /* SDImageCache.m */; };
 		6D8E72631B750A31004E069E /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E751AB58BB100197EBC /* MBProgressHUD.m */; };
 		6D8E72641B750A31004E069E /* UIImage+GIF.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E8D1AB58BB100197EBC /* UIImage+GIF.m */; };
@@ -161,7 +160,6 @@
 		6D8E72D61B750A31004E069E /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54D9B1AB5862000197EBC /* Images.xcassets */; };
 		6D8E72D81B750A31004E069E /* bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54EC01AB58DC500197EBC /* bg.png */; };
 		6D8E72E61B750B04004E069E /* group-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6D8E72E51B750B04004E069E /* group-Info.plist */; };
-		6D8E72E91B750B79004E069E /* GroupLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D8E72E81B750B79004E069E /* GroupLoginViewController.m */; };
 		6D9C46C91BEB09DC0053066A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C46CB1BEB09DC0053066A /* InfoPlist.strings */; };
 		6D9C46D41BEB0A940053066A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C46D61BEB0A940053066A /* Localizable.strings */; };
 		6D9C471B1BF08A9A0053066A /* images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C471A1BF08A9A0053066A /* images.xcassets */; };
@@ -185,7 +183,6 @@
 		6DB34C4E1C4E6BCF006D78D4 /* SDWebImageDownloaderOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E841AB58BB100197EBC /* SDWebImageDownloaderOperation.m */; };
 		6DB34C4F1C4E6BCF006D78D4 /* UIImage+MultiFormat.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E8F1AB58BB100197EBC /* UIImage+MultiFormat.m */; };
 		6DB34C501C4E6BCF006D78D4 /* ESModalImageViewAnimationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E9D1AB58BB100197EBC /* ESModalImageViewAnimationController.m */; };
-		6DB34C511C4E6BCF006D78D4 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E561AB588C700197EBC /* MainViewController.m */; };
 		6DB34C521C4E6BCF006D78D4 /* SDImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E7C1AB58BB100197EBC /* SDImageCache.m */; };
 		6DB34C531C4E6BCF006D78D4 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E751AB58BB100197EBC /* MBProgressHUD.m */; };
 		6DB34C541C4E6BCF006D78D4 /* UIImage+GIF.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E8D1AB58BB100197EBC /* UIImage+GIF.m */; };
@@ -1283,7 +1280,6 @@
 				6D69BCFF1B4449D0008EAA8A /* SDWebImageDownloaderOperation.m in Sources */,
 				6D69BD021B4449D0008EAA8A /* UIImage+MultiFormat.m in Sources */,
 				6D69BD031B4449D0008EAA8A /* ESModalImageViewAnimationController.m in Sources */,
-				6D69BD041B4449D0008EAA8A /* MainViewController.m in Sources */,
 				6D69BD051B4449D0008EAA8A /* SDImageCache.m in Sources */,
 				6D69BD071B4449D0008EAA8A /* MBProgressHUD.m in Sources */,
 				6D69BD081B4449D0008EAA8A /* UIImage+GIF.m in Sources */,
@@ -1303,7 +1299,7 @@
 				6D8E724E1B750A31004E069E /* SDWebImageManager.m in Sources */,
 				6D8E724F1B750A31004E069E /* NSData+ImageContentType.m in Sources */,
 				6D8E72501B750A31004E069E /* SDWebImageCompat.m in Sources */,
-				6D8E72E91B750B79004E069E /* GroupLoginViewController.m in Sources */,
+				6D4AB3E61C87104300AFE234 /* GroupLoginViewController.m in Sources */,
 				6D8E72511B750A31004E069E /* UIView+WebCacheOperation.m in Sources */,
 				6D8E72521B750A31004E069E /* UIImage+WebP.m in Sources */,
 				6D8E72531B750A31004E069E /* AppDelegate.m in Sources */,
@@ -1314,7 +1310,6 @@
 				6D8E725B1B750A31004E069E /* SDWebImageDownloaderOperation.m in Sources */,
 				6D8E725E1B750A31004E069E /* UIImage+MultiFormat.m in Sources */,
 				6D8E725F1B750A31004E069E /* ESModalImageViewAnimationController.m in Sources */,
-				6D8E72601B750A31004E069E /* MainViewController.m in Sources */,
 				6D8E72611B750A31004E069E /* SDImageCache.m in Sources */,
 				6D8E72631B750A31004E069E /* MBProgressHUD.m in Sources */,
 				6D8E72641B750A31004E069E /* UIImage+GIF.m in Sources */,
@@ -1346,7 +1341,6 @@
 				6DB34C4E1C4E6BCF006D78D4 /* SDWebImageDownloaderOperation.m in Sources */,
 				6DB34C4F1C4E6BCF006D78D4 /* UIImage+MultiFormat.m in Sources */,
 				6DB34C501C4E6BCF006D78D4 /* ESModalImageViewAnimationController.m in Sources */,
-				6DB34C511C4E6BCF006D78D4 /* MainViewController.m in Sources */,
 				6DB34C9B1C4E6BFC006D78D4 /* CustomerMessageListViewController.m in Sources */,
 				6DB34C521C4E6BCF006D78D4 /* SDImageCache.m in Sources */,
 				6DB34C531C4E6BCF006D78D4 /* MBProgressHUD.m in Sources */,
@@ -1483,7 +1477,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Zhifeng Zhou (HB5A8TLKYL)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development IOS Push Services: com.beetle.im.demo";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Zhifeng Zhou (PV548P44SL)";
 				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "demo/im_demo-prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -1495,7 +1489,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				"OTHER_LDFLAGS[arch=*]" = "-ObjC";
 				PRODUCT_NAME = group_demo;
-				PROVISIONING_PROFILE = "6447afee-e97c-42f1-8030-39c807777b65";
+				PROVISIONING_PROFILE = "9de03416-ec01-4a89-8c15-380674abc03f";
 			};
 			name = Debug;
 		};

@@ -11,12 +11,13 @@
 #import <imkit/IMHttpAPI.h>
 #import <imkit/GroupMessageViewController.h>
 #import <imkit/PeerMessageViewController.h>
-#import <imkit/MessageListViewController.h>
 #import <imkit/MessageDB.h>
+#import <imkit/PeerMessageDB.h>
+#import <imkit/GroupMessageDB.h>
 
 
-@interface GroupLoginViewController ()<MessageViewControllerUserDelegate,
-    MessageListViewControllerGroupDelegate> {
+@interface GroupLoginViewController ()<MessageViewControllerUserDelegate
+    > {
     UITextField *tfSender;
     UITextField *tfReceiver;
 }
@@ -120,7 +121,9 @@
 
             NSString *path = [self getDocumentPath];
             NSString *dbPath = [NSString stringWithFormat:@"%@/%lld", path, [tfSender.text longLongValue]];
-            [MessageDB setDBPath:dbPath];
+            [PeerMessageDB instance].dbPath = [NSString stringWithFormat:@"%@/peer", dbPath];
+            [GroupMessageDB instance].dbPath = [NSString stringWithFormat:@"%@/group", dbPath];
+
             
             [IMHttpAPI instance].accessToken = token;
             [[IMService instance] setToken:token];
