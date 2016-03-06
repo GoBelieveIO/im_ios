@@ -134,6 +134,7 @@ blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 #ifdef TEST_ROOM
 #elif defined TEST_CUSTOMER
 #elif defined TEST_GROUP
+    self.mainViewController.deviceToken = newToken;
 #else
     self.mainViewController.deviceToken = newToken;
 #endif
@@ -146,6 +147,13 @@ blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
     NSLog(@"did receive remote notification:%@", userInfo);
+}
+
+- (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings {
+    if (notificationSettings.types != UIUserNotificationTypeNone) {
+        NSLog(@"didRegisterUser");
+        [application registerForRemoteNotifications];
+    }
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

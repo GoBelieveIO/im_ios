@@ -147,6 +147,66 @@
     return request;
 }
 
++(NSOperation*)openGroupNotification:(int64_t)group_id success:(void (^)())success fail:(void (^)())fail {
+    IMHttpOperation *request = [IMHttpOperation httpOperationWithTimeoutInterval:60];
+    
+    request.targetURL = [NSString stringWithFormat:@"%@/notification/groups/%lld", [IMHttpAPI instance].apiURL, group_id];
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    [dict setObject:[NSNumber numberWithInt:0] forKey:@"quiet"];
+    NSMutableDictionary *headers = [NSMutableDictionary dictionaryWithObject:@"application/json" forKey:@"Content-Type"];
+    NSString *auth = [NSString stringWithFormat:@"Bearer %@", [IMHttpAPI instance].accessToken];
+    [headers setObject:auth forKey:@"Authorization"];
+    
+    request.headers = headers;
+    NSData *data = [NSJSONSerialization dataWithJSONObject:dict options:0 error:nil];
+    request.postBody = data;
+    request.method = @"POST";
+    request.successCB = ^(IMHttpOperation*commObj, NSURLResponse *response, NSData *data) {
+        NSInteger statusCode = [(NSHTTPURLResponse*)response statusCode];
+        if (statusCode != 200) {
+            fail();
+            return;
+        }
+        success();
+    };
+    request.failCB = ^(IMHttpOperation*commObj, IMHttpOperationError error) {
+        fail();
+    };
+    [[NSOperationQueue mainQueue] addOperation:request];
+    return request;
+}
+
++(NSOperation*)closeGroupNotification:(int64_t)group_id success:(void (^)())success fail:(void (^)())fail {
+    IMHttpOperation *request = [IMHttpOperation httpOperationWithTimeoutInterval:60];
+    
+    request.targetURL = [NSString stringWithFormat:@"%@/notification/groups/%lld", [IMHttpAPI instance].apiURL, group_id];
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    [dict setObject:[NSNumber numberWithInt:1] forKey:@"quiet"];
+    NSMutableDictionary *headers = [NSMutableDictionary dictionaryWithObject:@"application/json" forKey:@"Content-Type"];
+    NSString *auth = [NSString stringWithFormat:@"Bearer %@", [IMHttpAPI instance].accessToken];
+    [headers setObject:auth forKey:@"Authorization"];
+    
+    request.headers = headers;
+    NSData *data = [NSJSONSerialization dataWithJSONObject:dict options:0 error:nil];
+    request.postBody = data;
+    request.method = @"POST";
+    request.successCB = ^(IMHttpOperation*commObj, NSURLResponse *response, NSData *data) {
+        NSInteger statusCode = [(NSHTTPURLResponse*)response statusCode];
+        if (statusCode != 200) {
+            NSLog(@"open group notification fail");
+            fail();
+            return;
+        }
+        success();
+    };
+    request.failCB = ^(IMHttpOperation*commObj, IMHttpOperationError error) {
+        NSLog(@"open group notification fail");
+        fail();
+    };
+    [[NSOperationQueue mainQueue] addOperation:request];
+    return request;
+}
+
 +(NSOperation*)createGroup:(NSString*)groupName master:(int64_t)master members:(NSArray*)members success:(void (^)(int64_t))success fail:(void (^)())fail {
     IMHttpOperation *request = [IMHttpOperation httpOperationWithTimeoutInterval:60];
     request.targetURL = [[IMHttpAPI instance].apiURL stringByAppendingString:@"/groups"];
