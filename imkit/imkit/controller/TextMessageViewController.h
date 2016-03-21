@@ -10,7 +10,7 @@
 
 #import <UIKit/UIKit.h>
 #import <AVFoundation/AVFoundation.h>
-#import <imsdk/IMService.h>
+#import "IMService.h"
 #import "BaseMessageViewController.h"
 
 typedef NSString* (^GetUserNameBlock)(int64_t uid);

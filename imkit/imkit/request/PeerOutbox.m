@@ -10,7 +10,7 @@
 #import "PeerOutbox.h"
 #import "IMHttpAPI.h"
 #import "../model/FileCache.h"
-#import <imsdk/IMService.h>
+#import "IMService.h"
 #import "PeerMessageDB.h"
 #import "GroupMessageDB.h"
 #import "wav_amr.h"

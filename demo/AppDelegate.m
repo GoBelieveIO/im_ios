@@ -19,13 +19,13 @@
 #import "MainViewController.h"
 #endif
 
-#import <imsdk/IMService.h>
-#import <imkit/PeerMessageHandler.h>
-#import <imkit/GroupMessageHandler.h>
-#import <imkit/CustomerMessageHandler.h>
-#import <imkit/CustomerMessageDB.h>
-#import <imkit/CustomerOutbox.h>
-#import <imkit/IMHttpAPI.H>
+#import <gobelieve/IMService.h>
+#import <gobelieve/PeerMessageHandler.h>
+#import <gobelieve/GroupMessageHandler.h>
+#import <gobelieve/CustomerMessageHandler.h>
+#import <gobelieve/CustomerMessageDB.h>
+#import <gobelieve/CustomerOutbox.h>
+#import <gobelieve/IMHttpAPI.H>
 
 #include <netdb.h>
 #include <arpa/inet.h>

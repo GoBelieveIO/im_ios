@@ -9,15 +9,15 @@
 
 #import "MainViewController.h"
 
-#import <imsdk/IMService.h>
-#import <imkit/TextMessageViewController.h>
-#import <imkit/MessageViewController.h>
-#import <imkit/IMHttpAPI.h>
-#import <imkit/PeerMessageViewController.h>
-#import <imkit/MessageDB.h>
-#import <imkit/PeerMessageDB.h>
-#import <imkit/GroupMessageDB.h>
-#import <imkit/CustomerMessageDB.h>
+#import <gobelieve/IMService.h>
+#import <gobelieve/TextMessageViewController.h>
+#import <gobelieve/MessageViewController.h>
+#import <gobelieve/IMHttpAPI.h>
+#import <gobelieve/PeerMessageViewController.h>
+#import <gobelieve/MessageDB.h>
+#import <gobelieve/PeerMessageDB.h>
+#import <gobelieve/GroupMessageDB.h>
+#import <gobelieve/CustomerMessageDB.h>
 
 #import "MessageListViewController.h"
 

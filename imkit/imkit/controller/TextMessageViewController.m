@@ -8,7 +8,7 @@
 */
 
 #import "TextMessageViewController.h"
-#import <imsdk/IMService.h>
+#import "IMService.h"
 
 #import "IMessage.h"
 #import "PeerMessageDB.h"

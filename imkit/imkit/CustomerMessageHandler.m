@@ -8,7 +8,7 @@
 
 #import "CustomerMessageHandler.h"
 #import "MessageDB.h"
-#import <imsdk/Message.h>
+#import "Message.h"
 #import "CustomerMessageDB.h"
 
 @implementation CustomerMessageHandler

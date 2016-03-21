@@ -8,7 +8,7 @@
 */
 
 #import <Foundation/Foundation.h>
-#import <imsdk/IMService.h>
+#import "IMService.h"
 @interface GroupMessageHandler : NSObject<IMGroupMessageHandler>
 +(GroupMessageHandler*)instance;
 @end

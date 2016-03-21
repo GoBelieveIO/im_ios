@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <imsdk/IMService.h>
+#import "IMService.h"
 
 @interface CustomerMessageHandler : NSObject<IMCustomerMessageHandler>
 +(CustomerMessageHandler*)instance;

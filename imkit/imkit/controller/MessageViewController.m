@@ -8,7 +8,7 @@
 */
 
 #import "MessageViewController.h"
-#import <imsdk/IMService.h>
+#import "IMService.h"
 #import <MobileCoreServices/MobileCoreServices.h>
 
 #import "Constants.h"

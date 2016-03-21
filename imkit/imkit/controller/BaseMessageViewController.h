@@ -8,7 +8,7 @@
 */
 
 #import <UIKit/UIKit.h>
-#import <imsdk/IMService.h>
+#import "IMService.h"
 #import "IMessage.h"
 
 //基类处理tableview相关的数据

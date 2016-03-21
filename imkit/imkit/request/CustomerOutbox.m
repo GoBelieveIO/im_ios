@@ -7,7 +7,7 @@
 //
 
 #import "CustomerOutbox.h"
-#import <imsdk/IMService.h>
+#import "IMService.h"
 #import "CustomerMessageDB.h"
 
 @implementation CustomerOutbox

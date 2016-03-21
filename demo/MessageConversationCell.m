@@ -7,7 +7,7 @@
 //
 
 #import "MessageConversationCell.h"
-#import <imkit/IMessage.h>
+#import <gobelieve/IMessage.h>
 
 #define kCatchWidth 74.0f
 

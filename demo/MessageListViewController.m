@@ -8,14 +8,14 @@
  */
 
 #import "MessageListViewController.h"
-#import <imkit/IMessage.h>
-#import <imsdk/IMService.h>
-#import <imkit/PeerMessageDB.h>
-#import <imkit/GroupMessageDB.h>
-#import <imkit/CustomerMessageDB.h>
-#import <imkit/PeerMessageViewController.h>
-#import <imkit/GroupMessageViewController.h>
-#import <imkit/CustomerMessageViewController.h>
+#import <gobelieve/IMessage.h>
+#import <gobelieve/IMService.h>
+#import <gobelieve/PeerMessageDB.h>
+#import <gobelieve/GroupMessageDB.h>
+#import <gobelieve/CustomerMessageDB.h>
+#import <gobelieve/PeerMessageViewController.h>
+#import <gobelieve/GroupMessageViewController.h>
+#import <gobelieve/CustomerMessageViewController.h>
 
 #import "MessageConversationCell.h"
 

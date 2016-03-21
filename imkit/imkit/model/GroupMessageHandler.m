@@ -9,7 +9,7 @@
 
 #import "GroupMessageHandler.h"
 #import "IMessage.h"
-#import <imsdk/IMService.h>
+#import "IMService.h"
 #import "GroupMessageDB.h"
 
 @implementation GroupMessageHandler
