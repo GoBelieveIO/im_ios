@@ -7,12 +7,15 @@
 //
 
 #import "RoomLoginViewController.h"
-#import <imsdk/IMService.h>
-#import <imkit/TextMessageViewController.h>
-#import <imkit/MessageViewController.h>
-#import <imkit/IMHttpAPI.h>
-#import <imkit/MessageDB.h>
-#import <imkit/PeerMessageViewController.h>
+#import <gobelieve/IMService.h>
+#import <gobelieve/TextMessageViewController.h>
+#import <gobelieve/MessageViewController.h>
+#import <gobelieve/PeerMessageViewController.h>
+#import <gobelieve/IMHttpAPI.h>
+#import <gobelieve/MessageDB.h>
+#import <gobelieve/PeerMessageDB.h>
+#import <gobelieve/GroupMessageDB.h>
+#import <gobelieve/CustomerMessageDB.h>
 
 #import "RoomViewController.h"
 
@@ -120,7 +123,10 @@
             
             NSString *path = [self getDocumentPath];
             NSString *dbPath = [NSString stringWithFormat:@"%@/%lld", path, [tfSender.text longLongValue]];
-            [MessageDB setDBPath:dbPath];
+            [PeerMessageDB instance].dbPath = [NSString stringWithFormat:@"%@/peer", dbPath];
+            [GroupMessageDB instance].dbPath = [NSString stringWithFormat:@"%@/group", dbPath];
+            [CustomerMessageDB instance].dbPath = [NSString stringWithFormat:@"%@/customer", dbPath];
+            
             
             [IMHttpAPI instance].accessToken = token;
             [[IMService instance] setToken:token];

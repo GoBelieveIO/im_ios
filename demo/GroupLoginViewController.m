@@ -7,13 +7,13 @@
 //
 
 #import "GroupLoginViewController.h"
-#import <imsdk/IMService.h>
-#import <imkit/IMHttpAPI.h>
-#import <imkit/GroupMessageViewController.h>
-#import <imkit/PeerMessageViewController.h>
-#import <imkit/MessageDB.h>
-#import <imkit/PeerMessageDB.h>
-#import <imkit/GroupMessageDB.h>
+#import <gobelieve/IMService.h>
+#import <gobelieve/IMHttpAPI.h>
+#import <gobelieve/GroupMessageViewController.h>
+#import <gobelieve/PeerMessageViewController.h>
+#import <gobelieve/MessageDB.h>
+#import <gobelieve/PeerMessageDB.h>
+#import <gobelieve/GroupMessageDB.h>
 
 
 @interface GroupLoginViewController ()<MessageViewControllerUserDelegate

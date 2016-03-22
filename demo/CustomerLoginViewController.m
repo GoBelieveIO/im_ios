@@ -6,12 +6,15 @@
   LICENSE file in the root directory of this source tree. An additional grant
   of patent rights can be found in the PATENTS file in the same directory.
 */
-#import <imsdk/IMService.h>
-#import <imkit/IMHttpAPI.h>
-#import <imkit/MessageDB.h>
-#import <imkit/PeerMessageDB.h>
-#import <imkit/GroupMessageDB.h>
-#import <imkit/CustomerMessageDB.h>
+#import <gobelieve/IMService.h>
+#import <gobelieve/IMHttpAPI.h>
+#import <gobelieve/MessageDB.h>
+#import <gobelieve/PeerMessageDB.h>
+#import <gobelieve/GroupMessageDB.h>
+#import <gobelieve/CustomerMessageDB.h>
+
+#import <gobelieve/MessageViewController.h>
+
 #import "CustomerLoginViewController.h"
 #import "CustomerMessageListViewController.h"
 

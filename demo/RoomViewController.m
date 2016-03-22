@@ -7,7 +7,7 @@
 //
 
 #import "RoomViewController.h"
-#import <imsdk/IMService.h>
+#import <gobelieve/IMService.h>
 
 @interface RoomViewController()<RoomMessageObserver, TCPConnectionObserver>
 @property(nonatomic)int msgID;

@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <imkit/TextMessageViewController.h>
+#import <gobelieve/TextMessageViewController.h>
 
 @interface RoomViewController : TextMessageViewController
 @property(nonatomic) int64_t uid;
