@@ -77,8 +77,6 @@
 
 /* Begin PBXFileReference section */
 		0E99D13C3704C7F56B19D135 /* libPods-customer_demo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-customer_demo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		2274D98885F41E55A9E31D1D /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
-		27646B7D137841E649D37550 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		528FC2EED68E48A5F3C55135 /* Pods-room_demo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-room_demo.release.xcconfig"; path = "Pods/Target Support Files/Pods-room_demo/Pods-room_demo.release.xcconfig"; sourceTree = "<group>"; };
 		535F273B1A5AEC169412ACDD /* Pods-group_demo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-group_demo.release.xcconfig"; path = "Pods/Target Support Files/Pods-group_demo/Pods-group_demo.release.xcconfig"; sourceTree = "<group>"; };
 		688CFF419FE1612EC9243BA1 /* Pods-room_demo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-room_demo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-room_demo/Pods-room_demo.debug.xcconfig"; sourceTree = "<group>"; };
@@ -304,8 +302,6 @@
 		BF2B3ACA594333BB114D53ED /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				2274D98885F41E55A9E31D1D /* Pods.debug.xcconfig */,
-				27646B7D137841E649D37550 /* Pods.release.xcconfig */,
 				DEC33F18A45E793CE70B90AD /* Pods-customer_demo.debug.xcconfig */,
 				8F68BCBBCD5CD2DA7D348F48 /* Pods-customer_demo.release.xcconfig */,
 				FC08DB8EA17BF133F93BF9BF /* Pods-group_demo.debug.xcconfig */,
