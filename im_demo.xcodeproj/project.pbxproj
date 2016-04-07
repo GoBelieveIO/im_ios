@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		02526CFE603CA74FA854E732 /* libPods-customer_demo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E99D13C3704C7F56B19D135 /* libPods-customer_demo.a */; };
-		1F8F6EC95CF292B7F7CE4CA5 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F187D6D4EF65220587A732F6 /* libPods.a */; };
 		4BC311CD5DA18C6202821F93 /* libPods-im_demo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F32EF3F975F128C56486DAC2 /* libPods-im_demo.a */; };
 		6D4AB3E61C87104300AFE234 /* GroupLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D8E72E81B750B79004E069E /* GroupLoginViewController.m */; };
 		6D61543A1BF6EB5F005648FA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C46D61BEB0A940053066A /* Localizable.strings */; };
@@ -194,7 +193,6 @@
 				6DF54E5D1AB58AD000197EBC /* UIKit.framework in Frameworks */,
 				6DF54E5B1AB58AC900197EBC /* AVFoundation.framework in Frameworks */,
 				6DF54E591AB58AC400197EBC /* AssetsLibrary.framework in Frameworks */,
-				1F8F6EC95CF292B7F7CE4CA5 /* libPods.a in Frameworks */,
 				4BC311CD5DA18C6202821F93 /* libPods-im_demo.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
