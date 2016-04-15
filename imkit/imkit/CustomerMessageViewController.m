@@ -14,6 +14,7 @@
 
 @interface CustomerMessageViewController ()<OutboxObserver, CustomerMessageObserver>
 @property(nonatomic) BOOL isStaff;
+@property(nonatomic) int64_t sellerID;
 @end
 
 @implementation CustomerMessageViewController
@@ -223,7 +224,7 @@
 }
 
 -(void)checkMessageFailureFlag:(IMessage*)msg {
-    if ([self isMessageOutgoing:msg]) {
+    if (msg.isOutgoing) {
         if (msg.type == MESSAGE_AUDIO) {
             msg.uploading = [[CustomerOutbox instance] isUploading:msg];
         } else if (msg.type == MESSAGE_IMAGE) {
@@ -297,28 +298,42 @@
     return [[CustomerMessageDB instance] eraseMessageFailure:msg.msgLocalID uid:cid];
 }
 
-
--(void)onCustomerMessage:(CustomerMessage*)im {
-    if (self.isStaff && im.customer != self.peerUID) {
+-(void)onCustomerSupportMessage:(CustomerMessage*)im {
+    NSLog(@"receive msg:%@",im);
+    IMessage *m = [[IMessage alloc] init];
+    m.sender = im.storeID;
+    m.receiver = im.customerID;
+    m.msgLocalID = im.msgLocalID;
+    m.rawContent = im.content;
+    m.timestamp = im.timestamp;
+    
+    self.sellerID = im.sellerID;
+    
+    if (self.textMode && m.type != MESSAGE_TEXT) {
         return;
     }
     
+    int now = (int)time(NULL);
+    if (now - self.lastReceivedTimestamp > 1) {
+        [[self class] playMessageReceivedSound];
+        self.lastReceivedTimestamp = now;
+    }
+    
+    [self downloadMessageContent:m];
+    [self insertMessage:m];
+}
+
+-(void)onCustomerMessage:(CustomerMessage*)im {
     NSLog(@"receive msg:%@",im);
     IMessage *m = [[IMessage alloc] init];
-    m.sender = im.sender;
-    m.receiver = im.receiver;
+    m.sender = im.customerID;
+    m.receiver = im.storeID;
     m.msgLocalID = im.msgLocalID;
     m.rawContent = im.content;
     m.timestamp = im.timestamp;
     
     if (self.textMode && m.type != MESSAGE_TEXT) {
         return;
-    }
-    
-
-    if (!self.isStaff && m.sender != self.currentUID) {
-        //普通用户收到客服的回复消息,记录下客服的id
-        self.peerUID = m.sender;
     }
     
     int now = (int)time(NULL);
@@ -365,15 +380,16 @@
         [[CustomerOutbox instance] uploadImage:message];
     } else {
         CustomerMessage *im = [[CustomerMessage alloc] init];
-        im.sender = message.sender;
-        im.receiver = message.receiver;
+        im.customerID = message.sender;
+        im.storeID = message.receiver;
         im.msgLocalID = message.msgLocalID;
         im.content = message.rawContent;
-        if (self.isStaff) {
-            im.customer = message.receiver;
-        } else {
-            im.customer = message.sender;
-        }
+ 
+        im.sellerID = self.sellerID;
+        
+        //im.customerAppID
+        //im.sellerID
+        
         [[IMService instance] sendCustomerMessage:im];
     }
     

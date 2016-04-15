@@ -17,10 +17,12 @@
 #import "GroupMessageDB.h"
 #import "DraftDB.h"
 #import "Constants.h"
+#import "UIImage+Resize.h"
+#import "SDImageCache.h"
 
 #define PAGE_COUNT 10
 
-@interface GroupMessageViewController ()<OutboxObserver>
+@interface GroupMessageViewController ()<OutboxObserver, AudioDownloaderObserver>
 
 @end
 
@@ -48,7 +50,7 @@
 
 
 -(void)addObserver {
-    [super addObserver];
+    [[AudioDownloader instance] addDownloaderObserver:self];
     [[GroupOutbox instance] addBoxObserver:self];
     [[IMService instance] addConnectionObserver:self];
     [[IMService instance] addGroupMessageObserver:self];
@@ -56,7 +58,7 @@
 }
 
 -(void)removeObserver {
-    [super removeObserver];
+    [[AudioDownloader instance] removeDownloaderObserver:self];
     [[GroupOutbox instance] removeBoxObserver:self];
     [[IMService instance] removeGroupMessageObserver:self];
     [[IMService instance] removeConnectionObserver:self];
@@ -78,6 +80,16 @@
 - (BOOL)isInConversation:(IMessage*)msg {
     BOOL r = (msg.receiver == self.groupID);
     return r;
+}
+
+-(void)saveMessageAttachment:(IMessage*)msg address:(NSString*)address {
+    //以附件的形式存储，以免第二次查询
+    MessageAttachmentContent *att = [[MessageAttachmentContent alloc] initWithAttachment:msg.msgLocalID address:address];
+    IMessage *attachment = [[IMessage alloc] init];
+    attachment.sender = msg.sender;
+    attachment.receiver = msg.receiver;
+    attachment.rawContent = att.raw;
+    [self saveMessage:attachment];
 }
 
 -(BOOL)saveMessage:(IMessage*)msg {
@@ -233,6 +245,7 @@
                                      forKey:[NSNumber numberWithInt:att.msgLocalID]];
                 
             } else {
+                msg.isOutgoing = (msg.sender == self.currentUID);
                 [self.messages insertObject:msg atIndex:0];
                 if (++count >= PAGE_COUNT) {
                     break;
@@ -281,6 +294,7 @@
                 [self.attachments setObject:att
                                      forKey:[NSNumber numberWithInt:att.msgLocalID]];
             } else {
+                msg.isOutgoing = (msg.sender == self.currentUID);
                 [self.messages insertObject:msg atIndex:0];
                 if (++count >= PAGE_COUNT) {
                     break;
@@ -319,8 +333,83 @@
     [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:NO];
 }
 
+
+- (void)updateNotificationDesc:(IMessage*)message {
+    MessageNotificationContent *notification = message.notificationContent;
+    if (message.type == MESSAGE_GROUP_NOTIFICATION) {
+        int type = notification.notificationType;
+        if (type == NOTIFICATION_GROUP_CREATED) {
+            if (self.sender == notification.master) {
+                NSString *desc = [NSString stringWithFormat:@"您创建了\"%@\"群组", notification.groupName];
+                notification.notificationDesc = desc;
+            } else {
+                NSString *desc = [NSString stringWithFormat:@"您加入了\"%@\"群组", notification.groupName];
+                notification.notificationDesc = desc;
+            }
+        } else if (type == NOTIFICATION_GROUP_DISBANDED) {
+            notification.notificationDesc = @"群组已解散";
+        } else if (type == NOTIFICATION_GROUP_MEMBER_ADDED) {
+            IUser *u = [self.userDelegate getUser:notification.member];
+            if (u.name.length > 0) {
+                NSString *name = u.name;
+                NSString *desc = [NSString stringWithFormat:@"%@加入群", name];
+                notification.notificationDesc = desc;
+            } else {
+                NSString *name = u.identifier;
+                NSString *desc = [NSString stringWithFormat:@"%@加入群", name];
+                notification.notificationDesc = desc;
+                [self.userDelegate asyncGetUser:notification.member cb:^(IUser *u) {
+                    NSString *desc = [NSString stringWithFormat:@"%@加入群", u.name];
+                    notification.notificationDesc = desc;
+                }];
+            }
+        } else if (type == NOTIFICATION_GROUP_MEMBER_LEAVED) {
+            IUser *u = [self.userDelegate getUser:notification.member];
+            if (u.name.length > 0) {
+                NSString *name = u.name;
+                NSString *desc = [NSString stringWithFormat:@"%@离开群", name];
+                notification.notificationDesc = desc;
+            } else {
+                NSString *name = u.identifier;
+                NSString *desc = [NSString stringWithFormat:@"%@离开群", name];
+                notification.notificationDesc = desc;
+                [self.userDelegate asyncGetUser:notification.member cb:^(IUser *u) {
+                    NSString *desc = [NSString stringWithFormat:@"%@离开群", u.name];
+                    notification.notificationDesc = desc;
+                }];
+            }
+        } else if (type == NOTIFICATION_GROUP_NAME_UPDATED) {
+            NSString *desc = [NSString stringWithFormat:@"群组更名为%@", notification.groupName];
+            notification.notificationDesc = desc;
+        }
+    }
+}
+
+
+- (void)downloadMessageContent:(IMessage*)msg {
+    [super downloadMessageContent:msg];
+    
+    if (msg.type == MESSAGE_GROUP_NOTIFICATION) {
+        [self updateNotificationDesc:msg];
+    }
+    
+    //群组聊天
+    if (msg.sender == self.sender) {
+
+    } else if (msg.sender > 0) {
+        msg.senderInfo = [self.userDelegate getUser:msg.sender];
+        if (msg.senderInfo.name.length == 0) {
+            [self.userDelegate asyncGetUser:msg.sender cb:^(IUser *u) {
+                msg.senderInfo = u;
+            }];
+        }
+    } else {
+        //群组通知消息的sender==0
+    }
+}
+
 -(void)checkMessageFailureFlag:(IMessage*)msg {
-    if ([self isMessageOutgoing:msg]) {
+    if (msg.isOutgoing) {
         if (msg.type == MESSAGE_AUDIO) {
             msg.uploading = [[GroupOutbox instance] isUploading:msg];
         } else if (msg.type == MESSAGE_IMAGE) {
@@ -406,6 +495,148 @@
         m.flags = m.flags|MESSAGE_FLAG_FAILURE;
         m.uploading = NO;
     }
+}
+
+
+
+#pragma mark - Audio Downloader Observer
+- (void)onAudioDownloadSuccess:(IMessage*)msg {
+    if ([self isInConversation:msg]) {
+        IMessage *m = [self getMessageWithID:msg.msgLocalID];
+        m.downloading = NO;
+    }
+}
+
+- (void)onAudioDownloadFail:(IMessage*)msg {
+    if ([self isInConversation:msg]) {
+        IMessage *m = [self getMessageWithID:msg.msgLocalID];
+        m.downloading = NO;
+    }
+}
+
+
+
+#pragma mark - send message
+- (void)sendLocationMessage:(CLLocationCoordinate2D)location address:(NSString*)address {
+    IMessage *msg = [[IMessage alloc] init];
+    
+    msg.sender = self.sender;
+    msg.receiver = self.receiver;
+    
+    MessageLocationContent *content = [[MessageLocationContent alloc] initWithLocation:location];
+    msg.rawContent = content.raw;
+    
+    content = msg.locationContent;
+    content.address = address;
+    
+    msg.timestamp = (int)time(NULL);
+    msg.isOutgoing = YES;
+    
+    [self saveMessage:msg];
+    
+    [self sendMessage:msg];
+    
+    [[self class] playMessageSentSound];
+    
+    [self createMapSnapshot:msg];
+    if (content.address.length == 0) {
+        [self reverseGeocodeLocation:msg];
+    } else {
+        [self saveMessageAttachment:msg address:content.address];
+    }
+    [self insertMessage:msg];
+}
+
+- (void)sendAudioMessage:(NSString*)path second:(int)second {
+    IMessage *msg = [[IMessage alloc] init];
+    
+    msg.sender = self.sender;
+    msg.receiver = self.receiver;
+    
+    MessageAudioContent *content = [[MessageAudioContent alloc] initWithAudio:[self localAudioURL] duration:second];
+    
+    msg.rawContent = content.raw;
+    msg.timestamp = (int)time(NULL);
+    msg.isOutgoing = YES;
+    
+    //todo 优化读文件次数
+    NSData *data = [NSData dataWithContentsOfFile:path];
+    FileCache *fileCache = [FileCache instance];
+    [fileCache storeFile:data forKey:content.url];
+    
+    [self saveMessage:msg];
+    
+    [self sendMessage:msg];
+    
+    [[self class] playMessageSentSound];
+    
+    [self insertMessage:msg];
+}
+
+
+- (void)sendImageMessage:(UIImage*)image {
+    if (image.size.height == 0) {
+        return;
+    }
+    
+    
+    IMessage *msg = [[IMessage alloc] init];
+    
+    msg.sender = self.sender;
+    msg.receiver = self.receiver;
+    
+    MessageImageContent *content = [[MessageImageContent alloc] initWithImageURL:[self localImageURL]];
+    msg.rawContent = content.raw;
+    msg.timestamp = (int)time(NULL);
+    msg.isOutgoing = YES;
+    
+    CGRect screenRect = [[UIScreen mainScreen] bounds];
+    CGFloat screenHeight = screenRect.size.height;
+    
+    float newHeigth = screenHeight;
+    float newWidth = newHeigth*image.size.width/image.size.height;
+    
+    UIImage *sizeImage = [image resizedImage:CGSizeMake(128, 128) interpolationQuality:kCGInterpolationDefault];
+    image = [image resizedImage:CGSizeMake(newWidth, newHeigth) interpolationQuality:kCGInterpolationDefault];
+    
+    [[SDImageCache sharedImageCache] storeImage:image forKey:content.imageURL];
+    NSString *littleUrl =  [content littleImageURL];
+    [[SDImageCache sharedImageCache] storeImage:sizeImage forKey: littleUrl];
+    
+    [self saveMessage:msg];
+    
+    [self sendMessage:msg withImage:image];
+    
+    [self insertMessage:msg];
+    
+    [[self class] playMessageSentSound];
+}
+
+-(void) sendTextMessage:(NSString*)text {
+    IMessage *msg = [[IMessage alloc] init];
+    
+    msg.sender = self.sender;
+    msg.receiver = self.receiver;
+    
+    MessageTextContent *content = [[MessageTextContent alloc] initWithText:text];
+    msg.rawContent = content.raw;
+    msg.timestamp = (int)time(NULL);
+    msg.isOutgoing = YES;
+    
+    [self saveMessage:msg];
+    
+    [self sendMessage:msg];
+    
+    [[self class] playMessageSentSound];
+    
+    [self insertMessage:msg];
+}
+
+
+-(void)resendMessage:(IMessage*)message {
+    message.flags = message.flags & (~MESSAGE_FLAG_FAILURE);
+    [self eraseMessageFailure:message];
+    [self sendMessage:message];
 }
 
 

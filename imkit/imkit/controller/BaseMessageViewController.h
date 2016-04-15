@@ -14,22 +14,6 @@
 //基类处理tableview相关的数据
 @interface BaseMessageViewController : UIViewController
 
-//派生类必须重写
-@property(nonatomic, readonly) int64_t sender;
-
-//receiver可能代表uid或者群组id
-@property(nonatomic, readonly) int64_t receiver;
-
-@property(nonatomic) IUser *senderInfo;
-
-- (BOOL)saveMessage:(IMessage*)msg;
-- (BOOL)removeMessage:(IMessage*)msg;
-- (BOOL)markMessageFailure:(IMessage*)msg;
-- (BOOL)markMesageListened:(IMessage*)msg;
-- (BOOL)eraseMessageFailure:(IMessage*)msg;
-
-- (void)sendMessage:(IMessage*)msg;
-- (void)sendMessage:(IMessage *)msg withImage:(UIImage*)image;
 
 //protected
 @property(nonatomic) NSMutableArray *messages;
@@ -44,10 +28,8 @@
 @property(nonatomic) BOOL textMode;
 
 
-//protected
-//消息是否属于当前会话
-- (BOOL)isInConversation:(IMessage*)msg;
-
+//protected overwrite by derived class
+- (BOOL)markMesageListened:(IMessage*)msg;
 - (void)loadConversationData;
 - (void)loadEarlierData;
 

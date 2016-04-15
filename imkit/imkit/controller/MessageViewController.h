@@ -36,11 +36,15 @@
 - (void)addObserver;
 - (void)removeObserver;
 
-- (BOOL)isMessageOutgoing:(IMessage*)msg;
-
 - (void)downloadMessageContent:(IMessage*)message;
 - (void)downloadMessageContent:(NSArray*)messages count:(int)count;
 
 - (void)stopPlayer;
 
+//protected
+- (void)createMapSnapshot:(IMessage*)msg;
+- (void)reverseGeocodeLocation:(IMessage*)msg;
+- (void)saveMessageAttachment:(IMessage*)msg address:(NSString*)address;
+- (NSString*)localImageURL;
+- (NSString*)localAudioURL;
 @end

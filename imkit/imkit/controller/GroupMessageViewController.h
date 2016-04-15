@@ -29,5 +29,4 @@
 @property(nonatomic, copy) NSString *groupName;
 @property(nonatomic) BOOL disbanded;
 
-
 @end

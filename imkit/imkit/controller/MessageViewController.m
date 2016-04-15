@@ -42,8 +42,7 @@
 #define kTakePicActionSheetTag  101
 
 
-@interface MessageViewController()<AudioDownloaderObserver, 
-    LocationPickerControllerDelegate, EMChatToolbarDelegate>
+@interface MessageViewController()<LocationPickerControllerDelegate, EMChatToolbarDelegate>
 
 @property(strong, nonatomic) EaseChatToolbar *chatToolbar;
 
@@ -91,36 +90,17 @@
 
 
 #pragma mark - View lifecycle
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
- 
-    [self setup];
- 
-    [self loadSenderInfo];
-    [self loadConversationData];
     
+    [self setup];
+    [self loadConversationData];
+
     //scroll tableview to bottom
     [self.tableView setContentOffset:CGPointMake(0, CGFLOAT_MAX)];
 }
 
-- (void)loadSenderInfo {
-    self.senderInfo = [self.userDelegate getUser:self.sender];
-    if (self.senderInfo.name.length == 0) {
-        __weak MessageViewController *wself = self;
-        [self.userDelegate asyncGetUser:self.sender cb:^(IUser *u) {
-            wself.senderInfo = u;
-            for (IMessage *msg in self.messages) {
-                if (msg.sender == wself.sender) {
-                    msg.senderInfo = wself.senderInfo;
-                }
-            }
-        }];
-    }
-}
-
-- (void)setup
-{
+- (void)setup {
     int w = self.view.bounds.size.width;
     int h = self.view.bounds.size.height;
     
@@ -213,30 +193,27 @@
     return draft;
 }
 
--(void)setSenderInfo:(IUser *)senderInfo {
-    [super setSenderInfo:senderInfo];
-    
-    for (IMessage *msg in self.messages) {
-        if (msg.sender == self.sender) {
-            msg.senderInfo = self.senderInfo;
-        }
-    }
-}
+//-(void)setSenderInfo:(IUser *)senderInfo {
+//    [super setSenderInfo:senderInfo];
+//    
+//    for (IMessage *msg in self.messages) {
+//        if (msg.sender == self.sender) {
+//            msg.senderInfo = self.senderInfo;
+//        }
+//    }
+//}
 
 #pragma mark - View lifecycle
-- (void)viewWillAppear:(BOOL)animated
-{
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 }
 
-- (void)viewWillDisappear:(BOOL)animated
-{
+- (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     [self setEditing:NO animated:YES];
 }
 
-- (void)didReceiveMemoryWarning
-{
+- (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     NSLog(@"*** %@: didReceiveMemoryWarning ***", self.class);
 }
@@ -609,7 +586,7 @@
         NSLog(@"time...:%@", timeBase.timeDesc);
     }
     
-    if (message.sender == self.sender) {
+    if (message.isOutgoing) {
         msgType = BubbleMessageTypeOutgoing;
         [cell setMessage:message msgType:msgType showName:NO];
     } else {
@@ -660,7 +637,7 @@
         return 0;
     }
     int nameHeight = 0;
-    if (self.isShowUserName && msg.sender != self.sender) {
+    if (self.isShowUserName && msg.isIncomming) {
         nameHeight = NAME_LABEL_HEIGHT;
     }
     
@@ -719,7 +696,7 @@
  * 复用ID区分来去类型
  */
 - (NSString*)getMessageViewCellId:(IMessage*)msg{
-    if(msg.sender == self.sender) {
+    if(msg.isOutgoing) {
         return [NSString stringWithFormat:@"MessageCell_%d%d", msg.type, BubbleMessageTypeOutgoing];
     } else {
         return [NSString stringWithFormat:@"MessageCell_%d%d", msg.type, BubbleMessageTypeIncoming];
@@ -871,61 +848,6 @@
 }
 
 
-- (void)updateNotificationDesc:(IMessage*)message {
-    MessageNotificationContent *notification = message.notificationContent;
-    if (message.type == MESSAGE_GROUP_NOTIFICATION) {
-        int type = notification.notificationType;
-        if (type == NOTIFICATION_GROUP_CREATED) {
-            if (self.sender == notification.master) {
-                NSString *desc = [NSString stringWithFormat:@"您创建了\"%@\"群组", notification.groupName];
-                notification.notificationDesc = desc;
-            } else {
-                NSString *desc = [NSString stringWithFormat:@"您加入了\"%@\"群组", notification.groupName];
-                notification.notificationDesc = desc;
-            }
-        } else if (type == NOTIFICATION_GROUP_DISBANDED) {
-            notification.notificationDesc = @"群组已解散";
-        } else if (type == NOTIFICATION_GROUP_MEMBER_ADDED) {
-            IUser *u = [self.userDelegate getUser:notification.member];
-            if (u.name.length > 0) {
-                NSString *name = u.name;
-                NSString *desc = [NSString stringWithFormat:@"%@加入群", name];
-                notification.notificationDesc = desc;
-            } else {
-                NSString *name = u.identifier;
-                NSString *desc = [NSString stringWithFormat:@"%@加入群", name];
-                notification.notificationDesc = desc;
-                [self.userDelegate asyncGetUser:notification.member cb:^(IUser *u) {
-                    NSString *desc = [NSString stringWithFormat:@"%@加入群", u.name];
-                    notification.notificationDesc = desc;
-                }];
-            }
-        } else if (type == NOTIFICATION_GROUP_MEMBER_LEAVED) {
-            IUser *u = [self.userDelegate getUser:notification.member];
-            if (u.name.length > 0) {
-                NSString *name = u.name;
-                NSString *desc = [NSString stringWithFormat:@"%@离开群", name];
-                notification.notificationDesc = desc;
-            } else {
-                NSString *name = u.identifier;
-                NSString *desc = [NSString stringWithFormat:@"%@离开群", name];
-                notification.notificationDesc = desc;
-                [self.userDelegate asyncGetUser:notification.member cb:^(IUser *u) {
-                    NSString *desc = [NSString stringWithFormat:@"%@离开群", u.name];
-                    notification.notificationDesc = desc;
-                }];
-            }
-        } else if (type == NOTIFICATION_GROUP_NAME_UPDATED) {
-            NSString *desc = [NSString stringWithFormat:@"群组更名为%@", notification.groupName];
-            notification.notificationDesc = desc;
-        }
-    }
-}
-
-- (BOOL)isMessageOutgoing:(IMessage*)msg {
-    return msg.sender == self.sender;
-}
-
 - (void)downloadMessageContent:(IMessage*)msg {
     FileCache *cache = [FileCache instance];
     AudioDownloader *downloader = [AudioDownloader instance];
@@ -954,25 +876,9 @@
         }
     } else if (msg.type == MESSAGE_IMAGE) {
         NSLog(@"image url:%@", msg.imageContent.imageURL);
-    } else if (msg.type == MESSAGE_GROUP_NOTIFICATION) {
-        [self updateNotificationDesc:msg];
     }
     
 
-
-    //群组聊天
-    if (msg.sender == self.sender) {
-        msg.senderInfo = self.senderInfo;
-    } else if (msg.sender > 0) {
-        msg.senderInfo = [self.userDelegate getUser:msg.sender];
-        if (msg.senderInfo.name.length == 0) {
-            [self.userDelegate asyncGetUser:msg.sender cb:^(IUser *u) {
-                msg.senderInfo = u;
-            }];
-        }
-    } else {
-        //群组通知消息的sender==0
-    }
 }
 
 - (void)downloadMessageContent:(NSArray*)messages count:(int)count {
@@ -1007,13 +913,7 @@
             CLPlacemark *placemark = [array objectAtIndex:0];
             content.address = placemark.name;
 
-            //以附件的形式存储，以免第二次查询
-            MessageAttachmentContent *att = [[MessageAttachmentContent alloc] initWithAttachment:msg.msgLocalID address:placemark.name];
-            IMessage *attachment = [[IMessage alloc] init];
-            attachment.sender = msg.sender;
-            attachment.receiver = msg.receiver;
-            attachment.rawContent = att.raw;
-            [self saveMessage:attachment];
+            [self saveMessageAttachment:msg address:placemark.name];
         }
         msg.geocoding = NO;
     }];
@@ -1046,149 +946,28 @@
 
 }
 
-- (void)sendLocationMessage:(CLLocationCoordinate2D)location address:(NSString*)address {
-    IMessage *msg = [[IMessage alloc] init];
-    
-    msg.sender = self.sender;
-    msg.receiver = self.receiver;
+-(void)saveMessageAttachment:(IMessage*)msg address:(NSString*)address {
+    NSAssert(NO, @"not implement");
+}
 
-    MessageLocationContent *content = [[MessageLocationContent alloc] initWithLocation:location];
-    msg.rawContent = content.raw;
-    
-    content = msg.locationContent;
-    content.address = address;
-    
-    msg.timestamp = (int)time(NULL);
-    msg.senderInfo = self.senderInfo;
-    
-    [self saveMessage:msg];
-    
-    [self sendMessage:msg];
-    
-    [[self class] playMessageSentSound];
-    
-    [self createMapSnapshot:msg];
-    if (content.address.length == 0) {
-        [self reverseGeocodeLocation:msg];
-    } else {
-        MessageAttachmentContent *att = [[MessageAttachmentContent alloc] initWithAttachment:msg.msgLocalID address:content.address];
-        IMessage *attachment = [[IMessage alloc] init];
-        attachment.sender = msg.sender;
-        attachment.receiver = msg.receiver;
-        attachment.rawContent = att.raw;
-        
-        [self saveMessage:attachment];
-    }
-    [self insertMessage:msg];
+- (void)sendLocationMessage:(CLLocationCoordinate2D)location address:(NSString*)address {
+    NSAssert(NO, @"not implement");
 }
 
 - (void)sendAudioMessage:(NSString*)path second:(int)second {
-    IMessage *msg = [[IMessage alloc] init];
-    
-    msg.sender = self.sender;
-    msg.receiver = self.receiver;
-    
-    MessageAudioContent *content = [[MessageAudioContent alloc] initWithAudio:[self localAudioURL] duration:second];
-    
-    msg.rawContent = content.raw;
-    msg.timestamp = (int)time(NULL);
-    msg.senderInfo = self.senderInfo;
-    
-    //todo 优化读文件次数
-    NSData *data = [NSData dataWithContentsOfFile:path];
-    FileCache *fileCache = [FileCache instance];
-    [fileCache storeFile:data forKey:content.url];
-    
-    [self saveMessage:msg];
-    
-    [self sendMessage:msg];
-    
-    [[self class] playMessageSentSound];
-
-    [self insertMessage:msg];
+    NSAssert(NO, @"not implement");
 }
-
 
 - (void)sendImageMessage:(UIImage*)image {
-    if (image.size.height == 0) {
-        return;
-    }
-    
-    
-    IMessage *msg = [[IMessage alloc] init];
-    
-    msg.sender = self.sender;
-    msg.receiver = self.receiver;
-    
-    MessageImageContent *content = [[MessageImageContent alloc] initWithImageURL:[self localImageURL]];
-    msg.rawContent = content.raw;
-    msg.timestamp = (int)time(NULL);
-    msg.senderInfo = self.senderInfo;
-   
-    CGRect screenRect = [[UIScreen mainScreen] bounds];
-    CGFloat screenHeight = screenRect.size.height;
-    
-    float newHeigth = screenHeight;
-    float newWidth = newHeigth*image.size.width/image.size.height;
-    
-    UIImage *sizeImage = [image resizedImage:CGSizeMake(128, 128) interpolationQuality:kCGInterpolationDefault];
-    image = [image resizedImage:CGSizeMake(newWidth, newHeigth) interpolationQuality:kCGInterpolationDefault];
-    
-    [[SDImageCache sharedImageCache] storeImage:image forKey:content.imageURL];
-    NSString *littleUrl =  [content littleImageURL];
-    [[SDImageCache sharedImageCache] storeImage:sizeImage forKey: littleUrl];
-    
-    [self saveMessage:msg];
-
-    [self sendMessage:msg withImage:image];
-
-    [self insertMessage:msg];
-    
-    [[self class] playMessageSentSound];
+    NSAssert(NO, @"not implement");
 }
 
--(void) sendTextMessage:(NSString*)text {
-    IMessage *msg = [[IMessage alloc] init];
-    
-    msg.sender = self.sender;
-    msg.receiver = self.receiver;
-    
-    MessageTextContent *content = [[MessageTextContent alloc] initWithText:text];
-    msg.rawContent = content.raw;
-    msg.timestamp = (int)time(NULL);
-    msg.senderInfo = self.senderInfo;
-    
-    [self saveMessage:msg];
-    
-    [self sendMessage:msg];
-    
-    [[self class] playMessageSentSound];
-    
-    [self insertMessage:msg];
+- (void)sendTextMessage:(NSString*)text {
+    NSAssert(NO, @"not implement");
 }
 
-
--(void)resendMessage:(IMessage*)message {
-    message.flags = message.flags & (~MESSAGE_FLAG_FAILURE);
-    [self eraseMessageFailure:message];
-    [self sendMessage:message];
-}
-
-
-
-#pragma mark - Audio Downloader Observer
-- (void)onAudioDownloadSuccess:(IMessage*)msg {
-    if ([self isInConversation:msg]) {
-        IMessage *m = [self getMessageWithID:msg.msgLocalID];
-        m.downloading = NO;
-    }
-}
-
-- (void)onAudioDownloadFail:(IMessage*)msg {
-    if ([self isInConversation:msg]) {
-        IMessage *m = [self getMessageWithID:msg.msgLocalID];
-        m.downloading = NO;
-    }
+- (void)resendMessage:(IMessage*)message {
+    NSAssert(NO, @"not implement");
 }
 
 #pragma mark InterfaceOrientation

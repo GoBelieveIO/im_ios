@@ -156,6 +156,10 @@
 @property(nonatomic, readonly) BOOL isFailure;
 @property(nonatomic, readonly) BOOL isListened;
 
+//当前用户发出的消息
+@property(nonatomic) BOOL isOutgoing;
+@property(nonatomic, readonly) BOOL isIncomming;//!isOutgoing
+
 //UI, kvo
 @property(nonatomic) BOOL uploading;
 @property(nonatomic) BOOL downloading;
@@ -165,6 +169,13 @@
 
 @property(nonatomic) IUser *senderInfo;
 
+@end
+
+@interface ICustomerMessage : IMessage
+@property(nonatomic) int64_t customerAppID;
+@property(nonatomic) int64_t customerID;
+@property(nonatomic) int64_t storeID;
+@property(nonatomic) int64_t sellerID;
 @end
 
 @interface Conversation : NSObject

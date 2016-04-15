@@ -342,6 +342,10 @@
     return self.flags&MESSAGE_FLAG_LISTENED;
 }
 
+-(BOOL)isIncomming {
+    return !self.isOutgoing;
+}
+
 -(void)setRawContent:(NSString *)rawContent {
     _rawContent = [rawContent copy];
     
@@ -437,6 +441,10 @@
     }
     return nil;
 }
+
+@end
+
+@implementation ICustomerMessage
 
 @end
 

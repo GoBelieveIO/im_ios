@@ -44,40 +44,9 @@
 - (void)loadEarlierData {
     NSAssert(NO, @"not implement");
 }
-
-- (BOOL)isInConversation:(IMessage*)msg {
+- (BOOL)markMesageListened:(IMessage*)msg {
     NSAssert(NO, @"not implement");
     return NO;
-}
-
--(BOOL)saveMessage:(IMessage*)msg {
-    NSAssert(NO, @"not implement");
-    return NO;
-}
--(BOOL)removeMessage:(IMessage*)msg {
-    NSAssert(NO, @"not implement");
-    return NO;
-}
--(BOOL)markMessageFailure:(IMessage*)msg {
-    NSAssert(NO, @"not implement");
-    return NO;
-}
--(BOOL)markMesageListened:(IMessage*)msg {
-    NSAssert(NO, @"not implement");
-    return NO;
-}
-
--(BOOL)eraseMessageFailure:(IMessage*)msg {
-    NSAssert(NO, @"not implement");
-    return NO;
-}
-
-- (void)sendMessage:(IMessage *)msg withImage:(UIImage*)image {
-    NSAssert(NO, @"not implement");
-}
-
-- (void)sendMessage:(IMessage*)msg {
-    NSAssert(NO, @"not implement");
 }
 
 

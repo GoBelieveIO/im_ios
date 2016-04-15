@@ -379,17 +379,6 @@
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     return nil;
-//    CGRect screenRect = [[UIScreen mainScreen] bounds];
-//    CGFloat screenWidth = screenRect.size.width;
-//    
-//    CGRect rect = CGRectMake(0, 0, screenWidth, 30);
-//    MessageTableSectionHeaderView *sectionView = [[MessageTableSectionHeaderView alloc] initWithFrame:rect];
-//    
-//    NSDate *curtDate = [self.timestamps objectAtIndex: section];
-//    NSString *timeStr = [self formatSectionTime:curtDate];
-//    sectionView.sectionHeader.text = timeStr;
-//    
-//    return sectionView;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
@@ -414,30 +403,7 @@
 
 
 -(void) sendTextMessage:(NSString*)text {
-    IMessage *msg = [[IMessage alloc] init];
     
-    msg.sender = self.sender;
-    msg.receiver = self.receiver;
-    
-    MessageTextContent *content = [[MessageTextContent alloc] initWithText:text];
-    msg.rawContent = content.raw;
-    msg.timestamp = (int)time(NULL);
-    
-    [self saveMessage:msg];
-    
-    [self sendMessage:msg];
-    
-    [[self class] playMessageSentSound];
-    
-    [self insertMessage:msg];
-}
-
--(void)addObserver {
-
-}
-
--(void)removeObserver {
-
 }
 
 - (void)downloadMessageContent:(IMessage*)message {

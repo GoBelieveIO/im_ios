@@ -25,24 +25,21 @@
 -(id)init {
     self = [super init];
     if (self) {
-        self.isStaff = NO;
     }
     return self;
 }
 
 
-- (void)sendMessage:(IMessage*)msg{
+- (void)sendMessage:(IMessage*)m{
+    ICustomerMessage *msg = (ICustomerMessage*)m;
     CustomerMessage *im = [[CustomerMessage alloc] init];
-    im.sender = msg.sender;
-    im.receiver = msg.receiver;
+
+    im.customerAppID = msg.customerAppID;
+    im.customerID = msg.customerID;
+    im.storeID = msg.receiver;
+    im.sellerID = msg.sellerID;
     im.msgLocalID = msg.msgLocalID;
     im.content = msg.rawContent;
-    
-    if (self.isStaff) {
-        im.customer = msg.receiver;
-    } else {
-        im.customer = msg.sender;
-    }
     
     [[IMService instance] sendCustomerMessage:im];
 }
