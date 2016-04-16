@@ -99,9 +99,9 @@
         [self.roomMessages removeObjectForKey:seq];
         [self publishRoomMessageACK:m3];
     } else if (m4) {
-        [self.customerMessageHandler handleMessageACK:m4.msgLocalID uid:m4.receiver];
+        [self.customerMessageHandler handleMessageACK:m4];
         [self.customerServiceMessages removeObjectForKey:seq];
-        [self publishCustomerMessageACK:m4.msgLocalID uid:m4.receiver];
+        [self publishCustomerMessageACK:m4];
     }
 }
 
@@ -142,12 +142,32 @@
     }
 }
 
--(void)handleCustomerServiceMessage:(Message*)msg {
+-(void)handleCustomerSupportMessage:(Message*)msg {
+    CustomerMessage *im = (CustomerMessage*)msg.body;
+    [self.customerMessageHandler handleCustomerSupportMessage:im];
+    
+    NSLog(@"customer support message customer id:%lld customer appid:%lld store id:%lld seller id:%lld content:%s",
+          im.customerID, im.customerAppID, im.storeID, im.sellerID, [im.content UTF8String]);
+    
+    Message *ack = [[Message alloc] init];
+    ack.cmd = MSG_ACK;
+    ack.body = [NSNumber numberWithInt:msg.seq];
+    [self sendMessage:ack];
+    [self publishCustomerSupportMessage:im];
+    
+    //客服端收到发自客服的消息
+    if (self.appID > 0 && self.appID != im.customerAppID && im.sellerID == self.uid) {
+        [self.customerMessageHandler handleMessageACK:im];
+        [self publishCustomerMessageACK:im];
+    }
+}
+
+-(void)handleCustomerMessage:(Message*)msg {
     CustomerMessage *im = (CustomerMessage*)msg.body;
     [self.customerMessageHandler handleMessage:im];
     
-    NSLog(@"customer service message customer:%lld sender:%lld receiver:%lld content:%s",
-          im.customer, im.sender, im.receiver, [im.content UTF8String]);
+    NSLog(@"customer message customer id:%lld customer appid:%lld store id:%lld seller id:%lld content:%s",
+          im.customerID, im.customerAppID, im.storeID, im.sellerID, [im.content UTF8String]);
     
     Message *ack = [[Message alloc] init];
     ack.cmd = MSG_ACK;
@@ -155,9 +175,10 @@
     [self sendMessage:ack];
     [self publishCustomerMessage:im];
     
-    if (im.sender == self.uid) {
-        [self.customerMessageHandler handleMessageACK:im.msgLocalID uid:im.receiver];
-        [self publishCustomerMessageACK:im.msgLocalID uid:im.receiver];
+    //客户收到发自客户自己的消息
+    if ((self.appID == 0 || self.appID == im.customerAppID) && im.customerID == self.uid) {
+        [self.customerMessageHandler handleMessageACK:im];
+        [self publishCustomerMessageACK:im];
     }
 }
 
@@ -326,6 +347,14 @@
     }
 }
 
+-(void)publishCustomerSupportMessage:(CustomerMessage*)msg {
+    for (id<CustomerMessageObserver> ob in self.customerServiceObservers) {
+        if ([ob respondsToSelector:@selector(onCustomerMessage:)]) {
+            [ob onCustomerSupportMessage:msg];
+        }
+    }
+}
+
 -(void)publishCustomerMessage:(CustomerMessage*)msg {
     for (id<CustomerMessageObserver> ob in self.customerServiceObservers) {
         if ([ob respondsToSelector:@selector(onCustomerMessage:)]) {
@@ -334,18 +363,18 @@
     }
 }
 
--(void)publishCustomerMessageACK:(int)msgLocalID uid:(int64_t)uid {
+-(void)publishCustomerMessageACK:(CustomerMessage*)msg {
     for (id<CustomerMessageObserver> ob in self.customerServiceObservers) {
-        if ([ob respondsToSelector:@selector(onCustomerMessageACK:uid:)]) {
-            [ob onCustomerMessageACK:msgLocalID uid:uid];
+        if ([ob respondsToSelector:@selector(onCustomerMessageACK:)]) {
+            [ob onCustomerMessageACK:msg];
         }
     }
 }
 
 -(void)publishCustomerMessageFailure:(CustomerMessage*)msg {
     for (id<CustomerMessageObserver> ob in self.customerServiceObservers) {
-        if ([ob respondsToSelector:@selector(onCustomerMessageFailure:uid:)]) {
-            [ob onCustomerMessageFailure:msg.msgLocalID uid:msg.receiver];
+        if ([ob respondsToSelector:@selector(onCustomerMessageFailure:)]) {
+            [ob onCustomerMessageFailure:msg];
         }
     }
 }
@@ -372,12 +401,16 @@
         [self handleRoomMessage:msg];
     } else if (msg.cmd == MSG_SYSTEM) {
         [self handleSystemMessage:msg];
-    } else if (msg.cmd == MSG_CUSTOMER_SERVICE) {
-        [self handleCustomerServiceMessage:msg];
+    } else if (msg.cmd == MSG_CUSTOMER) {
+        [self handleCustomerMessage:msg];
+    } else if (msg.cmd == MSG_CUSTOMER_SUPPORT) {
+        [self handleCustomerSupportMessage:msg];
     } else if (msg.cmd == MSG_VOIP_CONTROL) {
         [self handleVOIPControl:msg];
     } else if (msg.cmd == MSG_RT) {
         [self handleRTMessage:msg];
+    } else {
+        NSLog(@"cmd:%d no handler", msg.cmd);
     }
 }
 
@@ -550,9 +583,22 @@
     return r;
 }
 
+-(BOOL)sendCustomerSupportMessage:(CustomerMessage*)im {
+    Message *m = [[Message alloc] init];
+    m.cmd = MSG_CUSTOMER_SUPPORT;
+    m.body = im;
+    BOOL r = [self sendMessage:m];
+    
+    if (!r) {
+        return r;
+    }
+    [self.customerServiceMessages setObject:im forKey:[NSNumber numberWithInt:m.seq]];
+    return r;
+}
+
 -(BOOL)sendCustomerMessage:(CustomerMessage*)im {
     Message *m = [[Message alloc] init];
-    m.cmd = MSG_CUSTOMER_SERVICE;
+    m.cmd = MSG_CUSTOMER;
     m.body = im;
     BOOL r = [self sendMessage:m];
     
@@ -630,6 +676,7 @@
     
     for (NSNumber *seq in self.customerServiceMessages) {
         CustomerMessage *msg = [self.customerServiceMessages objectForKey:seq];
+        [self.customerMessageHandler handleMessageFailure:msg];
         [self publishCustomerMessageFailure:msg];
     }
     

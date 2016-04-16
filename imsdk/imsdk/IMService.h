@@ -29,9 +29,10 @@
 @end
 
 @protocol IMCustomerMessageHandler <NSObject>
+-(BOOL)handleCustomerSupportMessage:(CustomerMessage*)msg;
 -(BOOL)handleMessage:(CustomerMessage*)msg;
--(BOOL)handleMessageACK:(int)msgLocalID uid:(int64_t)uid;
--(BOOL)handleMessageFailure:(int)msgLocalID uid:(int64_t)uid;
+-(BOOL)handleMessageACK:(CustomerMessage*)msg;
+-(BOOL)handleMessageFailure:(CustomerMessage*)msg;
 @end
 
 
@@ -88,10 +89,12 @@
 @protocol CustomerMessageObserver <NSObject>
 @optional
 -(void)onCustomerMessage:(CustomerMessage*)msg;
+-(void)onCustomerSupportMessage:(CustomerMessage*)msg;
+
 //服务器ack
--(void)onCustomerMessageACK:(int)msgLocalID uid:(int64_t)uid;
+-(void)onCustomerMessageACK:(CustomerMessage*)msg;
 //消息发送失败
--(void)onCustomerMessageFailure:(int)msgLocalID uid:(int64_t)uid;
+-(void)onCustomerMessageFailure:(CustomerMessage*)msg;
 @end
 
 @protocol VOIPObserver <NSObject>
@@ -104,6 +107,8 @@
 @property(nonatomic, copy) NSString *deviceID;
 @property(nonatomic, copy) NSString *token;
 @property(nonatomic) int64_t uid;
+//客服app需要设置，普通app不需要设置
+@property(nonatomic) int64_t appID;
 
 @property(nonatomic, weak)id<IMPeerMessageHandler> peerMessageHandler;
 @property(nonatomic, weak)id<IMGroupMessageHandler> groupMessageHandler;
@@ -118,7 +123,10 @@
 -(BOOL)sendPeerMessage:(IMMessage*)msg;
 -(BOOL)sendGroupMessage:(IMMessage*)msg;
 -(BOOL)sendRoomMessage:(RoomMessage*)msg;
+//顾客->客服
 -(BOOL)sendCustomerMessage:(CustomerMessage*)im;
+//客服->顾客
+-(BOOL)sendCustomerSupportMessage:(CustomerMessage*)im;
 -(BOOL)sendRTMessage:(RTMessage*)msg;
 
 -(void)enterRoom:(int64_t)roomID;

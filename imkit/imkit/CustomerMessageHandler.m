@@ -23,8 +23,13 @@
     return m;
 }
 
--(BOOL)handleMessage:(CustomerMessage*)msg {
-    IMessage *m = [[IMessage alloc] init];
+-(BOOL)handleCustomerSupportMessage:(CustomerMessage*)msg {
+    ICustomerMessage *m = [[ICustomerMessage alloc] init];
+    m.customerAppID = msg.customerAppID;
+    m.customerID = msg.customerID;
+    m.storeID = msg.storeID;
+    m.sellerID = msg.sellerID;
+    m.isSupport = YES;
     m.sender = msg.customerID;
     m.receiver = msg.storeID;
     m.rawContent = msg.content;
@@ -36,13 +41,31 @@
     return r;
 }
 
--(BOOL)handleMessageACK:(int)msgLocalID uid:(int64_t)uid {
-    return [[CustomerMessageDB instance] acknowledgeMessage:msgLocalID uid:uid];
+-(BOOL)handleMessage:(CustomerMessage*)msg {
+    ICustomerMessage *m = [[ICustomerMessage alloc] init];
+    m.customerAppID = msg.customerAppID;
+    m.customerID = msg.customerID;
+    m.storeID = msg.storeID;
+    m.sellerID = msg.sellerID;
+    m.isSupport = NO;
+    m.sender = msg.customerID;
+    m.receiver = msg.storeID;
+    m.rawContent = msg.content;
+    m.timestamp = msg.timestamp;
+    BOOL r = [[CustomerMessageDB instance] insertMessage:m uid:msg.storeID];
+    if (r) {
+        msg.msgLocalID = m.msgLocalID;
+    }
+    return r;
 }
 
--(BOOL)handleMessageFailure:(int)msgLocalID uid:(int64_t)uid {
+-(BOOL)handleMessageACK:(CustomerMessage*)msg {
+    return [[CustomerMessageDB instance] acknowledgeMessage:msg.msgLocalID uid:msg.storeID];
+}
+
+-(BOOL)handleMessageFailure:(CustomerMessage*)msg {
     CustomerMessageDB *db = [CustomerMessageDB instance];
-    return [db markMessageFailure:msgLocalID uid:uid];
+    return [db markMessageFailure:msg.msgLocalID uid:msg.storeID];
 }
 
 @end

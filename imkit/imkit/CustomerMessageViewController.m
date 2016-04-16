@@ -8,13 +8,15 @@
 
 #import "CustomerMessageViewController.h"
 #import "CustomerOutbox.h"
+#import "AudioDownloader.h"
 #import "CustomerMessageDB.h"
+#import "SDImageCache.h"
+#import "FileCache.h"
+#import "UIImage+Resize.h"
 
 #define PAGE_COUNT 10
 
-@interface CustomerMessageViewController ()<OutboxObserver, CustomerMessageObserver>
-@property(nonatomic) BOOL isStaff;
-@property(nonatomic) int64_t sellerID;
+@interface CustomerMessageViewController ()<OutboxObserver, CustomerMessageObserver, AudioDownloaderObserver>
 @end
 
 @implementation CustomerMessageViewController
@@ -40,18 +42,6 @@
     
     if (self.peerName.length > 0) {
         self.navigationItem.title = self.peerName;
-    } else {
-        IUser *u = [self.userDelegate getUser:self.peerUID];
-        if (u.name.length > 0) {
-            self.navigationItem.title = u.name;
-        } else {
-            self.navigationItem.title = u.identifier;
-            [self.userDelegate asyncGetUser:self.peerUID cb:^(IUser *u) {
-                if (u.name.length > 0) {
-                    self.navigationItem.title = u.name;
-                }
-            }];
-        }
     }
 
     
@@ -60,14 +50,14 @@
 }
 
 -(void)addObserver {
-    [super addObserver];
+    [[AudioDownloader instance] addDownloaderObserver:self];
     [[CustomerOutbox instance] addBoxObserver:self];
     [[IMService instance] addConnectionObserver:self];
     [[IMService instance] addCustomerMessageObserver:self];
 }
 
 -(void)removeObserver {
-    [super removeObserver];
+    [[AudioDownloader instance] removeDownloaderObserver:self];
     [[CustomerOutbox instance] removeBoxObserver:self];
     [[IMService instance] removeConnectionObserver:self];
     [[IMService instance] removeCustomerMessageObserver:self];
@@ -78,7 +68,7 @@
 }
 
 - (int64_t)receiver {
-    return self.peerUID;
+    return self.storeID;
 }
 
 - (BOOL)isMessageSending:(IMessage*)msg {
@@ -86,11 +76,8 @@
 }
 
 - (BOOL)isInConversation:(IMessage*)msg {
-    if (self.isStaff) {
-        return msg.receiver == self.peerUID;
-    } else {
-        return YES;
-    }
+    ICustomerMessage *cm = (ICustomerMessage*)msg;
+    return self.storeID == cm.storeID;
 }
 
 - (void)returnMainTableViewController {
@@ -98,7 +85,7 @@
     [self stopPlayer];
     
     NSNotification* notification = [[NSNotification alloc] initWithName:CLEAR_CUSTOMER_NEW_MESSAGE
-                                                                 object:[NSNumber numberWithLongLong:self.peerUID]
+                                                                 object:[NSNumber numberWithLongLong:self.storeID]
                                                                userInfo:nil];
     [[NSNotificationCenter defaultCenter] postNotification:notification];
     
@@ -118,8 +105,8 @@
 
 - (void)loadConversationData {
     int count = 0;
-    id<IMessageIterator> iterator =  [[CustomerMessageDB instance] newMessageIterator:self.peerUID];
-    IMessage *msg = [iterator next];
+    id<IMessageIterator> iterator =  [[CustomerMessageDB instance] newMessageIterator:self.storeID];
+    ICustomerMessage *msg = (ICustomerMessage*)[iterator next];
     while (msg) {
         if (self.textMode) {
             if (msg.type == MESSAGE_TEXT) {
@@ -134,24 +121,19 @@
                 [self.attachments setObject:att
                                      forKey:[NSNumber numberWithInt:att.msgLocalID]];
             } else {
+                msg.isOutgoing = !msg.isSupport;
                 [self.messages insertObject:msg atIndex:0];
                 if (++count >= PAGE_COUNT) {
                     break;
                 }
             }
         }
-        msg = [iterator next];
+        msg = (ICustomerMessage*)[iterator next];
     }
-    
-    self.isStaff = (self.peerUID != 0);
-    if (self.peerUID == 0) {
-        for (NSInteger i = self.messages.count - 1 ; i >= 0; i--) {
-            IMessage *msg = [self.messages objectAtIndex:i];
-            if (msg.sender != self.currentUID) {
-                self.peerUID = msg.sender;
-            }
-        }
-    }
+
+    //依旧发给上一次客服人员
+    ICustomerMessage *cm = [self.messages lastObject];
+    self.sellerID = cm.sellerID;
 
     [self downloadMessageContent:self.messages count:count];
     [self checkMessageFailureFlag:self.messages count:count];
@@ -174,10 +156,10 @@
         return;
     }
     
-    id<IMessageIterator> iterator =  [[CustomerMessageDB instance] newMessageIterator:self.peerUID last:last.msgLocalID];
+    id<IMessageIterator> iterator =  [[CustomerMessageDB instance] newMessageIterator:self.storeID last:last.msgLocalID];
     
     int count = 0;
-    IMessage *msg = [iterator next];
+    ICustomerMessage *msg = (ICustomerMessage*)[iterator next];
     while (msg) {
         if (msg.type == MESSAGE_ATTACHMENT) {
             MessageAttachmentContent *att = msg.attachmentContent;
@@ -185,12 +167,13 @@
                                  forKey:[NSNumber numberWithInt:att.msgLocalID]];
             
         } else {
+            msg.isOutgoing = !msg.isSupport;
             [self.messages insertObject:msg atIndex:0];
             if (++count >= PAGE_COUNT) {
                 break;
             }
         }
-        msg = [iterator next];
+        msg = (ICustomerMessage*)[iterator next];
     }
     if (count == 0) {
         return;
@@ -247,7 +230,6 @@
     }
 }
 
-
 -(BOOL)saveMessage:(IMessage*)msg {
     int64_t cid = 0;
     if (msg.sender == self.currentUID) {
@@ -299,13 +281,23 @@
 }
 
 -(void)onCustomerSupportMessage:(CustomerMessage*)im {
+    if (self.storeID != im.storeID) {
+        return;
+    }
+    
     NSLog(@"receive msg:%@",im);
-    IMessage *m = [[IMessage alloc] init];
+    ICustomerMessage *m = [[ICustomerMessage alloc] init];
+    m.customerAppID = im.customerAppID;
+    m.customerID = im.customerID;
+    m.storeID = im.storeID;
+    m.sellerID = im.sellerID;
     m.sender = im.storeID;
     m.receiver = im.customerID;
     m.msgLocalID = im.msgLocalID;
     m.rawContent = im.content;
     m.timestamp = im.timestamp;
+    m.isSupport = YES;
+    m.isOutgoing = NO;
     
     self.sellerID = im.sellerID;
     
@@ -324,13 +316,23 @@
 }
 
 -(void)onCustomerMessage:(CustomerMessage*)im {
+    if (self.storeID != im.storeID) {
+        return;
+    }
+    
     NSLog(@"receive msg:%@",im);
-    IMessage *m = [[IMessage alloc] init];
+    ICustomerMessage *m = [[ICustomerMessage alloc] init];
+    m.customerAppID = im.customerAppID;
+    m.customerID = im.customerID;
+    m.storeID = im.storeID;
+    m.sellerID = im.sellerID;
     m.sender = im.customerID;
     m.receiver = im.storeID;
     m.msgLocalID = im.msgLocalID;
     m.rawContent = im.content;
     m.timestamp = im.timestamp;
+    m.isSupport = NO;
+    m.isOutgoing = YES;
     
     if (self.textMode && m.type != MESSAGE_TEXT) {
         return;
@@ -347,20 +349,22 @@
 }
 
 //服务器ack
--(void)onCustomerMessageACK:(int)msgLocalID uid:(int64_t)uid {
-    if (self.isStaff && uid != self.peerUID) {
+-(void)onCustomerMessageACK:(CustomerMessage*)cm {
+    if (self.storeID != cm.storeID) {
         return;
     }
-    IMessage *msg = [self getMessageWithID:msgLocalID];
+    
+    IMessage *msg = [self getMessageWithID:cm.msgLocalID];
     msg.flags = msg.flags|MESSAGE_FLAG_ACK;
 }
 
 //消息发送失败
--(void)onCustomerMessageFailure:(int)msgLocalID uid:(int64_t)uid {
-    if (self.isStaff && uid != self.peerUID) {
+- (void)onCustomerMessageFailure:(CustomerMessage*)cm {
+    if (self.storeID != cm.storeID) {
         return;
     }
-    IMessage *msg = [self getMessageWithID:msgLocalID];
+    
+    IMessage *msg = [self getMessageWithID:cm.msgLocalID];
     msg.flags = msg.flags|MESSAGE_FLAG_FAILURE;
 }
 
@@ -372,6 +376,7 @@
 }
 
 - (void)sendMessage:(IMessage*)message {
+    ICustomerMessage *msg = (ICustomerMessage*)message;
     if (message.type == MESSAGE_AUDIO) {
         message.uploading = YES;
         [[CustomerOutbox instance] uploadAudio:message];
@@ -380,15 +385,12 @@
         [[CustomerOutbox instance] uploadImage:message];
     } else {
         CustomerMessage *im = [[CustomerMessage alloc] init];
-        im.customerID = message.sender;
-        im.storeID = message.receiver;
+        im.customerAppID = msg.customerAppID;
+        im.customerID = msg.customerID;
+        im.storeID = msg.storeID;
+        im.sellerID = msg.sellerID;
         im.msgLocalID = message.msgLocalID;
         im.content = message.rawContent;
- 
-        im.sellerID = self.sellerID;
-        
-        //im.customerAppID
-        //im.sellerID
         
         [[IMService instance] sendCustomerMessage:im];
     }
@@ -428,5 +430,168 @@
         m.uploading = NO;
     }
 }
+
+
+#pragma mark - Audio Downloader Observer
+- (void)onAudioDownloadSuccess:(IMessage*)msg {
+    if ([self isInConversation:msg]) {
+        IMessage *m = [self getMessageWithID:msg.msgLocalID];
+        m.downloading = NO;
+    }
+}
+
+- (void)onAudioDownloadFail:(IMessage*)msg {
+    if ([self isInConversation:msg]) {
+        IMessage *m = [self getMessageWithID:msg.msgLocalID];
+        m.downloading = NO;
+    }
+}
+
+
+#pragma mark - send message
+- (void)sendLocationMessage:(CLLocationCoordinate2D)location address:(NSString*)address {
+    ICustomerMessage *msg = [[ICustomerMessage alloc] init];
+    msg.customerAppID = self.appID;
+    msg.customerID = self.currentUID;
+    msg.storeID = self.storeID;
+    msg.sellerID = self.sellerID;
+    
+    msg.sender = self.sender;
+    msg.receiver = self.receiver;
+    
+    MessageLocationContent *content = [[MessageLocationContent alloc] initWithLocation:location];
+    msg.rawContent = content.raw;
+    
+    content = msg.locationContent;
+    content.address = address;
+    
+    msg.timestamp = (int)time(NULL);
+    msg.isSupport = NO;
+    msg.isOutgoing = YES;
+    
+    [self saveMessage:msg];
+    
+    [self sendMessage:msg];
+    
+    [[self class] playMessageSentSound];
+    
+    [self createMapSnapshot:msg];
+    if (content.address.length == 0) {
+        [self reverseGeocodeLocation:msg];
+    } else {
+        [self saveMessageAttachment:msg address:content.address];
+    }
+    [self insertMessage:msg];
+}
+
+- (void)sendAudioMessage:(NSString*)path second:(int)second {
+    ICustomerMessage *msg = [[ICustomerMessage alloc] init];
+    msg.customerAppID = self.appID;
+    msg.customerID = self.currentUID;
+    msg.storeID = self.storeID;
+    msg.sellerID = self.sellerID;
+    
+    msg.sender = self.sender;
+    msg.receiver = self.receiver;
+    
+    MessageAudioContent *content = [[MessageAudioContent alloc] initWithAudio:[self localAudioURL] duration:second];
+    
+    msg.rawContent = content.raw;
+    msg.timestamp = (int)time(NULL);
+    msg.isSupport = NO;
+    msg.isOutgoing = YES;
+    
+    //todo 优化读文件次数
+    NSData *data = [NSData dataWithContentsOfFile:path];
+    FileCache *fileCache = [FileCache instance];
+    [fileCache storeFile:data forKey:content.url];
+    
+    [self saveMessage:msg];
+    
+    [self sendMessage:msg];
+    
+    [[self class] playMessageSentSound];
+    
+    [self insertMessage:msg];
+}
+
+
+- (void)sendImageMessage:(UIImage*)image {
+    if (image.size.height == 0) {
+        return;
+    }
+    
+    
+    ICustomerMessage *msg = [[ICustomerMessage alloc] init];
+    msg.customerAppID = self.appID;
+    msg.customerID = self.currentUID;
+    msg.storeID = self.storeID;
+    msg.sellerID = self.sellerID;
+    
+    msg.sender = self.sender;
+    msg.receiver = self.receiver;
+    
+    MessageImageContent *content = [[MessageImageContent alloc] initWithImageURL:[self localImageURL]];
+    msg.rawContent = content.raw;
+    msg.timestamp = (int)time(NULL);
+    msg.isSupport = NO;
+    msg.isOutgoing = YES;
+    
+    CGRect screenRect = [[UIScreen mainScreen] bounds];
+    CGFloat screenHeight = screenRect.size.height;
+    
+    float newHeigth = screenHeight;
+    float newWidth = newHeigth*image.size.width/image.size.height;
+    
+    UIImage *sizeImage = [image resizedImage:CGSizeMake(128, 128) interpolationQuality:kCGInterpolationDefault];
+    image = [image resizedImage:CGSizeMake(newWidth, newHeigth) interpolationQuality:kCGInterpolationDefault];
+    
+    [[SDImageCache sharedImageCache] storeImage:image forKey:content.imageURL];
+    NSString *littleUrl =  [content littleImageURL];
+    [[SDImageCache sharedImageCache] storeImage:sizeImage forKey: littleUrl];
+    
+    [self saveMessage:msg];
+    
+    [self sendMessage:msg withImage:image];
+    
+    [self insertMessage:msg];
+    
+    [[self class] playMessageSentSound];
+}
+
+-(void) sendTextMessage:(NSString*)text {
+    ICustomerMessage *msg = [[ICustomerMessage alloc] init];
+    
+    msg.customerAppID = self.appID;
+    msg.customerID = self.currentUID;
+    msg.storeID = self.storeID;
+    msg.sellerID = self.sellerID;
+    
+    msg.sender = self.sender;
+    msg.receiver = self.receiver;
+    
+    MessageTextContent *content = [[MessageTextContent alloc] initWithText:text];
+    msg.rawContent = content.raw;
+    msg.timestamp = (int)time(NULL);
+    msg.isSupport = NO;
+    msg.isOutgoing = YES;
+    
+    [self saveMessage:msg];
+    
+    [self sendMessage:msg];
+    
+    [[self class] playMessageSentSound];
+    
+    [self insertMessage:msg];
+}
+
+
+-(void)resendMessage:(IMessage*)message {
+    message.flags = message.flags & (~MESSAGE_FLAG_FAILURE);
+    [self eraseMessageFailure:message];
+    [self sendMessage:message];
+}
+
+
 
 @end

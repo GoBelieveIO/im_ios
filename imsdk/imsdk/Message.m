@@ -90,23 +90,25 @@
         }
         memcpy(p, s, l);
         return [NSData dataWithBytes:buf length:HEAD_SIZE + 24 +l];
-    } else if (self.cmd == MSG_CUSTOMER_SERVICE) {
+    } else if (self.cmd == MSG_CUSTOMER || self.cmd == MSG_CUSTOMER_SUPPORT) {
         CustomerMessage *m = (CustomerMessage*)self.body;
-        writeInt64(m.customer, p);
+        writeInt64(m.customerAppID, p);
         p += 8;
-        writeInt64(m.sender, p);
+        writeInt64(m.customerID, p);
         p += 8;
-        writeInt64(m.receiver, p);
+        writeInt64(m.storeID, p);
+        p += 8;
+        writeInt64(m.sellerID, p);
         p += 8;
         writeInt32(m.timestamp, p);
         p += 4;
         const char *s = [m.content UTF8String];
         size_t l = strlen(s);
-        if ((l + 28) >= 32*1024) {
+        if ((l + 36) >= 32*1024) {
             return nil;
         }
         memcpy(p, s, l);
-        return [NSData dataWithBytes:buf length:HEAD_SIZE + 28 + l];
+        return [NSData dataWithBytes:buf length:HEAD_SIZE + 36 + l];
     } else if (self.cmd == MSG_ACK) {
         writeInt32([(NSNumber*)self.body intValue], p);
         return [NSData dataWithBytes:buf length:HEAD_SIZE+4];
@@ -181,17 +183,19 @@
         m.content = [[NSString alloc] initWithBytes:p length:data.length-32 encoding:NSUTF8StringEncoding];
         self.body = m;
         return YES;
-    } else if (self.cmd == MSG_CUSTOMER_SERVICE) {
+    } else if (self.cmd == MSG_CUSTOMER || self.cmd == MSG_CUSTOMER_SUPPORT) {
         CustomerMessage *m = [[CustomerMessage alloc] init];
-        m.customer = readInt64(p);
+        m.customerAppID = readInt64(p);
         p += 8;
-        m.sender = readInt64(p);
+        m.customerID = readInt64(p);
         p += 8;
-        m.receiver = readInt64(p);
+        m.storeID = readInt64(p);
+        p += 8;
+        m.sellerID = readInt64(p);
         p += 8;
         m.timestamp = readInt32(p);
         p += 4;
-        m.content = [[NSString alloc] initWithBytes:p length:data.length-36 encoding:NSUTF8StringEncoding];
+        m.content = [[NSString alloc] initWithBytes:p length:data.length- HEAD_SIZE - 36 encoding:NSUTF8StringEncoding];
         self.body = m;
         return YES;
     } else if (self.cmd == MSG_ACK) {

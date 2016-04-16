@@ -10,13 +10,14 @@
 #import "IMessage.h"
 #import "ConversationIterator.h"
 #import "IMessageIterator.h"
+#import "MessageDB.h"
 
-@interface CustomerMessageDB : NSObject
+@interface CustomerMessageDB : MessageDB
 +(CustomerMessageDB*)instance;
 
 @property(nonatomic, copy) NSString *dbPath;
 //普通用户客服消息存储使用聚合模式, 默认为YES
-@property(nonatomic) BOOL aggregationMode;
+//@property(nonatomic) BOOL aggregationMode
 
 -(id<IMessageIterator>)newMessageIterator:(int64_t)uid;
 -(id<IMessageIterator>)newMessageIterator:(int64_t)uid last:(int)lastMsgID;

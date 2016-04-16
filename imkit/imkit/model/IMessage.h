@@ -176,6 +176,7 @@
 @property(nonatomic) int64_t customerID;
 @property(nonatomic) int64_t storeID;
 @property(nonatomic) int64_t sellerID;
+@property(nonatomic) BOOL  isSupport;
 @end
 
 @interface Conversation : NSObject

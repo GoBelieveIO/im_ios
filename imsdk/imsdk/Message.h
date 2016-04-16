@@ -32,6 +32,8 @@
 #define MSG_SYSTEM 21
 #define MSG_UNREAD_COUNT 22
 #define MSG_CUSTOMER_SERVICE 23
+#define MSG_CUSTOMER 24
+#define MSG_CUSTOMER_SUPPORT 25
 
 #define MSG_VOIP_CONTROL 64
 
@@ -50,8 +52,16 @@
 @property(nonatomic, copy)NSString *content;
 @end
 
-@interface CustomerMessage : IMMessage
-@property(nonatomic, assign)int64_t customer;//普通用户id
+@interface CustomerMessage : NSObject
+//本地消息id 不会序列化传到服务器
+@property(nonatomic, assign)int32_t msgLocalID;
+
+@property(nonatomic, assign)int64_t customerAppID;
+@property(nonatomic, assign)int64_t customerID;
+@property(nonatomic, assign)int64_t storeID;
+@property(nonatomic, assign)int64_t sellerID;
+@property(nonatomic, assign)int32_t timestamp;
+@property(nonatomic, copy)NSString *content;
 @end
 
 @interface RoomMessage : NSObject

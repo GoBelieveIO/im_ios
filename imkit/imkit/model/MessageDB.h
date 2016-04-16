@@ -19,6 +19,10 @@
 #import "IMessage.h"
 
 
+#define HEADER_SIZE 32
+#define IMMAGIC 0x494d494d
+#define IMVERSION (1<<16) //1.0
+
 
 @class ReverseFile;
 

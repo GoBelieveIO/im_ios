@@ -25,7 +25,8 @@
 #define RGBACOLOR(r,g,b,a) [UIColor colorWithRed:(r)/255.0f green:(g)/255.0f blue:(b)/255.0f \
 alpha:(a)]
 
-
+#define APPID 7
+#define KEFU_ID 54
 
 #define kConversationCellHeight         60
 
@@ -74,9 +75,13 @@ alpha:(a)]
     
     [[NSNotificationCenter defaultCenter] addObserver: self selector:@selector(newGroupMessage:) name:LATEST_GROUP_MESSAGE object:nil];
     [[NSNotificationCenter defaultCenter] addObserver: self selector:@selector(newMessage:) name:LATEST_PEER_MESSAGE object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver: self selector:@selector(newCustomerMessage:) name:LATEST_CUSTOMER_MESSAGE object:nil];
+    
     
     [[NSNotificationCenter defaultCenter] addObserver: self selector:@selector(clearSinglePeerNewState:) name:CLEAR_PEER_NEW_MESSAGE object:nil];
     [[NSNotificationCenter defaultCenter] addObserver: self selector:@selector(clearSingleGroupNewState:) name:CLEAR_GROUP_NEW_MESSAGE object:nil];
+    
+
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillResignActive) name:UIApplicationWillResignActiveNotification object:nil];
 
@@ -99,11 +104,11 @@ alpha:(a)]
         [self updateConversationDetail:conv];
     }
     
-    id<IMessageIterator> iter = [[CustomerMessageDB instance] newMessageIterator:0];
-    IMessage *msg = nil;
+    id<IMessageIterator> iter = [[CustomerMessageDB instance] newMessageIterator:KEFU_ID];
+    ICustomerMessage *msg = nil;
     //返回第一条不是附件的消息
     while (YES) {
-        msg = [iter next];
+        msg = (ICustomerMessage*)[iter next];
         if (msg == nil) {
             break;
         }
@@ -112,9 +117,14 @@ alpha:(a)]
         }
     }
     if (!msg) {
-        msg = [[IMessage alloc] init];
+        msg = [[ICustomerMessage alloc] init];
         msg.sender = 0;
         msg.receiver = self.currentUID;
+        msg.storeID = KEFU_ID;
+        msg.sellerID = 0;
+        msg.customerID = self.currentUID;
+        msg.customerAppID = APPID;
+        
         MessageTextContent *content = [[MessageTextContent alloc] initWithText:@"如果你在使用过程中有任何问题和建议，记得给我们发信反馈哦"];
         msg.rawContent = content.raw;
         msg.timestamp = (int)time(NULL);
@@ -122,7 +132,7 @@ alpha:(a)]
 
     Conversation *conv = [[Conversation alloc] init];
     conv.message = msg;
-    conv.cid = 0;
+    conv.cid = msg.storeID;
     conv.type = CONVERSATION_CUSTOMER_SERVICE;
     conv.name = @"客服";
     [self updateConversationDetail:conv];
@@ -375,6 +385,9 @@ alpha:(a)]
     }
 }
 
+
+
+
 #pragma mark - UITableViewDelegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -400,7 +413,13 @@ alpha:(a)]
     } else if (con.type == CONVERSATION_CUSTOMER_SERVICE) {
         CustomerMessageViewController *msgController = [[CustomerMessageViewController alloc] init];
         msgController.userDelegate = self.userDelegate;
-        msgController.peerUID = con.cid;
+
+        msgController.appID = APPID;
+        if (con.cid == 0) {
+            msgController.storeID = KEFU_ID;
+        } else {
+            msgController.storeID = con.cid;
+        }
         msgController.peerName = con.name;
         msgController.currentUID = self.currentUID;
         msgController.hidesBottomBarWhenPushed = YES;
@@ -421,6 +440,12 @@ alpha:(a)]
     IMessage *m = notification.object;
     NSLog(@"new message:%lld, %lld", m.sender, m.receiver);
     [self onNewMessage:m cid:m.receiver];
+}
+
+- (void)newCustomerMessage:(NSNotification*) notification {
+    ICustomerMessage *m = notification.object;
+    NSLog(@"new message:%lld, %lld", m.sender, m.receiver);
+    [self onNewCustomerMessage:m cid:m.receiver];
 }
 
 - (void)clearSinglePeerNewState:(NSNotification*) notification {
@@ -543,6 +568,56 @@ alpha:(a)]
         [self.tableview insertRowsAtIndexPaths:array withRowAnimation:UITableViewRowAnimationMiddle];
     }
 }
+
+
+-(void)onNewCustomerMessage:(ICustomerMessage*)msg cid:(int64_t)cid{
+    int index = -1;
+    for (int i = 0; i < [self.conversations count]; i++) {
+        Conversation *con = [self.conversations objectAtIndex:i];
+        if (con.type == CONVERSATION_CUSTOMER_SERVICE && con.cid == cid) {
+            index = i;
+            break;
+        }
+    }
+    
+    if (index != -1) {
+        Conversation *con = [self.conversations objectAtIndex:index];
+        con.message = msg;
+        
+        [self updateConversationDetail:con];
+        
+        if (self.currentUID == msg.receiver) {
+            con.newMsgCount += 1;
+            [self setNewOnTabBar];
+        }
+        
+        if (index != 0) {
+            //置顶
+            [self.conversations removeObjectAtIndex:index];
+            [self.conversations insertObject:con atIndex:0];
+            [self.tableview reloadData];
+        }
+    } else {
+        Conversation *con = [[Conversation alloc] init];
+        con.type = CONVERSATION_CUSTOMER_SERVICE;
+        con.cid = cid;
+        con.message = msg;
+        
+        [self updateConversationName:con];
+        [self updateConversationDetail:con];
+        
+        if (self.currentUID == msg.receiver) {
+            con.newMsgCount += 1;
+            [self setNewOnTabBar];
+        }
+        
+        [self.conversations insertObject:con atIndex:0];
+        NSIndexPath *path = [NSIndexPath indexPathForRow:0 inSection:0];
+        NSArray *array = [NSArray arrayWithObject:path];
+        [self.tableview insertRowsAtIndexPaths:array withRowAnimation:UITableViewRowAnimationMiddle];
+    }
+}
+
 
 -(void)onPeerMessage:(IMMessage*)im {
     IMessage *m = [[IMessage alloc] init];

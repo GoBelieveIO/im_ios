@@ -11,7 +11,6 @@
 #import "MessageDB.h"
 
 @interface IMessageIterator()
-@property(nonatomic)ReverseFile *file;
 -(id)initWithPath:(NSString*)path;
 @end
 
