@@ -298,13 +298,13 @@
     }
     BubbleMessageType msgType;
     
-    if(message.sender == self.sender) {
+    if(message.isOutgoing) {
         msgType = BubbleMessageTypeOutgoing;
-    }else{
+    } else {
         msgType = BubbleMessageTypeIncoming;
     }
     
-    if (message.sender == self.sender) {
+    if (message.isOutgoing) {
         msgType = BubbleMessageTypeOutgoing;
         [cell setMessage:message msgType:msgType showName:NO];
     } else {
@@ -335,7 +335,7 @@
         return 0;
     }
     int nameHeight = 0;
-    if (self.isShowUserName && msg.sender != self.sender) {
+    if (self.isShowUserName && msg.isIncomming) {
         nameHeight = NAME_LABEL_HEIGHT;
     }
     
@@ -394,9 +394,9 @@
  * 复用ID区分来去类型
  */
 - (NSString*)getMessageViewCellId:(IMessage*)msg{
-    if(msg.sender == self.sender){
+    if(msg.isOutgoing) {
         return [NSString stringWithFormat:@"MessageCell_%d%d", msg.type,BubbleMessageTypeOutgoing];
-    }else{
+    } else {
         return [NSString stringWithFormat:@"MessageCell_%d%d", msg.type,BubbleMessageTypeIncoming];
     }
 }
