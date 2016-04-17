@@ -36,7 +36,7 @@
 
     im.customerAppID = msg.customerAppID;
     im.customerID = msg.customerID;
-    im.storeID = msg.receiver;
+    im.storeID = msg.storeID;
     im.sellerID = msg.sellerID;
     im.msgLocalID = msg.msgLocalID;
     im.content = msg.rawContent;
@@ -45,7 +45,8 @@
 }
 
 -(void)markMessageFailure:(IMessage*)msg {
-    [[CustomerMessageDB instance] markMessageFailure:msg.msgLocalID uid:msg.receiver];
+    ICustomerMessage *cm = (ICustomerMessage*)msg;
+    [[CustomerMessageDB instance] markMessageFailure:cm.msgLocalID uid:cm.storeID];
 }
 
 @end
