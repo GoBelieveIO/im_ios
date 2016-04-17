@@ -349,7 +349,7 @@
 
 -(void)publishCustomerSupportMessage:(CustomerMessage*)msg {
     for (id<CustomerMessageObserver> ob in self.customerServiceObservers) {
-        if ([ob respondsToSelector:@selector(onCustomerMessage:)]) {
+        if ([ob respondsToSelector:@selector(onCustomerSupportMessage:)]) {
             [ob onCustomerSupportMessage:msg];
         }
     }
@@ -539,10 +539,23 @@
     return NO;
 }
 
--(BOOL)isCustomerMessageSending:(int64_t)peer id:(int)msgLocalID {
+-(BOOL)isCustomerSupportMessageSending:(int)msgLocalID customerID:(int64_t)customerID customerAppID:(int64_t)customerAppID {
     for (NSNumber *s in self.customerServiceMessages) {
-        IMMessage *im = [self.customerServiceMessages objectForKey:s];
-        if (im.receiver == peer && im.msgLocalID == msgLocalID) {
+        CustomerMessage *im = [self.customerServiceMessages objectForKey:s];
+        if (im.msgLocalID == msgLocalID &&
+            im.customerID == customerID &&
+            im.customerAppID == customerAppID) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
+-(BOOL)isCustomerMessageSending:(int)msgLocalID  storeID:(int64_t)storeID {
+    for (NSNumber *s in self.customerServiceMessages) {
+        CustomerMessage *im = [self.customerServiceMessages objectForKey:s];
+        
+        if (im.msgLocalID == msgLocalID && im.storeID == storeID) {
             return YES;
         }
     }

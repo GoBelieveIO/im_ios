@@ -72,7 +72,8 @@
 }
 
 - (BOOL)isMessageSending:(IMessage*)msg {
-    return [[IMService instance] isCustomerMessageSending:msg.receiver id:msg.msgLocalID];
+    ICustomerMessage *cm = (ICustomerMessage*)msg;
+    return [[IMService instance] isCustomerMessageSending:msg.msgLocalID storeID:cm.storeID];
 }
 
 - (BOOL)isInConversation:(IMessage*)msg {
@@ -231,53 +232,28 @@
 }
 
 -(BOOL)saveMessage:(IMessage*)msg {
-    int64_t cid = 0;
-    if (msg.sender == self.currentUID) {
-        cid = msg.receiver;
-    } else {
-        cid = msg.sender;
-    }
-    return [[CustomerMessageDB instance] insertMessage:msg uid:cid];
+    ICustomerMessage *cm = (ICustomerMessage*)msg;
+    return [[CustomerMessageDB instance] insertMessage:msg uid:cm.storeID];
 }
 
 -(BOOL)removeMessage:(IMessage*)msg {
-    int64_t cid = 0;
-    if (msg.sender == self.currentUID) {
-        cid = msg.receiver;
-    } else {
-        cid = msg.sender;
-    }
-    return [[CustomerMessageDB instance] removeMessage:msg.msgLocalID uid:cid];
+    ICustomerMessage *cm = (ICustomerMessage*)msg;
+    return [[CustomerMessageDB instance] removeMessage:msg.msgLocalID uid:cm.storeID];
     
 }
 -(BOOL)markMessageFailure:(IMessage*)msg {
-    int64_t cid = 0;
-    if (msg.sender == self.currentUID) {
-        cid = msg.receiver;
-    } else {
-        cid = msg.sender;
-    }
-    return [[CustomerMessageDB instance] markMessageFailure:msg.msgLocalID uid:cid];
+    ICustomerMessage *cm = (ICustomerMessage*)msg;
+    return [[CustomerMessageDB instance] markMessageFailure:msg.msgLocalID uid:cm.storeID];
 }
 
 -(BOOL)markMesageListened:(IMessage*)msg {
-    int64_t cid = 0;
-    if (msg.sender == self.currentUID) {
-        cid = msg.receiver;
-    } else {
-        cid = msg.sender;
-    }
-    return [[CustomerMessageDB instance] markMesageListened:msg.msgLocalID uid:cid];
+    ICustomerMessage *cm = (ICustomerMessage*)msg;
+    return [[CustomerMessageDB instance] markMesageListened:msg.msgLocalID uid:cm.storeID];
 }
 
 -(BOOL)eraseMessageFailure:(IMessage*)msg {
-    int64_t cid = 0;
-    if (msg.sender == self.currentUID) {
-        cid = msg.receiver;
-    } else {
-        cid = msg.sender;
-    }
-    return [[CustomerMessageDB instance] eraseMessageFailure:msg.msgLocalID uid:cid];
+    ICustomerMessage *cm = (ICustomerMessage*)msg;
+    return [[CustomerMessageDB instance] eraseMessageFailure:msg.msgLocalID uid:cm.storeID];
 }
 
 -(void)onCustomerSupportMessage:(CustomerMessage*)im {

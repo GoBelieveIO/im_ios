@@ -445,7 +445,21 @@
 @end
 
 @implementation ICustomerMessage
+-(int64_t)sender {
+    if (self.isSupport) {
+        return self.storeID;
+    } else {
+        return self.customerID;
+    }
+}
 
+-(int64_t)receiver {
+    if (self.isSupport) {
+        return self.customerID;
+    } else {
+        return self.storeID;
+    }
+}
 @end
 
 @implementation IGroup

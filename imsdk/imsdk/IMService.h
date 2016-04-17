@@ -118,7 +118,10 @@
 
 -(BOOL)isPeerMessageSending:(int64_t)peer id:(int)msgLocalID;
 -(BOOL)isGroupMessageSending:(int64_t)groupID id:(int)msgLocalID;
--(BOOL)isCustomerMessageSending:(int64_t)peer id:(int)msgLocalID;
+-(BOOL)isCustomerSupportMessageSending:(int)msgLocalID
+                            customerID:(int64_t)customerID
+                         customerAppID:(int64_t)customerAppID;
+-(BOOL)isCustomerMessageSending:(int)msgLocalID storeID:(int64_t)storeID;
 
 -(BOOL)sendPeerMessage:(IMMessage*)msg;
 -(BOOL)sendGroupMessage:(IMMessage*)msg;
