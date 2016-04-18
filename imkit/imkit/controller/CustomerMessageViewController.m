@@ -231,6 +231,15 @@
     }
 }
 
+-(void)saveMessageAttachment:(IMessage*)msg address:(NSString*)address {
+    //以附件的形式存储，以免第二次查询
+    MessageAttachmentContent *att = [[MessageAttachmentContent alloc] initWithAttachment:msg.msgLocalID address:address];
+    ICustomerMessage *attachment = [[ICustomerMessage alloc] init];
+    attachment.rawContent = att.raw;
+    [self saveMessage:attachment];
+}
+
+
 -(BOOL)saveMessage:(IMessage*)msg {
     ICustomerMessage *cm = (ICustomerMessage*)msg;
     return [[CustomerMessageDB instance] insertMessage:msg uid:cm.storeID];
