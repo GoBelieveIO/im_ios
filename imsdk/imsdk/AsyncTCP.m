@@ -52,6 +52,10 @@
 
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
     sock_nonblock(sockfd, 1);
+    
+    int value = 1;
+    setsockopt(sockfd, SOL_SOCKET, SO_NOSIGPIPE, &value, sizeof(value));
+    
     do {
     	r = connect(sockfd, (const struct sockaddr*)&addr, sizeof(addr));
     } while (r == -1 && errno == EINTR);
