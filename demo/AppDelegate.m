@@ -32,16 +32,9 @@
 #include <netinet/in.h>
 
 
-#define UIColorFromRGBHex(rgbValue) [UIColor \
-colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 \
-green:((float)((rgbValue & 0xFF00) >> 8))/255.0 \
-blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
-
 @interface AppDelegate ()
 
 #ifdef TEST_ROOM
-
-#elif defined TEST_CUSTOMER
 
 #elif defined TEST_GROUP
 @property(nonatomic) GroupLoginViewController *mainViewController;
@@ -67,19 +60,18 @@ blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
     [IMHttpAPI instance].apiURL = @"http://api.gobelieve.io";
     [IMService instance].host = @"imnode.gobelieve.io";
 
+#if TARGET_IPHONE_SIMULATOR
+    [IMService instance].deviceID = @"7C8A8F5B-E5F4-4797-8758-05367D2A4D61";
+    NSLog(@"device id:%@", @"7C8A8F5B-E5F4-4797-8758-05367D2A4D61");
+#else
     [IMService instance].deviceID = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
     NSLog(@"device id:%@", [[[UIDevice currentDevice] identifierForVendor] UUIDString]);
+#endif
+
     [IMService instance].peerMessageHandler = [PeerMessageHandler instance];
     [IMService instance].groupMessageHandler = [GroupMessageHandler instance];
     [IMService instance].customerMessageHandler = [CustomerMessageHandler instance];
     [[IMService instance] startRechabilityNotifier];
-    
-    
-#ifdef TEST_CUSTOMER
-    //客服
-    [CustomerMessageDB instance].aggregationMode = NO;
-    [CustomerOutbox instance].isStaff = YES;
-#endif
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
@@ -93,9 +85,6 @@ blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
     GroupLoginViewController *mainViewController = [[GroupLoginViewController alloc] init];
     self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:mainViewController];
     self.mainViewController = mainViewController;
-#elif defined TEST_CUSTOMER
-    CustomerLoginViewController *mainViewController = [[CustomerLoginViewController alloc] init];
-    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:mainViewController];
 #else
     MainViewController *mainViewController = [[MainViewController alloc] init];
     self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:mainViewController];
@@ -132,7 +121,6 @@ blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
     NSLog(@"device token is: %@:%@", deviceToken, newToken);
     
 #ifdef TEST_ROOM
-#elif defined TEST_CUSTOMER
 #elif defined TEST_GROUP
     self.mainViewController.deviceToken = newToken;
 #else

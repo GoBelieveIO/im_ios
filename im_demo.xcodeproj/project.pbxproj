@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		02526CFE603CA74FA854E732 /* libPods-customer_demo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E99D13C3704C7F56B19D135 /* libPods-customer_demo.a */; };
 		4BC311CD5DA18C6202821F93 /* libPods-im_demo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F32EF3F975F128C56486DAC2 /* libPods-im_demo.a */; };
 		6D4AB3E61C87104300AFE234 /* GroupLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D8E72E81B750B79004E069E /* GroupLoginViewController.m */; };
 		6D61543A1BF6EB5F005648FA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C46D61BEB0A940053066A /* Localizable.strings */; };
@@ -41,25 +40,6 @@
 		6DB34C1B1C4D18D4006D78D4 /* MessageConversationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DB34C181C4D18D4006D78D4 /* MessageConversationCell.m */; };
 		6DB34C1C1C4D18D4006D78D4 /* MessageListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DB34C1A1C4D18D4006D78D4 /* MessageListViewController.m */; };
 		6DB34C241C4D1C5F006D78D4 /* MessageConversationCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6DB34C231C4D1C5F006D78D4 /* MessageConversationCell.xib */; };
-		6DB34C491C4E6BCF006D78D4 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54D931AB5862000197EBC /* AppDelegate.m */; };
-		6DB34C4B1C4E6BCF006D78D4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54D901AB5862000197EBC /* main.m */; };
-		6DB34C551C4E6BCF006D78D4 /* MessageConversationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DB34C181C4D18D4006D78D4 /* MessageConversationCell.m */; };
-		6DB34C5A1C4E6BCF006D78D4 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF54EBA1AB58D6600197EBC /* SystemConfiguration.framework */; };
-		6DB34C5B1C4E6BCF006D78D4 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF54E621AB58B1900197EBC /* QuartzCore.framework */; };
-		6DB34C5C1C4E6BCF006D78D4 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF54E601AB58B0400197EBC /* CoreMedia.framework */; };
-		6DB34C5D1C4E6BCF006D78D4 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF54E5E1AB58AFF00197EBC /* CoreAudio.framework */; };
-		6DB34C5E1C4E6BCF006D78D4 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF54E5C1AB58AD000197EBC /* UIKit.framework */; };
-		6DB34C5F1C4E6BCF006D78D4 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF54E5A1AB58AC900197EBC /* AVFoundation.framework */; };
-		6DB34C601C4E6BCF006D78D4 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF54E581AB58AC400197EBC /* AssetsLibrary.framework */; };
-		6DB34C641C4E6BCF006D78D4 /* MessageConversationCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6DB34C231C4D1C5F006D78D4 /* MessageConversationCell.xib */; };
-		6DB34C7A1C4E6BCF006D78D4 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C46CB1BEB09DC0053066A /* InfoPlist.strings */; };
-		6DB34C7E1C4E6BCF006D78D4 /* room-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6D69BD911B444B79008EAA8A /* room-Info.plist */; };
-		6DB34C8A1C4E6BCF006D78D4 /* group-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6D8E72E51B750B04004E069E /* group-Info.plist */; };
-		6DB34C8E1C4E6BCF006D78D4 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C46D61BEB0A940053066A /* Localizable.strings */; };
-		6DB34C911C4E6BCF006D78D4 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54D9B1AB5862000197EBC /* Images.xcassets */; };
-		6DB34C9B1C4E6BFC006D78D4 /* CustomerMessageListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DB34C991C4E6BFC006D78D4 /* CustomerMessageListViewController.m */; };
-		6DB34CA71C4E6E33006D78D4 /* CustomerLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DB34CA61C4E6E33006D78D4 /* CustomerLoginViewController.m */; };
-		6DB34CAD1C4E83BC006D78D4 /* customer-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6DB34CAC1C4E83BC006D78D4 /* customer-Info.plist */; };
 		6DF54D911AB5862000197EBC /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54D901AB5862000197EBC /* main.m */; };
 		6DF54D941AB5862000197EBC /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54D931AB5862000197EBC /* AppDelegate.m */; };
 		6DF54D9C1AB5862000197EBC /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6DF54D9B1AB5862000197EBC /* Images.xcassets */; };
@@ -100,11 +80,6 @@
 		6DB34C191C4D18D4006D78D4 /* MessageListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageListViewController.h; sourceTree = "<group>"; };
 		6DB34C1A1C4D18D4006D78D4 /* MessageListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageListViewController.m; sourceTree = "<group>"; };
 		6DB34C231C4D1C5F006D78D4 /* MessageConversationCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MessageConversationCell.xib; sourceTree = "<group>"; };
-		6DB34C961C4E6BCF006D78D4 /* customer_demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = customer_demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		6DB34C981C4E6BFC006D78D4 /* CustomerMessageListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomerMessageListViewController.h; sourceTree = "<group>"; };
-		6DB34C991C4E6BFC006D78D4 /* CustomerMessageListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomerMessageListViewController.m; sourceTree = "<group>"; };
-		6DB34CA51C4E6E33006D78D4 /* CustomerLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomerLoginViewController.h; sourceTree = "<group>"; };
-		6DB34CA61C4E6E33006D78D4 /* CustomerLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomerLoginViewController.m; sourceTree = "<group>"; };
 		6DB34CAC1C4E83BC006D78D4 /* customer-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "customer-Info.plist"; sourceTree = "<group>"; };
 		6DF54D8B1AB5862000197EBC /* im_demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = im_demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6DF54D8F1AB5862000197EBC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -165,21 +140,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		6DB34C591C4E6BCF006D78D4 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				6DB34C5A1C4E6BCF006D78D4 /* SystemConfiguration.framework in Frameworks */,
-				6DB34C5B1C4E6BCF006D78D4 /* QuartzCore.framework in Frameworks */,
-				6DB34C5C1C4E6BCF006D78D4 /* CoreMedia.framework in Frameworks */,
-				6DB34C5D1C4E6BCF006D78D4 /* CoreAudio.framework in Frameworks */,
-				6DB34C5E1C4E6BCF006D78D4 /* UIKit.framework in Frameworks */,
-				6DB34C5F1C4E6BCF006D78D4 /* AVFoundation.framework in Frameworks */,
-				6DB34C601C4E6BCF006D78D4 /* AssetsLibrary.framework in Frameworks */,
-				02526CFE603CA74FA854E732 /* libPods-customer_demo.a in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		6DF54D881AB5862000197EBC /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -215,7 +175,6 @@
 				6DF54D8B1AB5862000197EBC /* im_demo.app */,
 				6D69BD821B4449D0008EAA8A /* room_demo.app */,
 				6D8E72DE1B750A31004E069E /* group_demo.app */,
-				6DB34C961C4E6BCF006D78D4 /* customer_demo.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -237,10 +196,6 @@
 				6D69BD971B444C09008EAA8A /* RoomLoginViewController.m */,
 				6D8E72E71B750B79004E069E /* GroupLoginViewController.h */,
 				6D8E72E81B750B79004E069E /* GroupLoginViewController.m */,
-				6DB34CA51C4E6E33006D78D4 /* CustomerLoginViewController.h */,
-				6DB34CA61C4E6E33006D78D4 /* CustomerLoginViewController.m */,
-				6DB34C981C4E6BFC006D78D4 /* CustomerMessageListViewController.h */,
-				6DB34C991C4E6BFC006D78D4 /* CustomerMessageListViewController.m */,
 				6DF54D921AB5862000197EBC /* AppDelegate.h */,
 				6DF54D931AB5862000197EBC /* AppDelegate.m */,
 				6DF54D9B1AB5862000197EBC /* Images.xcassets */,
@@ -357,26 +312,6 @@
 			productReference = 6D8E72DE1B750A31004E069E /* group_demo.app */;
 			productType = "com.apple.product-type.application";
 		};
-		6DB34C3C1C4E6BCF006D78D4 /* customer_demo */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 6DB34C931C4E6BCF006D78D4 /* Build configuration list for PBXNativeTarget "customer_demo" */;
-			buildPhases = (
-				5B3D25549C5D4C9E7705215C /* Check Pods Manifest.lock */,
-				6DB34C3F1C4E6BCF006D78D4 /* Sources */,
-				6DB34C591C4E6BCF006D78D4 /* Frameworks */,
-				6DB34C631C4E6BCF006D78D4 /* Resources */,
-				E7003BE0546363F96E5EFCB0 /* Embed Pods Frameworks */,
-				C5B6A0DD729BB08190A11A54 /* Copy Pods Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = customer_demo;
-			productName = im_demo;
-			productReference = 6DB34C961C4E6BCF006D78D4 /* customer_demo.app */;
-			productType = "com.apple.product-type.application";
-		};
 		6DF54D8A1AB5862000197EBC /* im_demo */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6DF54DAE1AB5862000197EBC /* Build configuration list for PBXNativeTarget "im_demo" */;
@@ -429,7 +364,6 @@
 				6DF54D8A1AB5862000197EBC /* im_demo */,
 				6D69BCED1B4449D0008EAA8A /* room_demo */,
 				6D8E72471B750A31004E069E /* group_demo */,
-				6DB34C3C1C4E6BCF006D78D4 /* customer_demo */,
 			);
 		};
 /* End PBXProject section */
@@ -450,20 +384,6 @@
 			files = (
 				6D61543B1BF6EB5F005648FA /* Localizable.strings in Resources */,
 				6D8E72D61B750A31004E069E /* Images.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		6DB34C631C4E6BCF006D78D4 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				6DB34C641C4E6BCF006D78D4 /* MessageConversationCell.xib in Resources */,
-				6DB34C7A1C4E6BCF006D78D4 /* InfoPlist.strings in Resources */,
-				6DB34C7E1C4E6BCF006D78D4 /* room-Info.plist in Resources */,
-				6DB34C8A1C4E6BCF006D78D4 /* group-Info.plist in Resources */,
-				6DB34CAD1C4E83BC006D78D4 /* customer-Info.plist in Resources */,
-				6DB34C8E1C4E6BCF006D78D4 /* Localizable.strings in Resources */,
-				6DB34C911C4E6BCF006D78D4 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -511,21 +431,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-im_demo/Pods-im_demo-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		5B3D25549C5D4C9E7705215C /* Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		75548A6C66F89ED9E9FC45CA /* Embed Pods Frameworks */ = {
@@ -603,21 +508,6 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-room_demo/Pods-room_demo-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		C5B6A0DD729BB08190A11A54 /* Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-customer_demo/Pods-customer_demo-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		CAE0A6A94E2DF917AAD44908 /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -648,21 +538,6 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
-		E7003BE0546363F96E5EFCB0 /* Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-customer_demo/Pods-customer_demo-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -684,18 +559,6 @@
 				6D4AB3E61C87104300AFE234 /* GroupLoginViewController.m in Sources */,
 				6D8E72531B750A31004E069E /* AppDelegate.m in Sources */,
 				6D8E72561B750A31004E069E /* main.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		6DB34C3F1C4E6BCF006D78D4 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				6DB34CA71C4E6E33006D78D4 /* CustomerLoginViewController.m in Sources */,
-				6DB34C491C4E6BCF006D78D4 /* AppDelegate.m in Sources */,
-				6DB34C4B1C4E6BCF006D78D4 /* main.m in Sources */,
-				6DB34C9B1C4E6BFC006D78D4 /* CustomerMessageListViewController.m in Sources */,
-				6DB34C551C4E6BCF006D78D4 /* MessageConversationCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -835,58 +698,6 @@
 			};
 			name = Release;
 		};
-		6DB34C941C4E6BCF006D78D4 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = DEC33F18A45E793CE70B90AD /* Pods-customer_demo.debug.xcconfig */;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Zhifeng Zhou (PV548P44SL)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Zhifeng Zhou (PV548P44SL)";
-				ENABLE_BITCODE = NO;
-				GCC_PREFIX_HEADER = "demo/im_demo-prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					TEST_CUSTOMER,
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = "demo/customer-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-ObjC",
-				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "6447afee-e97c-42f1-8030-39c807777b65";
-			};
-			name = Debug;
-		};
-		6DB34C951C4E6BCF006D78D4 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8F68BCBBCD5CD2DA7D348F48 /* Pods-customer_demo.release.xcconfig */;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				ENABLE_BITCODE = NO;
-				GCC_PREFIX_HEADER = "demo/im_demo-prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					TEST_CUSTOMER,
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = "demo/customer-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-ObjC",
-				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
-			};
-			name = Release;
-		};
 		6DF54DAC1AB5862000197EBC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1022,15 +833,6 @@
 			buildConfigurations = (
 				6D8E72DC1B750A31004E069E /* Debug */,
 				6D8E72DD1B750A31004E069E /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		6DB34C931C4E6BCF006D78D4 /* Build configuration list for PBXNativeTarget "customer_demo" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				6DB34C941C4E6BCF006D78D4 /* Debug */,
-				6DB34C951C4E6BCF006D78D4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
