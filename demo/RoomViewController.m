@@ -62,13 +62,11 @@
 }
 
 -(void)addObserver {
-    [super addObserver];
     [[IMService instance] addConnectionObserver:self];
     [[IMService instance] addRoomMessageObserver:self];
 }
 
 -(void)removeObserver {
-    [super removeObserver];
     [[IMService instance] removeConnectionObserver:self];
     [[IMService instance] removeRoomMessageObserver:self];
 
@@ -135,6 +133,26 @@
 
 -(BOOL)eraseMessageFailure:(IMessage*)msg {
     return YES;
+}
+
+-(void) sendTextMessage:(NSString*)text {
+    IMessage *msg = [[IMessage alloc] init];
+    
+    msg.sender = self.sender;
+    msg.receiver = self.receiver;
+    
+    MessageTextContent *content = [[MessageTextContent alloc] initWithText:text];
+    msg.rawContent = content.raw;
+    msg.timestamp = (int)time(NULL);
+    msg.isOutgoing = YES;
+    
+    [self saveMessage:msg];
+    
+    [self sendMessage:msg];
+    
+    [[self class] playMessageSentSound];
+    
+    [self insertMessage:msg];
 }
 
 

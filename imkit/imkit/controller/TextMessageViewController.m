@@ -59,25 +59,26 @@
     
     [self setup];
 
+
     [self loadConversationData];
     //content scroll to bottom
     [self.tableView reloadData];
     [self.tableView setContentOffset:CGPointMake(0, CGFLOAT_MAX)];
 }
 
-- (void)setup
-{
+- (void)setup {
+    
+    self.automaticallyAdjustsScrollViewInsets = NO;
+    self.view.backgroundColor = RGBACOLOR(235, 235, 237, 1);
+    
     CGRect screenBounds = [[UIScreen mainScreen] bounds];
     int w = CGRectGetWidth(screenBounds);
     int h = CGRectGetHeight(screenBounds);
     
-    
-    CGRect tableFrame = CGRectMake(0.0f,  0.0f, w,  h - INPUT_HEIGHT);
+    int y = kStatusBarHeight + KNavigationBarHeight;
+    CGRect tableFrame = CGRectMake(0.0f,  y, w,  h - INPUT_HEIGHT);
     CGRect inputFrame = CGRectMake(0.0f, h - INPUT_HEIGHT, w, INPUT_HEIGHT);
-    
-    UIImage *backColor = [UIImage imageNamed:@"chatBack"];
-    UIColor *color = [[UIColor alloc] initWithPatternImage:backColor];
-    [self.view setBackgroundColor:color];
+
     
     self.tableView = [[UITableView alloc] initWithFrame:tableFrame style:UITableViewStylePlain];
     self.tableView.delegate = self;
@@ -94,6 +95,7 @@
     [refreshView addSubview:self.refreshControl];
     
     [self.view addSubview:self.tableView];
+
     
     UIView *inputBar = [[UIView alloc] initWithFrame:inputFrame];
     
@@ -231,8 +233,10 @@
     int h = CGRectGetHeight(screenBounds);
     int w = CGRectGetWidth(screenBounds);
     
-    CGRect tableViewFrame = CGRectMake(0.0f,  0.0f, w,  h - INPUT_HEIGHT - keyboardRect.size.height);
-    CGFloat y = h - keyboardRect.size.height;
+    int y = kStatusBarHeight + KNavigationBarHeight;
+    
+    CGRect tableViewFrame = CGRectMake(0.0f,  y, w,  h - INPUT_HEIGHT - keyboardRect.size.height - y);
+    y = h - keyboardRect.size.height;
     y -= INPUT_HEIGHT;
     CGRect inputViewFrame = CGRectMake(0, y, self.inputBar.frame.size.width, INPUT_HEIGHT);
     self.inputBar.frame = inputViewFrame;
@@ -382,7 +386,7 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
-    return 44;
+    return 0;
 }
 
 
