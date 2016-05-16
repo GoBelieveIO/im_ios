@@ -21,9 +21,9 @@ Pod::Spec.new do |s|
   end
 
   s.subspec 'imkit' do |sp|
-    s.preserve_paths   = 'imkit/imkit/amr/libopencore-amrnb.a'
-    s.library          = 'opencore-amrnb'
-    s.xcconfig         = { 'LIBRARY_SEARCH_PATHS' => '"$(PODS_ROOT)/gobelieve/imkit/imkit/amr"' }
+    sp.preserve_paths   = 'imkit/imkit/amr/libopencore-amrnb.a'
+    sp.library          = 'opencore-amrnb'
+    sp.xcconfig         = { 'LIBRARY_SEARCH_PATHS' => '"$(PODS_ROOT)/gobelieve/imkit/imkit/amr"' }
     sp.source_files     = 'imkit/imkit/**/*.{h,m,c}'
     sp.exclude_files    = 'imkit/imkit/third-party'
     sp.resource         = ['imkit/imkit/imKitRes/sounds/*.aiff', 'imkit/imkit/imKitRes/images.xcassets']
