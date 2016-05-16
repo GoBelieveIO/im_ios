@@ -7,4 +7,4 @@ pod install
 
 ##Podfile
 
-    pod 'gobelieve', :git => 'git@github.com:GoBelieveIO/im_ios.git'
+    pod 'gobelieve', :git => 'https://github.com/GoBelieveIO/im_ios.git'
