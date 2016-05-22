@@ -175,6 +175,7 @@
     m.msgLocalID = im.msgLocalID;
     m.rawContent = im.content;
     m.timestamp = im.timestamp;
+    m.isOutgoing = (im.sender == self.currentUID);
     
     if (self.textMode && m.type != MESSAGE_TEXT && m.type != MESSAGE_GROUP_NOTIFICATION) {
         return;
