@@ -183,9 +183,21 @@
     [urlRequest setAllHTTPHeaderFields:headers];
 
 
+    
+#if TARGET_IPHONE_SIMULATOR
+    NSString *deviceID = @"7C8A8F5B-E5F4-4797-8758-05367D2A4D61";
+    NSLog(@"device id:%@", @"7C8A8F5B-E5F4-4797-8758-05367D2A4D61");
+#else
+    NSString *deviceID = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
+    NSLog(@"device id:%@", [[[UIDevice currentDevice] identifierForVendor] UUIDString]);
+#endif
+    
+    
     NSMutableDictionary *obj = [NSMutableDictionary dictionary];
     [obj setObject:[NSNumber numberWithLongLong:uid] forKey:@"uid"];
     [obj setObject:[NSString stringWithFormat:@"测试用户%lld", uid] forKey:@"user_name"];
+    [obj setObject:[NSNumber numberWithInt:PLATFORM_IOS] forKey:@"platform_id"];
+    [obj setObject:deviceID forKey:@"device_id"];
     
     NSData *postBody = [NSJSONSerialization dataWithJSONObject:obj options:0 error:nil];
 
