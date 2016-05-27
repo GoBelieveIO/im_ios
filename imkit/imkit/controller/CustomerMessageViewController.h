@@ -19,6 +19,12 @@
 @property(nonatomic, assign) int64_t currentUID;
 @property(nonatomic, copy) NSString *peerName;
 
+
+@property(nonatomic, copy) NSString *goodsURL;
+@property(nonatomic, copy) NSString *goodsTitle;
+@property(nonatomic, copy) NSString *goodsDescription;
+@property(nonatomic, copy) NSString *goodsImage;
+
 @property(nonatomic, assign) int64_t storeID;
 @property(nonatomic, assign) int64_t sellerID;
 @property(nonatomic, assign) int64_t appID;

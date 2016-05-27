@@ -26,7 +26,8 @@
 alpha:(a)]
 
 #define APPID 7
-#define KEFU_ID 54
+//#define KEFU_ID 55
+#define KEFU_ID 62
 
 #define kConversationCellHeight         60
 
@@ -415,11 +416,22 @@ alpha:(a)]
         msgController.userDelegate = self.userDelegate;
 
         msgController.appID = APPID;
+        
+        //test
+        //msgController.storeID = 100060;
+
         if (con.cid == 0) {
             msgController.storeID = KEFU_ID;
         } else {
             msgController.storeID = con.cid;
         }
+        msgController.goodsURL = @"http://www.baidu.com";
+        msgController.goodsImage = @"http://api.gobelieve.io/images/7fac33c3e7410f29371a7b8114cd5cdd.png";
+        msgController.goodsTitle = @"百度";
+        msgController.goodsDescription = @"取决于项目需求。如果Autosizing完全能满足开发需求，那么就没必要使用复杂的Autolayout。";
+        
+        
+
         msgController.peerName = con.name;
         msgController.currentUID = self.currentUID;
         msgController.hidesBottomBarWhenPushed = YES;

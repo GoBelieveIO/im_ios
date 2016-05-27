@@ -138,7 +138,19 @@
 
     [self downloadMessageContent:self.messages count:count];
     [self checkMessageFailureFlag:self.messages count:count];
+  
     
+    NSDictionary *goods = @{@"title":self.goodsTitle, @"url":self.goodsURL,
+                            @"content":self.goodsDescription, @"image":self.goodsImage};
+
+    NSDictionary *dic = @{@"goods":goods};
+    NSString* raw = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:dic options:0 error:nil] encoding:NSUTF8StringEncoding];
+    
+    IMessage *goodsMsg = [[IMessage alloc] init];
+    goodsMsg.sender = 0;
+    goodsMsg.rawContent = raw;
+    
+    [self.messages addObject:goodsMsg];
     [self initTableViewData];
 }
 

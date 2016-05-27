@@ -23,6 +23,7 @@
 #import "MessageViewCell.h"
 #import "MessageNotificationView.h"
 #import "MessageTimeBaseView.h"
+#import "MessageGoodsView.h"
 
 #import "MEESImageViewController.h"
 
@@ -522,6 +523,22 @@
     [self.navigationController pushViewController:ctl animated:YES];
 }
 
+- (void) handleTapGoodsView:(UITapGestureRecognizer*)tap {
+    int row = tap.view.tag & 0xffff;
+    int section = (int)(tap.view.tag >> 16);
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:section];
+    IMessage *message = [self messageForRowAtIndexPath:indexPath];
+    if (message == nil) {
+        return;
+    }
+    NSLog(@"click link");
+    
+    WebViewController *ctl = [[WebViewController alloc] init];
+    ctl.url = message.goodsContent.url;
+    [self.navigationController pushViewController:ctl animated:YES];
+}
+
+
 - (void) handleTapLocationView:(UITapGestureRecognizer*)tap {
     int row = tap.view.tag & 0xffff;
     int section = (int)(tap.view.tag >> 16);
@@ -570,6 +587,11 @@
             [tap setNumberOfTouchesRequired: 1];
             MessageLinkView *linkView = (MessageLinkView*)cell.bubbleView;
             [linkView addGestureRecognizer:tap];
+        } else if (message.type == MESSAGE_GOODS) {
+            UITapGestureRecognizer *tap  = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapGoodsView:)];
+            [tap setNumberOfTouchesRequired: 1];
+            MessageGoodsView *goodsView = (MessageGoodsView*)cell.bubbleView;
+            [goodsView addGestureRecognizer:tap];
         } else if(message.type == MESSAGE_TEXT){
             
         }
@@ -610,6 +632,9 @@
     } else if (message.type == MESSAGE_LINK) {
         MessageLinkView *linkView = (MessageLinkView*)cell.bubbleView;
         linkView.tag = indexPath.section<<16 | indexPath.row;
+    } else if (message.type == MESSAGE_GOODS) {
+        MessageGoodsView *goodsView = (MessageGoodsView*)cell.bubbleView;
+        goodsView.tag = indexPath.section<<16 | indexPath.row;
     }
     
     cell.tag = indexPath.section<<16 | indexPath.row;
@@ -662,6 +687,8 @@
             return kMessageLinkViewHeight + nameHeight;
         case MESSAGE_TIME_BASE:
             return kMessageTimeBaseViewHeight;
+        case MESSAGE_GOODS:
+            return kMessageGoodViewHeight + nameHeight;
         default:
             return 0;
     }

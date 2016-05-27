@@ -74,6 +74,8 @@
         self.type = MESSAGE_ATTACHMENT;
     } else if ([self.dict objectForKey:@"timestamp"] != nil) {
         self.type = MESSAGE_TIME_BASE;
+    } else if ([self.dict objectForKey:@"goods"] != nil) {
+        self.type = MESSAGE_GOODS;
     } else {
         self.type = MESSAGE_UNKNOWN;
     }
@@ -202,6 +204,26 @@
 
 - (NSString*)content {
     return [[self.dict objectForKey:@"link"] objectForKey:@"content"];
+}
+
+@end
+
+@implementation MessageGoodsContent
+
+- (NSString*)imageURL {
+    return [[self.dict objectForKey:@"goods"] objectForKey:@"image"];
+}
+
+- (NSString*)url {
+    return [[self.dict objectForKey:@"goods"] objectForKey:@"url"];
+}
+
+- (NSString*)title {
+    return [[self.dict objectForKey:@"goods"] objectForKey:@"title"];
+}
+
+- (NSString*)content {
+    return [[self.dict objectForKey:@"goods"] objectForKey:@"content"];
 }
 
 @end
@@ -379,6 +401,9 @@
     } else if ([dict objectForKey:@"timestamp"] != nil) {
         self.type = MESSAGE_TIME_BASE;
         content = [[MessageTimeBaseContent alloc] initWithRaw:rawContent];
+    } else if ([dict objectForKey:@"goods"] != nil) {
+        self.type = MESSAGE_GOODS;
+        content = [[MessageGoodsContent alloc] initWithRaw:rawContent];
     } else {
         self.type = MESSAGE_UNKNOWN;
     }
@@ -438,6 +463,13 @@
 -(MessageTimeBaseContent*)timeBaseContent {
     if (self.content.type == MESSAGE_TIME_BASE) {
         return (MessageTimeBaseContent*)self.content;
+    }
+    return nil;
+}
+
+-(MessageGoodsContent*)goodsContent {
+    if (self.content.type == MESSAGE_GOODS) {
+        return (MessageGoodsContent*)self.content;
     }
     return nil;
 }
