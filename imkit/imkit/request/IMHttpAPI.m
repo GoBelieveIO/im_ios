@@ -272,7 +272,7 @@
         }
         
         NSDictionary *resp = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil];
-        NSString *translation = [[resp objectForKey:@"data"] objectForKey:@"translation"];
+        NSString *translation = [resp objectForKey:@"translation"];
         success(translation);
     };
     request.failCB = ^(IMHttpOperation*commObj, IMHttpOperationError error) {
