@@ -533,10 +533,11 @@
         return;
     }
     NSLog(@"click link");
-    
-    WebViewController *ctl = [[WebViewController alloc] init];
-    ctl.url = message.goodsContent.url;
-    [self.navigationController pushViewController:ctl animated:YES];
+    if (message.goodsContent.url.length > 0) {
+        WebViewController *ctl = [[WebViewController alloc] init];
+        ctl.url = message.goodsContent.url;
+        [self.navigationController pushViewController:ctl animated:YES];
+    }
 }
 
 
