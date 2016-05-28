@@ -61,8 +61,6 @@
 "noMore" = "没有更多数据了";
 "hasRead" = "已读";
 
-//app
-"AppName" = "环信Demo";
 
 //error des
 "error.connectServerFail" = "连接服务器失败!";
@@ -99,128 +97,7 @@
 "apns.failToBindDeviceToken" = "消息推送与设备绑定失败";
 "apns.content" = "推送内容";
 
-//friend
-"friend.add" = "添加好友";
-"friend.somebodyAddWithName" = "%@ 添加你为好友";
-"friend.beRefusedToAdd" = "你被'%@'无耻的拒绝了";
-"friend.inputNameToSearch" = "输入要查找的好友";
-"friend.repeat" = "'%@'已经是你的好友了!";
-"friend.repeatApply" = "您已向'%@'发送好友请求了!";
-"friend.notAddSelf" = "不能添加自己为好友";
-"friend.repeatInvite" = "%@已经给你发来了申请";
-"friend.somebodyInvite" = "%@ 邀请你为好友";
-"friend.sendApply" = "正在发送申请...";
-"friend.sendApplyFail" = "发送申请失败，请重新操作";
-"friend.sendApplySuccess" = "发送申请成功";
-"friend.black" = "黑名单";
-"friend.notChatSelf" = "不能跟自己聊天";
-"friend.notDeleteSelf" = "不能删除自己";
-"friend.block" = "加入黑名单";
 
-//group
-"group.somebodyInvite" = "%@ 邀请你加入群组\'%@\'";
-"group.applyJoin" = "%@ 申请加入群组\'%@\'";
-"group.applyJoinWithName" = "%@ 申请加入群组\'%@\'：%@";
-"group.sendApplyFail" = "发送申请失败:%@\n原因：%@";
-"group.beRefusedToJoin" = "被拒绝加入群组\'%@\'";
-"group.beKicked" = "你被从群组\'%@\'中踢出";
-"group.agreedAndJoined" = "同意并已加入群组\'%@\'";
-"group.join" = "加入群组";
-"group.joined" = "已加入";
-"group.owner" = "群主";
-"group.describe" = "群组简介";
-"group.join.ongoing" = "加入群组...";
-"group.join.fail" = "加入群组失败，请重新操作";
-"group.sendingApply" = "发送加群申请...";
-"group.sendApplyRepeat" = "申请已发送";
-"group.maxUserCount" = "群成员个数超了最大值了";
-
-//Create Group
-"group.create.addOccupant" = "添加成员";
-"group.create.inputName" = "请输入群组名称";
-"group.create.inputDescribe" = "请输入群组简介";
-"group.create.groupPermission" = "群组权限";
-"group.create.private" = "私有群";
-"group.create.occupantPermissions" = "成员邀请权限";
-"group.create.allowedOccupantInvite" = "允许群成员邀请其他人";
-"group.create.unallowedOccupantInvite" = "不允许群成员邀请其他人";
-"group.create.ongoing" = "创建群组...";
-"group.create.success" = "创建群组成功";
-"group.create.fail" = "创建群组失败，请重新操作";
-"group.create.public" = "公有群";
-"group.create.occupantJoinPermissions" = "成员加入权限";
-"group.create.open" = "随便加入";
-"group.create.needApply" = "加入群组需要管理员同意";
-"group.create.group" = "新建群聊";
-"group.create.join" = "添加公开群";
-
-//Group Bans
-"group.ban.removing" = "正在将成员移出黑名单...";
-"group.ban.adding" = "正在将成员加入黑名单...";
-"group.ban.fetching" = "获取群组黑名单...";
-"group.ban.fetchFail" = "获取黑名单失败: %@";
-
-//Group Detail
-"group.removeAllMessages" = "清空聊天记录";
-"group.destroy" = "解散群组";
-"group.leave" = "退出群组";
-"group.id" = "群组ID";
-"group.occupantCount" = "群组人数";
-"group.addingOccupant" = "添加组成员...";
-"group.fetchInfoFail" = "获取群组详情失败，请稍后重试";
-"group.removingOccupant" = "正在删除成员...";
-"group.destroyFail" = "解散群组失败";
-"group.leaveFail" = "退出群组失败";
-"group.addOccupantFail" = "添加群成员失败, 请稍后再试";
-
-//Group Setting
-"group.setting.receiveAndPrompt" = "接收并提示群消息";
-"group.setting.receiveAndUnprompt" = "只接收不提示群消息";
-"group.setting.blockMessage" = "屏蔽群消息";
-"group.setting.save" = "设置属性";
-"group.setting.success" = "设置成功";
-"group.setting.fail" = "设置失败";
-"group.setting.subject" = "请输入群组名称";
-
-//Chatroom detail
-"chatroom.somebodyInvite" = "%@ 邀请你加入聊天室\'%@\'";
-"chatroom.id" = "聊天室Id";
-"chatroom.occupantCount" = "聊天室人数";
-"chatroom.description" = "描述";
-"chatroom.joining" = "正在加入...";
-"chatroom.fetchInfoFail" = "获取聊天室详情失败";
-"chatroom.joinFailed" = "加入聊天室\'%@\'失败";
-"chatroom.join" = "\'%@\'加入聊天室\'%@\'";
-"chatroom.leave" = "\'%@\'离开聊天室\'%@\'";
-"chatroom.remove" = "被踢出聊天室\'%@\'";
-
-//call
-"call.initFailed"="通话建立失败";
-"call.waiting"="等待接听...";
-"call.connecting"="正在建立连接...";
-"call.silence"="静音";
-"call.speaker"="免提";
-"call.reject"="拒接";
-"call.answer"="接听";
-"call.hangup"="挂断";
-"call.connectFailed"="建立连接失败";
-"call.failed"="通话失败";
-"call.suspended"="通话已挂断";
-"call.over"="通话结束";
-"call.cancel"="取消通话";
-"call.rejected"="拒接通话";
-"call.in"="正在通话中...";
-"call.speak"="可以说话了...";
-"call.speak.relay"="可以说话了...Relay";
-"call.speak.direct"="可以说话了...Direct";
-"call.init"="正在初始化通话...";
-"call.dealloc"="正在结束通话...";
-"call.videoSize"="宽/高: ";
-"call.videoTimedelay"="延迟: ";
-"call.videoFramerate"="帧率: ";
-"call.videoLostcnt"="丢包数: ";
-"call.videoLocalBitrate"="本地比特率: ";
-"call.videoRemoteBitrate"="对方比特率: ";
 
 //message
 "message.image" = "图片";
@@ -251,6 +128,10 @@
 "message.noMessage" = "消息已经清空";
 "message.forbiddenWords" = "你的消息包含不当言论";
 
+"message.translate" = "翻译";
+"message.resend" = "重发";
+"message.copy" = "拷贝";
+
 //media
 "media.timeShort" = "录音时间太短了";
 
@@ -269,68 +150,7 @@
 "location.fail" = "定位失败";
 "location.ongoning" = "正在定位...";
 
-//title
-"title.conversation" = "会话";
-"title.addressbook" = "通讯录";
-"title.setting" = "设置";
-"title.group" = "群组";
-"title.chatroom" = "聊天室";
-"title.mychatroom" = "我的聊天室";
-"title.chooseContact" = "选择联系人";
-"title.debug" = "诊断";
-"title.groupBlackList" = "群组黑名单";
-"title.createGroup" = "创建群组";
-"title.publicGroup" = "公有群组";
-"title.groupSetting" = "群设置";
-"title.apnsSetting" = "消息推送设置";
-"title.buddyBlock" = "黑名单";
-"title.apply" = "申请与通知";
-"title.groupApply" = "群组通知";
-"title.groupSubjectChanging" = "修改群名称";
-"title.chatroomlist" = "聊天室列表";
-"title.robotlist" = "环信助手";
-"title.profile" = "详细资料";
 
-
-//setting
-"setting.autoLogin" = "自动登录";
-"setting.loginUser" = "退出登录(%@)";
-"setting.logoutOngoing" = "正在退出...";
-
-"setting.notDisturb" = "功能消息免打扰";
-"setting.showDetail" = "通知显示消息详情";
-"setting.open" = "开启";
-"setting.nightOpen" = "只在夜间开启 (22:00 - 7:00)";
-"setting.close" = "关闭";
-"setting.sureNotDisturb" = "此设置会导致全天都处于免打扰模式, 不会再收到推送消息. 是否继续?";
-
-"setting.uploadLog" = "上传运行日志";
-"setting.sdkVersion" = "SDK 版本";
-"setting.uploading" = "正在上传...";
-"setting.uploadSuccess" = "上传成功";
-"setting.uploadFail" = "上传失败";
-"setting.editName" = "更改昵称";
-"setting.inputName" = "请输入新昵称";
-"setting.saveName" = "保存更改昵称";
-"setting.namenotempty" = "昵称不能为空";
-"setting.personalInfo" = "个人信息";
-"setting.setBitrate" = "设置视频通话码率";
-"setting.setBitrateTips" = "设置视频通话码率范围在150-1000";
-"setting.personalInfoUpload" = "头像";
-"setting.edittips" = "设置此昵称以后,在与iOS客户端demo聊天工程中,iOS一侧会显示此昵称而不是环信ID,如果对方使用安卓客户端则此设置不生效";
-"setting.iospushname" = "iOS离线推送昵称";
-"setting.useIp" = "使用IP";
-"setting.deleteConWhenLeave" = "退群时删除会话";
-"setting.showCallInfo" = "显示视频通话信息";
-"setting.microphoneNoAuthority" = "未获得授权使用麦克风";
-"setting.microphoneAuthority" = "请在iOS\"设置中\"-\"隐私\"-\"麦克风\"中打开";
-"setting.cameraNoAuthority" = "未获得授权使用相机";
-"setting.cameraAuthority" = "请在iOS\"设置中\"-\"隐私\"-\"相机\"中打开";
-"setting.cameraUpload" = "拍照上传";
-"setting.localUpload" = "相册上传";
-"setting.profileNickname" = "昵称";
-"setting.saving" = "修改中...";
-"setting.saveFailed" = "修改失败";
 
 //NSDateCategory
 "NSDateCategory.text1" = "1分钟内";

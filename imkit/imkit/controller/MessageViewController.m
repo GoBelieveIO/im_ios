@@ -37,6 +37,7 @@
 #import "EaseChatToolbar.h"
 #import "EaseEmoji.h"
 #import "EaseEmotionManager.h"
+#import "IMHttpAPI.h"
 
 #define INPUT_HEIGHT 52.0f
 
@@ -669,7 +670,7 @@
     switch (msg.type) {
         case MESSAGE_TEXT: {
             MessageTextContent *content = msg.textContent;
-            int h = [MessageTextView cellHeightForText:content.text];
+            int h = [MessageTextView cellHeightForText:content.text translation:msg.translation];
             h = MAX(40, h);
             return  h + nameHeight;
         }
@@ -803,8 +804,7 @@
   
 }
 
-- (void)copyText:(id)sender
-{
+- (void)copyText:(id)sender {
     if (self.selectedMessage.type != MESSAGE_TEXT) {
         return;
     }
@@ -812,6 +812,37 @@
 
     MessageTextContent *content = self.selectedMessage.textContent;
     [[UIPasteboard generalPasteboard] setString:content.text];
+    [self resignFirstResponder];
+}
+
+- (void)translateText:(id)sender {
+    if (self.selectedMessage.type != MESSAGE_TEXT) {
+        return;
+    }
+    NSLog(@"translate...");
+    IMessage *msg = self.selectedMessage;
+    NSString * language = [[NSLocale preferredLanguages] objectAtIndex:0];
+    NSLog(@"language:%@", language);
+    MessageTextContent *content = self.selectedMessage.textContent;
+    
+    [IMHttpAPI translate:content.text to:language
+                 success:^(NSString *translation) {
+                     NSLog(@"translation:%@", translation);
+                     if (translation.length > 0) {
+                         [self saveMessageAttachment:msg translation:translation];
+                         msg.translation = translation;
+                         int pos = [self findMessage:msg.msgLocalID];
+                         if (pos == -1) {
+                             return;
+                         }
+                         NSArray *array = [NSArray arrayWithObject:[NSIndexPath indexPathForRow:pos inSection:0]];
+                         [self.tableView reloadRowsAtIndexPaths:array withRowAnimation:UITableViewRowAnimationAutomatic];
+                     }
+                 }
+                    fail:^{
+
+                    }];
+
     [self resignFirstResponder];
 }
 
@@ -840,13 +871,22 @@
 
 
     if (message.type == MESSAGE_TEXT) {
-        UIMenuItem *item = [[UIMenuItem alloc] initWithTitle:@"拷贝" action:@selector(copyText:)];
+        NSString *title = NSLocalizedString(@"message.copy", @"copy a message");
+        UIMenuItem *item = [[UIMenuItem alloc] initWithTitle:title action:@selector(copyText:)];
+        [menuItems addObject:item];
+        
+        title = NSLocalizedString(@"message.translate", @"translate a message");
+        item = [[UIMenuItem alloc] initWithTitle:title action:@selector(translateText:)];
         [menuItems addObject:item];
     }
     if (message.isFailure) {
-        UIMenuItem *item = [[UIMenuItem alloc] initWithTitle:@"重发" action:@selector(resend:)];
+        
+        NSString *title = NSLocalizedString(@"message.resend", @"resend a message");
+        
+        UIMenuItem *item = [[UIMenuItem alloc] initWithTitle:title action:@selector(resend:)];
         [menuItems addObject:item];
     }
+
     if ([menuItems count] == 0) {
         return;
     }
@@ -901,6 +941,9 @@
         if (content.address.length == 0) {
             [self reverseGeocodeLocation:msg];
         }
+    } else if (msg.type == MESSAGE_TEXT) {
+        MessageAttachmentContent *attachment = [self.attachments objectForKey:[NSNumber numberWithInt:msg.msgLocalID]];
+        msg.translation = attachment.translation;
     } else if (msg.type == MESSAGE_IMAGE) {
         NSLog(@"image url:%@", msg.imageContent.imageURL);
     }
@@ -971,6 +1014,10 @@
         msg.downloading = NO;
     }];
 
+}
+
+-(void)saveMessageAttachment:(IMessage*)msg translation:(NSString*)translation {
+    NSAssert(NO, @"not implement");
 }
 
 -(void)saveMessageAttachment:(IMessage*)msg address:(NSString*)address {

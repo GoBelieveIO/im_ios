@@ -129,7 +129,11 @@
 
 @property(nonatomic) NSString *address;
 
+@property(nonatomic) NSString *translation;
+
 - (id)initWithAttachment:(int)msgLocalID address:(NSString*)address;
+
+- (id)initWithAttachment:(int)msgLocalID translation:(NSString *)translation;
 
 @end
 
@@ -177,6 +181,8 @@
 @property(nonatomic) BOOL geocoding;
 
 @property(nonatomic) IUser *senderInfo;
+
+@property(nonatomic, copy) NSString *translation;//译文
 
 @end
 

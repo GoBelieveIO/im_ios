@@ -245,4 +245,43 @@
     return request;
 }
 
++(NSOperation*)translate:(NSString*)text to:(NSString*)lan success:(void (^)(NSString*))success fail:(void (^)())fail {
+    IMHttpOperation *request = [IMHttpOperation httpOperationWithTimeoutInterval:60];
+    request.targetURL = [[IMHttpAPI instance].apiURL stringByAppendingString:@"/translate"];
+    
+    NSString *escapedText = [text stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSString *escapedLan = [lan stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    
+    NSString *target = [NSString stringWithFormat:@"%@/translate?text=%@&to=%@",
+                        [IMHttpAPI instance].apiURL, escapedText, escapedLan];
+    request.targetURL = target;
+    
+    
+    NSMutableDictionary *headers = [NSMutableDictionary dictionary];
+    NSString *auth = [NSString stringWithFormat:@"Bearer %@", [IMHttpAPI instance].accessToken];
+    [headers setObject:auth forKey:@"Authorization"];
+    request.headers = headers;
+    request.method = @"GET";
+    request.successCB = ^(IMHttpOperation*commObj, NSURLResponse *response, NSData *data) {
+        NSInteger statusCode = [(NSHTTPURLResponse*)response statusCode];
+        if (statusCode != 200) {
+            NSDictionary *resp = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil];
+            NSLog(@"translate fail:%@", resp);
+            fail();
+            return;
+        }
+        
+        NSDictionary *resp = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil];
+        NSString *translation = [[resp objectForKey:@"data"] objectForKey:@"translation"];
+        success(translation);
+    };
+    request.failCB = ^(IMHttpOperation*commObj, IMHttpOperationError error) {
+        NSLog(@"translate fail");
+        fail();
+    };
+    [[NSOperationQueue mainQueue] addOperation:request];
+    return request;
+
+}
+
 @end

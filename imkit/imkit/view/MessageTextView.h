@@ -12,5 +12,6 @@
 
 @interface MessageTextView : BubbleView
 + (CGFloat)cellHeightForText:(NSString *)txt;
++ (CGFloat)cellHeightForText:(NSString *)txt translation:(NSString*)translation;
 
 @end

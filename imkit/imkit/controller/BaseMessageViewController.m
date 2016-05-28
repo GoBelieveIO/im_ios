@@ -143,6 +143,17 @@
     return nil;
 }
 
+- (int)findMessage:(int)msgLocalID {
+    int i = 0;
+    for (i = 0; i < self.messages.count; i++) {
+        IMessage *msg = [self.messages objectAtIndex:i];
+        if (msg.msgLocalID == msgLocalID) {
+            return i;
+        }
+    }
+    return -1;
+}
+
 + (void)playSoundWithName:(NSString *)name type:(NSString *)type {
     NSString *path = [[NSBundle mainBundle] pathForResource:name ofType:type];
     

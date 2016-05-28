@@ -41,6 +41,7 @@
 
 - (IMessage*)getMessageWithID:(int)msgLocalID;
 - (IMessage*)messageForRowAtIndexPath:(NSIndexPath *)indexPath;
+- (int)findMessage:(int)msgLocalID;
 
 - (NSString *)getWeekDayString:(NSInteger)iDay;
 - (BOOL)isSameDay:(NSDate*)date1 other:(NSDate*)date2 ;

@@ -99,6 +99,18 @@
     return r;
 }
 
+-(void)saveMessageAttachment:(IMessage*)msg translation:(NSString*)translation {
+    //以附件的形式存储，以免第二次查询
+    MessageAttachmentContent *att = [[MessageAttachmentContent alloc] initWithAttachment:msg.msgLocalID
+                                                                             translation:translation];
+    IMessage *attachment = [[IMessage alloc] init];
+    attachment.sender = msg.sender;
+    attachment.receiver = msg.receiver;
+    attachment.rawContent = att.raw;
+    [self saveMessage:attachment];
+}
+
+
 -(void)saveMessageAttachment:(IMessage*)msg address:(NSString*)address {
     //以附件的形式存储，以免第二次查询
     MessageAttachmentContent *att = [[MessageAttachmentContent alloc] initWithAttachment:msg.msgLocalID address:address];

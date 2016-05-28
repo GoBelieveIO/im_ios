@@ -243,6 +243,15 @@
     }
 }
 
+-(void)saveMessageAttachment:(IMessage*)msg translation:(NSString*)translation {
+    //以附件的形式存储，以免第二次查询
+    MessageAttachmentContent *att = [[MessageAttachmentContent alloc] initWithAttachment:msg.msgLocalID
+                                                                              translation:translation];
+    ICustomerMessage *attachment = [[ICustomerMessage alloc] init];
+    attachment.rawContent = att.raw;
+    [self saveMessage:attachment];
+}
+
 -(void)saveMessageAttachment:(IMessage*)msg address:(NSString*)address {
     //以附件的形式存储，以免第二次查询
     MessageAttachmentContent *att = [[MessageAttachmentContent alloc] initWithAttachment:msg.msgLocalID address:address];
