@@ -151,6 +151,7 @@
         IMessage *goodsMsg = [[IMessage alloc] init];
         goodsMsg.sender = 0;
         goodsMsg.rawContent = raw;
+        goodsMsg.timestamp = (int)time(NULL);
         
         [self.messages addObject:goodsMsg];
     }
