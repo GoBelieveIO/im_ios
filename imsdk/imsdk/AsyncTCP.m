@@ -10,6 +10,8 @@
 #import "AsyncTCP.h"
 #import "util.h"
 #include <netinet/in.h>
+#include <netdb.h>
+#include <arpa/inet.h>
 @interface AsyncTCP()
 @property(nonatomic, strong)ConnectCB connect_cb;
 @property(nonatomic, strong)ReadCB read_cb;
@@ -41,27 +43,80 @@
     self.read_cb = nil;
 }
 
--(BOOL)connect:(NSString*)host port:(int)port cb:(ConnectCB)cb {
-    int r;
-    struct sockaddr_in addr;
-    //todo nonblock
-    NSLog(@"looking...");
-    r = lookupAddr([host UTF8String], port, &addr);
-    NSLog(@"looked:%d", r);
-    int sockfd;
+- (BOOL)synthesizeIPv6:(NSString*)host port:(int)port addr:(struct sockeaddr*)addr addrinfo:(struct addrinfo*)info {
+    int error;
+    struct addrinfo hints, *res0, *res;
+    const char *ipv4_str = [host UTF8String];
+    
+    memset(&hints, 0, sizeof(hints));
+    hints.ai_family = PF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_flags = AI_DEFAULT;
+    error = getaddrinfo(ipv4_str, "", &hints, &res0);
+    if (error) {
+        NSLog(@"%s", gai_strerror(error));
+        return FALSE;
+    }
 
-    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    for (res = res0; res; res = res->ai_next) {
+        NSLog(@"family:%d socktype;%d protocol:%d", res->ai_family, res->ai_socktype, res->ai_protocol);
+    }
+    
+    BOOL r = YES;
+    //use first
+    if (res0) {
+        if (res0->ai_family == AF_INET6) {
+            struct sockaddr_in6 *addr6 = ((struct sockaddr_in6*)res0->ai_addr);
+            addr6->sin6_port = htons(port);
+            
+            memcpy(addr, res0->ai_addr, res0->ai_addrlen);
+            *info = *res0;
+        } else if (res0->ai_family == AF_INET) {
+            struct sockaddr_in *addr4 = ((struct sockaddr_in*)res0->ai_addr);
+            addr4->sin_port = htons(port);
+            
+            memcpy(addr, res0->ai_addr, res0->ai_addrlen);
+            *info = *res0;
+        } else {
+            r = NO;
+        }
+    }
+
+    freeaddrinfo(res0);
+    return r;
+}
+
+-(BOOL)connect:(NSString*)host port:(int)port cb:(ConnectCB)cb {
+    struct sockaddr_in6 addr;
+    struct addrinfo addrinfo;
+    
+    BOOL res = [self synthesizeIPv6:host port:port addr:&addr addrinfo:&addrinfo];
+    if (!res) {
+        NSLog(@"synthesize ipv6 fail");
+        return NO;
+    }
+    
+    int r;
+    int sockfd;
+    
+    sockfd = socket(addrinfo.ai_family, addrinfo.ai_socktype, addrinfo.ai_protocol);
     sock_nonblock(sockfd, 1);
     
     int value = 1;
     setsockopt(sockfd, SOL_SOCKET, SO_NOSIGPIPE, &value, sizeof(value));
-    
+
     do {
-    	r = connect(sockfd, (const struct sockaddr*)&addr, sizeof(addr));
+        if (addrinfo.ai_family == AF_INET) {
+            r = connect(sockfd, (struct sockaddr_in*)&addr, sizeof(struct sockaddr_in));
+        } else {
+            //ipv6
+            r = connect(sockfd, (struct sockaddr_in6*)&addr, sizeof(struct sockaddr_in6));
+        }
     } while (r == -1 && errno == EINTR);
     if (r == -1) {
         if (errno != EINPROGRESS) {
             close(sockfd);
+            NSLog(@"connect error:%s", strerror(errno));
             return FALSE;
         }
     }
@@ -75,10 +130,11 @@
     
     dispatch_resume(self.writeSource);
     self.writeSourceActive = YES;
-
+    
     self.connecting = YES;
     self.connect_cb = cb;
     self.sock = sockfd;
+
     return TRUE;
 }
 
