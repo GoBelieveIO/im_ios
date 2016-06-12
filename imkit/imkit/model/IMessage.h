@@ -82,6 +82,8 @@
 @end
 
 @interface MessageGoodsContent : MessageContent
+- (id)initWithGoodsTitle:(NSString*)title content:(NSString*)content
+                     url:(NSString*)url image:(NSString*)image;
 @property(nonatomic, readonly) NSString *imageURL;
 @property(nonatomic, readonly) NSString *url;
 @property(nonatomic, readonly) NSString *title;

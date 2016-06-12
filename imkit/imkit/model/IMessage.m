@@ -209,6 +209,22 @@
 @end
 
 @implementation MessageGoodsContent
+- (id)initWithGoodsTitle:(NSString*)title content:(NSString*)content
+                     url:(NSString*)url image:(NSString*)image {
+    
+    self = [super init];
+    if (self) {
+        NSDictionary *goods = @{@"title":title,
+                                @"image":image,
+                                @"url":url ? url : @"",
+                                @"content":content ? content : @""};
+        
+        NSDictionary *dic = @{@"goods":goods};
+        NSString* raw = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:dic options:0 error:nil] encoding:NSUTF8StringEncoding];
+        self.raw = raw;
+    }
+    return self;
+}
 
 - (NSString*)imageURL {
     return [[self.dict objectForKey:@"goods"] objectForKey:@"image"];
