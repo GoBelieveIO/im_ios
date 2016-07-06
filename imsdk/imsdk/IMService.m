@@ -303,7 +303,9 @@
 
 -(void)publishGroupMessageFailure:(IMMessage*)msg {
     for (id<GroupMessageObserver> ob in self.groupObservers) {
-        [ob onGroupMessageFailure:msg.msgLocalID gid:msg.receiver];
+        if ([ob respondsToSelector:@selector(onGroupMessageFailure:gid:)]) {
+            [ob onGroupMessageFailure:msg.msgLocalID gid:msg.receiver];
+        }
     }
 }
 
