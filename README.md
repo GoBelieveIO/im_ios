@@ -2,8 +2,8 @@
 gobelieve iOS SDK
 
 ##生成workspace
-cp demo/dev.podspec ./
-pod install
+1. cp demo/dev.podspec ./
+2. pod install
 
 ##Podfile
 
