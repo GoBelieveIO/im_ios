@@ -888,6 +888,22 @@
     }
 }
 
+
+- (void)loadSenderInfo:(IMessage*)msg {
+    msg.senderInfo = [self.userDelegate getUser:msg.sender];
+    if (msg.senderInfo.name.length == 0) {
+        [self.userDelegate asyncGetUser:msg.sender cb:^(IUser *u) {
+            msg.senderInfo = u;
+        }];
+    }
+}
+- (void)loadSenderInfo:(NSArray*)messages count:(int)count {
+    for (int i = 0; i < count; i++) {
+        IMessage *msg = [messages objectAtIndex:i];
+        [self loadSenderInfo:msg];
+    }
+}
+
 -(NSString*)guid {
     CFUUIDRef    uuidObj = CFUUIDCreate(nil);
     NSString    *uuidString = (__bridge NSString *)CFUUIDCreateString(nil, uuidObj);

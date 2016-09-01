@@ -284,6 +284,7 @@
     }
 
     [self downloadMessageContent:self.messages count:count];
+    [self loadSenderInfo:self.messages count:count];
     [self checkMessageFailureFlag:self.messages count:count];
     
     [self initTableViewData];
@@ -327,6 +328,7 @@
         return;
     }
 
+    [self loadSenderInfo:self.messages count:count];
     [self downloadMessageContent:self.messages count:count];
     [self checkMessageFailureFlag:self.messages count:count];
     
@@ -459,6 +461,12 @@
     
     msg.sender = self.sender;
     msg.receiver = self.receiver;
+    msg.senderInfo = [self.userDelegate getUser:msg.sender];
+    if (msg.senderInfo.name.length == 0) {
+        [self.userDelegate asyncGetUser:msg.sender cb:^(IUser *u) {
+            msg.senderInfo = u;
+        }];
+    }
     
     MessageLocationContent *content = [[MessageLocationContent alloc] initWithLocation:location];
     msg.rawContent = content.raw;
@@ -489,6 +497,12 @@
     
     msg.sender = self.sender;
     msg.receiver = self.receiver;
+    msg.senderInfo = [self.userDelegate getUser:msg.sender];
+    if (msg.senderInfo.name.length == 0) {
+        [self.userDelegate asyncGetUser:msg.sender cb:^(IUser *u) {
+            msg.senderInfo = u;
+        }];
+    }
     
     MessageAudioContent *content = [[MessageAudioContent alloc] initWithAudio:[self localAudioURL] duration:second];
     
@@ -521,6 +535,12 @@
     
     msg.sender = self.sender;
     msg.receiver = self.receiver;
+    msg.senderInfo = [self.userDelegate getUser:msg.sender];
+    if (msg.senderInfo.name.length == 0) {
+        [self.userDelegate asyncGetUser:msg.sender cb:^(IUser *u) {
+            msg.senderInfo = u;
+        }];
+    }
     
     MessageImageContent *content = [[MessageImageContent alloc] initWithImageURL:[self localImageURL]];
     msg.rawContent = content.raw;
@@ -554,6 +574,12 @@
     
     msg.sender = self.sender;
     msg.receiver = self.receiver;
+    msg.senderInfo = [self.userDelegate getUser:msg.sender];
+    if (msg.senderInfo.name.length == 0) {
+        [self.userDelegate asyncGetUser:msg.sender cb:^(IUser *u) {
+            msg.senderInfo = u;
+        }];
+    }
     
     MessageTextContent *content = [[MessageTextContent alloc] initWithText:text];
     msg.rawContent = content.raw;
