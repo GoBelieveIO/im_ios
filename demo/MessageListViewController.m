@@ -31,7 +31,8 @@ alpha:(a)]
 #define kConversationCellHeight         60
 
 @interface MessageListViewController()<UITableViewDelegate, UITableViewDataSource,
-    TCPConnectionObserver, PeerMessageObserver, GroupMessageObserver, SystemMessageObserver>
+    TCPConnectionObserver, PeerMessageObserver, GroupMessageObserver,
+    SystemMessageObserver, RTMessageObserver>
 @property (strong , nonatomic) NSMutableArray *conversations;
 @property (strong , nonatomic) UITableView *tableview;
 @end
@@ -72,6 +73,7 @@ alpha:(a)]
     [[IMService instance] addGroupMessageObserver:self];
     [[IMService instance] addConnectionObserver:self];
     [[IMService instance] addSystemMessageObserver:self];
+    [[IMService instance] addRTMessageObserver:self];
     
     [[NSNotificationCenter defaultCenter] addObserver: self selector:@selector(newGroupMessage:) name:LATEST_GROUP_MESSAGE object:nil];
     [[NSNotificationCenter defaultCenter] addObserver: self selector:@selector(newMessage:) name:LATEST_PEER_MESSAGE object:nil];
@@ -218,6 +220,7 @@ alpha:(a)]
     [[IMService instance] removeGroupMessageObserver:self];
     [[IMService instance] removeConnectionObserver:self];
     [[IMService instance] removeSystemMessageObserver:self];
+    [[IMService instance] removeRTMessageObserver:self];
     
     [self.navigationController popViewControllerAnimated:YES];
 }
@@ -715,6 +718,10 @@ alpha:(a)]
             [self.tableview reloadData];
         }
     }
+}
+
+-(void)onRTMessage:(RTMessage*)rt {
+    NSLog(@"rt message:%lld %lld %@", rt.sender, rt.receiver, rt.content);
 }
 
 #pragma mark - function
