@@ -45,7 +45,7 @@
     tfSender = [[UITextField alloc] initWithFrame:CGRectMake(52, startHeight + 4, 180, 37)];
     tfSender.textColor = [UIColor whiteColor];
     tfSender.font = [UIFont systemFontOfSize:18];
-    tfSender.placeholder = @"用户id";
+    tfSender.placeholder = @"用户id(1-10)";
     tfSender.keyboardType = UIKeyboardTypeNumberPad;
     [self.view addSubview:tfSender];
     
@@ -61,7 +61,7 @@
     tfReceiver = [[UITextField alloc] initWithFrame:CGRectMake(52, startHeight + 4, 180, 37)];
     tfReceiver.textColor = [UIColor whiteColor];
     tfReceiver.font = [UIFont systemFontOfSize:18];
-    tfReceiver.placeholder = @"群组id";
+    tfReceiver.placeholder = @"群组id(15)";
     tfReceiver.keyboardType = UIKeyboardTypeNumberPad;
     [self.view addSubview:tfReceiver];
     
