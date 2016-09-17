@@ -8,13 +8,7 @@
 
 #import "UIImage+Resize.h"
 
-@interface UIImage ()
-- (UIImage *)resizedImage:(CGSize)newSize
-                transform:(CGAffineTransform)transform
-           drawTransposed:(BOOL)transpose
-     interpolationQuality:(CGInterpolationQuality)quality;
-- (CGAffineTransform)transformForOrientation:(CGSize)newSize;
-@end
+
 
 @implementation UIImage (Resize)
 
@@ -63,13 +57,14 @@
             break;
             
         default:
-            [NSException raise:NSInvalidArgumentException format:@"Unsupported content mode: %d", contentMode];
+            [NSException raise:NSInvalidArgumentException format:@"Unsupported content mode: %zd", contentMode];
     }
     
     CGSize newSize = CGSizeMake(self.size.width * ratio, self.size.height * ratio);
     
     return [self resizedImage:newSize interpolationQuality:quality];
 }
+
 
 
 - (UIImage *)resizedImage:(CGSize)newSize

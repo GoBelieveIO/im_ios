@@ -43,7 +43,7 @@
     self.read_cb = nil;
 }
 
-- (BOOL)synthesizeIPv6:(NSString*)host port:(int)port addr:(struct sockeaddr*)addr addrinfo:(struct addrinfo*)info {
+- (BOOL)synthesizeIPv6:(NSString*)host port:(int)port addr:(struct sockaddr*)addr addrinfo:(struct addrinfo*)info {
     int error;
     struct addrinfo hints, *res0, *res;
     const char *ipv4_str = [host UTF8String];
@@ -90,7 +90,7 @@
     struct sockaddr_in6 addr;
     struct addrinfo addrinfo;
     
-    BOOL res = [self synthesizeIPv6:host port:port addr:&addr addrinfo:&addrinfo];
+    BOOL res = [self synthesizeIPv6:host port:port addr:(struct sockaddr*)&addr addrinfo:&addrinfo];
     if (!res) {
         NSLog(@"synthesize ipv6 fail");
         return NO;
@@ -107,10 +107,10 @@
 
     do {
         if (addrinfo.ai_family == AF_INET) {
-            r = connect(sockfd, (struct sockaddr_in*)&addr, sizeof(struct sockaddr_in));
+            r = connect(sockfd, (struct sockaddr*)&addr, sizeof(struct sockaddr_in));
         } else {
             //ipv6
-            r = connect(sockfd, (struct sockaddr_in6*)&addr, sizeof(struct sockaddr_in6));
+            r = connect(sockfd, (struct sockaddr*)&addr, sizeof(struct sockaddr_in6));
         }
     } while (r == -1 && errno == EINTR);
     if (r == -1) {

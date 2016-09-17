@@ -67,7 +67,7 @@ CGFloat const kMaxImageScale = 3.0;
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
 }
 
-- (NSUInteger)supportedInterfaceOrientations {
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
     return UIInterfaceOrientationMaskPortrait;
 }
 

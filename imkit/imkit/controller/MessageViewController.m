@@ -171,13 +171,6 @@
 }
 
 
--(void)addObserver {
-    [[AudioDownloader instance] addDownloaderObserver:self];
-}
-
--(void)removeObserver {
-    [[AudioDownloader instance] removeDownloaderObserver:self];
-}
 
 - (void)setDraft:(NSString *)draft {
     if (draft.length > 0) {
@@ -193,15 +186,6 @@
     return draft;
 }
 
-//-(void)setSenderInfo:(IUser *)senderInfo {
-//    [super setSenderInfo:senderInfo];
-//    
-//    for (IMessage *msg in self.messages) {
-//        if (msg.sender == self.sender) {
-//            msg.senderInfo = self.senderInfo;
-//        }
-//    }
-//}
 
 #pragma mark - View lifecycle
 - (void)viewWillAppear:(BOOL)animated {
