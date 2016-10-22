@@ -34,16 +34,13 @@
     UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"对话"
                                                              style:UIBarButtonItemStyleDone
                                                             target:self
-                                                            action:@selector(returnMainTableViewController)];
+                                                            action:@selector(onBack)];
     
     self.navigationItem.leftBarButtonItem = item;
-
-    
     
     if (self.peerName.length > 0) {
         self.navigationItem.title = self.peerName;
     }
-
     
     [self addObserver];
     
@@ -81,7 +78,7 @@
     return self.storeID == cm.storeID;
 }
 
-- (void)returnMainTableViewController {
+- (void)onBack {
     [self removeObserver];
     [self stopPlayer];
     
@@ -133,8 +130,10 @@
     }
 
     //依旧发给上一次客服人员
-    ICustomerMessage *cm = [self.messages lastObject];
-    self.sellerID = cm.sellerID;
+    if (self.sellerID == 0) {
+        ICustomerMessage *cm = [self.messages lastObject];
+        self.sellerID = cm.sellerID;
+    }
 
     [self downloadMessageContent:self.messages count:count];
     [self checkMessageFailureFlag:self.messages count:count];

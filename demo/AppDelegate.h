@@ -13,6 +13,9 @@
 
 @property (strong, nonatomic) UIWindow *window;
 
+@property (strong, nonatomic) NSData *deviceToken;
+
++(AppDelegate*)instance;
 
 @end
 

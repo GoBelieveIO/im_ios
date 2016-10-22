@@ -23,4 +23,8 @@
 @property(nonatomic, assign) int64_t sellerID;
 @property(nonatomic, assign) int64_t appID;
 
+
+//protect
+- (void)onBack;
+
 @end

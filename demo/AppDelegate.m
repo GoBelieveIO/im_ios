@@ -13,8 +13,8 @@
 #elif defined TEST_GROUP
 #import "GroupLoginViewController.h"
 #elif defined TEST_CUSTOMER
-#import "CustomerLoginViewController.h"
-
+#import "CustomerViewController.h"
+#import "CustomerManager.h"
 #else
 #import "MainViewController.h"
 #endif
@@ -38,6 +38,8 @@
 
 #elif defined TEST_GROUP
 @property(nonatomic) GroupLoginViewController *mainViewController;
+#elif defined TEST_CUSTOMER
+
 #else
 @property(nonatomic) MainViewController *mainViewController;
 #endif
@@ -45,7 +47,9 @@
 @end
 
 @implementation AppDelegate
-
++(AppDelegate*)instance {
+    return (AppDelegate*)[UIApplication sharedApplication].delegate;
+}
 
 -(NSString*)getDocumentPath {
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
@@ -60,10 +64,15 @@
     [IMHttpAPI instance].apiURL = @"http://api.gobelieve.io";
     [IMService instance].host = @"imnode.gobelieve.io";
 
+    [IMService instance].host = @"192.168.1.142";
+    
+    
 #if TARGET_IPHONE_SIMULATOR
+    NSString *deviceID = @"7C8A8F5B-E5F4-4797-8758-05367D2A4D61";
     [IMService instance].deviceID = @"7C8A8F5B-E5F4-4797-8758-05367D2A4D61";
     NSLog(@"device id:%@", @"7C8A8F5B-E5F4-4797-8758-05367D2A4D61");
 #else
+    NSString *deviceID = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
     [IMService instance].deviceID = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
     NSLog(@"device id:%@", [[[UIDevice currentDevice] identifierForVendor] UUIDString]);
 #endif
@@ -85,6 +94,11 @@
     GroupLoginViewController *mainViewController = [[GroupLoginViewController alloc] init];
     self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:mainViewController];
     self.mainViewController = mainViewController;
+#elif defined TEST_CUSTOMER
+    
+    [[CustomerManager instance] initWithAppID:7 appKey:@"sVDIlIiDUm7tWPYWhi6kfNbrqui3ez44" deviceID:deviceID];
+    CustomerViewController *mainViewController = [[CustomerViewController alloc] init];
+    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:mainViewController];
 #else
     MainViewController *mainViewController = [[MainViewController alloc] init];
     self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:mainViewController];
@@ -120,9 +134,15 @@
   
     NSLog(@"device token is: %@:%@", deviceToken, newToken);
     
+    self.deviceToken = deviceToken;
 #ifdef TEST_ROOM
+
 #elif defined TEST_GROUP
     self.mainViewController.deviceToken = newToken;
+#elif defined TEST_CUSTOMER
+    if ([CustomerManager instance].clientID > 0) {
+        [[CustomerManager instance] bindDeviceToken:deviceToken];
+    }
 #else
     self.mainViewController.deviceToken = newToken;
 #endif
@@ -134,7 +154,7 @@
 
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
-    NSLog(@"did receive remote notification:%@", userInfo);
+    NSLog(@"did receive remote notification1:%@", userInfo);
 }
 
 - (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings {
@@ -142,6 +162,16 @@
         NSLog(@"didRegisterUser");
         [application registerForRemoteNotifications];
     }
+}
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))handler
+{
+    NSLog(@"did receive remote notification2:%@", userInfo);
+    if ([[[userInfo objectForKey:@"xiaowei"] objectForKey:@"new"] intValue] == 1) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"new_message" object:nil userInfo:userInfo];
+    }
+    //Success
+    handler(UIBackgroundFetchResultNewData);
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
