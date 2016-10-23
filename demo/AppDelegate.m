@@ -63,9 +63,6 @@
     //app可以单独部署服务器，给予第三方应用更多的灵活性
     [IMHttpAPI instance].apiURL = @"http://api.gobelieve.io";
     [IMService instance].host = @"imnode.gobelieve.io";
-
-    [IMService instance].host = @"192.168.1.142";
-    
     
 #if TARGET_IPHONE_SIMULATOR
     NSString *deviceID = @"7C8A8F5B-E5F4-4797-8758-05367D2A4D61";
@@ -135,13 +132,20 @@
     NSLog(@"device token is: %@:%@", deviceToken, newToken);
     
     self.deviceToken = deviceToken;
+    
 #ifdef TEST_ROOM
 
 #elif defined TEST_GROUP
     self.mainViewController.deviceToken = newToken;
 #elif defined TEST_CUSTOMER
     if ([CustomerManager instance].clientID > 0) {
-        [[CustomerManager instance] bindDeviceToken:deviceToken];
+        [[CustomerManager instance] bindDeviceToken:deviceToken  completion:^(NSError *error) {
+            if (error) {
+                NSLog(@"bind device token fail");
+            } else {
+                NSLog(@"bind device token success");
+            }
+        }];
     }
 #else
     self.mainViewController.deviceToken = newToken;

@@ -1,13 +1,13 @@
-#import "ApplicationCustomerMessageViewController.h"
+#import "XWCustomerMessageViewController.h"
 #import "IMService.h"
 #import "CustomerMessageHandler.h"
 
 
-@interface ApplicationCustomerMessageViewController()
+@interface XWCustomerMessageViewController()
 
 
 @end
-@implementation ApplicationCustomerMessageViewController
+@implementation XWCustomerMessageViewController
 
 - (void)viewDidLoad {
     

@@ -1,12 +1,12 @@
 #import "CustomerManager.h"
-#import "ApplicationCustomerMessageViewController.h"
+#import "XWCustomerMessageViewController.h"
 #import "CustomerMessageDB.h"
 #import "IMHttpAPI.h"
 #import "CustomerMessageHandler.h"
 
 #define URL @"http://api.gobelieve.io"
 
-#define URL @"http://192.168.33.10:5000"
+//#define URL @"http://192.168.33.10:5000"
 
 @interface CustomerManager()
 
@@ -64,9 +64,11 @@
                                                               cachePolicy:NSURLRequestUseProtocolCachePolicy
                                                           timeoutInterval:60];
     
-    NSString *basic = [NSString stringWithFormat:@"Basic %lld:%s", self.appID, self.appKey];
-    NSString *auth = [[basic dataUsingEncoding:NSUTF8StringEncoding] base64EncodedStringWithOptions:0];
+    NSString *basic = [NSString stringWithFormat:@"%lld:%@", self.appID, self.appKey];
+    NSString *basic64 = [[basic dataUsingEncoding:NSUTF8StringEncoding] base64EncodedStringWithOptions:0];
     
+    NSLog(@"base64:%@", basic64);
+    NSString *auth = [NSString stringWithFormat:@"Basic %@", basic64];
     NSDictionary *headers = @{@"Content-Type":@"application/json", @"Authorization":auth};
     [urlRequest setAllHTTPHeaderFields:headers];
     
@@ -391,7 +393,7 @@
         return;
     }
 
-    ApplicationCustomerMessageViewController *ctrl = [[ApplicationCustomerMessageViewController alloc] init];
+    XWCustomerMessageViewController *ctrl = [[XWCustomerMessageViewController alloc] init];
     ctrl.storeID = self.storeID;
     ctrl.currentUID = self.clientID;
     ctrl.appID = self.appID;

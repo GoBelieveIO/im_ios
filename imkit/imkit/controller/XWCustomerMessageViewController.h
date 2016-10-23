@@ -11,7 +11,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import "CustomerMessageViewController.h"
 
-@interface ApplicationCustomerMessageViewController : CustomerMessageViewController
+@interface XWCustomerMessageViewController : CustomerMessageViewController
 
 @end
 
