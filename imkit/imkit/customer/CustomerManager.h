@@ -25,7 +25,11 @@
  * 1.app启动时
  * [[CustomerManager instance] initWithAppID:appID appKey:appKey]
  * if ([CustomerManager instance].clientID == 0) {
- *     [[CustomerManager instance] registerClient:name]
+ *     [[CustomerManager instance] registerClient:name completion:^() {
+ *           [[CustomerManager instance] login]
+ *     }]
+ * } else {
+ *     [[CustomerManager instance] login]
  * }
  *
  * 应用有用户系统
@@ -35,14 +39,18 @@
  *
  * 2.用户登录后，使用用户的id和用户名称来注册顾客id
  * if ([CustomerManager instance].uid != 当前登录的用户id) {
- *     [[CustomerManager instance] registerClient:uid name:name avatar:avatar]
+ *     [[CustomerManager instance] registerClient:uid name:name avatar:avatar completion:^() {
+ *           [[CustomerManager instance] login]
+ *     }]
+ * } else {
+ *      [[CustomerManager instance] login]
  * }
- * 重新打开通知
- * [[CustomerManager instance] openNotification]
  *
  *
  * 3.用户注销后
- *[[CustomerManager instance] closeNotification]
+ * [[CustomerManager instance] unbindDeviceToken:^() {
+ *      [CustomerManager instance] unregisterClient()
+ * }]
  */
 @interface CustomerManager : NSObject
 
