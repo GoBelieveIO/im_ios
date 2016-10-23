@@ -56,6 +56,18 @@
     
     [self.view addSubview:loginedView];
     
+    startHeight += 64;
+    btn = [UIButton buttonWithType:UIButtonTypeCustom];
+    btn.frame = CGRectMake(15, startHeight, self.view.frame.size.width - 30, 48);
+    [btn setTitle:@"注销" forState:UIControlStateNormal];
+    [btn setBackgroundImage:[UIImage imageNamed:@"btn_blue"] forState:UIControlStateNormal];
+    [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    btn.titleLabel.font = [UIFont systemFontOfSize:17];
+    [btn addTarget:self action:@selector(actionLogout) forControlEvents:UIControlEventTouchUpInside];
+    [loginedView addSubview:btn];
+    
+    [self.view addSubview:loginedView];
+    
     self.unreadLabel = unread;
     self.loginedView = loginedView;
     
@@ -163,6 +175,22 @@
     }
     [[CustomerManager instance] pushCustomerViewControllerInViewController:self.navigationController title:@"客服"];
 }
+
+- (void)actionLogout {
+    [[CustomerManager instance] unbindDeviceToken:^(NSError *error) {
+        //unbind失败，
+        //忽略此错误,则会导致注销后还会收到apns推送消息
+        if (error) {
+            NSLog(@"unbind device token fail");
+            return;
+        }
+        
+        [[CustomerManager instance] unregisterClient];
+        
+        self.loginView.hidden = NO;
+        self.loginedView.hidden = YES;
+    }];
+}
 - (void)actionLogin {
     if (!self.tfSender.text.length || !self.tfName.text.length) {
         NSLog(@"invalid input");
@@ -172,9 +200,25 @@
     
     NSString *uid = self.tfSender.text;
     NSString *name = self.tfName.text;
+    
+
     if ([CustomerManager instance].clientID > 0 &&
         [[CustomerManager instance].uid isEqualToString:uid]) {
+        //顾客已经注册,此处只要做登录动作
         NSLog(@"register client id:%lld", [CustomerManager instance].clientID);
+
+        if ([AppDelegate instance].deviceToken.length > 0) {
+            [[CustomerManager instance] bindDeviceToken:[AppDelegate instance].deviceToken
+                                             completion:^(NSError *error) {
+                                                 if (error) {
+                                                     NSLog(@"bind device token fail");
+                                                 } else {
+                                                     NSLog(@"bind device token success");
+                                                 }
+                                             }];
+        }
+
+        [[CustomerManager instance] login];
         self.loginView.hidden = YES;
         self.loginedView.hidden = NO;
         return;
@@ -207,6 +251,8 @@
                                                                                  }
                                                                              }];
                                         }
+                                        
+                                        [[CustomerManager instance] login];
                                         
     }];
 }

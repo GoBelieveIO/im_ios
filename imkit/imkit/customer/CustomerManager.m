@@ -139,23 +139,24 @@
                                wself.name = name;
                                wself.avatar = avatar;
                                
-                               
                                [self storeDictionary];
-                               
-                               NSString *path = [self getDocumentPath];
-                               NSString *dbPath = [NSString stringWithFormat:@"%@/%lld", path, clientID];
-                               [CustomerMessageDB instance].dbPath = [NSString stringWithFormat:@"%@/customer", dbPath];
-                               
-                               [IMService instance].customerMessageHandler = [CustomerMessageHandler instance];
-                               
-                               [IMService instance].uid = clientID;
-                               [IMService instance].token = token;
-                               [IMHttpAPI instance].accessToken = token;
                                
                                completion(clientID, nil);
                                
                            }];
 
+}
+
+-(void)login {
+    NSString *path = [self getDocumentPath];
+    NSString *dbPath = [NSString stringWithFormat:@"%@/%lld", path, self.clientID];
+    [CustomerMessageDB instance].dbPath = [NSString stringWithFormat:@"%@/customer", dbPath];
+    
+    [IMService instance].customerMessageHandler = [CustomerMessageHandler instance];
+    
+    [IMService instance].uid = self.clientID;
+    [IMService instance].token = self.token;
+    [IMHttpAPI instance].accessToken = self.token;
 }
 
 -(NSString*)getDocumentPath {
@@ -184,56 +185,15 @@
     return urlRequest;
 }
 
--(void)unregisterClient:(void (^)(NSError *error))completion {
-    NSAssert(self.clientID > 0, @"");
-    if (self.clientID == 0) {
-        return;
-    }
-    
-    if (self.deviceToken.length > 0) {
-        NSMutableURLRequest *urlRequest = [self newUnbindDeviceTokenRequest:self.deviceToken];
-        [NSURLConnection sendAsynchronousRequest:urlRequest
-                                           queue:[NSOperationQueue mainQueue]
-                               completionHandler:^(NSURLResponse * _Nullable response, NSData * _Nullable data, NSError * _Nullable connectionError) {
-                                                                     NSInteger statusCode = [(NSHTTPURLResponse*)response statusCode];
-                                   
-                                   if (connectionError) {
-                                       NSLog(@"connection error:%@", connectionError);
-                                       NSError *e = [NSError errorWithDomain:@"customer" code:1000 userInfo:nil];
-                                       completion(e);
-                                       return;
-                                   }
-                                   if (statusCode != 200) {
-                                       NSError *e = [NSError errorWithDomain:@"customer" code:2000 userInfo:nil];
-                                       completion(e);
-                                       return;
-                                   } else {
-                                       NSLog(@"unbind device token success");
-                                       self.clientID = 0;
-                                       self.binded = NO;
-                                       self.deviceToken = @"";
-                                       self.storeID = 0;
-                                       self.token = @"";
-                                       self.name = @"";
-                                       self.avatar = @"";
-                                       [self storeDictionary];
-                                       
-                                       completion(nil);
-                                   }
-                               }];
-    } else {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.clientID = 0;
-            self.binded = NO;
-            self.deviceToken = @"";
-            self.storeID = 0;
-            self.token = @"";
-            self.name = @"";
-            self.avatar = @"";
-            [self storeDictionary];
-            completion(nil);
-        });
-    }
+-(void)unregisterClient {
+    self.clientID = 0;
+    self.binded = NO;
+    self.deviceToken = @"";
+    self.storeID = 0;
+    self.token = @"";
+    self.name = @"";
+    self.avatar = @"";
+    [self storeDictionary];
 }
 
 -(void)setClientName:(NSString*)name avatar:(NSString*)avatar {
@@ -286,6 +246,45 @@
                                    }
                                }];
 
+    }
+}
+
+-(void)unbindDeviceToken:(void (^)(NSError *error))completion {
+    if (self.binded && self.deviceToken.length > 0) {
+        NSMutableURLRequest *urlRequest = [self newUnbindDeviceTokenRequest:self.deviceToken];
+        [NSURLConnection sendAsynchronousRequest:urlRequest
+                                           queue:[NSOperationQueue mainQueue]
+                               completionHandler:^(NSURLResponse * _Nullable response, NSData * _Nullable data, NSError * _Nullable connectionError) {
+                                   NSInteger statusCode = [(NSHTTPURLResponse*)response statusCode];
+                                   
+                                   if (connectionError) {
+                                       NSLog(@"connection error:%@", connectionError);
+                                       NSError *e = [NSError errorWithDomain:@"customer" code:1000 userInfo:nil];
+                                       completion(e);
+                                       return;
+                                   }
+                                   if (statusCode != 200) {
+                                       NSError *e = [NSError errorWithDomain:@"customer" code:2000 userInfo:nil];
+                                       completion(e);
+                                       return;
+                                   } else {
+                                       NSLog(@"unbind device token success");
+                                       
+                                       self.deviceToken = @"";
+                                       self.binded = NO;
+                                       [self storeDictionary];
+                                       
+                                       completion(nil);
+                                   }
+                               }];
+    } else {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.deviceToken = @"";
+            self.binded = NO;
+            [self storeDictionary];
+            
+            completion(nil);
+        });
     }
 }
 
@@ -391,7 +390,7 @@
     if (self.clientID == 0) {
         return;
     }
-    
+
     ApplicationCustomerMessageViewController *ctrl = [[ApplicationCustomerMessageViewController alloc] init];
     ctrl.storeID = self.storeID;
     ctrl.currentUID = self.clientID;
