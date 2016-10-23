@@ -64,10 +64,10 @@
                                                               cachePolicy:NSURLRequestUseProtocolCachePolicy
                                                           timeoutInterval:60];
     
-    NSString *basic = [NSString stringWithFormat:@"%lld:%s", self.appID, self.appKey];
+    NSString *basic = [NSString stringWithFormat:@"Basic %lld:%s", self.appID, self.appKey];
     NSString *auth = [[basic dataUsingEncoding:NSUTF8StringEncoding] base64EncodedStringWithOptions:0];
     
-    NSDictionary *headers = @{@"Content-Type":@"application/json", @"Basic":auth};
+    NSDictionary *headers = @{@"Content-Type":@"application/json", @"Authorization":auth};
     [urlRequest setAllHTTPHeaderFields:headers];
     
     return urlRequest;
