@@ -76,6 +76,11 @@
 -(void)registerClient:(NSString*)uid name:(NSString*)name avatar:(NSString*)avatar
            cmopletion:(void (^)(int64_t clientID, NSError *error))completion;
 
+//清空当前顾客的登录信息,同时会告诉服务端不再推送离线消息
+//关闭离线消息的推送，新消息用户将得不到提醒
+//同时app也将无法更新未读小红点的状态
+-(void)unregisterClient:(void (^)(NSError *error))completion;
+
 //设置顾客信息
 -(void)setClientName:(NSString*)name avatar:(NSString*)avatar;
 
@@ -83,12 +88,10 @@
 //在CLEAR_CUSTOMER_NEW_MESSAGE通知消息的处理函数中清空未读小红点的状态
 //所有离线消息都会通过apns推送到客户端，
 //客户端可以在AppDelegate的didReceiveRemoteNotification函数中设置未读小红点的状态
--(void)bindDeviceToken:(NSData*)deviceToken;
+-(void)bindDeviceToken:(NSData*)deviceToken completion:(void (^)(NSError *error))completion;
 
-//关闭离线消息的推送，新消息用户将得不到提醒
-//同时app也将无法更新未读小红点的状态
-//用户注销时可以关闭推送，以免打扰顾客
--(void)unbindDeviceToken:(void (^)(NSError *error))completion;
+
+
 
 //获取未读消息标志，在回调中保存未读小红点的状态
 //此接口仅需在app启动和进入前台的时候调用

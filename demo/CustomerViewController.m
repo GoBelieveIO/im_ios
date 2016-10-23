@@ -32,6 +32,8 @@
         [self setEdgesForExtendedLayout:UIRectEdgeNone];
     }
     
+    self.title = @"Demo";
+    
     UIView *loginedView = [[UIView alloc] initWithFrame:self.view.bounds];
     float startHeight = [[UIScreen mainScreen] bounds].size.height >= 568.0 ? 100 : 100;
     CGRect frame = CGRectMake(15, startHeight + 12, self.view.frame.size.width - 30, 36);
@@ -119,10 +121,28 @@
     self.loginedView.hidden = YES;
     
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillEnterForeground:)
+                                                 name:UIApplicationWillEnterForegroundNotification object:nil];
+    
     [[NSNotificationCenter defaultCenter] addObserver: self selector:@selector(clearNewState) name:CLEAR_CUSTOMER_NEW_MESSAGE object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newMessage:) name:@"new_message" object:nil];
 }
 
+- (void)appWillEnterForeground:(NSNotification*)notification {
+    [[CustomerManager instance] getUnreadMessageWithCompletion:^(BOOL hasUnread, NSError *error) {
+        if (error) {
+            NSLog(@"get unread message fail");
+        } else {
+            if (hasUnread) {
+                self.unreadLabel.text = @"新消息";
+                self.unreadLabel.textColor = [UIColor redColor];
+            } else {
+                self.unreadLabel.text = @"没有未读消息";
+                self.unreadLabel.textColor = [UIColor blackColor];
+            }
+        }
+    }];
+}
 
 - (void)newMessage:(id)userInfo {
     NSLog(@"new message");
@@ -178,8 +198,16 @@
                                         self.loginedView.hidden = NO;
                                         
                                         if ([AppDelegate instance].deviceToken.length > 0) {
-                                            [[CustomerManager instance] bindDeviceToken:[AppDelegate instance].deviceToken];
+                                            [[CustomerManager instance] bindDeviceToken:[AppDelegate instance].deviceToken
+                                                                             completion:^(NSError *error) {
+                                                                                 if (error) {
+                                                                                     NSLog(@"bind device token fail");
+                                                                                 } else {
+                                                                                     NSLog(@"bind device token success");
+                                                                                 }
+                                                                             }];
                                         }
+                                        
     }];
 }
 

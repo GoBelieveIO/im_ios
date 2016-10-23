@@ -101,7 +101,6 @@
 		6DB34C231C4D1C5F006D78D4 /* MessageConversationCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MessageConversationCell.xib; sourceTree = "<group>"; };
 		6DB34CAC1C4E83BC006D78D4 /* customer-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "customer-Info.plist"; sourceTree = "<group>"; };
 		6DBB2CBF1DBB348D00BC545A /* customer_demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = customer_demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		6DBB2CC01DBB348D00BC545A /* im_demo copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "im_demo copy-Info.plist"; path = "/Users/houxh/production/gobelieve/im_ios/im_demo copy-Info.plist"; sourceTree = "<absolute>"; };
 		6DBB2CC21DBB355100BC545A /* CustomerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomerViewController.h; sourceTree = "<group>"; };
 		6DBB2CC31DBB355100BC545A /* CustomerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomerViewController.m; sourceTree = "<group>"; };
 		6DBB2CC61DBBBDD600BC545A /* im_demo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = im_demo.entitlements; sourceTree = "<group>"; };
@@ -216,7 +215,6 @@
 				6DF54D8C1AB5862000197EBC /* Products */,
 				6DF54E651AB58B8500197EBC /* Frameworks */,
 				3369814A4404C5EFBCD938BC /* Pods */,
-				6DBB2CC01DBB348D00BC545A /* im_demo copy-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -852,7 +850,7 @@
 					"COCOAPODS=1",
 					TEST_CUSTOMER,
 				);
-				INFOPLIST_FILE = "im_demo copy-Info.plist";
+				INFOPLIST_FILE = "demo/customer-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -875,7 +873,7 @@
 					"COCOAPODS=1",
 					TEST_CUSTOMER,
 				);
-				INFOPLIST_FILE = "im_demo copy-Info.plist";
+				INFOPLIST_FILE = "demo/customer-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				ONLY_ACTIVE_ARCH = YES;

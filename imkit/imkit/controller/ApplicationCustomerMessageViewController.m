@@ -12,14 +12,14 @@
 - (void)viewDidLoad {
     
     [super viewDidLoad];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appDidEnterBackground:)
+                                                 name:UIApplicationDidEnterBackgroundNotification object:nil];
     
-    if (self.token.length == 0) {
-        return;
-    }
     
-    [IMService instance].customerMessageHandler = [CustomerMessageHandler instance];
-    [IMService instance].uid = self.currentUID;
-    [IMService instance].token = self.token;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillEnterForeground:)
+                                                 name:UIApplicationWillEnterForegroundNotification object:nil];
+
     [[IMService instance] start];
 }
 

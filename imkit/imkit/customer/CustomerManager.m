@@ -2,6 +2,11 @@
 #import "ApplicationCustomerMessageViewController.h"
 #import "CustomerMessageDB.h"
 #import "IMHttpAPI.h"
+#import "CustomerMessageHandler.h"
+
+#define URL @"http://api.gobelieve.io"
+
+#define URL @"http://192.168.33.10:5000"
 
 @interface CustomerManager()
 
@@ -50,21 +55,45 @@
     [self registerClient:@"" name:name avatar:@"" cmopletion:completion];
 }
 
--(void)registerClient:(NSString*)uid name:(NSString*)name avatar:(NSString*)avatar
-           cmopletion:(void (^)(int64_t clientID, NSError *error))completion {
-    NSString *url = @"http://api.gobelieve.io/customer/register";
+-(NSMutableURLRequest*)newClientURLRequest:(NSString*)path {
+    NSString *url = [NSString stringWithFormat:@"%@%@", URL, path];
     
     //The default timeout interval is 60 seconds.
     //In iOS versions prior to iOS 6, the minimum (and default) timeout interval for any request containing a request body was 240 seconds.
     NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]
                                                               cachePolicy:NSURLRequestUseProtocolCachePolicy
                                                           timeoutInterval:60];
-    [urlRequest setHTTPMethod:@"POST"];
     
+    NSString *basic = [NSString stringWithFormat:@"%lld:%s", self.appID, self.appKey];
+    NSString *auth = [[basic dataUsingEncoding:NSUTF8StringEncoding] base64EncodedStringWithOptions:0];
     
-    NSMutableDictionary *headers = [NSMutableDictionary dictionaryWithObject:@"application/json" forKey:@"Content-Type"];
+    NSDictionary *headers = @{@"Content-Type":@"application/json", @"Basic":auth};
     [urlRequest setAllHTTPHeaderFields:headers];
     
+    return urlRequest;
+}
+
+-(NSMutableURLRequest*)newUserURLRequest:(NSString*)path {
+    NSString *url = [NSString stringWithFormat:@"%@%@", URL, path];
+    
+    //The default timeout interval is 60 seconds.
+    //In iOS versions prior to iOS 6, the minimum (and default) timeout interval for any request containing a request body was 240 seconds.
+    NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]
+                                                              cachePolicy:NSURLRequestUseProtocolCachePolicy
+                                                          timeoutInterval:60];
+
+    NSMutableDictionary *headers = [NSMutableDictionary dictionaryWithObject:@"application/json" forKey:@"Content-Type"];
+    NSString *auth = [NSString stringWithFormat:@"Bearer %@", self.token];
+    [headers setObject:auth forKey:@"Authorization"];
+    [urlRequest setAllHTTPHeaderFields:headers];
+    
+    return urlRequest;
+    
+}
+-(void)registerClient:(NSString*)uid name:(NSString*)name avatar:(NSString*)avatar
+           cmopletion:(void (^)(int64_t clientID, NSError *error))completion {
+
+    NSMutableURLRequest *urlRequest = [self newClientURLRequest:@"/customer/register"];
     NSDictionary *dict = @{@"appid":[NSNumber numberWithLongLong:self.appID],
                            @"uid":uid,
                            @"user_name":name ? name :@"",
@@ -74,10 +103,9 @@
     
     NSData *data = [NSJSONSerialization dataWithJSONObject:dict options:0 error:nil];
     [urlRequest setHTTPBody:data];
+    [urlRequest setHTTPMethod:@"POST"];
     
     __weak CustomerManager *wself = self;
-    
-  
     [NSURLConnection sendAsynchronousRequest:urlRequest
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse * _Nullable response, NSData * _Nullable data, NSError * _Nullable connectionError) {
@@ -110,7 +138,7 @@
                                wself.uid = uid;
                                wself.name = name;
                                wself.avatar = avatar;
-                      
+                               
                                
                                [self storeDictionary];
                                
@@ -118,8 +146,14 @@
                                NSString *dbPath = [NSString stringWithFormat:@"%@/%lld", path, clientID];
                                [CustomerMessageDB instance].dbPath = [NSString stringWithFormat:@"%@/customer", dbPath];
                                
+                               [IMService instance].customerMessageHandler = [CustomerMessageHandler instance];
+                               
+                               [IMService instance].uid = clientID;
+                               [IMService instance].token = token;
+                               [IMHttpAPI instance].accessToken = token;
+                               
                                completion(clientID, nil);
-                      
+                               
                            }];
 
 }
@@ -128,6 +162,78 @@
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *basePath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
     return basePath;
+}
+
+
+-(NSMutableURLRequest*)newBindDeviceTokenRequest:(NSString*)deviceToken {
+    NSMutableURLRequest *urlRequest = [self newUserURLRequest:@"/device/unbind"];
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    [dict setObject:self.deviceToken forKey:@"apns_device_token"];
+    NSData *data = [NSJSONSerialization dataWithJSONObject:dict options:0 error:nil];
+    [urlRequest setHTTPBody:data];
+    [urlRequest setHTTPMethod:@"POST"];
+    return urlRequest;
+}
+-(NSMutableURLRequest*)newUnbindDeviceTokenRequest:(NSString*)deviceToken {
+    NSMutableURLRequest *urlRequest = [self newUserURLRequest:@"/device/unbind"];
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    [dict setObject:self.deviceToken forKey:@"apns_device_token"];
+    NSData *data = [NSJSONSerialization dataWithJSONObject:dict options:0 error:nil];
+    [urlRequest setHTTPBody:data];
+    [urlRequest setHTTPMethod:@"POST"];
+    return urlRequest;
+}
+
+-(void)unregisterClient:(void (^)(NSError *error))completion {
+    NSAssert(self.clientID > 0, @"");
+    if (self.clientID == 0) {
+        return;
+    }
+    
+    if (self.deviceToken.length > 0) {
+        NSMutableURLRequest *urlRequest = [self newUnbindDeviceTokenRequest:self.deviceToken];
+        [NSURLConnection sendAsynchronousRequest:urlRequest
+                                           queue:[NSOperationQueue mainQueue]
+                               completionHandler:^(NSURLResponse * _Nullable response, NSData * _Nullable data, NSError * _Nullable connectionError) {
+                                                                     NSInteger statusCode = [(NSHTTPURLResponse*)response statusCode];
+                                   
+                                   if (connectionError) {
+                                       NSLog(@"connection error:%@", connectionError);
+                                       NSError *e = [NSError errorWithDomain:@"customer" code:1000 userInfo:nil];
+                                       completion(e);
+                                       return;
+                                   }
+                                   if (statusCode != 200) {
+                                       NSError *e = [NSError errorWithDomain:@"customer" code:2000 userInfo:nil];
+                                       completion(e);
+                                       return;
+                                   } else {
+                                       NSLog(@"unbind device token success");
+                                       self.clientID = 0;
+                                       self.binded = NO;
+                                       self.deviceToken = @"";
+                                       self.storeID = 0;
+                                       self.token = @"";
+                                       self.name = @"";
+                                       self.avatar = @"";
+                                       [self storeDictionary];
+                                       
+                                       completion(nil);
+                                   }
+                               }];
+    } else {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.clientID = 0;
+            self.binded = NO;
+            self.deviceToken = @"";
+            self.storeID = 0;
+            self.token = @"";
+            self.name = @"";
+            self.avatar = @"";
+            [self storeDictionary];
+            completion(nil);
+        });
+    }
 }
 
 -(void)setClientName:(NSString*)name avatar:(NSString*)avatar {
@@ -140,7 +246,7 @@
     [self storeDictionary];
 }
 
--(void)bindDeviceToken:(NSData*)deviceToken {
+-(void)bindDeviceToken:(NSData*)deviceToken completion:(void (^)(NSError *error))completion {
     NSString* newToken = [deviceToken description];
     newToken = [newToken stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"<>"]];
     newToken = [newToken stringByReplacingOccurrencesOfString:@" " withString:@""];
@@ -154,22 +260,38 @@
     [self storeDictionary];
     
     if (self.token.length > 0 && self.deviceToken.length > 0) {
-        //bind device token
-        [IMHttpAPI instance].accessToken = self.token;
-        [IMHttpAPI bindDeviceToken:deviceToken success:^{
-            self.binded = YES;
-            [self storeDictionary];
-            NSLog(@"bind device token success");
-        } fail:^{
-            NSLog(@"bind device token success");
-        }];
+        NSMutableURLRequest *urlRequest = [self newBindDeviceTokenRequest:self.deviceToken];
+        [NSURLConnection sendAsynchronousRequest:urlRequest
+                                           queue:[NSOperationQueue mainQueue]
+                               completionHandler:^(NSURLResponse * _Nullable response, NSData * _Nullable data, NSError * _Nullable connectionError) {
+                                   NSInteger statusCode = [(NSHTTPURLResponse*)response statusCode];
+                                   
+                                   if (connectionError) {
+                                       NSLog(@"connection error:%@", connectionError);
+                                       NSError *e = [NSError errorWithDomain:@"customer" code:1000 userInfo:nil];
+                                       completion(e);
+                                       return;
+                                   }
+                                   if (statusCode != 200) {
+                                       NSLog(@"bind device token fail");
+                                       NSError *e = [NSError errorWithDomain:@"customer" code:2000 userInfo:nil];
+                                       completion(e);
+                                       return;
+                                   } else {
+                                       NSLog(@"bind device token success");
+                                    
+                                       self.binded = YES;
+                                       [self storeDictionary];
+                                       completion(nil);
+                                   }
+                               }];
+
     }
 }
 
 -(void)unbindDeviceToken {
     [self storeDictionary];
     if (self.token.length > 0 && self.deviceToken.length > 0) {
-        [IMHttpAPI instance].accessToken = self.token;
         [IMHttpAPI unbindDeviceToken:self.deviceToken success:^{
             NSLog(@"unbind device token success");
         } fail:^{
@@ -178,8 +300,45 @@
     }
 }
 
+-(NSMutableURLRequest*)newGetOfflineRequest {
+    NSMutableURLRequest *urlRequest = [self newUserURLRequest:@"/messages/offline"];
+    [urlRequest setHTTPMethod:@"GET"];
+    return urlRequest;
+}
+
 -(void)getUnreadMessageWithCompletion:(void(^)(BOOL hasUnread, NSError* error))completion {
-    
+    if (self.token.length == 0) {
+        NSLog(@"token is null");
+        return;
+    }
+
+    NSMutableURLRequest *urlRequest = [self newGetOfflineRequest];
+    __weak CustomerManager *wself = self;
+    [NSURLConnection sendAsynchronousRequest:urlRequest
+                                       queue:[NSOperationQueue mainQueue]
+                           completionHandler:^(NSURLResponse * _Nullable response, NSData * _Nullable data, NSError * _Nullable connectionError) {
+                               if (connectionError) {
+                                   NSLog(@"connection error:%@", connectionError);
+                                   NSError *e = [NSError errorWithDomain:@"customer" code:1000 userInfo:nil];
+                                   completion(NO, e);
+                                   return;
+                               }
+                               
+                               NSInteger statusCode = [(NSHTTPURLResponse*)response statusCode];
+                               if (statusCode != 200) {
+                                   NSDictionary *resp = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil];
+                                   NSLog(@"customer authorization error:%@", resp);
+                                   
+                                   NSError *e = [NSError errorWithDomain:@"customer" code:2000 userInfo:nil];
+                                   completion(NO, e);
+                                   return;
+                               }
+                               NSDictionary *resp = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil];
+                               NSLog(@"customer authorization resp:%@", resp);
+                               
+                               int new = [resp[@"data"][@"new"] intValue];
+                               completion(new, nil);
+                           }];
 }
 
 
@@ -234,12 +393,10 @@
     }
     
     ApplicationCustomerMessageViewController *ctrl = [[ApplicationCustomerMessageViewController alloc] init];
-    ctrl.token = self.token;
     ctrl.storeID = self.storeID;
     ctrl.currentUID = self.clientID;
     ctrl.appID = self.appID;
     ctrl.peerName = title;
-    ctrl.sellerID = 100083;
     [controller pushViewController:ctrl animated:YES];
 }
 
