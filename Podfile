@@ -19,3 +19,7 @@ target 'room_demo' do
   shared_pods
 end
 
+target 'customer_demo' do
+  shared_pods
+end
+

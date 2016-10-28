@@ -394,6 +394,7 @@
     }
 
     XWCustomerMessageViewController *ctrl = [[XWCustomerMessageViewController alloc] init];
+    ctrl.token = self.token;
     ctrl.storeID = self.storeID;
     ctrl.currentUID = self.clientID;
     ctrl.appID = self.appID;

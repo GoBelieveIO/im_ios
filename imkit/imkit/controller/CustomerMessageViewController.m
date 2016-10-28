@@ -129,12 +129,6 @@
         msg = (ICustomerMessage*)[iterator next];
     }
 
-    //依旧发给上一次客服人员
-    if (self.sellerID == 0) {
-        ICustomerMessage *cm = [self.messages lastObject];
-        self.sellerID = cm.sellerID;
-    }
-
     [self downloadMessageContent:self.messages count:count];
     [self checkMessageFailureFlag:self.messages count:count];
     
@@ -282,8 +276,6 @@
     m.timestamp = im.timestamp;
     m.isSupport = YES;
     m.isOutgoing = NO;
-    
-    self.sellerID = im.sellerID;
     
     if (self.textMode && m.type != MESSAGE_TEXT) {
         return;

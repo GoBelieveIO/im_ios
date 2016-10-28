@@ -12,6 +12,6 @@
 #import "CustomerMessageViewController.h"
 
 @interface XWCustomerMessageViewController : CustomerMessageViewController
-
+@property(nonatomic, copy) NSString *token;
 @end
 
