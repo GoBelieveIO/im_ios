@@ -20,9 +20,9 @@
 #import "MessageImageView.h"
 #import "MessageLocationView.h"
 #import "MessageLinkView.h"
-#import "MessageViewCell.h"
 #import "MessageNotificationView.h"
-#import "MessageTimeBaseView.h"
+#import "MessageViewCell.h"
+
 
 #import "MEESImageViewController.h"
 
@@ -109,7 +109,7 @@
     int y = kStatusBarHeight + KNavigationBarHeight;
     CGRect tableFrame = CGRectMake(0.0f, y, w, h - [EaseChatToolbar defaultHeight] - 64);
     
-    self.view.backgroundColor = RGBACOLOR(235, 235, 237, 1);
+    self.view.backgroundColor = RGBACOLOR(235, 235, 235, 1);
 
 	self.tableView = [[UITableView alloc] initWithFrame:tableFrame style:UITableViewStylePlain];
 	self.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;

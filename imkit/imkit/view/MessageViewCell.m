@@ -16,7 +16,6 @@
 #import "MessageNotificationView.h"
 #import "MessageLocationView.h"
 #import "MessageLinkView.h"
-#import "MessageTimeBaseView.h"
 
 @interface MessageViewCell()
 @property(nonatomic) IMessage *msg;
