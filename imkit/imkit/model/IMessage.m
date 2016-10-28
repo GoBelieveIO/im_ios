@@ -208,6 +208,10 @@
 
 @implementation MessageNotificationContent
 
+@end
+
+@implementation MessageGroupNotificationContent
+
 - (id)initWithRaw:(NSString *)raw {
     self = [super initWithRaw:raw];
     if (self) {
@@ -369,7 +373,7 @@
         content = [[MessageLocationContent alloc] initWithRaw:rawContent];
     } else if ([dict objectForKey:@"notification"] != nil) {
         self.type = MESSAGE_GROUP_NOTIFICATION;
-        content = [[MessageNotificationContent alloc] initWithRaw:rawContent];
+        content = [[MessageGroupNotificationContent alloc] initWithRaw:rawContent];
     } else if ([dict objectForKey:@"link"]) {
         self.type = MESSAGE_LINK;
         content = [[MessageLinkContent alloc] initWithRaw:rawContent];
@@ -414,9 +418,9 @@
     return nil;
 }
 
--(MessageNotificationContent*)notificationContent {
+-(MessageGroupNotificationContent*)notificationContent {
     if (self.content.type == MESSAGE_GROUP_NOTIFICATION) {
-        return (MessageNotificationContent*)self.content;
+        return (MessageGroupNotificationContent*)self.content;
     }
     return nil;
 }

@@ -90,6 +90,10 @@
 @end
 
 @interface MessageNotificationContent : MessageContent
+@property(nonatomic, copy) NSString *notificationDesc;
+@end
+
+@interface MessageGroupNotificationContent : MessageNotificationContent
 
 @property(nonatomic) int notificationType;
 
@@ -108,8 +112,6 @@
 @property(nonatomic) int64_t member;
 
 @property(nonatomic, copy) NSString *rawNotification;
-
-@property(nonatomic, copy) NSString *notificationDesc;
 
 -(id)initWithNotification:(NSString*)raw;
 
@@ -146,7 +148,7 @@
 @property(nonatomic, readonly) MessageAudioContent *audioContent;
 @property(nonatomic, readonly) MessageImageContent *imageContent;
 @property(nonatomic, readonly) MessageLocationContent *locationContent;
-@property(nonatomic, readonly) MessageNotificationContent *notificationContent;
+@property(nonatomic, readonly) MessageGroupNotificationContent *notificationContent;
 @property(nonatomic, readonly) MessageLinkContent *linkContent;
 @property(nonatomic, readonly) MessageAttachmentContent *attachmentContent;
 @property(nonatomic, readonly) MessageTimeBaseContent *timeBaseContent;

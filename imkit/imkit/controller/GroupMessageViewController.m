@@ -200,7 +200,7 @@
 
 
 -(void)onGroupNotification:(NSString *)text {
-    MessageNotificationContent *notification = [[MessageNotificationContent alloc] initWithNotification:text];
+    MessageGroupNotificationContent *notification = [[MessageGroupNotificationContent alloc] initWithNotification:text];
     int64_t groupID = notification.groupID;
     if (groupID != self.groupID) {
         return;
@@ -327,7 +327,7 @@
 
 
 - (void)updateNotificationDesc:(IMessage*)message {
-    MessageNotificationContent *notification = message.notificationContent;
+    MessageGroupNotificationContent *notification = message.notificationContent;
     if (message.type == MESSAGE_GROUP_NOTIFICATION) {
         int type = notification.notificationType;
         if (type == NOTIFICATION_GROUP_CREATED) {

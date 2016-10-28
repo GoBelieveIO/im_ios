@@ -46,7 +46,7 @@
 }
 
 -(BOOL)handleGroupNotification:(NSString*)notification {
-    MessageNotificationContent *obj = [[MessageNotificationContent alloc] initWithNotification:notification];
+    MessageGroupNotificationContent *obj = [[MessageGroupNotificationContent alloc] initWithNotification:notification];
     
     IMessage *m = [[IMessage alloc] init];
     m.sender = 0;
