@@ -27,4 +27,6 @@
 //protect
 - (void)onBack;
 
+-(BOOL)saveMessage:(IMessage*)msg;
+
 @end

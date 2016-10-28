@@ -74,6 +74,8 @@
         self.type = MESSAGE_ATTACHMENT;
     } else if ([self.dict objectForKey:@"timestamp"] != nil) {
         self.type = MESSAGE_TIME_BASE;
+    } else if ([self.dict objectForKey:@"headline"] != nil) {
+        self.type = MESSAGE_HEADLINE;
     } else {
         self.type = MESSAGE_UNKNOWN;
     }
@@ -383,6 +385,9 @@
     } else if ([dict objectForKey:@"timestamp"] != nil) {
         self.type = MESSAGE_TIME_BASE;
         content = [[MessageTimeBaseContent alloc] initWithRaw:rawContent];
+    } else if ([dict objectForKey:@"headline"] != nil) {
+        self.type = MESSAGE_HEADLINE;
+        content = [[MessageHeadlineContent alloc] initWithRaw:rawContent];
     } else {
         self.type = MESSAGE_UNKNOWN;
     }
@@ -418,9 +423,13 @@
     return nil;
 }
 
--(MessageGroupNotificationContent*)notificationContent {
+-(MessageNotificationContent*)notificationContent {
     if (self.content.type == MESSAGE_GROUP_NOTIFICATION) {
         return (MessageGroupNotificationContent*)self.content;
+    } else if (self.content.type == MESSAGE_TIME_BASE) {
+        return (MessageTimeBaseContent*)self.content;
+    } else if (self.content.type == MESSAGE_HEADLINE) {
+        return (MessageHeadlineContent*)self.content;
     }
     return nil;
 }
@@ -446,6 +455,26 @@
     return nil;
 }
 
+@end
+
+@implementation MessageHeadlineContent
+-(id)initWithHeadline:(NSString*)headline {
+    self = [super init];
+    if (self) {
+        NSDictionary *dic = @{@"headline":headline};
+        NSString* newStr = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:dic options:0 error:nil] encoding:NSUTF8StringEncoding];
+        self.raw =  newStr;
+    }
+    return self;
+}
+
+-(NSString*)notificationDesc {
+    return [self headline];
+}
+
+-(NSString*)headline {
+    return [self.dict objectForKey:@"headline"];
+}
 @end
 
 @implementation ICustomerMessage

@@ -54,6 +54,6 @@
 
 - (void)setMsg:(IMessage*)msg {
     [super setMsg:msg];
-    self.label.text = msg.timeBaseContent.timeDesc;
+//    self.label.text = msg.timeBaseContent.timeDesc;
 }
 @end

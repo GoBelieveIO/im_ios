@@ -300,20 +300,11 @@
     if(!cell) {
         cell = [[MessageViewCell alloc] initWithType:message.type reuseIdentifier:CellID];
     }
-    BubbleMessageType msgType;
-    
-    if(message.isOutgoing) {
-        msgType = BubbleMessageTypeOutgoing;
-    } else {
-        msgType = BubbleMessageTypeIncoming;
-    }
     
     if (message.isOutgoing) {
-        msgType = BubbleMessageTypeOutgoing;
-        [cell setMessage:message msgType:msgType showName:NO];
+        [cell setMessage:message showName:NO];
     } else {
-        msgType = BubbleMessageTypeIncoming;
-        [cell setMessage:message msgType:msgType showName:self.isShowUserName];
+        [cell setMessage:message showName:self.isShowUserName];
     }
 
     return cell;

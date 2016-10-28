@@ -564,22 +564,13 @@
     }
     BubbleMessageType msgType;
     
-    if (message.type == MESSAGE_TIME_BASE) {
-        MessageTimeBaseContent *timeBase = message.timeBaseContent;
-        timeBase.timeDesc = [self formatSectionTime:[NSDate dateWithTimeIntervalSince1970:timeBase.timestamp]];
-        NSLog(@"time...:%@", timeBase.timeDesc);
-    }
-    
     if (message.isOutgoing) {
         msgType = BubbleMessageTypeOutgoing;
-        [cell setMessage:message msgType:msgType showName:NO];
+        [cell setMessage:message showName:NO];
     } else {
         msgType = BubbleMessageTypeIncoming;
         BOOL showName = self.isShowUserName;
-        if (message.type == MESSAGE_GROUP_NOTIFICATION || message.type == MESSAGE_TIME_BASE) {
-            showName = NO;
-        }
-        [cell setMessage:message msgType:msgType showName:showName];
+        [cell setMessage:message showName:showName];
     }
     
     if (message.type == MESSAGE_AUDIO) {
@@ -640,16 +631,15 @@
             break;
         case MESSAGE_LOCATION:
             return kMessageLocationViewHeight + nameHeight;
+        case MESSAGE_HEADLINE:
+        case MESSAGE_TIME_BASE:
         case MESSAGE_GROUP_NOTIFICATION:
             return kMessageNotificationViewHeight;
         case MESSAGE_LINK:
             return kMessageLinkViewHeight + nameHeight;
-        case MESSAGE_TIME_BASE:
-            return kMessageTimeBaseViewHeight;
         default:
             return 0;
     }
-    
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath{

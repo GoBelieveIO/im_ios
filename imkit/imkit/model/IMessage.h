@@ -18,6 +18,7 @@
 #define MESSAGE_LOCATION 4
 #define MESSAGE_GROUP_NOTIFICATION 5 //群通知
 #define MESSAGE_LINK 6
+#define MESSAGE_HEADLINE 7  //客服的标题
 
 #define MESSAGE_TIME_BASE  254 //虚拟的消息，不会存入磁盘
 #define MESSAGE_ATTACHMENT 255 //消息附件， 只存在本地磁盘
@@ -127,11 +128,17 @@
 
 @end
 
-@interface MessageTimeBaseContent : MessageContent
+@interface MessageTimeBaseContent : MessageNotificationContent
 @property(nonatomic, readonly) int timestamp;
-@property(nonatomic, copy) NSString *timeDesc;
 
 -(id)initWithTimestamp:(int)ts;
+
+@end
+
+@interface MessageHeadlineContent : MessageNotificationContent
+@property(nonatomic, readonly) NSString *headline;
+
+-(id)initWithHeadline:(NSString*)headline;
 
 @end
 

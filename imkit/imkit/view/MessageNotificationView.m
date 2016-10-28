@@ -32,7 +32,7 @@
 - (void)setMsg:(IMessage*)msg {
     [self.msg.notificationContent removeObserver:self forKeyPath:@"notificationDesc"];
     [super setMsg:msg];
-    MessageGroupNotificationContent *notification = self.msg.notificationContent;
+    MessageNotificationContent *notification = self.msg.notificationContent;
     self.label.text = notification.notificationDesc;
     [self.msg.notificationContent addObserver:self forKeyPath:@"notificationDesc" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
     

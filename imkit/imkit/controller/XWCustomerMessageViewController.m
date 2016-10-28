@@ -103,6 +103,30 @@
         if ([IMService instance].connectState == STATE_CONNECTED) {
             [self enableSend];
         }
+        
+        ICustomerMessage *msg = [[ICustomerMessage alloc] init];
+        
+        msg.customerAppID = self.appID;
+        msg.customerID = self.currentUID;
+        msg.storeID = self.storeID;
+        msg.sellerID = self.sellerID;
+        
+        msg.sender = self.sellerID;
+        msg.receiver = self.currentUID;
+        
+        NSString *headline = [NSString stringWithFormat:@"%@为您服务", self.name];
+        
+        MessageHeadlineContent *content = [[MessageHeadlineContent alloc] initWithHeadline:headline];
+        msg.rawContent = content.raw;
+        
+        msg.timestamp = (int)time(NULL);
+        msg.isSupport = YES;
+        msg.isOutgoing = NO;
+        
+        [self saveMessage:msg];
+        
+        [self insertMessage:msg];
+
     }
 }
 

@@ -22,7 +22,7 @@
 @property(nonatomic) IMessage *msg;
 @property(nonatomic) BOOL showName;
 @property(nonatomic) BOOL showHead;
-@property(nonatomic) BubbleMessageType bubbleMessageType;
+//@property(nonatomic) BubbleMessageType bubbleMessageType;
 @end
 
 @implementation MessageViewCell
@@ -87,12 +87,7 @@
                 self.bubbleView = imageView;
             }
                 break;
-            case MESSAGE_GROUP_NOTIFICATION:
-            {
-                MessageNotificationView *notificationView = [[MessageNotificationView alloc] initWithFrame:frame];
-                self.bubbleView = notificationView;
-            }
-                break;
+    
             case MESSAGE_LOCATION:
             {
                 MessageLocationView *locationView = [[MessageLocationView alloc] initWithFrame:frame];
@@ -105,10 +100,12 @@
                 self.bubbleView = linkView;
             }
                 break;
+            case MESSAGE_HEADLINE:
+            case MESSAGE_GROUP_NOTIFICATION:
             case MESSAGE_TIME_BASE:
             {
-                MessageTimeBaseView *timeBaseView = [[MessageTimeBaseView alloc] initWithFrame:frame];
-                self.bubbleView = timeBaseView;
+                MessageNotificationView *notificationView = [[MessageNotificationView alloc] initWithFrame:frame];
+                self.bubbleView = notificationView;
             }
                 break;
             default:
@@ -131,7 +128,7 @@
 }
 
 #pragma mark - Message Cell
-- (void) setMessage:(IMessage *)message msgType:(BubbleMessageType)msgType showName:(BOOL)showName {
+- (void) setMessage:(IMessage *)message showName:(BOOL)showName {
     
     [self.msg removeObserver:self forKeyPath:@"senderInfo"];
     
@@ -140,8 +137,6 @@
     [self.msg addObserver:self forKeyPath:@"senderInfo" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
     
 
-    self.bubbleMessageType = msgType;
-    
     NSString *name = self.msg.senderInfo.name;
     if (name.length == 0) {
         name = self.msg.senderInfo.identifier;
@@ -149,6 +144,8 @@
 
     self.nameLabel.text = name;
 
+    int msgType = self.msg.isOutgoing ? BubbleMessageTypeOutgoing : BubbleMessageTypeIncoming;
+    
     self.showName = showName;
     if (self.msg.type == MESSAGE_TEXT || self.msg.type == MESSAGE_IMAGE ||
         self.msg.type == MESSAGE_LOCATION || self.msg.type == MESSAGE_AUDIO ||
@@ -158,7 +155,7 @@
         self.showHead = NO;
     }
     
-    if (msgType == BubbleMessageTypeOutgoing) {
+    if (self.msg.isOutgoing) {
         self.nameLabel.textAlignment = NSTextAlignmentRight;
     } else {
         self.nameLabel.textAlignment = NSTextAlignmentLeft;
@@ -197,13 +194,6 @@
             audioView.msg = message;
         }
             break;
-        case MESSAGE_GROUP_NOTIFICATION:
-        {
-            MessageNotificationView *notificationView = (MessageNotificationView*)self.bubbleView;
-            notificationView.type = msgType;
-            notificationView.msg = message;
-        }
-            break;
         case MESSAGE_LOCATION:
         {
             MessageLocationView *locationView = (MessageLocationView*)self.bubbleView;
@@ -218,11 +208,13 @@
             linkView.msg = message;
         }
             break;
+        case MESSAGE_HEADLINE:
         case MESSAGE_TIME_BASE:
+        case MESSAGE_GROUP_NOTIFICATION:
         {
-            MessageTimeBaseView *timeBaseView = (MessageTimeBaseView*)self.bubbleView;
-            timeBaseView.type = msgType;
-            timeBaseView.msg = message;
+            MessageNotificationView *notificationView = (MessageNotificationView*)self.bubbleView;
+            notificationView.type = msgType;
+            notificationView.msg = message;
         }
             break;
         default:
@@ -268,7 +260,7 @@
         bubbleFrame.size.height -= NAME_LABEL_HEIGHT;
     }
     
-    if (self.bubbleMessageType == BubbleMessageTypeOutgoing) {
+    if (self.msg.isOutgoing) {
         if (self.showHead) {
             bubbleFrame.size.width -= 44;
         }

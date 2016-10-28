@@ -74,6 +74,7 @@
             MessageTimeBaseContent *tb = [[MessageTimeBaseContent alloc] initWithTimestamp:msg.timestamp];
             IMessage *m = [[IMessage alloc] init];
             m.rawContent = tb.raw;
+            m.notificationContent.notificationDesc = [self formatSectionTime:[NSDate dateWithTimeIntervalSince1970:tb.timestamp]];
             [newMessages addObject:m];
             lastDate = [NSDate dateWithTimeIntervalSince1970:msg.timestamp];
         }
@@ -102,6 +103,7 @@
         MessageTimeBaseContent *tb = [[MessageTimeBaseContent alloc] initWithTimestamp:msg.timestamp];
         IMessage *m = [[IMessage alloc] init];
         m.rawContent = tb.raw;
+        m.notificationContent.notificationDesc = [self formatSectionTime:[NSDate dateWithTimeIntervalSince1970:tb.timestamp]];
         [self.messages addObject:m];
         NSIndexPath *indexPath = nil;
         indexPath = [NSIndexPath indexPathForRow:self.messages.count - 1 inSection:0];
