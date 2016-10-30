@@ -37,10 +37,15 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
-
-        <key>NSLocationWhenInUseUsageDescription</key>
-        <string>This application requires location services to work</string>
-        <key>NSLocationAlwaysUsageDescription</key>
-        <string>This application requires location services to work</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app requires access to the photo library.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app requires access to microphone.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>This app requires access to camera.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This application requires location services to work</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>This application requires location services to work</string>
 </dict>
 </plist>

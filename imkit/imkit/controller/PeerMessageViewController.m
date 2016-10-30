@@ -461,13 +461,7 @@
     
     msg.sender = self.sender;
     msg.receiver = self.receiver;
-    msg.senderInfo = [self.userDelegate getUser:msg.sender];
-    if (msg.senderInfo.name.length == 0) {
-        [self.userDelegate asyncGetUser:msg.sender cb:^(IUser *u) {
-            msg.senderInfo = u;
-        }];
-    }
-    
+
     MessageLocationContent *content = [[MessageLocationContent alloc] initWithLocation:location];
     msg.rawContent = content.raw;
     
@@ -476,6 +470,8 @@
     
     msg.timestamp = (int)time(NULL);
     msg.isOutgoing = YES;
+
+    [self loadSenderInfo:msg];
     
     [self saveMessage:msg];
     
@@ -497,18 +493,14 @@
     
     msg.sender = self.sender;
     msg.receiver = self.receiver;
-    msg.senderInfo = [self.userDelegate getUser:msg.sender];
-    if (msg.senderInfo.name.length == 0) {
-        [self.userDelegate asyncGetUser:msg.sender cb:^(IUser *u) {
-            msg.senderInfo = u;
-        }];
-    }
-    
+
     MessageAudioContent *content = [[MessageAudioContent alloc] initWithAudio:[self localAudioURL] duration:second];
     
     msg.rawContent = content.raw;
     msg.timestamp = (int)time(NULL);
     msg.isOutgoing = YES;
+    
+    [self loadSenderInfo:msg];
     
     //todo 优化读文件次数
     NSData *data = [NSData dataWithContentsOfFile:path];
@@ -530,31 +522,25 @@
         return;
     }
     
-    
     IMessage *msg = [[IMessage alloc] init];
     
     msg.sender = self.sender;
     msg.receiver = self.receiver;
-    msg.senderInfo = [self.userDelegate getUser:msg.sender];
-    if (msg.senderInfo.name.length == 0) {
-        [self.userDelegate asyncGetUser:msg.sender cb:^(IUser *u) {
-            msg.senderInfo = u;
-        }];
-    }
+
+    CGRect screenRect = [[UIScreen mainScreen] bounds];
+    CGFloat screenHeight = screenRect.size.height;
+    float newHeight = screenHeight;
+    float newWidth = newHeight*image.size.width/image.size.height;
     
-    MessageImageContent *content = [[MessageImageContent alloc] initWithImageURL:[self localImageURL]];
+    MessageImageContent *content = [[MessageImageContent alloc] initWithImageURL:[self localImageURL] width:newWidth height:newHeight];
     msg.rawContent = content.raw;
     msg.timestamp = (int)time(NULL);
     msg.isOutgoing = YES;
     
-    CGRect screenRect = [[UIScreen mainScreen] bounds];
-    CGFloat screenHeight = screenRect.size.height;
-    
-    float newHeigth = screenHeight;
-    float newWidth = newHeigth*image.size.width/image.size.height;
+    [self loadSenderInfo:msg];
     
     UIImage *sizeImage = [image resizedImage:CGSizeMake(128, 128) interpolationQuality:kCGInterpolationDefault];
-    image = [image resizedImage:CGSizeMake(newWidth, newHeigth) interpolationQuality:kCGInterpolationDefault];
+    image = [image resizedImage:CGSizeMake(newWidth, newHeight) interpolationQuality:kCGInterpolationDefault];
     
     [[SDImageCache sharedImageCache] storeImage:image forKey:content.imageURL];
     NSString *littleUrl =  [content littleImageURL];
@@ -574,17 +560,12 @@
     
     msg.sender = self.sender;
     msg.receiver = self.receiver;
-    msg.senderInfo = [self.userDelegate getUser:msg.sender];
-    if (msg.senderInfo.name.length == 0) {
-        [self.userDelegate asyncGetUser:msg.sender cb:^(IUser *u) {
-            msg.senderInfo = u;
-        }];
-    }
-    
+
     MessageTextContent *content = [[MessageTextContent alloc] initWithText:text];
     msg.rawContent = content.raw;
     msg.timestamp = (int)time(NULL);
     msg.isOutgoing = YES;
+    [self loadSenderInfo:msg];
     
     [self saveMessage:msg];
     
