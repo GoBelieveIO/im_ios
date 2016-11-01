@@ -51,10 +51,6 @@
     
     if (self.cmd == MSG_HEARTBEAT || self.cmd == MSG_PING) {
         return [NSData dataWithBytes:buf length:HEAD_SIZE];
-    } else if (self.cmd == MSG_AUTH) {
-        int64_t uid = [(NSNumber*)self.body longLongValue];
-        writeInt64(uid, p);
-        return [NSData dataWithBytes:buf length:HEAD_SIZE+8];
     } else if (self.cmd == MSG_AUTH_TOKEN) {
         AuthenticationToken *auth = (AuthenticationToken*)self.body;
         *p++ = auth.platformID;
@@ -159,7 +155,7 @@
     self.cmd = *p;
     p += 4;
     NSLog(@"seq:%d cmd:%d", self.seq, self.cmd);
-    if (self.cmd == MSG_RST || self.cmd == MSG_PONG) {
+    if (self.cmd == MSG_PONG) {
         return YES;
     } else if (self.cmd == MSG_AUTH_STATUS) {
         int status = readInt32(p);

@@ -10,28 +10,27 @@
 #import <Foundation/Foundation.h>
 
 #define MSG_HEARTBEAT 1
-#define MSG_AUTH 2
+
 #define MSG_AUTH_STATUS 3
 #define MSG_IM 4
 #define MSG_ACK 5
-#define MSG_RST 6
+
 #define MSG_GROUP_NOTIFICATION 7
 #define MSG_GROUP_IM 8
-#define MSG_PEER_ACK 9
+
 #define MSG_INPUTING 10
-#define MSG_SUBSCRIBE_ONLINE_STATE 11
-#define MSG_ONLINE_STATE 12
+
 #define MSG_PING 13
 #define MSG_PONG 14
 #define MSG_AUTH_TOKEN 15
-#define MSG_LOGIN_POINT 16
+
 #define MSG_RT 17
 #define MSG_ENTER_ROOM 18
 #define MSG_LEAVE_ROOM 19
 #define MSG_ROOM_IM 20
 #define MSG_SYSTEM 21
 #define MSG_UNREAD_COUNT 22
-#define MSG_CUSTOMER_SERVICE 23
+
 #define MSG_CUSTOMER 24
 #define MSG_CUSTOMER_SUPPORT 25
 
