@@ -26,7 +26,6 @@
 @property(nonatomic)NSMutableArray *peerObservers;
 @property(nonatomic)NSMutableArray *groupObservers;
 @property(nonatomic)NSMutableArray *roomObservers;
-@property(nonatomic)NSMutableArray *loginPointObservers;
 @property(nonatomic)NSMutableArray *systemObservers;
 @property(nonatomic)NSMutableArray *customerServiceObservers;
 @property(nonatomic)NSMutableArray *voipObservers;
@@ -59,7 +58,6 @@
         self.peerObservers = [NSMutableArray array];
         self.groupObservers = [NSMutableArray array];
         self.roomObservers = [NSMutableArray array];
-        self.loginPointObservers = [NSMutableArray array];
         self.systemObservers = [NSMutableArray array];
         self.customerServiceObservers = [NSMutableArray array];
         self.voipObservers = [NSMutableArray array];
@@ -233,10 +231,6 @@
     [self sendMessage:ack];
 }
 
--(void)handleLoginPoint:(Message*)msg {
-    [self publishLoginPoint:(LoginPoint*)msg.body];
-}
-
 -(void)handleRoomMessage:(Message*)msg {
     RoomMessage *rm = (RoomMessage*)msg.body;
     [self publishRoomMessage:rm];
@@ -333,14 +327,6 @@
     }
 }
 
--(void)publishLoginPoint:(LoginPoint*)lp {
-    for (id<LoginPointObserver> ob in self.loginPointObservers) {
-        if ([ob respondsToSelector:@selector(onLoginPoint:)]) {
-            [ob onLoginPoint:lp];
-        }
-    }
-}
-
 -(void)publishSystemMessage:(NSString*)sys {
     for (id<SystemMessageObserver> ob in self.systemObservers) {
         if ([ob respondsToSelector:@selector(onSystemMessage:)]) {
@@ -397,8 +383,6 @@
         [self handlePong:msg];
     } else if (msg.cmd == MSG_GROUP_NOTIFICATION) {
         [self handleGroupNotification:msg];
-    } else if (msg.cmd == MSG_LOGIN_POINT) {
-        [self handleLoginPoint:msg];
     } else if (msg.cmd == MSG_ROOM_IM) {
         [self handleRoomMessage:msg];
     } else if (msg.cmd == MSG_SYSTEM) {
@@ -456,14 +440,6 @@
 
 -(void)removeGroupMessageObserver:(id<GroupMessageObserver>)ob {
     [self.groupObservers removeObject:ob];
-}
-
-
--(void)addLoginPointObserver:(id<LoginPointObserver>)ob {
-    [self.loginPointObservers addObject:ob];
-}
--(void)removeLoginPointObserver:(id<LoginPointObserver>)ob {
-    [self.loginPointObservers removeObject:ob];
 }
 
 -(void)addRoomMessageObserver:(id<RoomMessageObserver>)ob {

@@ -36,11 +36,6 @@
 @end
 
 
-@protocol LoginPointObserver <NSObject>
-//用户在其他地方登陆
--(void)onLoginPoint:(LoginPoint*)lp;
-@end
-
 @protocol PeerMessageObserver <NSObject>
 @optional
 -(void)onPeerMessage:(IMMessage*)msg;
@@ -145,9 +140,6 @@
 
 -(void)addGroupMessageObserver:(id<GroupMessageObserver>)ob;
 -(void)removeGroupMessageObserver:(id<GroupMessageObserver>)ob;
-
--(void)addLoginPointObserver:(id<LoginPointObserver>)ob;
--(void)removeLoginPointObserver:(id<LoginPointObserver>)ob;
 
 -(void)addRoomMessageObserver:(id<RoomMessageObserver>)ob;
 -(void)removeRoomMessageObserver:(id<RoomMessageObserver>)ob;

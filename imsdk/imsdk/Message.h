@@ -35,6 +35,8 @@
 #define MSG_CUSTOMER 24
 #define MSG_CUSTOMER_SUPPORT 25
 
+
+
 #define MSG_VOIP_CONTROL 64
 
 #define PLATFORM_IOS  1
@@ -82,14 +84,6 @@ typedef RoomMessage RTMessage;
 @property(nonatomic, assign) int8_t platformID;
 @property(nonatomic, copy) NSString *deviceID;
 @end
-
-@interface LoginPoint : NSObject
-@property(nonatomic, assign) int32_t upTimestamp;
-@property(nonatomic, assign) int8_t platformID;
-@property(nonatomic, copy) NSString *deviceID;
-@end
-
-
 
 
 @interface VOIPControl : NSObject

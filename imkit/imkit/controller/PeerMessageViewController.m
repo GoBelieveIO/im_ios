@@ -70,7 +70,6 @@
     [[PeerOutbox instance] addBoxObserver:self];
     [[IMService instance] addConnectionObserver:self];
     [[IMService instance] addPeerMessageObserver:self];
-    [[IMService instance] addLoginPointObserver:self];
 }
 
 -(void)removeObserver {
@@ -78,7 +77,6 @@
     [[PeerOutbox instance] removeBoxObserver:self];
     [[IMService instance] removeConnectionObserver:self];
     [[IMService instance] removePeerMessageObserver:self];
-    [[IMService instance] removeLoginPointObserver:self];
 }
 
 - (int64_t)sender {
@@ -249,10 +247,6 @@
     } else {
         [self disableSend];
     }
-}
-
--(void)onLoginPoint:(LoginPoint*)lp {
-    NSLog(@"login point:%@, platform id:%d", lp.deviceID, lp.platformID);
 }
 
 - (void)loadConversationData {

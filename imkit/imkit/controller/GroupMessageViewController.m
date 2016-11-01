@@ -54,7 +54,6 @@
     [[GroupOutbox instance] addBoxObserver:self];
     [[IMService instance] addConnectionObserver:self];
     [[IMService instance] addGroupMessageObserver:self];
-    [[IMService instance] addLoginPointObserver:self];
 }
 
 -(void)removeObserver {
@@ -62,7 +61,6 @@
     [[GroupOutbox instance] removeBoxObserver:self];
     [[IMService instance] removeGroupMessageObserver:self];
     [[IMService instance] removeConnectionObserver:self];
-    [[IMService instance] removeLoginPointObserver:self];
 }
 
 - (int64_t)sender {
@@ -151,9 +149,6 @@
     }
 }
 
--(void)onLoginPoint:(LoginPoint*)lp {
-    NSLog(@"login point:%@, platform id:%d", lp.deviceID, lp.platformID);
-}
 
 
 #pragma mark - MessageObserver

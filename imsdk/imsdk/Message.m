@@ -33,11 +33,6 @@
 
 @end
 
-@implementation LoginPoint
-
-@end
-
-
 
 @implementation VOIPControl
 
@@ -212,15 +207,6 @@
         return YES;
     } else if (self.cmd == MSG_GROUP_NOTIFICATION) {
         self.body = [[NSString alloc] initWithBytes:p length:data.length-HEAD_SIZE encoding:NSUTF8StringEncoding];
-        return YES;
-    } else if (self.cmd == MSG_LOGIN_POINT) {
-        LoginPoint *lp = [[LoginPoint alloc] init];
-        lp.upTimestamp = readInt32(p);
-        p += 4;
-        lp.platformID = *p;
-        p++;
-        lp.deviceID = [[NSString alloc] initWithBytes:p length:data.length-13 encoding:NSUTF8StringEncoding];
-        self.body = lp;
         return YES;
     } else if (self.cmd == MSG_ROOM_IM || self.cmd == MSG_RT) {
         RoomMessage *rm = [[RoomMessage alloc] init];

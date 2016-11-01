@@ -19,9 +19,9 @@
 
 #undef TEXT_MODE
 #ifdef TEXT_MODE
-@interface GroupMessageViewController : TextMessageViewController<GroupMessageObserver,  TCPConnectionObserver, LoginPointObserver>
+@interface GroupMessageViewController : TextMessageViewController<GroupMessageObserver,  TCPConnectionObserver>
 #else
-@interface GroupMessageViewController : MessageViewController<GroupMessageObserver,  TCPConnectionObserver, LoginPointObserver>
+@interface GroupMessageViewController : MessageViewController<GroupMessageObserver,  TCPConnectionObserver>
 #endif
 
 @property(nonatomic) int64_t currentUID;
