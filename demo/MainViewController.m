@@ -18,6 +18,7 @@
 #import <gobelieve/PeerMessageDB.h>
 #import <gobelieve/GroupMessageDB.h>
 #import <gobelieve/CustomerMessageDB.h>
+#import <gobelieve/SyncKeyHandler.h>
 
 #import "MessageListViewController.h"
 
@@ -133,6 +134,21 @@
             [IMHttpAPI instance].accessToken = token;
             [IMService instance].token = token;
             [IMService instance].uid = [tfSender.text longLongValue];
+            
+            NSString *fileName = [NSString stringWithFormat:@"%@/synckey", dbPath];
+            SyncKeyHandler *handler = [[SyncKeyHandler alloc] initWithFileName:fileName];
+            [IMService instance].syncKeyHandler = handler;
+            
+            [IMService instance].syncKey = [handler syncKey];
+            NSLog(@"sync key:%lld", [handler syncKey]);
+            
+            [[IMService instance] clearSuperGroupSyncKey];
+            NSDictionary *groups = [handler superGroupSyncKeys];
+            for (NSNumber *k in groups) {
+                NSNumber *v = [groups objectForKey:k];
+                NSLog(@"group id:%@ sync key:%@", k, v);
+                [[IMService instance] addSuperGroupSyncKey:[v longLongValue] gid:[k longLongValue]];
+            }
             
             [[IMService instance] start];
             

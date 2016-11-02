@@ -34,6 +34,10 @@
 @end
 
 
+@implementation GroupSyncKey
+
+@end
+
 @implementation VOIPControl
 
 @end
@@ -144,6 +148,18 @@
             p += ctl.content.length;
         }
         return [NSData dataWithBytes:buf length:HEAD_SIZE + 16 + ctl.content.length];
+    } else if (self.cmd == MSG_SYNC) {
+        NSNumber *u = (NSNumber*)self.body;
+        writeInt64([u longLongValue], p);
+        p += 8;
+        return [NSData dataWithBytes:buf length:HEAD_SIZE + 8];
+    } else if (self.cmd == MSG_SYNC_GROUP) {
+        GroupSyncKey *s = (GroupSyncKey*)self.body;
+        writeInt64(s.groupID, p);
+        p += 8;
+        writeInt64(s.syncKey, p);
+        p += 8;
+        return [NSData dataWithBytes:buf length:HEAD_SIZE + 16];
     }
     return nil;
 }
@@ -225,11 +241,27 @@
         ctl.content = [NSData dataWithBytes:p length:data.length - 24];
         self.body = ctl;
         return YES;
+    } else if (self.cmd == MSG_SYNC_BEGIN ||
+               self.cmd == MSG_SYNC_END ||
+               self.cmd == MSG_SYNC_NOTIFY) {
+        int64_t k = readInt64(p);
+        p += 8;
+        self.body = [NSNumber numberWithLongLong:k];
+        return YES;
+    } else if (self.cmd == MSG_SYNC_GROUP_BEGIN ||
+               self.cmd == MSG_SYNC_GROUP_END ||
+               self.cmd == MSG_SYNC_GROUP_NOTIFY) {
+        GroupSyncKey *groupSyncKey = [[GroupSyncKey alloc] init];
+        groupSyncKey.groupID = readInt64(p);
+        p += 8;
+        groupSyncKey.syncKey = readInt64(p);
+        p += 8;
+        self.body = groupSyncKey;
+        return YES;
     } else {
         self.body = [NSData dataWithBytes:p length:data.length-8];
         return YES;
     }
-    return NO;
 }
 
 @end

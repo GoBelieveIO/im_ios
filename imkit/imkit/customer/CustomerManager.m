@@ -3,6 +3,7 @@
 #import "CustomerMessageDB.h"
 #import "IMHttpAPI.h"
 #import "CustomerMessageHandler.h"
+#import "SyncKeyHandler.h"
 
 #define URL @"http://api.gobelieve.io"
 
@@ -159,6 +160,23 @@
     [IMService instance].uid = self.clientID;
     [IMService instance].token = self.token;
     [IMHttpAPI instance].accessToken = self.token;
+    
+    
+    NSString *fileName = [NSString stringWithFormat:@"%@/synckey", dbPath];
+    SyncKeyHandler *handler = [[SyncKeyHandler alloc] initWithFileName:fileName];
+    [IMService instance].syncKeyHandler = handler;
+    
+    [IMService instance].syncKey = [handler syncKey];
+    NSLog(@"sync key:%lld", [handler syncKey]);
+    
+    [[IMService instance] clearSuperGroupSyncKey];
+    NSDictionary *groups = [handler superGroupSyncKeys];
+    for (NSNumber *k in groups) {
+        NSNumber *v = [groups objectForKey:k];
+        NSLog(@"group id:%@ sync key:%@", k, v);
+        [[IMService instance] addSuperGroupSyncKey:[v longLongValue] gid:[k longLongValue]];
+    }
+    
 }
 
 -(NSString*)getDocumentPath {

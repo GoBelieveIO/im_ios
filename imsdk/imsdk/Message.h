@@ -35,6 +35,23 @@
 #define MSG_CUSTOMER_SUPPORT 25
 
 
+//客户端->服务端
+#define MSG_SYNC  26 //同步消息
+//服务端->客服端
+#define MSG_SYNC_BEGIN  27
+#define MSG_SYNC_END  28
+//通知客户端有新消息
+#define MSG_SYNC_NOTIFY  29
+
+//客户端->服务端
+#define MSG_SYNC_GROUP  30//同步超级群消息
+//服务端->客服端
+#define MSG_SYNC_GROUP_BEGIN  31
+#define MSG_SYNC_GROUP_END  32
+//通知客户端有新消息
+#define MSG_SYNC_GROUP_NOTIFY  33
+
+
 
 #define MSG_VOIP_CONTROL 64
 
@@ -90,6 +107,13 @@ typedef RoomMessage RTMessage;
 @property(nonatomic, assign) int64_t receiver;
 @property(nonatomic) NSData *content;
 
+@end
+
+typedef NSNumber SyncKey;
+
+@interface GroupSyncKey : NSObject
+@property(nonatomic, assign) int64_t groupID;
+@property(nonatomic, assign) int64_t syncKey;
 @end
 
 
