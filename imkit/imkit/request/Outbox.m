@@ -42,7 +42,7 @@
 
 -(void)sendAudioMessage:(IMessage*)msg URL:url {
     MessageAudioContent *old = msg.audioContent;
-    MessageAudioContent *audio = [[MessageAudioContent alloc] initWithAudio:url duration:old.duration];
+    MessageAudioContent *audio = [old cloneWithURL:url];
     msg.rawContent = audio.raw;
     [self sendMessage:msg];
     msg.rawContent = old.raw;
@@ -50,8 +50,7 @@
 
 -(void)sendImageMessage:(IMessage*)msg URL:url {
     MessageImageContent *old = msg.imageContent;
-    
-    MessageImageContent *content = [[MessageImageContent alloc] initWithImageURL:url];
+    MessageImageContent *content = [old cloneWithURL:url];
     msg.rawContent = content.raw;
     [self sendMessage:msg];
     msg.rawContent = old.raw;

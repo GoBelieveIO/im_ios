@@ -68,6 +68,9 @@
     return self._raw;
 }
 
+-(NSString*)uuid {
+    return [self.dict objectForKey:@"uuid"];
+}
 @end
 
 
@@ -76,7 +79,8 @@
 -(id)initWithText:(NSString*)text {
     self = [super init];
     if (self) {
-        NSDictionary *dic = @{@"text":text};
+        NSString *uuid = [[NSUUID UUID] UUIDString];
+        NSDictionary *dic = @{@"text":text, @"uuid":uuid};
         NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dic options:0 error:nil];
         NSString* newStr = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
         self.raw =  newStr;
@@ -92,12 +96,23 @@
 
 
 @implementation MessageAudioContent
+- (id)initWithAudio:(NSString*)url duration:(int)duration uuid:(NSString*)uuid {
+    self = [super init];
+    if (self) {
+        NSNumber *d = [NSNumber numberWithInteger:duration];
+        NSDictionary *dic = @{@"audio":@{@"url":url, @"duration":d}, @"uuid":uuid};
+        NSString* newStr = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:dic options:0 error:nil] encoding:NSUTF8StringEncoding];
+        self.raw =  newStr;
+    }
+    return self;
+}
 
 - (id)initWithAudio:(NSString*)url duration:(int)duration {
     self = [super init];
     if (self) {
+        NSString *uuid = [[NSUUID UUID] UUIDString];
         NSNumber *d = [NSNumber numberWithInteger:duration];
-        NSDictionary *dic = @{@"audio":@{@"url":url, @"duration":d}};
+        NSDictionary *dic = @{@"audio":@{@"url":url, @"duration":d}, @"uuid":uuid};
         NSString* newStr = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:dic options:0 error:nil] encoding:NSUTF8StringEncoding];
         self.raw =  newStr;
     }
@@ -112,20 +127,16 @@
     return [[[self.dict objectForKey:@"audio"] objectForKey:@"duration"] intValue];
 }
 
+-(MessageAudioContent*)cloneWithURL:(NSString*)url {
+    MessageAudioContent *newContent = [[MessageAudioContent alloc] initWithAudio:url duration:self.duration uuid:self.uuid];
+    return newContent;
+}
+
 @end
 
 
 @implementation MessageImageContent
-- (id)initWithImageURL:(NSString*)imageURL {
-    self = [super init];
-    if (self) {
-        NSDictionary *dic = @{@"image":imageURL};
-        NSString* newStr = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:dic options:0 error:nil] encoding:NSUTF8StringEncoding];
-        self.raw = newStr;
-    }
-    return self;
-}
-- (id)initWithImageURL:(NSString *)imageURL width:(int)width height:(int)height {
+- (id)initWithImageURL:(NSString *)imageURL width:(int)width height:(int)height uuid:(NSString*)uuid {
     self = [super init];
     if (self) {
         NSDictionary *image = @{@"url":imageURL,
@@ -134,7 +145,25 @@
         
         //保留key:image是为了兼容性
         NSDictionary *dic = @{@"image2":image,
-                              @"image":imageURL};
+                              @"image":imageURL,
+                              @"uuid":uuid};
+        NSString* newStr = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:dic options:0 error:nil] encoding:NSUTF8StringEncoding];
+        self.raw = newStr;
+    }
+    return self;
+}
+- (id)initWithImageURL:(NSString *)imageURL width:(int)width height:(int)height {
+    self = [super init];
+    if (self) {
+        NSString *uuid = [[NSUUID UUID] UUIDString];
+        NSDictionary *image = @{@"url":imageURL,
+                                @"width":[NSNumber numberWithInt:width],
+                                @"height":[NSNumber numberWithInt:height]};
+        
+        //保留key:image是为了兼容性
+        NSDictionary *dic = @{@"image2":image,
+                              @"image":imageURL,
+                              @"uuid":uuid};
         NSString* newStr = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:dic options:0 error:nil] encoding:NSUTF8StringEncoding];
         self.raw = newStr;
     }
@@ -155,6 +184,11 @@
     return littleUrl;
 }
 
+-(MessageImageContent*)cloneWithURL:(NSString*)url {
+    MessageImageContent *newContent = [[MessageImageContent alloc] initWithImageURL:url width:self.width height:self.height uuid:self.uuid];
+    return newContent;
+}
+
 @end
 
 
@@ -163,9 +197,10 @@
 - (id)initWithLocation:(CLLocationCoordinate2D)location {
     self = [super init];
     if (self) {
+        NSString *uuid = [[NSUUID UUID] UUIDString];
         NSDictionary *loc = @{@"latitude":[NSNumber numberWithDouble:location.latitude],
                               @"longitude":[NSNumber numberWithDouble:location.longitude]};
-        NSDictionary *dic = @{@"location":loc};
+        NSDictionary *dic = @{@"location":loc, @"uuid":uuid};
         NSString* newStr = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:dic options:0 error:nil] encoding:NSUTF8StringEncoding];
         self.raw =  newStr;
     }

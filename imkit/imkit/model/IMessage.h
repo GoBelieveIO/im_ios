@@ -51,6 +51,7 @@
 @interface MessageContent : NSObject
 
 @property(nonatomic) NSString *raw;
+@property(nonatomic, readonly) NSString *uuid;
 @end
 
 @interface MessageTextContent : MessageContent
@@ -65,10 +66,11 @@
 @property(nonatomic, copy) NSString *url;
 @property(nonatomic) int duration;
 
+-(MessageAudioContent*)cloneWithURL:(NSString*)url;
+
 @end
 
 @interface MessageImageContent : MessageContent
-- (id)initWithImageURL:(NSString*)imageURL;
 - (id)initWithImageURL:(NSString *)imageURL width:(int)width height:(int)height;
 
 @property(nonatomic, readonly) NSString *imageURL;
@@ -76,6 +78,8 @@
 
 @property(nonatomic, readonly) int width;
 @property(nonatomic, readonly) int height;
+
+-(MessageImageContent*)cloneWithURL:(NSString*)url;
 @end
 
 @interface MessageLinkContent : MessageContent
