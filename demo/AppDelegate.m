@@ -62,11 +62,9 @@
 
     //app可以单独部署服务器，给予第三方应用更多的灵活性
     [IMHttpAPI instance].apiURL = @"http://api.gobelieve.io";
-    [IMService instance].host = @"imnode.gobelieve.io";
+    [IMService instance].host = @"imnode2.gobelieve.io";
     
-    [IMHttpAPI instance].apiURL = @"http://192.168.1.142";
-    [IMService instance].host = @"192.168.1.142";
-    
+  
 #if TARGET_IPHONE_SIMULATOR
     NSString *deviceID = @"7C8A8F5B-E5F4-4797-8758-05367D2A4D61";
     [IMService instance].deviceID = @"7C8A8F5B-E5F4-4797-8758-05367D2A4D61";
