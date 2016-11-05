@@ -18,7 +18,7 @@
 
 -(CGSize)intrinsicContentSize{
     CGSize contentSize = [super intrinsicContentSize];
-    return CGSizeMake(contentSize.width + 16, contentSize.height);
+    return CGSizeMake(contentSize.width + 16, contentSize.height + 6);
 }
 
 @end
@@ -37,6 +37,7 @@
         self.label.textColor = [UIColor whiteColor];
         self.label.textAlignment = NSTextAlignmentCenter;
         self.label.translatesAutoresizingMaskIntoConstraints = NO;
+        [self.label setFont:[UIFont systemFontOfSize:11.5f]];
         
         [self addSubview:self.label];
         
@@ -70,31 +71,4 @@
         self.label.text = notification.notificationDesc;
     }
 }
-//
-//+ (CGSize)bubbleSizeForText:(NSString *)txt withFont:(UIFont*)font
-//{
-//    CGSize textSize = [BubbleView textSizeForText:txt withFont:font];
-//    return CGSizeMake(textSize.width + kBubblePaddingHead + kBubblePaddingTail + 16,
-//                      textSize.height + kPaddingTop + kPaddingBottom + 16);
-//}
-//
-//
-//-(void)layoutSubviews {
-//    [super layoutSubviews];
-//    
-//    CGSize size = [[self class] bubbleSizeForText:self.label.text withFont:self.label.font];
-//    
-//    if (self.frame.size.width > size.width) {
-//        CGFloat x = (self.frame.size.width - size.width)/2;
-//        CGFloat y = 0;
-//        CGRect labelFrame = CGRectMake(x, y, size.width, size.height);
-//        self.label.frame = labelFrame;
-//    } else {
-//        CGFloat x = 0;
-//        CGFloat y = 0;
-//        CGRect labelFrame = CGRectMake(x, y, size.width, size.height);
-//        self.label.frame = labelFrame;
-//    }
-//
-//}
 @end
