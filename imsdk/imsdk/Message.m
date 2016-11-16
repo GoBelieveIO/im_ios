@@ -148,12 +148,12 @@
             p += ctl.content.length;
         }
         return [NSData dataWithBytes:buf length:HEAD_SIZE + 16 + ctl.content.length];
-    } else if (self.cmd == MSG_SYNC) {
+    } else if (self.cmd == MSG_SYNC || self.cmd == MSG_SYNC_KEY) {
         NSNumber *u = (NSNumber*)self.body;
         writeInt64([u longLongValue], p);
         p += 8;
         return [NSData dataWithBytes:buf length:HEAD_SIZE + 8];
-    } else if (self.cmd == MSG_SYNC_GROUP) {
+    } else if (self.cmd == MSG_SYNC_GROUP || self.cmd == MSG_GROUP_SYNC_KEY) {
         GroupSyncKey *s = (GroupSyncKey*)self.body;
         writeInt64(s.groupID, p);
         p += 8;

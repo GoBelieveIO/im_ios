@@ -258,6 +258,7 @@
     if ([newSyncKey longLongValue] > self.syncKey) {
         self.syncKey = [newSyncKey longLongValue];
         [self.syncKeyHandler saveSyncKey:self.syncKey];
+        [self sendSyncKey:self.syncKey];
     }
 }
 
@@ -284,6 +285,7 @@
     if (groupSyncKey.syncKey > [originSyncKey longLongValue]) {
         [self.groupSyncKeys setObject:[NSNumber numberWithLongLong:groupSyncKey.syncKey] forKey:[NSNumber numberWithLongLong:groupSyncKey.groupID]];
         [self.syncKeyHandler saveGroupSyncKey:groupSyncKey.syncKey gid:groupSyncKey.groupID];
+        [self sendGroupSyncKey:groupSyncKey.syncKey gid:groupSyncKey.groupID];
     }
     
 }
@@ -295,7 +297,7 @@
     NSNumber *originSyncKey = [self.groupSyncKeys objectForKey:[NSNumber numberWithLongLong:groupSyncKey.groupID]];
     
     if (groupSyncKey.syncKey > [originSyncKey longLongValue]) {
-        [self sendGroupSyncKey:[originSyncKey longLongValue] gid:groupSyncKey.groupID];
+        [self sendGroupSync:[originSyncKey longLongValue] gid:groupSyncKey.groupID];
     }
 }
 
@@ -731,7 +733,7 @@
     
     for (NSNumber *k in self.groupSyncKeys) {
         NSNumber *v = [self.groupSyncKeys objectForKey:k];
-        [self sendGroupSyncKey:[v longLongValue] gid:[k longLongValue]];
+        [self sendGroupSync:[v longLongValue] gid:[k longLongValue]];
     }
 }
 
@@ -742,9 +744,26 @@
     [self sendMessage:msg];
 }
 
--(void)sendGroupSyncKey:(int64_t)syncKey gid:(int64_t)gid {
+-(void)sendSyncKey:(int64_t)syncKey {
+    Message *msg = [[Message alloc] init];
+    msg.cmd = MSG_SYNC_KEY;
+    msg.body = [NSNumber numberWithLongLong:syncKey];
+    [self sendMessage:msg];
+}
+
+-(void)sendGroupSync:(int64_t)syncKey gid:(int64_t)gid {
     Message *msg = [[Message alloc] init];
     msg.cmd = MSG_SYNC_GROUP;
+    GroupSyncKey *s = [[GroupSyncKey alloc] init];
+    s.groupID = gid;
+    s.syncKey = syncKey;
+    msg.body = s;
+    [self sendMessage:msg];
+}
+
+-(void)sendGroupSyncKey:(int64_t)syncKey gid:(int64_t)gid {
+    Message *msg = [[Message alloc] init];
+    msg.cmd = MSG_GROUP_SYNC_KEY;
     GroupSyncKey *s = [[GroupSyncKey alloc] init];
     s.groupID = gid;
     s.syncKey = syncKey;

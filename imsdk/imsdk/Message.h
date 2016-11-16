@@ -51,6 +51,9 @@
 //通知客户端有新消息
 #define MSG_SYNC_GROUP_NOTIFY  33
 
+//客服端->服务端
+#define MSG_SYNC_KEY  34
+#define MSG_GROUP_SYNC_KEY 35
 
 
 #define MSG_VOIP_CONTROL 64
