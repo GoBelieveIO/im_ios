@@ -98,8 +98,8 @@
 
     NSMutableURLRequest *urlRequest = [self newClientURLRequest:@"/customer/register"];
     NSDictionary *dict = @{@"appid":[NSNumber numberWithLongLong:self.appID],
-                           @"uid":uid,
-                           @"user_name":name ? name :@"",
+                           @"customer_id":uid,
+                           @"name":name ? name :@"",
                            @"avatar":avatar ? avatar :@"",
                            @"platform_id":@1,
                            @"device_id":self.deviceID};
