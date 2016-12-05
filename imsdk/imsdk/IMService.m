@@ -316,6 +316,10 @@
     NSLog(@"sync group end:%lld %lld", groupSyncKey.groupID, groupSyncKey.syncKey);
     
     GroupSync *s = [self.groupSyncKeys objectForKey:[NSNumber numberWithLongLong:groupSyncKey.groupID]];
+    if (!s) {
+        NSLog(@"no group:%lld sync key", groupSyncKey.groupID);
+        return;
+    }
     
     if (groupSyncKey.syncKey > s.syncKey) {
         s.syncKey = groupSyncKey.syncKey;
@@ -340,6 +344,13 @@
     
     int now = (int)time(NULL);
     GroupSync *s = [self.groupSyncKeys objectForKey:[NSNumber numberWithLongLong:groupSyncKey.groupID]];
+    if (!s) {
+        //新加入的超级群
+        s = [[GroupSync alloc] init];
+        s.groupID = groupSyncKey.groupID;
+        s.syncKey = 0;
+        [self.groupSyncKeys setObject:s forKey:[NSNumber numberWithLongLong:groupSyncKey.groupID]];
+    }
     
     //4s同步超时
     BOOL isSyncing = s.isSyncing && (now - s.syncTimestamp < 4);
@@ -686,7 +697,7 @@
     }
     [self.peerMessages setObject:im forKey:[NSNumber numberWithInt:m.seq]];
     
-    //在发送消息时尽快发现已经断开的socket
+    //在发送需要回执的消息时尽快发现socket已经断开的情况
     [self ping];
     
     return r;
