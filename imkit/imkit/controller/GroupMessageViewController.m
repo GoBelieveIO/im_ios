@@ -165,7 +165,7 @@
     m.timestamp = im.timestamp;
     m.isOutgoing = (im.sender == self.currentUID);
     
-    if ([self getMessageWithUUID:m.uuid]) {
+    if (m.uuid.length > 0 && [self getMessageWithUUID:m.uuid]) {
         NSLog(@"receive repeat group msg:%@", m.uuid);
         return;
     }

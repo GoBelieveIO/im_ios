@@ -201,7 +201,7 @@
     m.isOutgoing = (im.sender == self.currentUID);
     
     //判断消息是否重复
-    if ([self getMessageWithUUID:m.uuid]) {
+    if (m.uuid.length > 0 && [self getMessageWithUUID:m.uuid]) {
         return;
     }
     

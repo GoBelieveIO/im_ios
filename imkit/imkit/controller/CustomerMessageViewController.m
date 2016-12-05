@@ -297,7 +297,7 @@
     m.isSupport = YES;
     m.isOutgoing = NO;
     
-    if ([self getMessageWithUUID:m.uuid]) {
+    if (m.uuid.length > 0 && [self getMessageWithUUID:m.uuid]) {
         NSLog(@"receive repeat msg:%@", m.uuid);
         return;
     }
@@ -335,7 +335,7 @@
     m.isSupport = NO;
     m.isOutgoing = YES;
     
-    if ([self getMessageWithUUID:m.uuid]) {
+    if (m.uuid.length > 0 && [self getMessageWithUUID:m.uuid]) {
         NSLog(@"receive repeat msg:%@", m.uuid);
         return;
     }
