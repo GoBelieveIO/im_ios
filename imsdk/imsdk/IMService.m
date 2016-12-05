@@ -685,6 +685,10 @@
         return r;
     }
     [self.peerMessages setObject:im forKey:[NSNumber numberWithInt:m.seq]];
+    
+    //在发送消息时尽快发现已经断开的socket
+    [self ping];
+    
     return r;
 }
 
@@ -696,6 +700,10 @@
     
     if (!r) return r;
     [self.groupMessages setObject:im forKey:[NSNumber numberWithInt:m.seq]];
+    
+    //在发送需要回执的消息时尽快发现socket已经断开的情况
+    [self ping];
+    
     return r;
 }
 
@@ -719,6 +727,10 @@
         return r;
     }
     [self.customerServiceMessages setObject:im forKey:[NSNumber numberWithInt:m.seq]];
+    
+    //在发送需要回执的消息时尽快发现socket已经断开的情况
+    [self ping];
+    
     return r;
 }
 
@@ -732,6 +744,10 @@
         return r;
     }
     [self.customerServiceMessages setObject:im forKey:[NSNumber numberWithInt:m.seq]];
+    
+    //在发送需要回执的消息时尽快发现socket已经断开的情况
+    [self ping];
+    
     return r;
 }
 
@@ -744,6 +760,7 @@
 }
 
 -(BOOL)sendMessage:(Message *)msg {
+    NSLog(@"send message:%d", msg.cmd);
     if (!self.tcp || self.connectState != STATE_CONNECTED) return NO;
     self.seq = self.seq + 1;
     msg.seq = self.seq;
