@@ -190,12 +190,6 @@
     if (im.sender != self.peerUID && im.receiver != self.peerUID) {
         return;
     }
-    int now = (int)time(NULL);
-    if (now - self.lastReceivedTimestamp > 1) {
-        [[self class] playMessageReceivedSound];
-        self.lastReceivedTimestamp = now;
-    }
-    
     NSLog(@"receive msg:%@",im);
     
     IMessage *m = [[IMessage alloc] init];
@@ -205,6 +199,18 @@
     m.rawContent = im.content;
     m.timestamp = im.timestamp;
     m.isOutgoing = (im.sender == self.currentUID);
+    
+    //判断消息是否重复
+    if ([self getMessageWithUUID:m.uuid]) {
+        return;
+    }
+    
+    int now = (int)time(NULL);
+    if (now - self.lastReceivedTimestamp > 1) {
+        [[self class] playMessageReceivedSound];
+        self.lastReceivedTimestamp = now;
+    }
+    
     
     if (self.textMode && m.type != MESSAGE_TEXT) {
         return;
@@ -250,32 +256,36 @@
 }
 
 - (void)loadConversationData {
+    NSMutableSet *uuidSet = [NSMutableSet set];
     int count = 0;
     id<IMessageIterator> iterator =  [[PeerMessageDB instance] newMessageIterator: self.peerUID];
     IMessage *msg = [iterator next];
     while (msg) {
-        if (self.textMode) {
-            if (msg.type == MESSAGE_TEXT) {
-                [self.messages insertObject:msg atIndex:0];
-                if (++count >= PAGE_COUNT) {
-                    break;
-                }
-            }
+        //重复的消息
+        if (msg.uuid.length > 0 && [uuidSet containsObject:msg.uuid]) {
+            msg = [iterator next];
+            continue;
+        }
+        
+        if (msg.uuid.length > 0){
+            [uuidSet addObject:msg.uuid];
+        }
+
+        if (msg.type == MESSAGE_ATTACHMENT) {
+            MessageAttachmentContent *att = msg.attachmentContent;
+            [self.attachments setObject:att
+                                 forKey:[NSNumber numberWithInt:att.msgLocalID]];
         } else {
-            if (msg.type == MESSAGE_ATTACHMENT) {
-                MessageAttachmentContent *att = msg.attachmentContent;
-                [self.attachments setObject:att
-                                     forKey:[NSNumber numberWithInt:att.msgLocalID]];
-            } else {
-                msg.isOutgoing = (msg.sender == self.currentUID);
-                [self.messages insertObject:msg atIndex:0];
-                if (++count >= PAGE_COUNT) {
-                    break;
-                }
+            msg.isOutgoing = (msg.sender == self.currentUID);
+            [self.messages insertObject:msg atIndex:0];
+            if (++count >= PAGE_COUNT) {
+                break;
             }
         }
+
         msg = [iterator next];
     }
+  
 
     [self downloadMessageContent:self.messages count:count];
     [self loadSenderInfo:self.messages count:count];
@@ -299,11 +309,28 @@
         return;
     }
     
+    NSMutableSet *uuidSet = [NSMutableSet set];
+    for (IMessage *msg in self.messages) {
+        if (msg.uuid.length > 0) {
+            [uuidSet addObject:msg.uuid];
+        }
+    }
+    
     id<IMessageIterator> iterator =  [[PeerMessageDB instance] newMessageIterator:self.peerUID last:last.msgLocalID];
     
     int count = 0;
     IMessage *msg = [iterator next];
     while (msg) {
+        //重复的消息
+        if (msg.uuid.length > 0 && [uuidSet containsObject:msg.uuid]) {
+            msg = [iterator next];
+            continue;
+        }
+        
+        if (msg.uuid.length > 0){
+            [uuidSet addObject:msg.uuid];
+        }
+        
         if (msg.type == MESSAGE_ATTACHMENT) {
             MessageAttachmentContent *att = msg.attachmentContent;
             [self.attachments setObject:att

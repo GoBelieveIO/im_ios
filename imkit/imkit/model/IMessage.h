@@ -159,6 +159,8 @@
 @property(nonatomic, copy) NSString *rawContent;
 @property(nonatomic) int type;
 
+@property(nonatomic, readonly) NSString *uuid;
+
 @property(nonatomic, readonly) MessageTextContent *textContent;
 @property(nonatomic, readonly) MessageAudioContent *audioContent;
 @property(nonatomic, readonly) MessageImageContent *imageContent;

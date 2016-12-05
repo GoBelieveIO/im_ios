@@ -433,6 +433,9 @@
     _content = content;
 }
 
+-(NSString*)uuid {
+    return [self.content uuid];
+}
 -(MessageTextContent*)textContent {
     if (self.type == MESSAGE_TEXT) {
         return (MessageTextContent*)self.content;

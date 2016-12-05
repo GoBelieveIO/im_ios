@@ -102,30 +102,33 @@
 
 
 - (void)loadConversationData {
+    NSMutableSet *uuidSet = [NSMutableSet set];
     int count = 0;
     id<IMessageIterator> iterator =  [[CustomerMessageDB instance] newMessageIterator:self.storeID];
     ICustomerMessage *msg = (ICustomerMessage*)[iterator next];
     while (msg) {
-        if (self.textMode) {
-            if (msg.type == MESSAGE_TEXT) {
-                [self.messages insertObject:msg atIndex:0];
-                if (++count >= PAGE_COUNT) {
-                    break;
-                }
-            }
+        //重复的消息
+        if (msg.uuid.length > 0 && [uuidSet containsObject:msg.uuid]) {
+            msg = [iterator next];
+            continue;
+        }
+        
+        if (msg.uuid.length > 0){
+            [uuidSet addObject:msg.uuid];
+        }
+        
+        if (msg.type == MESSAGE_ATTACHMENT) {
+            MessageAttachmentContent *att = msg.attachmentContent;
+            [self.attachments setObject:att
+                                 forKey:[NSNumber numberWithInt:att.msgLocalID]];
         } else {
-            if (msg.type == MESSAGE_ATTACHMENT) {
-                MessageAttachmentContent *att = msg.attachmentContent;
-                [self.attachments setObject:att
-                                     forKey:[NSNumber numberWithInt:att.msgLocalID]];
-            } else {
-                msg.isOutgoing = !msg.isSupport;
-                [self.messages insertObject:msg atIndex:0];
-                if (++count >= PAGE_COUNT) {
-                    break;
-                }
+            msg.isOutgoing = !msg.isSupport;
+            [self.messages insertObject:msg atIndex:0];
+            if (++count >= PAGE_COUNT) {
+                break;
             }
         }
+
         msg = (ICustomerMessage*)[iterator next];
     }
 
@@ -150,11 +153,28 @@
         return;
     }
     
+    NSMutableSet *uuidSet = [NSMutableSet set];
+    for (IMessage *msg in self.messages) {
+        if (msg.uuid.length > 0) {
+            [uuidSet addObject:msg.uuid];
+        }
+    }
+    
     id<IMessageIterator> iterator =  [[CustomerMessageDB instance] newMessageIterator:self.storeID last:last.msgLocalID];
     
     int count = 0;
     ICustomerMessage *msg = (ICustomerMessage*)[iterator next];
     while (msg) {
+        //重复的消息
+        if (msg.uuid.length > 0 && [uuidSet containsObject:msg.uuid]) {
+            msg = [iterator next];
+            continue;
+        }
+        
+        if (msg.uuid.length > 0){
+            [uuidSet addObject:msg.uuid];
+        }
+        
         if (msg.type == MESSAGE_ATTACHMENT) {
             MessageAttachmentContent *att = msg.attachmentContent;
             [self.attachments setObject:att
@@ -277,6 +297,11 @@
     m.isSupport = YES;
     m.isOutgoing = NO;
     
+    if ([self getMessageWithUUID:m.uuid]) {
+        NSLog(@"receive repeat msg:%@", m.uuid);
+        return;
+    }
+    
     if (self.textMode && m.type != MESSAGE_TEXT) {
         return;
     }
@@ -309,6 +334,11 @@
     m.timestamp = im.timestamp;
     m.isSupport = NO;
     m.isOutgoing = YES;
+    
+    if ([self getMessageWithUUID:m.uuid]) {
+        NSLog(@"receive repeat msg:%@", m.uuid);
+        return;
+    }
     
     if (self.textMode && m.type != MESSAGE_TEXT) {
         return;

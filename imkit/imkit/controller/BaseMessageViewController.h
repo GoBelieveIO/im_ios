@@ -40,6 +40,8 @@
 - (void)scrollToBottomAnimated:(BOOL)animated;
 
 - (IMessage*)getMessageWithID:(int)msgLocalID;
+- (IMessage*)getMessageWithUUID:(NSString*)uuid;
+
 - (IMessage*)messageForRowAtIndexPath:(NSIndexPath *)indexPath;
 
 - (NSString *)getWeekDayString:(NSInteger)iDay;

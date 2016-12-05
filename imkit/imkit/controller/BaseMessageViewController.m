@@ -145,6 +145,15 @@
     return nil;
 }
 
+- (IMessage*)getMessageWithUUID:(NSString*)uuid {
+    for (IMessage *msg in self.messages) {
+        if ([msg.uuid isEqualToString:uuid]) {
+            return msg;
+        }
+    }
+    return nil;
+}
+
 + (void)playSoundWithName:(NSString *)name type:(NSString *)type {
     NSString *path = [[NSBundle mainBundle] pathForResource:name ofType:type];
     
