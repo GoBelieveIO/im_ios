@@ -39,7 +39,7 @@
     self.dirp = dirp;
 }
 
--(Conversation*)next {
+-(IMessage*)next {
     return nil;
 }
 @end

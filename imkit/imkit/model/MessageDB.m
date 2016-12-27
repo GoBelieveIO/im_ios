@@ -43,39 +43,10 @@
     return YES;
 }
 
-//4字节magic + 4字节消息长度 + 消息主体 + 4字节消息长度 + 4字节magic
-//消息主体：4字节标志 ＋ 4字节时间戳 + 8字节发送者id + 8字节接受者id ＋ 消息内容
+
 +(BOOL)writeMessage:(IMessage*)msg fd:(int)fd {
-    char buf[64*1024];
-    char *p = buf;
-    
-    const char *raw = [msg.rawContent UTF8String];
-    size_t len = strlen(raw) + 8 + 8 + 4 + 4;
-    
-    if (4 + 4 + len + 4 + 4 > 64*1024) return NO;
-    
-    writeInt32(IMMAGIC, p);
-    p += 4;
-    writeInt32((int32_t)len, p);
-    p += 4;
-    writeInt32(msg.flags, p);
-    p += 4;
-    writeInt32(msg.timestamp, p);
-    p += 4;
-    writeInt64(msg.sender, p);
-    p += 8;
-    writeInt64(msg.receiver, p);
-    p += 8;
-    memcpy(p, raw, strlen(raw));
-    p += strlen(raw);
-    writeInt32((int32_t)len, p);
-    p += 4;
-    writeInt32(IMMAGIC, p);
-    p += 4;
-    long size = p - buf;
-    ssize_t n = write(fd, buf, size);
-    if (n != size) return NO;
-    return YES;
+    NSAssert(NO, @"not implemented");
+    return NO;
 }
 
 +(BOOL)insertIMessage:(IMessage*)msg path:(NSString*)path {

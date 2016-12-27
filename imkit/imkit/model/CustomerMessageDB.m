@@ -50,7 +50,7 @@
     return msg;
 }
 
--(Conversation*)next {
+-(IMessage*)next {
     if (!self.dirp) return nil;
     
     struct dirent *dp;
@@ -59,13 +59,9 @@
         NSLog(@"type:%d name:%@", dp->d_type, name);
         if (dp->d_type == DT_REG) {
             if ([name hasPrefix:@"c_"]) {
-                Conversation *c = [[Conversation alloc] init];
-                int64_t uid = [[name substringFromIndex:2] longLongValue];
-                c.cid = uid;
-                c.type = CONVERSATION_CUSTOMER_SERVICE;
                 NSString *path = [NSString stringWithFormat:@"%@/%@", self.path, name];
-                c.message = [self getLastMessage:path];
-                return c;
+                IMessage *message = [self getLastMessage:path];
+                return message;
             } else {
                 NSLog(@"skip file:%@", name);
             }

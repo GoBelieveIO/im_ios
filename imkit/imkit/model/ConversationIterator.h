@@ -11,7 +11,7 @@
 #include <dirent.h>
 
 @protocol ConversationIterator
--(Conversation*)next;
+-(IMessage*)next;
 @end
 
 @interface ConversationIterator : NSObject<ConversationIterator>

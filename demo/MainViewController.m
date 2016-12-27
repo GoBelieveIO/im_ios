@@ -21,6 +21,7 @@
 #import <gobelieve/SyncKeyHandler.h>
 
 #import "MessageListViewController.h"
+#import "Conversation.h"
 
 @interface MainViewController ()<MessageViewControllerUserDelegate,
     MessageListViewControllerGroupDelegate>{

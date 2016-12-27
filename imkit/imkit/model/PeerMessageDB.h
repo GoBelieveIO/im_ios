@@ -10,13 +10,11 @@
 #import <Foundation/Foundation.h>
 #import "IMessage.h"
 #import "MessageDB.h"
-
-
 #import "ConversationIterator.h"
 #import "IMessageIterator.h"
 
 
-@interface PeerMessageDB : NSObject
+@interface PeerMessageDB : MessageDB
 
 +(PeerMessageDB*)instance;
 

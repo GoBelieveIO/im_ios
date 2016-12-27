@@ -15,7 +15,7 @@
 #import "ConversationIterator.h"
 
 
-@interface GroupMessageDB : NSObject
+@interface GroupMessageDB : MessageDB
 +(GroupMessageDB*)instance;
 
 @property(nonatomic, copy) NSString *dbPath;

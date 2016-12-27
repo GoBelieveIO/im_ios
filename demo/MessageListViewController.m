@@ -18,6 +18,7 @@
 #import <gobelieve/CustomerMessageViewController.h>
 
 #import "MessageConversationCell.h"
+#import "Conversation.h"
 
 //RGB颜色
 #define RGBCOLOR(r,g,b) [UIColor colorWithRed:(r)/255.0f green:(g)/255.0f blue:(b)/255.0f alpha:1]
@@ -88,17 +89,25 @@ alpha:(a)]
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillResignActive) name:UIApplicationWillResignActiveNotification object:nil];
 
     id<ConversationIterator> iterator =  [[PeerMessageDB instance] newConversationIterator];
-    Conversation * conversation = [iterator next];
-    while (conversation) {
-        [self.conversations addObject:conversation];
-        conversation = [iterator next];
+    IMessage * msg = [iterator next];
+    while (msg) {
+        Conversation *c = [[Conversation alloc] init];
+        c.message = msg;
+        c.cid = (self.currentUID == msg.sender) ? msg.receiver : msg.sender;
+        c.type = CONVERSATION_PEER;
+        [self.conversations addObject:c];
+        msg = [iterator next];
     }
     
     iterator = [[GroupMessageDB instance] newConversationIterator];
-    conversation = [iterator next];
-    while (conversation) {
-        [self.conversations addObject:conversation];
-        conversation = [iterator next];
+    msg = [iterator next];
+    while (msg) {
+        Conversation *c = [[Conversation alloc] init];
+        c.message = msg;
+        c.cid = msg.receiver;
+        c.type = CONVERSATION_GROUP;
+        [self.conversations addObject:c];
+        msg = [iterator next];
     }
  
     for (Conversation *conv in self.conversations) {
@@ -107,10 +116,10 @@ alpha:(a)]
     }
     
     id<IMessageIterator> iter = [[CustomerMessageDB instance] newMessageIterator:KEFU_ID];
-    ICustomerMessage *msg = nil;
+    msg = nil;
     //返回第一条不是附件的消息
     while (YES) {
-        msg = (ICustomerMessage*)[iter next];
+        msg = [iter next];
         if (msg == nil) {
             break;
         }
@@ -120,21 +129,22 @@ alpha:(a)]
     }
     if (!msg) {
         msg = [[ICustomerMessage alloc] init];
-        msg.sender = 0;
-        msg.receiver = self.currentUID;
-        msg.storeID = KEFU_ID;
-        msg.sellerID = 0;
-        msg.customerID = self.currentUID;
-        msg.customerAppID = APPID;
+        ICustomerMessage *m = (ICustomerMessage*)msg;
+        m.sender = 0;
+        m.receiver = self.currentUID;
+        m.storeID = KEFU_ID;
+        m.sellerID = 0;
+        m.customerID = self.currentUID;
+        m.customerAppID = APPID;
         
         MessageTextContent *content = [[MessageTextContent alloc] initWithText:@"如果你在使用过程中有任何问题和建议，记得给我们发信反馈哦"];
-        msg.rawContent = content.raw;
-        msg.timestamp = (int)time(NULL);
+        m.rawContent = content.raw;
+        m.timestamp = (int)time(NULL);
     }
 
     Conversation *conv = [[Conversation alloc] init];
     conv.message = msg;
-    conv.cid = msg.storeID;
+    conv.cid = ((ICustomerMessage*)msg).storeID;
     conv.type = CONVERSATION_CUSTOMER_SERVICE;
     conv.name = @"客服";
     [self updateConversationDetail:conv];
