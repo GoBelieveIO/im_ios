@@ -30,6 +30,9 @@
     m.receiver = im.receiver;
     m.rawContent = im.content;
     m.timestamp = im.timestamp;
+    if (self.uid == im.sender) {
+        m.flags = m.flags | MESSAGE_FLAG_ACK;
+    }
     BOOL r = [[GroupMessageDB instance] insertMessage:m];
     if (r) {
         im.msgLocalID = m.msgLocalID;
@@ -37,12 +40,12 @@
     return r;
 }
 
--(BOOL)handleMessageACK:(int)msgLocalID gid:(int64_t)uid {
-    return [[GroupMessageDB instance] acknowledgeMessage:msgLocalID gid:uid];
+-(BOOL)handleMessageACK:(IMessage*)msg {
+    return [[GroupMessageDB instance] acknowledgeMessage:msg.msgLocalID gid:msg.receiver];
 }
 
--(BOOL)handleMessageFailure:(int)msgLocalID gid:(int64_t)uid {
-    return [[GroupMessageDB instance] markMessageFailure:msgLocalID gid:uid];
+-(BOOL)handleMessageFailure:(IMessage*)msg {
+    return [[GroupMessageDB instance] markMessageFailure:msg.msgLocalID gid:msg.receiver];
 }
 
 -(BOOL)handleGroupNotification:(NSString*)notification {

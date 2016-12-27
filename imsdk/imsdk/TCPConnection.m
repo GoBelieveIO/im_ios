@@ -171,11 +171,13 @@
 
 //2s后重新连接
 -(void)reconnect2S {
+    [self onClose];
+    self.connectState = STATE_UNCONNECTED;
+    [self publishConnectState:STATE_UNCONNECTED];
+    
     self.connectFailCount = 2;
     [self close];
     [self startConnectTimer];
-    self.connectState = STATE_UNCONNECTED;
-    [self publishConnectState:STATE_UNCONNECTED];
 }
 
 -(void)close {

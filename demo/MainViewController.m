@@ -19,6 +19,9 @@
 #import <gobelieve/GroupMessageDB.h>
 #import <gobelieve/CustomerMessageDB.h>
 #import <gobelieve/SyncKeyHandler.h>
+#import <gobelieve/PeerMessageHandler.h>
+#import <gobelieve/GroupMessageHandler.h>
+#import <gobelieve/CustomerMessageHandler.h>
 
 #import "MessageListViewController.h"
 #import "Conversation.h"
@@ -131,10 +134,12 @@
             [PeerMessageDB instance].dbPath = [NSString stringWithFormat:@"%@/peer", dbPath];
             [GroupMessageDB instance].dbPath = [NSString stringWithFormat:@"%@/group", dbPath];
             [CustomerMessageDB instance].dbPath = [NSString stringWithFormat:@"%@/customer", dbPath];
+            [PeerMessageHandler instance].uid = [tfSender.text longLongValue];
+            [GroupMessageHandler instance].uid = [tfSender.text longLongValue];
+            [CustomerMessageHandler instance].uid = [tfSender.text longLongValue];
             
             [IMHttpAPI instance].accessToken = token;
             [IMService instance].token = token;
-            [IMService instance].uid = [tfSender.text longLongValue];
             
             NSString *fileName = [NSString stringWithFormat:@"%@/synckey", dbPath];
             SyncKeyHandler *handler = [[SyncKeyHandler alloc] initWithFileName:fileName];

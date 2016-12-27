@@ -191,7 +191,6 @@
         return;
     }
     NSLog(@"receive msg:%@",im);
-    
     IMessage *m = [[IMessage alloc] init];
     m.sender = im.sender;
     m.receiver = im.receiver;
@@ -199,7 +198,9 @@
     m.rawContent = im.content;
     m.timestamp = im.timestamp;
     m.isOutgoing = (im.sender == self.currentUID);
-    
+    if (im.sender == self.currentUID) {
+        m.flags = m.flags | MESSAGE_FLAG_ACK;
+    }
     //判断消息是否重复
     if (m.uuid.length > 0 && [self getMessageWithUUID:m.uuid]) {
         return;

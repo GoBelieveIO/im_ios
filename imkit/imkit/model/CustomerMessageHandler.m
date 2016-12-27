@@ -52,6 +52,9 @@
     m.receiver = msg.storeID;
     m.rawContent = msg.content;
     m.timestamp = msg.timestamp;
+    if (self.uid == msg.customerID) {
+        m.flags = m.flags | MESSAGE_FLAG_ACK;
+    }
     BOOL r = [[CustomerMessageDB instance] insertMessage:m uid:msg.storeID];
     if (r) {
         msg.msgLocalID = m.msgLocalID;

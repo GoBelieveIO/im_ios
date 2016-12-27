@@ -24,27 +24,34 @@
     return m;
 }
 
--(BOOL)handleMessage:(IMMessage*)msg uid:(int64_t)uid{
+-(BOOL)handleMessage:(IMMessage*)msg {
+    int64_t pid = self.uid == msg.sender ? msg.receiver : msg.sender;
     IMMessage *im = msg;
     IMessage *m = [[IMessage alloc] init];
     m.sender = im.sender;
     m.receiver = im.receiver;
     m.rawContent = im.content;
     m.timestamp = msg.timestamp;
-    BOOL r = [[PeerMessageDB instance] insertMessage:m uid:uid];
+    
+    if (self.uid == msg.sender) {
+        m.flags = m.flags|MESSAGE_FLAG_ACK;
+    }
+    BOOL r = [[PeerMessageDB instance] insertMessage:m uid:pid];
     if (r) {
         msg.msgLocalID = m.msgLocalID;
     }
     return r;
 }
 
--(BOOL)handleMessageACK:(int)msgLocalID uid:(int64_t)uid {
-    return [[PeerMessageDB instance] acknowledgeMessage:msgLocalID uid:uid];
+-(BOOL)handleMessageACK:(IMMessage*)msg {
+    int64_t pid = self.uid == msg.sender ? msg.receiver : msg.sender;
+    return [[PeerMessageDB instance] acknowledgeMessage:msg.msgLocalID uid:pid];
 }
 
--(BOOL)handleMessageFailure:(int)msgLocalID uid:(int64_t)uid {
+-(BOOL)handleMessageFailure:(IMMessage*)msg {
+    int64_t pid = self.uid == msg.sender ? msg.receiver : msg.sender;
     PeerMessageDB *db = [PeerMessageDB instance];
-    return [db markMessageFailure:msgLocalID uid:uid];
+    return [db markMessageFailure:msg.msgLocalID uid:pid];
 }
 
 @end

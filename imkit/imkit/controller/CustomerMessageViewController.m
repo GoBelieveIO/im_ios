@@ -333,7 +333,11 @@
     m.rawContent = im.content;
     m.timestamp = im.timestamp;
     m.isSupport = NO;
+    
+    //必定自己发出的消息
     m.isOutgoing = YES;
+    m.flags = m.flags | MESSAGE_FLAG_ACK;
+
     
     if (m.uuid.length > 0 && [self getMessageWithUUID:m.uuid]) {
         NSLog(@"receive repeat msg:%@", m.uuid);

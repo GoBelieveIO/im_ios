@@ -154,10 +154,8 @@
     NSString *path = [self getDocumentPath];
     NSString *dbPath = [NSString stringWithFormat:@"%@/%lld", path, self.clientID];
     [CustomerMessageDB instance].dbPath = [NSString stringWithFormat:@"%@/customer", dbPath];
-    
+    [CustomerMessageHandler instance].uid = self.clientID;
     [IMService instance].customerMessageHandler = [CustomerMessageHandler instance];
-    
-    [IMService instance].uid = self.clientID;
     [IMService instance].token = self.token;
     [IMHttpAPI instance].accessToken = self.token;
     

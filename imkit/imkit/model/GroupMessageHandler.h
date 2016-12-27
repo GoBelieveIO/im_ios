@@ -11,4 +11,7 @@
 #import "IMService.h"
 @interface GroupMessageHandler : NSObject<IMGroupMessageHandler>
 +(GroupMessageHandler*)instance;
+
+//当前用户id
+@property(nonatomic, assign) int64_t uid;
 @end

@@ -68,6 +68,8 @@
 		6DF54E631AB58B1900197EBC /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF54E621AB58B1900197EBC /* QuartzCore.framework */; };
 		6DF54EBB1AB58D6600197EBC /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF54EBA1AB58D6600197EBC /* SystemConfiguration.framework */; };
 		6DFA63861E12CF7400F954F6 /* Conversation.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DFA63851E12CF7400F954F6 /* Conversation.m */; };
+		6DFA63881E12DB4800F954F6 /* Conversation.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DFA63851E12CF7400F954F6 /* Conversation.m */; };
+		6DFA63891E12DB4900F954F6 /* Conversation.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DFA63851E12CF7400F954F6 /* Conversation.m */; };
 		85DA487FCFFA669A8F1BFBEB /* libPods-im_demo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D143B1C47D908DE0CEA52E9 /* libPods-im_demo.a */; };
 		99692241B97A15AE5279890F /* libPods-group_demo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3885308284109E25A900C604 /* libPods-group_demo.a */; };
 		AD6CAE0B0DCA80C329BE28A1 /* libPods-customer_demo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5130738AFF321052F126F808 /* libPods-customer_demo.a */; };
@@ -695,6 +697,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6DFA63881E12DB4800F954F6 /* Conversation.m in Sources */,
 				6D4AB3E61C87104300AFE234 /* GroupLoginViewController.m in Sources */,
 				6D8E72531B750A31004E069E /* AppDelegate.m in Sources */,
 				6D8E72561B750A31004E069E /* main.m in Sources */,
@@ -705,6 +708,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6DFA63891E12DB4900F954F6 /* Conversation.m in Sources */,
 				6DBB2CC51DBB355700BC545A /* CustomerViewController.m in Sources */,
 				6DBB2CA61DBB348D00BC545A /* AppDelegate.m in Sources */,
 				6DBB2CA71DBB348D00BC545A /* main.m in Sources */,

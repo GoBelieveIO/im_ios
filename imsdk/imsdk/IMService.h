@@ -14,16 +14,16 @@
 @class IMessage;
 
 @protocol IMPeerMessageHandler <NSObject>
--(BOOL)handleMessage:(IMMessage*)msg uid:(int64_t)uid;
--(BOOL)handleMessageACK:(int)msgLocalID uid:(int64_t)uid;
--(BOOL)handleMessageFailure:(int)msgLocalID uid:(int64_t)uid;
+-(BOOL)handleMessage:(IMMessage*)msg;
+-(BOOL)handleMessageACK:(IMMessage*)msg;
+-(BOOL)handleMessageFailure:(IMMessage*)msg;
 @end
 
 @protocol IMGroupMessageHandler <NSObject>
 
 -(BOOL)handleMessage:(IMMessage*)msg;
--(BOOL)handleMessageACK:(int)msgLocalID gid:(int64_t)gid;
--(BOOL)handleMessageFailure:(int)msgLocalID gid:(int64_t)gid;
+-(BOOL)handleMessageACK:(IMMessage*)msg;
+-(BOOL)handleMessageFailure:(IMMessage*)msg;
 
 -(BOOL)handleGroupNotification:(NSString*)notification;
 @end
@@ -112,7 +112,6 @@
 @interface IMService : TCPConnection
 @property(nonatomic, copy) NSString *deviceID;
 @property(nonatomic, copy) NSString *token;
-@property(nonatomic) int64_t uid;
 //客服app需要设置，普通app不需要设置
 @property(nonatomic) int64_t appID;
 

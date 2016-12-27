@@ -106,11 +106,11 @@
         return;
     }
     if (m) {
-        [self.peerMessageHandler handleMessageACK:m.msgLocalID uid:m.receiver];
+        [self.peerMessageHandler handleMessageACK:m];
         [self.peerMessages removeObjectForKey:seq];
         [self publishPeerMessageACK:m.msgLocalID uid:m.receiver];
     } else if (m2) {
-        [self.groupMessageHandler handleMessageACK:m2.msgLocalID gid:m2.receiver];
+        [self.groupMessageHandler handleMessageACK:m2];
         [self.groupMessages removeObjectForKey:seq];
         [self publishGroupMessageACK:m2.msgLocalID gid:m2.receiver];
     } else if (m3) {
@@ -125,11 +125,7 @@
 
 -(void)handleIMMessage:(Message*)msg {
     IMMessage *im = (IMMessage*)msg.body;
-    if (self.uid == im.sender) {
-        [self.peerMessageHandler handleMessage:im uid:im.receiver];
-    } else {
-        [self.peerMessageHandler handleMessage:im uid:im.sender];
-    }
+    [self.peerMessageHandler handleMessage:im];
     NSLog(@"peer message sender:%lld receiver:%lld content:%s", im.sender, im.receiver, [im.content UTF8String]);
     
     Message *ack = [[Message alloc] init];
@@ -137,11 +133,6 @@
     ack.body = [NSNumber numberWithInt:msg.seq];
     [self sendMessage:ack];
     [self publishPeerMessage:im];
-    
-    if (self.uid == im.sender) {
-        [self.peerMessageHandler handleMessageACK:im.msgLocalID uid:im.receiver];
-        [self publishPeerMessageACK:im.msgLocalID uid:im.receiver];
-    }
 }
 
 -(void)handleGroupIMMessage:(Message*)msg {
@@ -153,11 +144,6 @@
     ack.body = [NSNumber numberWithInt:msg.seq];
     [self sendMessage:ack];
     [self publishGroupMessage:im];
-    
-    if (im.sender == self.uid) {
-        [self.groupMessageHandler handleMessageACK:im.msgLocalID gid:im.receiver];
-        [self publishGroupMessageACK:im.msgLocalID gid:im.receiver];
-    }
 }
 
 -(void)handleCustomerSupportMessage:(Message*)msg {
@@ -172,12 +158,6 @@
     ack.body = [NSNumber numberWithInt:msg.seq];
     [self sendMessage:ack];
     [self publishCustomerSupportMessage:im];
-    
-    //客服端收到发自客服的消息
-    if (self.appID > 0 && im.sellerID == self.uid) {
-        [self.customerMessageHandler handleMessageACK:im];
-        [self publishCustomerMessageACK:im];
-    }
 }
 
 -(void)handleCustomerMessage:(Message*)msg {
@@ -192,12 +172,6 @@
     ack.body = [NSNumber numberWithInt:msg.seq];
     [self sendMessage:ack];
     [self publishCustomerMessage:im];
-    
-    //客户收到发自客户自己的消息
-    if ((self.appID == 0 || self.appID == im.customerAppID) && im.customerID == self.uid) {
-        [self.customerMessageHandler handleMessageACK:im];
-        [self publishCustomerMessageACK:im];
-    }
 }
 
 -(void)handleRTMessage:(Message*)msg {
@@ -872,13 +846,13 @@
 -(void)onClose {
     for (NSNumber *seq in self.peerMessages) {
         IMMessage *msg = [self.peerMessages objectForKey:seq];
-        [self.peerMessageHandler handleMessageFailure:msg.msgLocalID uid:msg.receiver];
+        [self.peerMessageHandler handleMessageFailure:msg];
         [self publishPeerMessageFailure:msg];
     }
     
     for (NSNumber *seq in self.groupMessages) {
         IMMessage *msg = [self.peerMessages objectForKey:seq];
-        [self.groupMessageHandler handleMessageFailure:msg.msgLocalID gid:msg.receiver];
+        [self.groupMessageHandler handleMessageFailure:msg];
         [self publishGroupMessageFailure:msg];
     }
     
