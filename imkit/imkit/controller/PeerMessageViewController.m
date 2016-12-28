@@ -21,11 +21,22 @@
 
 #define PAGE_COUNT 10
 
-@interface PeerMessageViewController ()<OutboxObserver, AudioDownloaderObserver>
+//当前appid
+#define APPID 7
 
+@interface PeerMessageViewController ()<OutboxObserver, AudioDownloaderObserver>
+@property(nonatomic, readonly) int64_t peerID;
 @end
 
 @implementation PeerMessageViewController
+
+-(int64_t)peerID {
+    return (self.peerAppID << 56) | self.peerID;
+}
+-(int64_t)currentID {
+    int64_t appid = APPID;
+    return (appid<<56) | self.currentUID;
+}
 
 - (void)dealloc {
     NSLog(@"peermessageviewcontroller dealloc");
@@ -40,23 +51,21 @@
     if (self.peerName.length > 0) {
         self.navigationItem.title = self.peerName;
     } else {
-        IUser *u = [self.userDelegate getUser:self.peerUID];
+        IUser *u = [self.userDelegate getUser:self.peerID];
         if (u.name.length > 0) {
             self.navigationItem.title = u.name;
         } else {
             self.navigationItem.title = u.identifier;
-            [self.userDelegate asyncGetUser:self.peerUID cb:^(IUser *u) {
+            [self.userDelegate asyncGetUser:self.peerID cb:^(IUser *u) {
                 if (u.name.length > 0) {
                     self.navigationItem.title = u.name;
                 }
             }];
         }
     }
-    
-    DraftDB *db = [DraftDB instance];
-    NSString *draft = [db getDraft:self.receiver];
-    [self setDraft:draft];
-    
+    if (self.peerAppID == 0) {
+        self.peerAppID = APPID;
+    }
     [self addObserver];
 }
 
@@ -88,12 +97,12 @@
 }
 
 - (BOOL)isMessageSending:(IMessage*)msg {
-    return [[IMService instance] isPeerMessageSending:self.peerUID id:msg.msgLocalID];
+    return [[IMService instance] isPeerMessageSending:self.peerID id:msg.msgLocalID];
 }
 
 - (BOOL)isInConversation:(IMessage*)msg {
-   BOOL r =  (msg.sender == self.currentUID && msg.receiver == self.peerUID) ||
-                (msg.receiver == self.currentUID && msg.sender == self.peerUID);
+   BOOL r =  (msg.sender == self.currentID && msg.receiver == self.peerID) ||
+                (msg.receiver == self.currentID && msg.sender == self.peerID);
     return r;
 }
 
@@ -112,7 +121,7 @@
 
 -(BOOL)saveMessage:(IMessage*)msg {
     int64_t cid = 0;
-    if (msg.sender == self.currentUID) {
+    if (msg.sender == self.currentID) {
         cid = msg.receiver;
     } else {
         cid = msg.sender;
@@ -122,7 +131,7 @@
 
 -(BOOL)removeMessage:(IMessage*)msg {
     int64_t cid = 0;
-    if (msg.sender == self.currentUID) {
+    if (msg.sender == self.currentID) {
         cid = msg.receiver;
     } else {
         cid = msg.sender;
@@ -132,7 +141,7 @@
 }
 -(BOOL)markMessageFailure:(IMessage*)msg {
     int64_t cid = 0;
-    if (msg.sender == self.currentUID) {
+    if (msg.sender == self.currentID) {
         cid = msg.receiver;
     } else {
         cid = msg.sender;
@@ -142,7 +151,7 @@
 
 -(BOOL)markMesageListened:(IMessage*)msg {
     int64_t cid = 0;
-    if (msg.sender == self.currentUID) {
+    if (msg.sender == self.currentID) {
         cid = msg.receiver;
     } else {
         cid = msg.sender;
@@ -152,7 +161,7 @@
 
 -(BOOL)eraseMessageFailure:(IMessage*)msg {
     int64_t cid = 0;
-    if (msg.sender == self.currentUID) {
+    if (msg.sender == self.currentID) {
         cid = msg.receiver;
     } else {
         cid = msg.sender;
@@ -171,14 +180,11 @@
 }
 
 - (void)returnMainTableViewController {
-    DraftDB *db = [DraftDB instance];
-    [db setDraft:self.peerUID draft:[self getDraft]];
-    
     [self removeObserver];
     [self stopPlayer];
     
     NSNotification* notification = [[NSNotification alloc] initWithName:CLEAR_PEER_NEW_MESSAGE
-                                                                 object:[NSNumber numberWithLongLong:self.peerUID]
+                                                                 object:[NSNumber numberWithLongLong:self.peerID]
                                                                userInfo:nil];
     [[NSNotificationCenter defaultCenter] postNotification:notification];
 
@@ -189,7 +195,7 @@
 
 #pragma mark - MessageObserver
 - (void)onPeerMessage:(IMMessage*)im {
-    if (im.sender != self.peerUID && im.receiver != self.peerUID) {
+    if (im.sender != self.peerID && im.receiver != self.peerID) {
         return;
     }
     NSLog(@"receive msg:%@",im);
@@ -204,7 +210,7 @@
     m.rawContent = im.content;
     m.timestamp = im.timestamp;
     m.isOutgoing = (im.sender == self.currentUID);
-    if (im.sender == self.currentUID) {
+    if (im.sender == self.currentID) {
         m.flags = m.flags | MESSAGE_FLAG_ACK;
     }
     //判断消息是否重复
@@ -218,19 +224,13 @@
         self.lastReceivedTimestamp = now;
     }
     
-    
-    if (self.textMode && m.type != MESSAGE_TEXT) {
-        return;
-    }
-    
     [self downloadMessageContent:m];
-    
     [self insertMessage:m];
 }
 
 //服务器ack
 - (void)onPeerMessageACK:(int)msgLocalID uid:(int64_t)uid {
-    if (uid != self.peerUID) {
+    if (uid != self.peerID) {
         return;
     }
     IMessage *msg = [self getMessageWithID:msgLocalID];
@@ -238,7 +238,7 @@
 }
 
 - (void)onPeerMessageFailure:(int)msgLocalID uid:(int64_t)uid {
-    if (uid != self.peerUID) {
+    if (uid != self.peerID) {
         return;
     }
     IMessage *msg = [self getMessageWithID:msgLocalID];
@@ -247,7 +247,7 @@
 
 //对方正在输入
 - (void)onPeerInputing:(int64_t)uid {
-    if (uid != self.peerUID) {
+    if (uid != self.peerID) {
         return;
     }
 }
@@ -323,7 +323,7 @@
         }
     }
     
-    id<IMessageIterator> iterator =  [[PeerMessageDB instance] newMessageIterator:self.peerUID last:last.msgLocalID];
+    id<IMessageIterator> iterator =  [[PeerMessageDB instance] newMessageIterator:self.peerID last:last.msgLocalID];
     
     int count = 0;
     IMessage *msg = [iterator next];
@@ -424,8 +424,8 @@
         [[PeerOutbox instance] uploadImage:message];
     } else {
         IMMessage *im = [[IMMessage alloc] init];
-        im.sender = message.sender | (message.senderAppID << 56);
-        im.receiver = message.receiver | (message.receiverAppID << 56);
+        im.sender = message.sender;
+        im.receiver = message.receiver;
         im.msgLocalID = message.msgLocalID;
         im.content = message.rawContent;
         [[IMService instance] sendPeerMessage:im];
@@ -487,9 +487,8 @@
 - (void)sendLocationMessage:(CLLocationCoordinate2D)location address:(NSString*)address {
     IMessage *msg = [[IMessage alloc] init];
     
-    //todo assign appid
-    msg.senderAppID = 0;
-    msg.receiverAppID = 0;
+    msg.senderAppID = APPID;
+    msg.receiverAppID = self.peerAppID;
     msg.senderID = self.sender;
     msg.receiverID = self.receiver;
 
@@ -522,8 +521,8 @@
 - (void)sendAudioMessage:(NSString*)path second:(int)second {
     IMessage *msg = [[IMessage alloc] init];
     
-    msg.senderAppID = 0;
-    msg.receiverAppID = 0;
+    msg.senderAppID = APPID;
+    msg.receiverAppID = self.peerAppID;
     msg.senderID = self.sender;
     msg.receiverID = self.receiver;
 
@@ -557,8 +556,8 @@
     
     IMessage *msg = [[IMessage alloc] init];
     
-    msg.senderAppID = 0;
-    msg.receiverAppID = 0;
+    msg.senderAppID = APPID;
+    msg.receiverAppID = self.peerAppID;
     msg.senderID = self.sender;
     msg.receiverID = self.receiver;
 
@@ -593,9 +592,8 @@
 -(void) sendTextMessage:(NSString*)text {
     IMessage *msg = [[IMessage alloc] init];
     
-    //todo assign appid
-    msg.senderAppID = 0;
-    msg.receiverAppID = 0;
+    msg.senderAppID = APPID;
+    msg.receiverAppID = self.peerAppID;
     msg.senderID = self.sender;
     msg.receiverID = self.receiver;
 

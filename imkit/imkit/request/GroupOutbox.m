@@ -44,8 +44,8 @@
 - (void)sendMessage:(IMessage*)msg {
  
     IMMessage *im = [[IMMessage alloc] init];
-    im.sender = msg.sender | (msg.senderAppID << 56);
-    im.receiver = msg.receiver | (msg.receiverAppID << 56);
+    im.sender = msg.sender;
+    im.receiver = msg.receiver;
     im.msgLocalID = msg.msgLocalID;
     
     im.content = msg.rawContent;

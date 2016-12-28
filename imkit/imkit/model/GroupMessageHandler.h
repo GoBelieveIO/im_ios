@@ -14,4 +14,5 @@
 
 //当前用户id
 @property(nonatomic, assign) int64_t uid;
+@property(nonatomic, assign) int8_t appID;
 @end

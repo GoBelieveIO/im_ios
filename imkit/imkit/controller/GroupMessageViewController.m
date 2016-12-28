@@ -22,21 +22,25 @@
 
 #define PAGE_COUNT 10
 
+#define APPID 7
+
 @interface GroupMessageViewController ()<OutboxObserver, AudioDownloaderObserver>
 
 @end
 
 @implementation GroupMessageViewController
 
+-(int64_t)currentID {
+    int64_t appid = APPID;
+    return (appid<<56) | self.currentUID;
+}
+
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self setNormalNavigationButtons];
     self.navigationItem.title = self.groupName;
-    
-    DraftDB *db = [DraftDB instance];
-    NSString *draft = [db getGroupDraft:self.groupID];
-    [self setDraft:draft];
     
     [self addObserver];
     
@@ -162,7 +166,6 @@
     IMessage *m = [[IMessage alloc] init];
     m.senderAppID = im.senderAppID;
     m.senderID = im.senderID;
-    m.receiverAppID = im.receiverAppID;
     m.receiverID = im.receiverID;
     m.msgLocalID = im.msgLocalID;
     m.rawContent = im.content;
@@ -213,9 +216,7 @@
     }
     
     IMessage *msg = [[IMessage alloc] init];
-    //todo assign appid
-    msg.senderAppID = 0;
-    msg.receiverAppID = 0;
+    msg.senderAppID = APPID;
     msg.senderID = 0;
     msg.receiverID = groupID;
     if (notification.timestamp > 0) {
@@ -360,7 +361,7 @@
     if (message.type == MESSAGE_GROUP_NOTIFICATION) {
         int type = notification.notificationType;
         if (type == NOTIFICATION_GROUP_CREATED) {
-            if (self.sender == notification.master) {
+            if (self.currentID == notification.master) {
                 NSString *desc = [NSString stringWithFormat:@"您创建了\"%@\"群组", notification.groupName];
                 notification.notificationDesc = desc;
             } else {
@@ -525,11 +526,10 @@
 - (void)sendLocationMessage:(CLLocationCoordinate2D)location address:(NSString*)address {
     IMessage *msg = [[IMessage alloc] init];
 
-    //todo
-    msg.senderAppID = 0;
-    msg.receiverAppID = 0;
-    msg.senderID = self.sender;
-    msg.receiverID = self.receiver;
+
+    msg.senderAppID = APPID;
+    msg.senderID = self.currentUID;
+    msg.receiverID = self.groupID;
     
     MessageLocationContent *content = [[MessageLocationContent alloc] initWithLocation:location];
     msg.rawContent = content.raw;
@@ -560,10 +560,9 @@
 - (void)sendAudioMessage:(NSString*)path second:(int)second {
     IMessage *msg = [[IMessage alloc] init];
     
-    msg.senderID = self.sender;
-    msg.receiverID = self.receiver;
-    msg.senderAppID = 0;
-    msg.receiverAppID = 0;
+    msg.senderAppID = APPID;
+    msg.senderID = self.currentUID;
+    msg.receiverID = self.groupID;
     
     MessageAudioContent *content = [[MessageAudioContent alloc] initWithAudio:[self localAudioURL] duration:second];
     
@@ -596,10 +595,9 @@
     
     IMessage *msg = [[IMessage alloc] init];
     
-    msg.senderAppID = 0;
-    msg.receiverAppID = 0;
-    msg.senderID = self.sender;
-    msg.receiverID = self.receiver;
+    msg.senderAppID = APPID;
+    msg.senderID = self.currentUID;
+    msg.receiverID = self.groupID;
     
     CGRect screenRect = [[UIScreen mainScreen] bounds];
     CGFloat screenHeight = screenRect.size.height;
@@ -635,8 +633,9 @@
     IMessage *msg = [[IMessage alloc] init];
     
     
-    msg.senderID = self.sender;
-    msg.receiverID = self.receiver;
+    msg.senderAppID = APPID;
+    msg.senderID = self.currentUID;
+    msg.receiverID = self.groupID;
     
     MessageTextContent *content = [[MessageTextContent alloc] initWithText:text];
     msg.rawContent = content.raw;

@@ -125,6 +125,8 @@
 
 -(void)handleIMMessage:(Message*)msg {
     IMMessage *im = (IMMessage*)msg.body;
+    NSAssert(im.senderAppID > 0, @"");
+    NSAssert(im.receiverAppID > 0, @"");
     [self.peerMessageHandler handleMessage:im];
     NSLog(@"peer message sender:%lld receiver:%lld content:%s", im.sender, im.receiver, [im.content UTF8String]);
     
@@ -137,6 +139,7 @@
 
 -(void)handleGroupIMMessage:(Message*)msg {
     IMMessage *im = (IMMessage*)msg.body;
+    NSAssert(im.senderAppID > 0, @"");
     [self.groupMessageHandler handleMessage:im];
     NSLog(@"group message sender:%lld receiver:%lld content:%s", im.sender, im.receiver, [im.content UTF8String]);
     Message *ack = [[Message alloc] init];
@@ -661,6 +664,9 @@
 }
 
 -(BOOL)sendPeerMessage:(IMMessage *)im {
+    NSAssert(im.senderAppID > 0, @"");
+    NSAssert(im.receiverAppID > 0, @"");
+    
     Message *m = [[Message alloc] init];
     m.cmd = MSG_IM;
     m.body = im;
@@ -678,6 +684,8 @@
 }
 
 -(BOOL)sendGroupMessage:(IMMessage *)im {
+    NSAssert(im.senderAppID > 0, @"");
+    
     Message *m = [[Message alloc] init];
     m.cmd = MSG_GROUP_IM;
     m.body = im;

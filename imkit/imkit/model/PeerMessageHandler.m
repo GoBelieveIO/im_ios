@@ -35,7 +35,7 @@
     m.rawContent = im.content;
     m.timestamp = msg.timestamp;
     
-    if (self.uid == msg.sender) {
+    if (self.uid == msg.senderID && self.appID == msg.senderAppID) {
         m.flags = m.flags|MESSAGE_FLAG_ACK;
     }
     BOOL r = [[PeerMessageDB instance] insertMessage:m uid:pid];
@@ -46,14 +46,12 @@
 }
 
 -(BOOL)handleMessageACK:(IMMessage*)msg {
-    int64_t pid = self.uid == msg.sender ? msg.receiver : msg.sender;
-    return [[PeerMessageDB instance] acknowledgeMessage:msg.msgLocalID uid:pid];
+     return [[PeerMessageDB instance] acknowledgeMessage:msg.msgLocalID uid:msg.receiver];
 }
 
 -(BOOL)handleMessageFailure:(IMMessage*)msg {
-    int64_t pid = self.uid == msg.sender ? msg.receiver : msg.sender;
     PeerMessageDB *db = [PeerMessageDB instance];
-    return [db markMessageFailure:msg.msgLocalID uid:pid];
+    return [db markMessageFailure:msg.msgLocalID uid:msg.receiver];
 }
 
 @end

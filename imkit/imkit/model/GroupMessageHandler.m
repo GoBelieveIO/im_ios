@@ -32,7 +32,7 @@
     m.receiverID = im.receiverID;
     m.rawContent = im.content;
     m.timestamp = im.timestamp;
-    if (self.uid == im.sender) {
+    if (self.uid == im.senderID && self.appID == im.senderAppID) {
         m.flags = m.flags | MESSAGE_FLAG_ACK;
     }
     BOOL r = [[GroupMessageDB instance] insertMessage:m];
@@ -56,7 +56,7 @@
 
     IMessage *m = [[IMessage alloc] init];
     //todo 设置为当前的appid
-    m.senderAppID = 0;
+    m.senderAppID = self.appID;
     m.receiverAppID = 0;
     
     m.senderID = 0;

@@ -26,6 +26,7 @@
 @property(nonatomic, assign) int64_t currentUID;
 @property(nonatomic, assign) int64_t peerUID;
 @property(nonatomic, copy) NSString *peerName;
+@property(nonatomic, assign) int8_t peerAppID;
 
 
 @end
