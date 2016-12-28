@@ -26,8 +26,10 @@
 
 -(BOOL)handleMessage:(IMMessage*)im {
     IMessage *m = [[IMessage alloc] init];
-    m.sender = im.sender;
-    m.receiver = im.receiver;
+    m.senderAppID = im.senderAppID;
+    m.senderID = im.senderID;
+    m.receiverAppID = im.receiverAppID;
+    m.receiverID = im.receiverID;
     m.rawContent = im.content;
     m.timestamp = im.timestamp;
     if (self.uid == im.sender) {
@@ -51,9 +53,14 @@
 -(BOOL)handleGroupNotification:(NSString*)notification {
     MessageGroupNotificationContent *obj = [[MessageGroupNotificationContent alloc] initWithNotification:notification];
     
+
     IMessage *m = [[IMessage alloc] init];
-    m.sender = 0;
-    m.receiver = obj.groupID;
+    //todo 设置为当前的appid
+    m.senderAppID = 0;
+    m.receiverAppID = 0;
+    
+    m.senderID = 0;
+    m.receiverID = obj.groupID;
     m.rawContent = obj.raw;
 
     if (obj.timestamp > 0) {

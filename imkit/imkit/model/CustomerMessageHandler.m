@@ -30,8 +30,6 @@
     m.storeID = msg.storeID;
     m.sellerID = msg.sellerID;
     m.isSupport = YES;
-    m.sender = msg.customerID;
-    m.receiver = msg.storeID;
     m.rawContent = msg.content;
     m.timestamp = msg.timestamp;
     BOOL r = [[CustomerMessageDB instance] insertMessage:m uid:msg.storeID];
@@ -48,8 +46,6 @@
     m.storeID = msg.storeID;
     m.sellerID = msg.sellerID;
     m.isSupport = NO;
-    m.sender = msg.customerID;
-    m.receiver = msg.storeID;
     m.rawContent = msg.content;
     m.timestamp = msg.timestamp;
     if (self.uid == msg.customerID) {

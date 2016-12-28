@@ -111,9 +111,6 @@
         msg.storeID = self.storeID;
         msg.sellerID = self.sellerID;
         
-        msg.sender = self.sellerID;
-        msg.receiver = self.currentUID;
-        
         NSString *headline = [NSString stringWithFormat:@"%@为您服务", self.name];
         
         MessageHeadlineContent *content = [[MessageHeadlineContent alloc] initWithHeadline:headline];

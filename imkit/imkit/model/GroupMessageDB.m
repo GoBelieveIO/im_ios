@@ -150,10 +150,17 @@
     p += 4;
     msg.timestamp = readInt32(p);
     p += 4;
-    msg.sender = readInt64(p);
+    
+    int64_t sender = readInt64(p);
+    msg.senderID = sender & 0x00ffffffffffffff;
+    msg.senderAppID = sender >> 56;
     p += 8;
-    msg.receiver = readInt64(p);
+    
+    int64_t receiver = readInt64(p);
+    msg.receiverID = receiver & 0x00ffffffffffffff;
+    msg.receiverAppID = receiver >> 56;
     p += 8;
+    
     msg.rawContent = [[NSString alloc] initWithBytes:p length:len - 24 encoding:NSUTF8StringEncoding];
     return msg;
 }

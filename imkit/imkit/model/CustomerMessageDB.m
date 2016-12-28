@@ -186,13 +186,7 @@
     msg.isSupport = *p;
     p++;
     
-    if (msg.isSupport) {
-        msg.sender = msg.storeID;
-        msg.receiver = msg.customerID;
-    } else {
-        msg.sender = msg.customerID;
-        msg.receiver = msg.storeID;
-    }
+
 
     msg.rawContent = [[NSString alloc] initWithBytes:p length:len - 41 encoding:NSUTF8StringEncoding];
     return msg;

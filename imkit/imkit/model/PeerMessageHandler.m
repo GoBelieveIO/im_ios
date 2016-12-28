@@ -28,8 +28,10 @@
     int64_t pid = self.uid == msg.sender ? msg.receiver : msg.sender;
     IMMessage *im = msg;
     IMessage *m = [[IMessage alloc] init];
-    m.sender = im.sender;
-    m.receiver = im.receiver;
+    m.senderID = im.senderID;
+    m.receiverID = im.receiverID;
+    m.senderAppID = im.senderAppID;
+    m.receiverAppID = im.receiverAppID;
     m.rawContent = im.content;
     m.timestamp = msg.timestamp;
     

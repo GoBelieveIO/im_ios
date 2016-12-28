@@ -148,8 +148,15 @@
 @interface IMessage : NSObject
 @property(nonatomic) int msgLocalID;
 @property(nonatomic) int flags;
-@property(nonatomic) int64_t sender;
-@property(nonatomic) int64_t receiver;
+//appid<<56 | senderID
+@property(nonatomic, readonly) int64_t sender;
+@property(nonatomic, readonly) int64_t receiver;
+
+//应用内的uid
+@property(nonatomic) int64_t senderID;
+@property(nonatomic) int64_t receiverID;
+@property(nonatomic) int8_t receiverAppID;
+@property(nonatomic) int8_t senderAppID;
 
 @property(nonatomic, copy) NSString *rawContent;
 @property(nonatomic) int type;

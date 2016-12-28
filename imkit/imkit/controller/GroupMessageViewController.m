@@ -84,8 +84,10 @@
     //以附件的形式存储，以免第二次查询
     MessageAttachmentContent *att = [[MessageAttachmentContent alloc] initWithAttachment:msg.msgLocalID address:address];
     IMessage *attachment = [[IMessage alloc] init];
-    attachment.sender = msg.sender;
-    attachment.receiver = msg.receiver;
+    attachment.senderAppID = msg.senderAppID;
+    attachment.senderID = msg.senderID;
+    attachment.receiverAppID = msg.receiverAppID;
+    attachment.receiverID = msg.receiverID;
     attachment.rawContent = att.raw;
     [self saveMessage:attachment];
 }
@@ -158,8 +160,10 @@
     }
 
     IMessage *m = [[IMessage alloc] init];
-    m.sender = im.sender;
-    m.receiver = im.receiver;
+    m.senderAppID = im.senderAppID;
+    m.senderID = im.senderID;
+    m.receiverAppID = im.receiverAppID;
+    m.receiverID = im.receiverID;
     m.msgLocalID = im.msgLocalID;
     m.rawContent = im.content;
     m.timestamp = im.timestamp;
@@ -209,8 +213,11 @@
     }
     
     IMessage *msg = [[IMessage alloc] init];
-    msg.sender = 0;
-    msg.receiver = groupID;
+    //todo assign appid
+    msg.senderAppID = 0;
+    msg.receiverAppID = 0;
+    msg.senderID = 0;
+    msg.receiverID = groupID;
     if (notification.timestamp > 0) {
         msg.timestamp = notification.timestamp;
     } else {
@@ -518,8 +525,11 @@
 - (void)sendLocationMessage:(CLLocationCoordinate2D)location address:(NSString*)address {
     IMessage *msg = [[IMessage alloc] init];
 
-    msg.sender = self.sender;
-    msg.receiver = self.receiver;
+    //todo
+    msg.senderAppID = 0;
+    msg.receiverAppID = 0;
+    msg.senderID = self.sender;
+    msg.receiverID = self.receiver;
     
     MessageLocationContent *content = [[MessageLocationContent alloc] initWithLocation:location];
     msg.rawContent = content.raw;
@@ -550,8 +560,11 @@
 - (void)sendAudioMessage:(NSString*)path second:(int)second {
     IMessage *msg = [[IMessage alloc] init];
     
-    msg.sender = self.sender;
-    msg.receiver = self.receiver;
+    msg.senderID = self.sender;
+    msg.receiverID = self.receiver;
+    msg.senderAppID = 0;
+    msg.receiverAppID = 0;
+    
     MessageAudioContent *content = [[MessageAudioContent alloc] initWithAudio:[self localAudioURL] duration:second];
     
     msg.rawContent = content.raw;
@@ -583,8 +596,10 @@
     
     IMessage *msg = [[IMessage alloc] init];
     
-    msg.sender = self.sender;
-    msg.receiver = self.receiver;
+    msg.senderAppID = 0;
+    msg.receiverAppID = 0;
+    msg.senderID = self.sender;
+    msg.receiverID = self.receiver;
     
     CGRect screenRect = [[UIScreen mainScreen] bounds];
     CGFloat screenHeight = screenRect.size.height;
@@ -619,8 +634,9 @@
 -(void) sendTextMessage:(NSString*)text {
     IMessage *msg = [[IMessage alloc] init];
     
-    msg.sender = self.sender;
-    msg.receiver = self.receiver;
+    
+    msg.senderID = self.sender;
+    msg.receiverID = self.receiver;
     
     MessageTextContent *content = [[MessageTextContent alloc] initWithText:text];
     msg.rawContent = content.raw;

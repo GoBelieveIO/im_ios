@@ -372,6 +372,13 @@
 @end
 
 @implementation IMessage
+-(int64_t)sender {
+    return (self.senderAppID << 56) | self.senderID;
+}
+
+-(int64_t)receiver {
+    return (self.receiverAppID << 56) | self.receiverID;
+}
 
 -(BOOL)isACK {
     return self.flags&MESSAGE_FLAG_ACK;

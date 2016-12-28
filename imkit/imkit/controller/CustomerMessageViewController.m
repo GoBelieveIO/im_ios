@@ -289,8 +289,6 @@
     m.customerID = im.customerID;
     m.storeID = im.storeID;
     m.sellerID = im.sellerID;
-    m.sender = im.storeID;
-    m.receiver = im.customerID;
     m.msgLocalID = im.msgLocalID;
     m.rawContent = im.content;
     m.timestamp = im.timestamp;
@@ -327,8 +325,6 @@
     m.customerID = im.customerID;
     m.storeID = im.storeID;
     m.sellerID = im.sellerID;
-    m.sender = im.customerID;
-    m.receiver = im.storeID;
     m.msgLocalID = im.msgLocalID;
     m.rawContent = im.content;
     m.timestamp = im.timestamp;
@@ -465,10 +461,7 @@
     msg.customerID = self.currentUID;
     msg.storeID = self.storeID;
     msg.sellerID = self.sellerID;
-    
-    msg.sender = self.sender;
-    msg.receiver = self.receiver;
-    
+
     MessageLocationContent *content = [[MessageLocationContent alloc] initWithLocation:location];
     msg.rawContent = content.raw;
     
@@ -500,9 +493,6 @@
     msg.customerID = self.currentUID;
     msg.storeID = self.storeID;
     msg.sellerID = self.sellerID;
-    
-    msg.sender = self.sender;
-    msg.receiver = self.receiver;
     
     MessageAudioContent *content = [[MessageAudioContent alloc] initWithAudio:[self localAudioURL] duration:second];
     
@@ -536,9 +526,6 @@
     msg.customerID = self.currentUID;
     msg.storeID = self.storeID;
     msg.sellerID = self.sellerID;
-    
-    msg.sender = self.sender;
-    msg.receiver = self.receiver;
     
     CGRect screenRect = [[UIScreen mainScreen] bounds];
     CGFloat screenHeight = screenRect.size.height;
@@ -575,10 +562,7 @@
     msg.customerID = self.currentUID;
     msg.storeID = self.storeID;
     msg.sellerID = self.sellerID;
-    
-    msg.sender = self.sender;
-    msg.receiver = self.receiver;
-    
+
     MessageTextContent *content = [[MessageTextContent alloc] initWithText:text];
     msg.rawContent = content.raw;
     msg.timestamp = (int)time(NULL);

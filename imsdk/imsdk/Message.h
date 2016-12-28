@@ -68,6 +68,12 @@
 @interface IMMessage : NSObject
 @property(nonatomic, assign)int64_t sender;
 @property(nonatomic, assign)int64_t receiver;
+
+@property(nonatomic, readonly)int64_t senderID;
+@property(nonatomic, readonly)int64_t receiverID;
+@property(nonatomic, readonly)int8_t senderAppID;
+@property(nonatomic, readonly)int8_t receiverAppID;
+
 @property(nonatomic, assign)int32_t timestamp;
 @property(nonatomic, assign)int32_t msgLocalID;
 @property(nonatomic, copy)NSString *content;
