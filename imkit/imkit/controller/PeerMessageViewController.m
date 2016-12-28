@@ -31,7 +31,8 @@
 @implementation PeerMessageViewController
 
 -(int64_t)peerID {
-    return (self.peerAppID << 56) | self.peerID;
+    int64_t appid = self.peerAppID;
+    return (appid << 56) | self.peerUID;
 }
 -(int64_t)currentID {
     int64_t appid = APPID;
@@ -43,6 +44,10 @@
 }
 
 - (void)viewDidLoad {
+    if (self.peerAppID == 0) {
+        self.peerAppID = APPID;
+    }
+    
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
@@ -63,9 +68,7 @@
             }];
         }
     }
-    if (self.peerAppID == 0) {
-        self.peerAppID = APPID;
-    }
+
     [self addObserver];
 }
 
@@ -88,13 +91,6 @@
     [[IMService instance] removePeerMessageObserver:self];
 }
 
-- (int64_t)sender {
-    return self.currentUID;
-}
-
-- (int64_t)receiver {
-    return self.peerUID;
-}
 
 - (BOOL)isMessageSending:(IMessage*)msg {
     return [[IMService instance] isPeerMessageSending:self.peerID id:msg.msgLocalID];
@@ -209,7 +205,7 @@
     m.msgLocalID = im.msgLocalID;
     m.rawContent = im.content;
     m.timestamp = im.timestamp;
-    m.isOutgoing = (im.sender == self.currentUID);
+    m.isOutgoing = (im.sender == self.currentID);
     if (im.sender == self.currentID) {
         m.flags = m.flags | MESSAGE_FLAG_ACK;
     }
@@ -265,7 +261,8 @@
 - (void)loadConversationData {
     NSMutableSet *uuidSet = [NSMutableSet set];
     int count = 0;
-    id<IMessageIterator> iterator =  [[PeerMessageDB instance] newMessageIterator: self.peerUID];
+    NSLog(@"peerid:%lld %lld %lld", self.peerID, self.peerUID, self.peerAppID);
+    id<IMessageIterator> iterator =  [[PeerMessageDB instance] newMessageIterator: self.peerID];
     IMessage *msg = [iterator next];
     while (msg) {
         //重复的消息
@@ -283,7 +280,7 @@
             [self.attachments setObject:att
                                  forKey:[NSNumber numberWithInt:att.msgLocalID]];
         } else {
-            msg.isOutgoing = (msg.sender == self.currentUID);
+            msg.isOutgoing = (msg.sender == self.currentID);
             [self.messages insertObject:msg atIndex:0];
             if (++count >= PAGE_COUNT) {
                 break;
@@ -344,7 +341,7 @@
                                  forKey:[NSNumber numberWithInt:att.msgLocalID]];
             
         } else {
-            msg.isOutgoing = (msg.sender == self.currentUID);
+            msg.isOutgoing = (msg.sender == self.currentID);
             [self.messages insertObject:msg atIndex:0];
             if (++count >= PAGE_COUNT) {
                 break;
@@ -489,8 +486,8 @@
     
     msg.senderAppID = APPID;
     msg.receiverAppID = self.peerAppID;
-    msg.senderID = self.sender;
-    msg.receiverID = self.receiver;
+    msg.senderID = self.currentUID;
+    msg.receiverID = self.peerUID;
 
     MessageLocationContent *content = [[MessageLocationContent alloc] initWithLocation:location];
     msg.rawContent = content.raw;
@@ -523,8 +520,8 @@
     
     msg.senderAppID = APPID;
     msg.receiverAppID = self.peerAppID;
-    msg.senderID = self.sender;
-    msg.receiverID = self.receiver;
+    msg.senderID = self.currentUID;
+    msg.receiverID = self.peerUID;
 
     MessageAudioContent *content = [[MessageAudioContent alloc] initWithAudio:[self localAudioURL] duration:second];
     
@@ -558,8 +555,8 @@
     
     msg.senderAppID = APPID;
     msg.receiverAppID = self.peerAppID;
-    msg.senderID = self.sender;
-    msg.receiverID = self.receiver;
+    msg.senderID = self.currentUID;
+    msg.receiverID = self.peerUID;
 
     CGRect screenRect = [[UIScreen mainScreen] bounds];
     CGFloat screenHeight = screenRect.size.height;
@@ -594,8 +591,8 @@
     
     msg.senderAppID = APPID;
     msg.receiverAppID = self.peerAppID;
-    msg.senderID = self.sender;
-    msg.receiverID = self.receiver;
+    msg.senderID = self.currentUID;
+    msg.receiverID = self.peerUID;
 
     MessageTextContent *content = [[MessageTextContent alloc] initWithText:text];
     msg.rawContent = content.raw;

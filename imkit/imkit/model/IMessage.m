@@ -373,11 +373,13 @@
 
 @implementation IMessage
 -(int64_t)sender {
-    return (self.senderAppID << 56) | self.senderID;
+    int64_t appid = self.senderAppID;
+    return (appid << 56) | self.senderID;
 }
 
 -(int64_t)receiver {
-    return (self.receiverAppID << 56) | self.receiverID;
+    int64_t appid = self.receiverAppID;
+    return (appid << 56) | self.receiverID;
 }
 
 -(BOOL)isACK {
