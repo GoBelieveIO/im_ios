@@ -4,6 +4,8 @@
 #import "IMHttpAPI.h"
 #import "CustomerMessageHandler.h"
 #import "SyncKeyHandler.h"
+#import <FMDB/FMDB.h>
+#import <sqlite3.h>
 
 #define URL @"http://api.gobelieve.io"
 
@@ -150,16 +152,56 @@
 
 }
 
+-(BOOL)mkdir:(NSString*)path {
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    if (![fileManager fileExistsAtPath:path]) {
+        NSError *err;
+        BOOL r = [fileManager createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:&err];
+        
+        if (!r) {
+            NSLog(@"mkdir err:%@", err);
+        }
+        return r;
+    }
+    
+    return YES;
+}
+
 -(void)login {
+
     NSString *path = [self getDocumentPath];
+#ifdef FILE_ENGINE_DB
     NSString *dbPath = [NSString stringWithFormat:@"%@/%lld", path, self.clientID];
+    [self mkdir:dbPath];
     [CustomerMessageDB instance].dbPath = [NSString stringWithFormat:@"%@/customer", dbPath];
+#elif defined SQL_ENGINE_DB
+    NSString *dbPath = [NSString stringWithFormat:@"%@/gobelieve_%lld.db", path, self.clientID];
+    //检查数据库文件是否已经存在
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    if (![fileManager fileExistsAtPath:dbPath]) {
+        NSString *p = [[NSBundle mainBundle] pathForResource:@"gobelieve" ofType:@"db"];
+        [fileManager copyItemAtPath:p toPath:dbPath error:nil];
+    }
+    FMDatabase *db = [[FMDatabase alloc] initWithPath:dbPath];
+    BOOL r = [db openWithFlags:SQLITE_OPEN_READWRITE|SQLITE_OPEN_WAL vfs:nil];
+    if (!r) {
+        NSLog(@"open database error:%@", [db lastError]);
+        db = nil;
+        NSAssert(NO, @"");
+    }
+    [CustomerMessageDB instance].db = db;
+#else
+#error no engine
+#endif
+    
+    
     [CustomerMessageHandler instance].uid = self.clientID;
     [IMService instance].customerMessageHandler = [CustomerMessageHandler instance];
     [IMService instance].token = self.token;
     [IMHttpAPI instance].accessToken = self.token;
     
-    
+    dbPath = [NSString stringWithFormat:@"%@/%lld", path, self.clientID];
+    [self mkdir:dbPath];
     NSString *fileName = [NSString stringWithFormat:@"%@/synckey", dbPath];
     SyncKeyHandler *handler = [[SyncKeyHandler alloc] initWithFileName:fileName];
     [IMService instance].syncKeyHandler = handler;

@@ -14,7 +14,9 @@
 #import <gobelieve/MessageViewController.h>
 #import <gobelieve/IMHttpAPI.h>
 #import <gobelieve/PeerMessageViewController.h>
-#import <gobelieve/MessageDB.h>
+#import <gobelieve/PeerMessageDB.h>
+#import <gobelieve/GroupMessageDB.h>
+#import <gobelieve/CustomerMessageDB.h>
 #import <gobelieve/SyncKeyHandler.h>
 #import <gobelieve/PeerMessageHandler.h>
 #import <gobelieve/GroupMessageHandler.h>
@@ -179,7 +181,7 @@
             [PeerMessageDB instance].dbPath = [NSString stringWithFormat:@"%@/peer", dbPath];
             [GroupMessageDB instance].dbPath = [NSString stringWithFormat:@"%@/group", dbPath];
             [CustomerMessageDB instance].dbPath = [NSString stringWithFormat:@"%@/customer", dbPath];
-##elif defined SQL_ENGINE_DB
+#elif defined SQL_ENGINE_DB
             [PeerMessageDB instance].db = db;
             [GroupMessageDB instance].db = db;
 #else

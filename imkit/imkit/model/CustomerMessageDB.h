@@ -8,6 +8,12 @@
  */
 #import "MessageDB.h"
 
-
+#ifdef FILE_ENGINE_DB
 #import "FileCustomerMessageDB.h"
 typedef  FileCustomerMessageDB CustomerMessageDB;
+#elif defined SQL_ENGINE_DB
+#import "SQLCustomerMessageDB.h"
+typedef SQLCustomerMessageDB CustomerMessageDB;
+#else
+#error "no engine"
+#endif

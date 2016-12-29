@@ -127,14 +127,12 @@
             
 
             
-            
-#ifdef FILE_ENGINE_DB
             NSString *path = [self getDocumentPath];
+#ifdef FILE_ENGINE_DB
             NSString *dbPath = [NSString stringWithFormat:@"%@/%lld", path, [tfSender.text longLongValue]];
             [self mkdir:dbPath];
             
 #elif defined SQL_ENGINE_DB
-            NSString *path = [self getDocumentPath];
             NSString *dbPath = [NSString stringWithFormat:@"%@/gobelieve_%lld.db", path, [tfSender.text longLongValue]];
             
             //检查数据库文件是否已经存在
@@ -163,6 +161,7 @@
 #elif defined SQL_ENGINE_DB
             [PeerMessageDB instance].db = db;
             [GroupMessageDB instance].db = db;
+            [CustomerMessageDB instance].db = db;
 #else
             
 #endif

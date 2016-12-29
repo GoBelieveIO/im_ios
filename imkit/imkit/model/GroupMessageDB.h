@@ -8,13 +8,13 @@
  */
 #import "MessageDB.h"
 
-#if 0
+#ifdef FILE_ENGINE_DB
 #import "FileGroupMessageDB.h"
 typedef FileGroupMessageDB GroupMessageDB;
-#define PEER_FILE_ENGINE_DB
-#else
+#elif defined SQL_ENGINE_DB
 #import "SQLGroupMessageDB.h"
 typedef SQLGroupMessageDB GroupMessageDB;
-#define PEER_SQL_ENGINE_DB
+#else
+#error "no engine"
 #endif
 
