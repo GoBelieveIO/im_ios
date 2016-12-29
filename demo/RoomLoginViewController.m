@@ -12,7 +12,6 @@
 #import <gobelieve/MessageViewController.h>
 #import <gobelieve/PeerMessageViewController.h>
 #import <gobelieve/IMHttpAPI.h>
-#import <gobelieve/MessageDB.h>
 #import <gobelieve/PeerMessageDB.h>
 #import <gobelieve/GroupMessageDB.h>
 #import <gobelieve/CustomerMessageDB.h>

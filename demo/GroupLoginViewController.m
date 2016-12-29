@@ -11,15 +11,17 @@
 #import <gobelieve/IMHttpAPI.h>
 #import <gobelieve/GroupMessageViewController.h>
 #import <gobelieve/PeerMessageViewController.h>
-#import <gobelieve/MessageDB.h>
 #import <gobelieve/PeerMessageDB.h>
 #import <gobelieve/GroupMessageDB.h>
+#import <gobelieve/CustomerMessageDB.h>
 #import <gobelieve/SyncKeyHandler.h>
 #import <gobelieve/PeerMessageHandler.h>
 #import <gobelieve/GroupMessageHandler.h>
 #import <gobelieve/CustomerMessageHandler.h>
 
 #import "Conversation.h"
+#import <FMDB/FMDB.h>
+#import <sqlite3.h>
 
 @interface GroupLoginViewController ()<MessageViewControllerUserDelegate
     > {
@@ -124,10 +126,47 @@
             NSLog(@"login success");
             
 
+            
+            
+#ifdef FILE_ENGINE_DB
             NSString *path = [self getDocumentPath];
             NSString *dbPath = [NSString stringWithFormat:@"%@/%lld", path, [tfSender.text longLongValue]];
+            [self mkdir:dbPath];
+            
+#elif defined SQL_ENGINE_DB
+            NSString *path = [self getDocumentPath];
+            NSString *dbPath = [NSString stringWithFormat:@"%@/gobelieve_%lld.db", path, [tfSender.text longLongValue]];
+            
+            //检查数据库文件是否已经存在
+            NSFileManager *fileManager = [NSFileManager defaultManager];
+            if (![fileManager fileExistsAtPath:dbPath]) {
+                NSString *p = [[NSBundle mainBundle] pathForResource:@"gobelieve" ofType:@"db"];
+                [fileManager copyItemAtPath:p toPath:dbPath error:nil];
+            }
+            FMDatabase *db = [[FMDatabase alloc] initWithPath:dbPath];
+            BOOL r = [db openWithFlags:SQLITE_OPEN_READWRITE|SQLITE_OPEN_WAL vfs:nil];
+            if (!r) {
+                NSLog(@"open database error:%@", [db lastError]);
+                db = nil;
+                NSAssert(NO, @"");
+            }
+#else
+#error dd
+#endif
+            
+            
+            
+#ifdef FILE_ENGINE_DB
             [PeerMessageDB instance].dbPath = [NSString stringWithFormat:@"%@/peer", dbPath];
             [GroupMessageDB instance].dbPath = [NSString stringWithFormat:@"%@/group", dbPath];
+            [CustomerMessageDB instance].dbPath = [NSString stringWithFormat:@"%@/customer", dbPath];
+#elif defined SQL_ENGINE_DB
+            [PeerMessageDB instance].db = db;
+            [GroupMessageDB instance].db = db;
+#else
+            
+#endif
+
 
             [PeerMessageHandler instance].uid = [tfSender.text longLongValue];
             [GroupMessageHandler instance].uid = [tfSender.text longLongValue];

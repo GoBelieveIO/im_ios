@@ -8,7 +8,7 @@
 
 #import "IMessageIterator.h"
 #import "ReverseFile.h"
-#import "MessageDB.h"
+#import "FileMessageDB.h"
 
 @interface IMessageIterator()
 -(id)initWithPath:(NSString*)path;
@@ -40,7 +40,7 @@
         NSLog(@"open file fail:%@", path);
         return;
     }
-    if (![MessageDB checkHeader:fd]) {
+    if (![FileMessageDB checkHeader:fd]) {
         close(fd);
         return;
     }
@@ -53,7 +53,7 @@
 
 -(IMessage*)nextMessage {
     if (!self.file) return nil;
-    return [MessageDB readMessage:self.file];
+    return [FileMessageDB readMessage:self.file];
 }
 
 -(IMessage*)next {

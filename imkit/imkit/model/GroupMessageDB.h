@@ -1,33 +1,20 @@
-/*                                                                            
-  Copyright (c) 2014-2015, GoBelieve     
-    All rights reserved.		    				     			
+/*
+ Copyright (c) 2014-2015, GoBelieve
+ All rights reserved.
  
-  This source code is licensed under the BSD-style license found in the
-  LICENSE file in the root directory of this source tree. An additional grant
-  of patent rights can be found in the PATENTS file in the same directory.
-*/
-
-#import <Foundation/Foundation.h>
-
-#import "IMessage.h"
+ This source code is licensed under the BSD-style license found in the
+ LICENSE file in the root directory of this source tree. An additional grant
+ of patent rights can be found in the PATENTS file in the same directory.
+ */
 #import "MessageDB.h"
-#import "IMessageIterator.h"
-#import "ConversationIterator.h"
 
+#if 0
+#import "FileGroupMessageDB.h"
+typedef FileGroupMessageDB GroupMessageDB;
+#define PEER_FILE_ENGINE_DB
+#else
+#import "SQLGroupMessageDB.h"
+typedef SQLGroupMessageDB GroupMessageDB;
+#define PEER_SQL_ENGINE_DB
+#endif
 
-@interface GroupMessageDB : MessageDB
-+(GroupMessageDB*)instance;
-
-@property(nonatomic, copy) NSString *dbPath;
-
--(id<IMessageIterator>)newMessageIterator:(int64_t)uid;
--(id<IMessageIterator>)newMessageIterator:(int64_t)uid last:(int)lastMsgID;
--(id<ConversationIterator>)newConversationIterator;
-
--(BOOL)insertMessage:(IMessage*)msg;
--(BOOL)removeMessage:(int)msgLocalID gid:(int64_t)gid;
--(BOOL)clearConversation:(int64_t)gid;
--(BOOL)acknowledgeMessage:(int)msgLocalID gid:(int64_t)gid;
--(BOOL)markMessageFailure:(int)msgLocalID gid:(int64_t)gid;
--(BOOL)markMesageListened:(int)msgLocalID gid:(int64_t)gid;
-@end
