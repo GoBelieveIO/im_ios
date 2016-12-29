@@ -184,6 +184,7 @@
 #elif defined SQL_ENGINE_DB
             [PeerMessageDB instance].db = db;
             [GroupMessageDB instance].db = db;
+            [CustomerMessageDB instance].db = db;
 #else
 
 #endif
