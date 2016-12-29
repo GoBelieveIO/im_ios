@@ -67,14 +67,12 @@
   
 #if TARGET_IPHONE_SIMULATOR
     NSString *deviceID = @"7C8A8F5B-E5F4-4797-8758-05367D2A4D61";
-    [IMService instance].deviceID = @"7C8A8F5B-E5F4-4797-8758-05367D2A4D61";
-    NSLog(@"device id:%@", @"7C8A8F5B-E5F4-4797-8758-05367D2A4D61");
 #else
     NSString *deviceID = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
-    [IMService instance].deviceID = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
-    NSLog(@"device id:%@", [[[UIDevice currentDevice] identifierForVendor] UUIDString]);
 #endif
-
+    [IMService instance].deviceID = deviceID;
+    NSLog(@"device id:%@", deviceID);
+    
     [IMService instance].peerMessageHandler = [PeerMessageHandler instance];
     [IMService instance].groupMessageHandler = [GroupMessageHandler instance];
     [IMService instance].customerMessageHandler = [CustomerMessageHandler instance];
@@ -103,23 +101,11 @@
     self.mainViewController = mainViewController;
 #endif
 
+    UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeAlert
+                                                                                         | UIUserNotificationTypeBadge
+                                                                                         | UIUserNotificationTypeSound) categories:nil];
+    [application registerUserNotificationSettings:settings];
     
-#ifdef __IPHONE_8_0
-    if ([application respondsToSelector:@selector(registerUserNotificationSettings:)]) {
-
-        UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeAlert
-                                                                                             | UIUserNotificationTypeBadge
-                                                                                             | UIUserNotificationTypeSound) categories:nil];
-        [application registerUserNotificationSettings:settings];
-
-    } else {
-        UIRemoteNotificationType myTypes = UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound;
-        [application registerForRemoteNotificationTypes:myTypes];
-    }
-#else
-    UIRemoteNotificationType myTypes = UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound;
-    [application registerForRemoteNotificationTypes:myTypes];
-#endif
     
     [self refreshHost];
     return YES;

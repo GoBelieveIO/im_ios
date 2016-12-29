@@ -55,7 +55,7 @@ alpha:(a)]
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    UIBarButtonItem *newBackButton = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStyleBordered target:self action:@selector(home:)];
+    UIBarButtonItem *newBackButton = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:self action:@selector(home:)];
     self.navigationItem.leftBarButtonItem=newBackButton;
     
     CGRect rect = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
@@ -307,7 +307,7 @@ alpha:(a)]
 + (NSString *)getConversationTimeString:(NSDate *)date{
     NSMutableString *outStr;
     NSCalendar *gregorian = [[NSCalendar alloc]
-                             initWithCalendarIdentifier:NSGregorianCalendar];
+                             initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
     NSDateComponents *components = [gregorian components:NSUIntegerMax fromDate:date];
     NSDateComponents *todayComponents = [gregorian components:NSIntegerMax fromDate:[NSDate date]];
     

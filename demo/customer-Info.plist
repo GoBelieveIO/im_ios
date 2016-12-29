@@ -7,7 +7,7 @@
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.beetle.im.demo</string>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -20,14 +20,6 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
-	<key>NSCameraUsageDescription</key>
-	<string>This app requires access to camera.</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>This app requires access to microphone.</string>
-	<key>Privacy - Location Always Usage DescriptionPrivacy - Location Always Usage Description</key>
-	<string>This application requires location services to work</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>This app requires access to the photo library.</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -35,6 +27,14 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>This app requires access to camera.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app requires access to microphone.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app requires access to the photo library.</string>
+	<key>Privacy - Location Always Usage DescriptionPrivacy - Location Always Usage Description</key>
+	<string>This application requires location services to work</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>

@@ -76,7 +76,7 @@
 + (NSString *)getConversationTimeString:(NSDate *)date{
     NSMutableString *outStr;
     NSCalendar *gregorian = [[NSCalendar alloc]
-                             initWithCalendarIdentifier:NSGregorianCalendar];
+                             initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
     NSDateComponents *components = [gregorian components:NSUIntegerMax fromDate:date];
     NSDateComponents *todayComponents = [gregorian components:NSIntegerMax fromDate:[NSDate date]];
     
