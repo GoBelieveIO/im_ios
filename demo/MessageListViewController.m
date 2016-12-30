@@ -36,6 +36,9 @@ alpha:(a)]
     SystemMessageObserver, RTMessageObserver>
 @property (strong , nonatomic) NSMutableArray *conversations;
 @property (strong , nonatomic) UITableView *tableview;
+
+@property(nonatomic, readonly) int64_t currentID;
+
 @end
 
 @implementation MessageListViewController
@@ -51,6 +54,12 @@ alpha:(a)]
 -(void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
+
+-(int64_t)currentID {
+    int64_t appid = APPID;
+    return (appid<<56) | self.currentUID;
+}
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -93,7 +102,7 @@ alpha:(a)]
     while (msg) {
         Conversation *c = [[Conversation alloc] init];
         c.message = msg;
-        c.cid = (self.currentUID == msg.sender) ? msg.receiver : msg.sender;
+        c.cid = (self.currentID == msg.sender) ? msg.receiver : msg.sender;
         c.type = CONVERSATION_PEER;
         [self.conversations addObject:c];
         msg = [iterator next];
@@ -114,41 +123,7 @@ alpha:(a)]
         [self updateConversationName:conv];
         [self updateConversationDetail:conv];
     }
-    
-    id<IMessageIterator> iter = [[CustomerMessageDB instance] newMessageIterator:KEFU_ID];
-    msg = nil;
-    //返回第一条不是附件的消息
-    while (YES) {
-        msg = [iter next];
-        if (msg == nil) {
-            break;
-        }
-        if (msg.type != MESSAGE_ATTACHMENT) {
-            break;
-        }
-    }
-    if (!msg) {
-        msg = [[ICustomerMessage alloc] init];
-        ICustomerMessage *m = (ICustomerMessage*)msg;
-        m.sender = 0;
-        m.receiver = self.currentUID;
-        m.storeID = KEFU_ID;
-        m.sellerID = 0;
-        m.customerID = self.currentUID;
-        m.customerAppID = APPID;
-        
-        MessageTextContent *content = [[MessageTextContent alloc] initWithText:@"如果你在使用过程中有任何问题和建议，记得给我们发信反馈哦"];
-        m.rawContent = content.raw;
-        m.timestamp = (int)time(NULL);
-    }
 
-    Conversation *conv = [[Conversation alloc] init];
-    conv.message = msg;
-    conv.cid = ((ICustomerMessage*)msg).storeID;
-    conv.type = CONVERSATION_CUSTOMER_SERVICE;
-    conv.name = @"客服";
-    [self updateConversationDetail:conv];
-    [self.conversations addObject:conv];
     
     //todo 从本地数据库加载最新的系统消息
     NSArray *sortedArray = [self.conversations sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
@@ -241,7 +216,7 @@ alpha:(a)]
         MessageGroupNotificationContent *notification = message.notificationContent;
         int type = notification.notificationType;
         if (type == NOTIFICATION_GROUP_CREATED) {
-            if (self.currentUID == notification.master) {
+            if (self.currentID == notification.master) {
                 NSString *desc = [NSString stringWithFormat:@"您创建了\"%@\"群组", notification.groupName];
                 notification.notificationDesc = desc;
                 conv.detail = notification.notificationDesc;
@@ -455,11 +430,6 @@ alpha:(a)]
     [self onNewMessage:m cid:m.receiver];
 }
 
-- (void)newCustomerMessage:(NSNotification*) notification {
-    ICustomerMessage *m = notification.object;
-    NSLog(@"new message:%lld, %lld", m.sender, m.receiver);
-    [self onNewCustomerMessage:m cid:m.receiver];
-}
 
 - (void)clearSinglePeerNewState:(NSNotification*) notification {
     int64_t usrid = [(NSNumber*)notification.object longLongValue];
@@ -502,7 +472,7 @@ alpha:(a)]
         con.message = msg;
         
         [self updateConversationDetail:con];
-        if (self.currentUID != msg.sender) {
+        if (self.currentID != msg.sender) {
             con.newMsgCount += 1;
             [self setNewOnTabBar];
         }
@@ -518,7 +488,7 @@ alpha:(a)]
         con.message = msg;
         [self updateConversationDetail:con];
         
-        if (self.currentUID != msg.sender) {
+        if (self.currentID != msg.sender) {
             con.newMsgCount += 1;
             [self setNewOnTabBar];
         }
@@ -550,7 +520,7 @@ alpha:(a)]
         
         [self updateConversationDetail:con];
         
-        if (self.currentUID == msg.receiver) {
+        if (self.currentID == msg.receiver) {
             con.newMsgCount += 1;
             [self setNewOnTabBar];
         }
@@ -570,60 +540,11 @@ alpha:(a)]
         [self updateConversationName:con];
         [self updateConversationDetail:con];
         
-        if (self.currentUID == msg.receiver) {
+        if (self.currentID == msg.receiver) {
             con.newMsgCount += 1;
             [self setNewOnTabBar];
         }
 
-        [self.conversations insertObject:con atIndex:0];
-        NSIndexPath *path = [NSIndexPath indexPathForRow:0 inSection:0];
-        NSArray *array = [NSArray arrayWithObject:path];
-        [self.tableview insertRowsAtIndexPaths:array withRowAnimation:UITableViewRowAnimationMiddle];
-    }
-}
-
-
--(void)onNewCustomerMessage:(ICustomerMessage*)msg cid:(int64_t)cid{
-    int index = -1;
-    for (int i = 0; i < [self.conversations count]; i++) {
-        Conversation *con = [self.conversations objectAtIndex:i];
-        if (con.type == CONVERSATION_CUSTOMER_SERVICE && con.cid == cid) {
-            index = i;
-            break;
-        }
-    }
-    
-    if (index != -1) {
-        Conversation *con = [self.conversations objectAtIndex:index];
-        con.message = msg;
-        
-        [self updateConversationDetail:con];
-        
-        if (self.currentUID == msg.receiver) {
-            con.newMsgCount += 1;
-            [self setNewOnTabBar];
-        }
-        
-        if (index != 0) {
-            //置顶
-            [self.conversations removeObjectAtIndex:index];
-            [self.conversations insertObject:con atIndex:0];
-            [self.tableview reloadData];
-        }
-    } else {
-        Conversation *con = [[Conversation alloc] init];
-        con.type = CONVERSATION_CUSTOMER_SERVICE;
-        con.cid = cid;
-        con.message = msg;
-        
-        [self updateConversationName:con];
-        [self updateConversationDetail:con];
-        
-        if (self.currentUID == msg.receiver) {
-            con.newMsgCount += 1;
-            [self setNewOnTabBar];
-        }
-        
         [self.conversations insertObject:con atIndex:0];
         NSIndexPath *path = [NSIndexPath indexPathForRow:0 inSection:0];
         NSArray *array = [NSArray arrayWithObject:path];
@@ -634,14 +555,18 @@ alpha:(a)]
 
 -(void)onPeerMessage:(IMMessage*)im {
     IMessage *m = [[IMessage alloc] init];
-    m.sender = im.sender;
-    m.receiver = im.receiver;
+    
+    m.senderAppID = im.senderAppID;
+    m.senderID = im.senderID;
+    m.receiverAppID = im.receiverAppID;
+    m.receiverID = im.receiverID;
+
     m.msgLocalID = im.msgLocalID;
     m.rawContent = im.content;
     m.timestamp = im.timestamp;
 
     int64_t cid;
-    if (self.currentUID == m.sender) {
+    if (self.currentID == m.sender) {
         cid = m.receiver;
     } else {
         cid = m.sender;
@@ -652,8 +577,10 @@ alpha:(a)]
 
 -(void)onGroupMessage:(IMMessage *)im {
     IMessage *m = [[IMessage alloc] init];
-    m.sender = im.sender;
-    m.receiver = im.receiver;
+    m.senderAppID = im.senderAppID;
+    m.senderID = im.senderID;
+    m.receiverID = im.receiverID;
+    m.receiverAppID = im.receiverAppID;
     m.msgLocalID = im.msgLocalID;
     m.rawContent = im.content;
     m.timestamp = im.timestamp;
@@ -666,8 +593,9 @@ alpha:(a)]
     int64_t groupID = notification.groupID;
     
     IMessage *msg = [[IMessage alloc] init];
-    msg.sender = 0;
-    msg.receiver = groupID;
+    msg.senderAppID = APPID;//当前appid
+    msg.senderID = 0;
+    msg.receiverID = groupID;
     if (notification.timestamp > 0) {
         msg.timestamp = notification.timestamp;
     } else {
