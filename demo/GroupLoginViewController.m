@@ -103,6 +103,22 @@
     return basePath;
 }
 
+
+-(BOOL)mkdir:(NSString*)path {
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    if (![fileManager fileExistsAtPath:path]) {
+        NSError *err;
+        BOOL r = [fileManager createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:&err];
+        
+        if (!r) {
+            NSLog(@"mkdir err:%@", err);
+        }
+        return r;
+    }
+    
+    return YES;
+}
+
 - (void)actionChat {
     if (!tfSender.text.length || !tfReceiver.text.length) {
         NSLog(@"invalid input");
@@ -131,7 +147,9 @@
 #ifdef FILE_ENGINE_DB
             NSString *dbPath = [NSString stringWithFormat:@"%@/%lld", path, [tfSender.text longLongValue]];
             [self mkdir:dbPath];
-            
+            [PeerMessageDB instance].dbPath = [NSString stringWithFormat:@"%@/peer", dbPath];
+            [GroupMessageDB instance].dbPath = [NSString stringWithFormat:@"%@/group", dbPath];
+            [CustomerMessageDB instance].dbPath = [NSString stringWithFormat:@"%@/customer", dbPath];
 #elif defined SQL_ENGINE_DB
             NSString *dbPath = [NSString stringWithFormat:@"%@/gobelieve_%lld.db", path, [tfSender.text longLongValue]];
             
@@ -148,22 +166,11 @@
                 db = nil;
                 NSAssert(NO, @"");
             }
-#else
-#error dd
-#endif
-            
-            
-            
-#ifdef FILE_ENGINE_DB
-            [PeerMessageDB instance].dbPath = [NSString stringWithFormat:@"%@/peer", dbPath];
-            [GroupMessageDB instance].dbPath = [NSString stringWithFormat:@"%@/group", dbPath];
-            [CustomerMessageDB instance].dbPath = [NSString stringWithFormat:@"%@/customer", dbPath];
-#elif defined SQL_ENGINE_DB
             [PeerMessageDB instance].db = db;
             [GroupMessageDB instance].db = db;
             [CustomerMessageDB instance].db = db;
 #else
-            
+#error dd
 #endif
 
 
@@ -174,6 +181,7 @@
             [IMHttpAPI instance].accessToken = token;
             [[IMService instance] setToken:token];
             
+            dbPath = [NSString stringWithFormat:@"%@/%lld", path, [tfSender.text longLongValue]];
             NSString *fileName = [NSString stringWithFormat:@"%@/synckey", dbPath];
             SyncKeyHandler *handler = [[SyncKeyHandler alloc] initWithFileName:fileName];
             [IMService instance].syncKeyHandler = handler;
