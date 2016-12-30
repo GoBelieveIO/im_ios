@@ -15,10 +15,10 @@
 
 @implementation IMMessage
 -(int64_t)senderID {
-    return self.sender | 0x00ffffffffffffff;
+    return self.sender & 0x00ffffffffffffff;
 }
 -(int64_t)receiverID {
-    return self.receiver | 0x00ffffffffffffff;
+    return self.receiver & 0x00ffffffffffffff;
 }
 -(int8_t)senderAppID {
     return self.sender >> 56;
