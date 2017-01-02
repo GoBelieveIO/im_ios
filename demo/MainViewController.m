@@ -189,6 +189,7 @@
     });
 }
 
+#define APPID 7
 -(NSString*)login:(long long)uid {
     //调用app自身的服务器获取连接im服务必须的access token
     NSString *url = @"http://demo.gobelieve.io/auth/token";
@@ -215,8 +216,10 @@
 #endif
     
     
+    int64_t appid = APPID;
+    int64_t u = appid << 56 | uid;
     NSMutableDictionary *obj = [NSMutableDictionary dictionary];
-    [obj setObject:[NSNumber numberWithLongLong:uid] forKey:@"uid"];
+    [obj setObject:[NSNumber numberWithLongLong:u] forKey:@"uid"];
     [obj setObject:[NSString stringWithFormat:@"测试用户%lld", uid] forKey:@"user_name"];
     [obj setObject:[NSNumber numberWithInt:PLATFORM_IOS] forKey:@"platform_id"];
     [obj setObject:deviceID forKey:@"device_id"];
