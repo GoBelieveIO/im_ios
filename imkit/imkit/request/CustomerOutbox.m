@@ -49,4 +49,16 @@
     [[CustomerMessageDB instance] markMessageFailure:cm.msgLocalID uid:cm.storeID];
 }
 
+-(void)saveMessageAttachment:(IMessage*)msg url:(NSString*)url {
+    ICustomerMessage *cm = (ICustomerMessage*)msg;
+    MessageAttachmentContent *att = [[MessageAttachmentContent alloc] initWithAttachment:msg.msgLocalID url:url];
+    ICustomerMessage *attachment = [[ICustomerMessage alloc] init];
+    attachment.storeID = cm.storeID;
+    attachment.sellerID = cm.sellerID;
+    attachment.customerID = cm.customerID;
+    attachment.customerAppID = cm.customerAppID;
+    attachment.rawContent = att.raw;
+    
+    [[CustomerMessageDB instance] insertMessage:attachment uid:cm.storeID];
+}
 @end

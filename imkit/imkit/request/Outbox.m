@@ -65,6 +65,10 @@
     
 }
 
+-(void)saveMessageAttachment:(IMessage*)msg url:(NSString*)url {
+    NSAssert(NO, @"not implement");
+}
+
 -(void)onUploadImageSuccess:(IMessage*)msg URL:url {
     for (id<OutboxObserver> observer in self.observers) {
         [observer onImageUploadSuccess:msg URL:url];
@@ -93,6 +97,30 @@
     }
 }
 
+//用服务器的url做为key对应本地的缓存
+-(void)saveAudio:(IMessage*)msg url:(NSString*)url {
+    MessageAudioContent *content = msg.audioContent;
+    NSString *c = [[FileCache instance] queryCacheForKey:content.url];
+    if (c.length > 0) {
+        NSData *data = [NSData dataWithContentsOfFile:c];
+        if (data.length > 0) {
+            [[FileCache instance] storeFile:data forKey:url];
+        }
+    }
+}
+
+//用服务器的url做为key对应本地的缓存
+-(void)saveImage:(IMessage*)msg url:(NSString*)url {
+    MessageImageContent *content = msg.imageContent;
+    UIImage *image = [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:content.imageURL];
+    UIImage *littleImage = [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:content.littleImageURL];
+    
+    if (image && littleImage) {
+        MessageImageContent *newContent = [content cloneWithURL:url];
+        [[SDImageCache sharedImageCache] storeImage:image forKey:newContent.imageURL];
+        [[SDImageCache sharedImageCache] storeImage:littleImage forKey:newContent.littleImageURL];
+    }
+}
 
 -(BOOL)uploadImage:(IMessage*)msg withImage:(UIImage*)image {
     [self.messages addObject:msg];
@@ -101,6 +129,8 @@
                        [self.messages removeObject:msg];
                        
                        NSLog(@"upload image success url:%@", url);
+                       [self saveImage:msg url:url];
+                       [self saveMessageAttachment:msg url:url];
                        [self sendImageMessage:msg URL:url];
                        [self onUploadImageSuccess:msg URL:url];
                        
@@ -150,12 +180,16 @@
     [self.messages addObject:msg];
     [IMHttpAPI uploadAudio:data
                    success:^(NSString *url) {
-                       [self.messages removeObject:msg];
                        NSLog(@"upload audio success url:%@", url);
+
+                       [self.messages removeObject:msg];
+                       [self saveAudio:msg url:url];
+                       [self saveMessageAttachment:msg url:url];
                        [self sendAudioMessage:msg URL:url];
                        [self onUploadAudioSuccess:msg URL:url];
                    }fail:^{
                        NSLog(@"upload audio fail");
+                       
                        [self.messages removeObject:msg];
                        [self markMessageFailure:msg];
 

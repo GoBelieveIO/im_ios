@@ -335,12 +335,28 @@
     
 }
 
+- (id)initWithAttachment:(int)msgLocalID url:(NSString*)url {
+    self = [super init];
+    if (self) {
+        NSDictionary *attachment = @{@"url":url,
+                                     @"msg_id":[NSNumber numberWithInt:msgLocalID]};
+        NSDictionary *dic = @{@"attachment":attachment};
+        NSString* newStr = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:dic options:0 error:nil] encoding:NSUTF8StringEncoding];
+        self.raw =  newStr;
+    }
+    return self;
+}
+
 - (int)msgLocalID {
     return [[[self.dict objectForKey:@"attachment"] objectForKey:@"msg_id"] intValue];
 }
 
 - (NSString*)address {
     return [[self.dict objectForKey:@"attachment"] objectForKey:@"address"];
+}
+
+- (NSString*)url {
+    return [[self.dict objectForKey:@"attachment"] objectForKey:@"url"];
 }
 
 @end

@@ -434,6 +434,16 @@
     if ([self isInConversation:msg]) {
         IMessage *m = [self getMessageWithID:msg.msgLocalID];
         m.uploading = NO;
+        
+        
+        MessageAudioContent *content = msg.audioContent;
+        NSString *c = [[FileCache instance] queryCacheForKey:content.url];
+        if (c.length > 0) {
+            NSData *data = [NSData dataWithContentsOfFile:c];
+            if (data.length > 0) {
+                [[FileCache instance] storeFile:data forKey:url];
+            }
+        }
     }
 }
 

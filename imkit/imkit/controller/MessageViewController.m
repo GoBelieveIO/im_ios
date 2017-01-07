@@ -826,6 +826,13 @@
     FileCache *cache = [FileCache instance];
     AudioDownloader *downloader = [AudioDownloader instance];
     if (msg.type == MESSAGE_AUDIO) {
+        MessageAttachmentContent *attachment = [self.attachments objectForKey:[NSNumber numberWithInt:msg.msgLocalID]];
+        
+        if (attachment.url.length > 0) {
+            MessageImageContent *content = [msg.audioContent cloneWithURL:attachment.url];
+            msg.rawContent = content.raw;
+        }
+        
         MessageAudioContent *content = msg.audioContent;
 
         NSString *path = [cache queryCacheForKey:content.url];
@@ -850,6 +857,12 @@
         }
     } else if (msg.type == MESSAGE_IMAGE) {
         NSLog(@"image url:%@", msg.imageContent.imageURL);
+        MessageAttachmentContent *attachment = [self.attachments objectForKey:[NSNumber numberWithInt:msg.msgLocalID]];
+        
+        if (attachment.url.length > 0) {
+            MessageImageContent *content = [msg.imageContent cloneWithURL:attachment.url];
+            msg.rawContent = content.raw;
+        }
     }
     
 
@@ -977,8 +990,7 @@
 }
 
 #pragma mark - EMChatToolbarDelegate
-- (void)chatToolbarDidChangeFrameToHeight:(CGFloat)toHeight
-{
+- (void)chatToolbarDidChangeFrameToHeight:(CGFloat)toHeight {
     CGRect rect = self.tableView.frame;
     rect.origin.y = kStatusBarHeight + KNavigationBarHeight;
     rect.size.height = self.view.frame.size.height - toHeight - kStatusBarHeight - KNavigationBarHeight;
@@ -986,20 +998,17 @@
     [self scrollToBottomAnimated:NO];
 }
 
-- (void)inputTextViewWillBeginEditing:(EaseTextView *)inputTextView
-{
+- (void)inputTextViewWillBeginEditing:(EaseTextView *)inputTextView {
 
 }
 
-- (void)didSendText:(NSString *)text
-{
+- (void)didSendText:(NSString *)text {
     if (text && text.length > 0) {
         [self sendTextMessage:text];
     }
 }
 
-- (BOOL)_canRecord
-{
+- (BOOL)_canRecord {
     __block BOOL bCanRecord = YES;
     if ([[[UIDevice currentDevice] systemVersion] compare:@"7.0"] != NSOrderedAscending)
     {
@@ -1017,8 +1026,7 @@
 /**
  *  按下录音按钮开始录音
  */
-- (void)didStartRecordingVoiceAction:(UIView *)recordView
-{
+- (void)didStartRecordingVoiceAction:(UIView *)recordView {
     if ([self.recordView isKindOfClass:[EaseRecordView class]]) {
         [(EaseRecordView *)self.recordView recordButtonTouchDown];
     }
@@ -1036,8 +1044,7 @@
 /**
  *  手指向上滑动取消录音
  */
-- (void)didCancelRecordingVoiceAction:(UIView *)recordView
-{
+- (void)didCancelRecordingVoiceAction:(UIView *)recordView {
     [self.recordView removeFromSuperview];
     [self recordCancel];
 }
@@ -1045,14 +1052,12 @@
 /**
  *  松开手指完成录音
  */
-- (void)didFinishRecoingVoiceAction:(UIView *)recordView
-{
+- (void)didFinishRecoingVoiceAction:(UIView *)recordView {
     [self.recordView removeFromSuperview];
     [self recordEnd];
 }
 
-- (void)didDragInsideAction:(UIView *)recordView
-{
+- (void)didDragInsideAction:(UIView *)recordView {
     
     if ([self.recordView isKindOfClass:[EaseRecordView class]]) {
         [(EaseRecordView *)self.recordView recordButtonDragInside];
@@ -1060,8 +1065,7 @@
 
 }
 
-- (void)didDragOutsideAction:(UIView *)recordView
-{
+- (void)didDragOutsideAction:(UIView *)recordView {
     if ([self.recordView isKindOfClass:[EaseRecordView class]]) {
         [(EaseRecordView *)self.recordView recordButtonDragOutside];
     }
@@ -1071,13 +1075,11 @@
 
 #pragma mark - EaseChatBarMoreViewDelegate
 
-- (void)moreView:(EaseChatBarMoreView *)moreView didItemInMoreViewAtIndex:(NSInteger)index
-{
+- (void)moreView:(EaseChatBarMoreView *)moreView didItemInMoreViewAtIndex:(NSInteger)index {
 
 }
 
-- (void)moreViewPhotoAction:(EaseChatBarMoreView *)moreView
-{
+- (void)moreViewPhotoAction:(EaseChatBarMoreView *)moreView {
     UIImagePickerController *picker = [[UIImagePickerController alloc] init];
     picker.delegate  = self;
     picker.allowsEditing = NO;
@@ -1086,8 +1088,7 @@
     [self presentViewController:picker animated:YES completion:NULL];
 }
 
-- (void)moreViewTakePicAction:(EaseChatBarMoreView *)moreView
-{
+- (void)moreViewTakePicAction:(EaseChatBarMoreView *)moreView {
 
 #if TARGET_IPHONE_SIMULATOR
     NSString *s = NSLocalizedString(@"message.simulatorNotSupportCamera", @"simulator does not support taking picture");
@@ -1102,8 +1103,7 @@
 #endif
 }
 
-- (void)moreViewLocationAction:(EaseChatBarMoreView *)moreView
-{
+- (void)moreViewLocationAction:(EaseChatBarMoreView *)moreView {
     LocationPickerController *ctl = [[LocationPickerController alloc] init];
     ctl.selectAddressdelegate = self;
     [self.navigationController pushViewController:ctl animated:YES];
