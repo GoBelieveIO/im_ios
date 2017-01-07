@@ -31,6 +31,7 @@ Pod::Spec.new do |s|
     sp.dependency 'SDWebImage', '~> 3.7.1'
     sp.dependency 'Toast', '~> 2.4'
     sp.dependency 'MBProgressHUD', '~> 0.9.1'
+    sp.dependency 'FMDB'
   end
 
 end
