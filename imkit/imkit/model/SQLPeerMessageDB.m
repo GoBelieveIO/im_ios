@@ -160,7 +160,7 @@
 }
 
 -(BOOL)markMessageFailure:(int)msgLocalID uid:(int64_t)uid {
-    [self addFlag:msgLocalID flag:MESSAGE_FLAG_FAILURE];
+   return [self addFlag:msgLocalID flag:MESSAGE_FLAG_FAILURE];
 }
 
 -(BOOL)markMesageListened:(int)msgLocalID uid:(int64_t)uid {
