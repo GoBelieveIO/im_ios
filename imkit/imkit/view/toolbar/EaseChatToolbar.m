@@ -423,9 +423,9 @@
         rect.origin.y += changeHeight;
         self.moreView.frame = rect;
         
-        if (self.version < 7.0) {
-            [self.inputTextView setContentOffset:CGPointMake(0.0f, (self.inputTextView.contentSize.height - self.inputTextView.frame.size.height) / 2) animated:YES];
-        }
+        //文本垂直居中
+        [self.inputTextView setContentOffset:CGPointMake(0.0f, (self.inputTextView.contentSize.height - self.inputTextView.frame.size.height) / 2) animated:YES];
+
         _previousTextViewContentHeight = toHeight;
     }
 }
@@ -463,9 +463,9 @@
         rect.origin.y += changeHeight;
         self.moreView.frame = rect;
         
-        if (self.version < 7.0) {
-            [self.inputTextView setContentOffset:CGPointMake(0.0f, (self.inputTextView.contentSize.height - self.inputTextView.frame.size.height) / 2) animated:YES];
-        }
+        //文本垂直居中
+        [self.inputTextView setContentOffset:CGPointMake(0.0f, (self.inputTextView.contentSize.height - self.inputTextView.frame.size.height) / 2) animated:YES];
+
         _previousTextViewContentHeight = toHeight;
         
         if (_delegate && [_delegate respondsToSelector:@selector(chatToolbarDidChangeFrameToHeight:)]) {
