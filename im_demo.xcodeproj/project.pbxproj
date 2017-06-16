@@ -875,7 +875,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.beetle.im.demo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "9de03416-ec01-4a89-8c15-380674abc03f";
+				PROVISIONING_PROFILE = "cd96d2b7-5fda-4b92-9e23-b887ad9e8e1d";
 			};
 			name = Debug;
 		};
