@@ -38,7 +38,7 @@ CGFloat const kMaxImageScale = 3.0;
 }
 
 - (void)awakeFromNib {
-    
+    [super awakeFromNib];
     [self setModalPresentationStyle:UIModalPresentationCustom];
     [self setTransitioningDelegate:self];
 }

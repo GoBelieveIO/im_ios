@@ -109,7 +109,7 @@
     while (msg) {
         //重复的消息
         if (msg.uuid.length > 0 && [uuidSet containsObject:msg.uuid]) {
-            msg = [iterator next];
+            msg = (ICustomerMessage*)[iterator next];
             continue;
         }
         
@@ -167,7 +167,7 @@
     while (msg) {
         //重复的消息
         if (msg.uuid.length > 0 && [uuidSet containsObject:msg.uuid]) {
-            msg = [iterator next];
+            msg = (ICustomerMessage*)[iterator next];
             continue;
         }
         

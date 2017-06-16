@@ -112,6 +112,5 @@
 //打开客服聊天界面
 //clientID必须有有效值(clientID > 0),否则不会打开任何界面
 -(void)pushCustomerViewControllerInViewController:(UINavigationController*)controller title:(NSString*)title;
--(void)presentCustomerViewControllerInViewController;
 
 @end

@@ -66,14 +66,14 @@
 }
 
 -(IMessage*)getMessage:(int)msgID {
-    FMDatabase *rs = [self.db executeQuery:@"SELECT id, sender, receiver, timestamp, flags, content FROM peer_message WHERE id= ?", @(msgID)];
+    FMResultSet *rs = [self.db executeQuery:@"SELECT id, sender, receiver, timestamp, flags, content FROM peer_message WHERE id= ?", @(msgID)];
     IMessage *msg = [[IMessage alloc] init];
-    msg.sender = [self.rs longLongIntForColumn:@"sender"];
-    msg.receiver = [self.rs longLongIntForColumn:@"receiver"];
-    msg.timestamp = [self.rs intForColumn:@"timestamp"];
-    msg.flags = [self.rs intForColumn:@"flags"];
-    msg.rawContent = [self.rs stringForColumn:@"content"];
-    msg.msgLocalID = [self.rs intForColumn:@"id"];
+    msg.sender = [rs longLongIntForColumn:@"sender"];
+    msg.receiver = [rs longLongIntForColumn:@"receiver"];
+    msg.timestamp = [rs intForColumn:@"timestamp"];
+    msg.flags = [rs intForColumn:@"flags"];
+    msg.rawContent = [rs stringForColumn:@"content"];
+    msg.msgLocalID = [rs intForColumn:@"id"];
     return msg;
 }
 

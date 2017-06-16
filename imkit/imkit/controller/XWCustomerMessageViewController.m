@@ -88,8 +88,6 @@
     NSString *avatar = [r objectForKey:@"avatar"];
     NSString *status = [r objectForKey:@"status"];
     
-    int gotTimestamp = (int)time(NULL);
-
     self.sellerID = sellerID;
     self.name = name;
     self.avatar = avatar;

@@ -294,7 +294,7 @@
 
 -(id<ConversationIterator>)newConversationIterator {
     NSString *path = [self getMessagePath];
-    return [[FileCustomerMessageIterator alloc] initWithPath:path];
+    return [[FileCustomerConversationIterator alloc] initWithPath:path];
 }
 
 @end

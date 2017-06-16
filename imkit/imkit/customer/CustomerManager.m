@@ -372,7 +372,6 @@
     }
 
     NSMutableURLRequest *urlRequest = [self newGetOfflineRequest];
-    __weak CustomerManager *wself = self;
     [NSURLConnection sendAsynchronousRequest:urlRequest
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse * _Nullable response, NSData * _Nullable data, NSError * _Nullable connectionError) {

@@ -69,17 +69,17 @@
 }
 
 -(IMessage*)getMessage:(int)msgID {
-    FMDatabase *rs = [self.db executeQuery:@"SELECT id, customer_id, customer_appid, store_id, seller_id, timestamp, flags, is_support, content FROM customer_message WHERE id= ?", @(msgID)];
+    FMResultSet *rs = [self.db executeQuery:@"SELECT id, customer_id, customer_appid, store_id, seller_id, timestamp, flags, is_support, content FROM customer_message WHERE id= ?", @(msgID)];
     ICustomerMessage *msg = [[ICustomerMessage alloc] init];
-    msg.customerAppID = [self.rs longLongIntForColumn:@"customer_appid"];
-    msg.customerID = [self.rs longLongIntForColumn:@"customer_id"];
-    msg.storeID = [self.rs longLongIntForColumn:@"store_id"];
-    msg.sellerID = [self.rs longLongIntForColumn:@"seller_id"];
-    msg.timestamp = [self.rs intForColumn:@"timestamp"];
-    msg.flags = [self.rs intForColumn:@"flags"];
-    msg.isSupport = [self.rs intForColumn:@"is_support"];
-    msg.rawContent = [self.rs stringForColumn:@"content"];
-    msg.msgLocalID = [self.rs intForColumn:@"id"];
+    msg.customerAppID = [rs longLongIntForColumn:@"customer_appid"];
+    msg.customerID = [rs longLongIntForColumn:@"customer_id"];
+    msg.storeID = [rs longLongIntForColumn:@"store_id"];
+    msg.sellerID = [rs longLongIntForColumn:@"seller_id"];
+    msg.timestamp = [rs intForColumn:@"timestamp"];
+    msg.flags = [rs intForColumn:@"flags"];
+    msg.isSupport = [rs intForColumn:@"is_support"];
+    msg.rawContent = [rs stringForColumn:@"content"];
+    msg.msgLocalID = [rs intForColumn:@"id"];
     return msg;
 }
 
@@ -170,7 +170,7 @@
 }
 
 -(BOOL)markMessageFailure:(int)msgLocalID uid:(int64_t)uid {
-    [self addFlag:msgLocalID flag:MESSAGE_FLAG_FAILURE];
+    return [self addFlag:msgLocalID flag:MESSAGE_FLAG_FAILURE];
 }
 
 -(BOOL)markMesageListened:(int)msgLocalID uid:(int64_t)uid {

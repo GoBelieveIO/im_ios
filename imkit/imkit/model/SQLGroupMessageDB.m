@@ -81,14 +81,14 @@
 }
 
 -(IMessage*)getMessage:(int)msgID {
-    FMDatabase *rs = [self.db executeQuery:@"SELECT id, sender, group_id, timestamp, flags, content FROM group_message WHERE id= ?", @(msgID)];
+    FMResultSet *rs = [self.db executeQuery:@"SELECT id, sender, group_id, timestamp, flags, content FROM group_message WHERE id= ?", @(msgID)];
     IMessage *msg = [[IMessage alloc] init];
-    msg.sender = [self.rs longLongIntForColumn:@"sender"];
-    msg.receiver = [self.rs longLongIntForColumn:@"group_id"];
-    msg.timestamp = [self.rs intForColumn:@"timestamp"];
-    msg.flags = [self.rs intForColumn:@"flags"];
-    msg.rawContent = [self.rs stringForColumn:@"content"];
-    msg.msgLocalID = [self.rs intForColumn:@"id"];
+    msg.sender = [rs longLongIntForColumn:@"sender"];
+    msg.receiver = [rs longLongIntForColumn:@"group_id"];
+    msg.timestamp = [rs intForColumn:@"timestamp"];
+    msg.flags = [rs intForColumn:@"flags"];
+    msg.rawContent = [rs stringForColumn:@"content"];
+    msg.msgLocalID = [rs intForColumn:@"id"];
     return msg;
 }
 
