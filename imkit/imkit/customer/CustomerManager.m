@@ -276,7 +276,7 @@
     }
     
     self.binded = NO;
-    self.deviceToken = deviceToken;
+    self.deviceToken = newToken;
     [self storeDictionary];
     
     if (self.token.length > 0 && self.deviceToken.length > 0) {
