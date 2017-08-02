@@ -380,15 +380,20 @@
 }
 
 -(void)addConnectionObserver:(id<TCPConnectionObserver>)ob {
-    [self.connectionObservers addObject:ob];
+    NSValue *value = [NSValue valueWithNonretainedObject:ob];
+    if (![self.connectionObservers containsObject:value]) {
+        [self.connectionObservers addObject:value];
+    }
 }
 -(void)removeConnectionObserver:(id<TCPConnectionObserver>)ob {
-    [self.connectionObservers removeObject:ob];
+    NSValue *value = [NSValue valueWithNonretainedObject:ob];
+    [self.connectionObservers removeObject:value];
 }
 
 
 -(void)publishConnectState:(int)state {
-    for (id<TCPConnectionObserver> ob in self.connectionObservers) {
+    for (NSValue *value in self.connectionObservers) {
+        id<TCPConnectionObserver> ob = [value nonretainedObjectValue];
         if ([ob respondsToSelector:@selector(onConnectState:)]) {
             [ob onConnectState:state];
         }

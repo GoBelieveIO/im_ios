@@ -176,7 +176,8 @@
 
 -(void)handleRTMessage:(Message*)msg {
     RTMessage *rt = (RTMessage*)msg.body;
-    for (id<RTMessageObserver> ob in self.rtObservers) {
+    for (NSValue *value in self.rtObservers) {
+        id<RTMessageObserver> ob = [value nonretainedObjectValue];
         if ([ob respondsToSelector:@selector(onRTMessage:)]) {
             [ob onRTMessage:rt];
         }
@@ -347,7 +348,8 @@
 }
 
 -(void)publishPeerMessage:(IMMessage*)msg {
-    for (id<PeerMessageObserver> ob in self.peerObservers) {
+    for (NSValue *value in self.peerObservers) {
+        id<PeerMessageObserver> ob = [value nonretainedObjectValue];
         if ([ob respondsToSelector:@selector(onPeerMessage:)]) {
             [ob onPeerMessage:msg];
         }
@@ -355,7 +357,8 @@
 }
 
 -(void)publishPeerMessageACK:(int)msgLocalID uid:(int64_t)uid {
-    for (id<PeerMessageObserver> ob in self.peerObservers) {
+    for (NSValue *value in self.peerObservers) {
+        id<PeerMessageObserver> ob = [value nonretainedObjectValue];
         if ([ob respondsToSelector:@selector(onPeerMessageACK:uid:)]) {
             [ob onPeerMessageACK:msgLocalID uid:uid];
         }
@@ -363,7 +366,8 @@
 }
 
 -(void)publishPeerMessageFailure:(IMMessage*)msg {
-    for (id<PeerMessageObserver> ob in self.peerObservers) {
+    for (NSValue *value in self.peerObservers) {
+        id<PeerMessageObserver> ob = [value nonretainedObjectValue];
         if ([ob respondsToSelector:@selector(onPeerMessageFailure:uid:)]) {
             [ob onPeerMessageFailure:msg.msgLocalID uid:msg.receiver];
         }
@@ -371,7 +375,8 @@
 }
 
 -(void)publishGroupMessage:(IMMessage*)msg {
-    for (id<GroupMessageObserver> ob in self.groupObservers) {
+    for (NSValue *value in self.groupObservers) {
+        id<GroupMessageObserver> ob = [value nonretainedObjectValue];
         if ([ob respondsToSelector:@selector(onGroupMessage:)]) {
             [ob onGroupMessage:msg];
         }
@@ -379,7 +384,8 @@
 }
 
 -(void)publishGroupMessageACK:(int)msgLocalID gid:(int64_t)gid {
-    for (id<GroupMessageObserver> ob in self.groupObservers) {
+    for (NSValue *value in self.groupObservers) {
+        id<GroupMessageObserver> ob = [value nonretainedObjectValue];
         if ([ob respondsToSelector:@selector(onGroupMessageACK:gid:)]) {
             [ob onGroupMessageACK:msgLocalID gid:gid];
         }
@@ -387,7 +393,8 @@
 }
 
 -(void)publishGroupMessageFailure:(IMMessage*)msg {
-    for (id<GroupMessageObserver> ob in self.groupObservers) {
+    for (NSValue *value in self.groupObservers) {
+        id<GroupMessageObserver> ob = [value nonretainedObjectValue];
         if ([ob respondsToSelector:@selector(onGroupMessageFailure:gid:)]) {
             [ob onGroupMessageFailure:msg.msgLocalID gid:msg.receiver];
         }
@@ -395,7 +402,8 @@
 }
 
 -(void)publishRoomMessage:(RoomMessage*)msg {
-    for (id<RoomMessageObserver> ob in self.roomObservers) {
+    for (NSValue *value in self.roomObservers) {
+        id<RoomMessageObserver> ob = [value nonretainedObjectValue];
         if ([ob respondsToSelector:@selector(onRoomMessage:)]) {
             [ob onRoomMessage:msg];
         }
@@ -403,7 +411,8 @@
 }
 
 -(void)publishRoomMessageACK:(RoomMessage*)msg {
-    for (id<RoomMessageObserver> ob in self.roomObservers) {
+    for (NSValue *value in self.roomObservers) {
+        id<RoomMessageObserver> ob = [value nonretainedObjectValue];
         if ([ob respondsToSelector:@selector(onRoomMessageACK:)]) {
             [ob onRoomMessageACK:msg];
         }
@@ -411,7 +420,8 @@
 }
 
 -(void)publishRoomMessageFailure:(RoomMessage*)msg {
-    for (id<RoomMessageObserver> ob in self.roomObservers) {
+    for (NSValue *value in self.roomObservers) {
+        id<RoomMessageObserver> ob = [value nonretainedObjectValue];
         if ([ob respondsToSelector:@selector(onRoomMessageFailure:)]) {
             [ob onRoomMessageFailure:msg];
         }
@@ -419,7 +429,8 @@
 }
 
 -(void)publishSystemMessage:(NSString*)sys {
-    for (id<SystemMessageObserver> ob in self.systemObservers) {
+    for (NSValue *value in self.systemObservers) {
+        id<SystemMessageObserver> ob = [value nonretainedObjectValue];
         if ([ob respondsToSelector:@selector(onSystemMessage:)]) {
             [ob onSystemMessage:sys];
         }
@@ -427,7 +438,8 @@
 }
 
 -(void)publishCustomerSupportMessage:(CustomerMessage*)msg {
-    for (id<CustomerMessageObserver> ob in self.customerServiceObservers) {
+    for (NSValue *value in self.customerServiceObservers) {
+        id<CustomerMessageObserver> ob = [value nonretainedObjectValue];
         if ([ob respondsToSelector:@selector(onCustomerSupportMessage:)]) {
             [ob onCustomerSupportMessage:msg];
         }
@@ -435,7 +447,8 @@
 }
 
 -(void)publishCustomerMessage:(CustomerMessage*)msg {
-    for (id<CustomerMessageObserver> ob in self.customerServiceObservers) {
+    for (NSValue *value in self.customerServiceObservers) {
+        id<CustomerMessageObserver> ob = [value nonretainedObjectValue];
         if ([ob respondsToSelector:@selector(onCustomerMessage:)]) {
             [ob onCustomerMessage:msg];
         }
@@ -443,7 +456,8 @@
 }
 
 -(void)publishCustomerMessageACK:(CustomerMessage*)msg {
-    for (id<CustomerMessageObserver> ob in self.customerServiceObservers) {
+    for (NSValue *value in self.customerServiceObservers) {
+        id<CustomerMessageObserver> ob = [value nonretainedObjectValue];
         if ([ob respondsToSelector:@selector(onCustomerMessageACK:)]) {
             [ob onCustomerMessageACK:msg];
         }
@@ -451,7 +465,8 @@
 }
 
 -(void)publishCustomerMessageFailure:(CustomerMessage*)msg {
-    for (id<CustomerMessageObserver> ob in self.customerServiceObservers) {
+    for (NSValue *value in self.customerServiceObservers) {
+        id<CustomerMessageObserver> ob = [value nonretainedObjectValue];
         if ([ob respondsToSelector:@selector(onCustomerMessageFailure:)]) {
             [ob onCustomerMessageFailure:msg];
         }
@@ -530,51 +545,75 @@
 
 
 -(void)addPeerMessageObserver:(id<PeerMessageObserver>)ob {
-    [self.peerObservers addObject:ob];
+    NSValue *value = [NSValue valueWithNonretainedObject:ob];
+    if (![self.peerObservers containsObject:value]) {
+        [self.peerObservers addObject:value];
+    }
 }
 
 -(void)removePeerMessageObserver:(id<PeerMessageObserver>)ob {
-    [self.peerObservers removeObject:ob];
+    NSValue *value = [NSValue valueWithNonretainedObject:ob];
+    [self.peerObservers removeObject:value];
 }
 
 -(void)addGroupMessageObserver:(id<GroupMessageObserver>)ob {
-    [self.groupObservers addObject:ob];
+    NSValue *value = [NSValue valueWithNonretainedObject:ob];
+    if (![self.groupObservers containsObject:value]) {
+        [self.groupObservers addObject:value];
+    }
 }
 
 -(void)removeGroupMessageObserver:(id<GroupMessageObserver>)ob {
-    [self.groupObservers removeObject:ob];
+    NSValue *value = [NSValue valueWithNonretainedObject:ob];
+    [self.groupObservers removeObject:value];
 }
 
 -(void)addRoomMessageObserver:(id<RoomMessageObserver>)ob {
-    [self.roomObservers addObject:ob];
+    NSValue *value = [NSValue valueWithNonretainedObject:ob];
+    if (![self.roomObservers containsObject:value]) {
+        [self.roomObservers addObject:value];
+    }
 }
 
 -(void)removeRoomMessageObserver:(id<RoomMessageObserver>)ob {
-    [self.roomObservers removeObject:ob];
+    NSValue *value = [NSValue valueWithNonretainedObject:ob];
+    [self.roomObservers removeObject:value];
 }
 
 -(void)addSystemMessageObserver:(id<SystemMessageObserver>)ob {
-    [self.systemObservers addObject:ob];
+    NSValue *value = [NSValue valueWithNonretainedObject:ob];
+    if (![self.systemObservers containsObject:value]) {
+        [self.systemObservers addObject:value];
+    }
 }
 
 -(void)removeSystemMessageObserver:(id<SystemMessageObserver>)ob {
-    [self.systemObservers removeObject:ob];
+    NSValue *value = [NSValue valueWithNonretainedObject:ob];
+    [self.systemObservers removeObject:value];
 }
 
 -(void)addCustomerMessageObserver:(id<CustomerMessageObserver>)ob {
-    [self.customerServiceObservers addObject:ob];
+    NSValue *value = [NSValue valueWithNonretainedObject:ob];
+    if (![self.customerServiceObservers containsObject:value]) {
+        [self.customerServiceObservers addObject:value];
+    }
 }
 
 -(void)removeCustomerMessageObserver:(id<CustomerMessageObserver>)ob {
-    [self.customerServiceObservers removeObject:ob];
+    NSValue *value = [NSValue valueWithNonretainedObject:ob];
+    [self.customerServiceObservers removeObject:value];
 }
 
 -(void)addRTMessageObserver:(id<RTMessageObserver>)ob {
-    [self.rtObservers addObject:ob];
+    NSValue *value = [NSValue valueWithNonretainedObject:ob];
+    if (![self.rtObservers containsObject:value]) {
+        [self.rtObservers addObject:value];
+    }
 }
 
 -(void)removeRTMessageObserver:(id<RTMessageObserver>)ob {
-    [self.rtObservers removeObject:ob];
+    NSValue *value = [NSValue valueWithNonretainedObject:ob];
+    [self.rtObservers removeObject:value];
 }
 
 -(void)pushVOIPObserver:(id<VOIPObserver>)ob {
