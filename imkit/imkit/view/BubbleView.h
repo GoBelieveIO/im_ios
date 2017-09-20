@@ -7,7 +7,7 @@
   of patent rights can be found in the PATENTS file in the same directory.
 */
 #import <UIKit/UIKit.h>
-#import "UIImageView+WebCache.h"
+#import <SDWebImage/UIImageView+WebCache.h>
 #import "IMessage.h"
 
 extern CGFloat const kJSAvatarSize;
