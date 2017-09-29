@@ -31,7 +31,8 @@ Pod::Spec.new do |s|
     sp.dependency 'SDWebImage', '~> 3.7.1'
     sp.dependency 'Toast', '~> 2.4'
     sp.dependency 'MBProgressHUD', '~> 0.9.1'
-    sp.dependency 'FMDB'
+    sp.dependency 'FMDB', '~> 2.6.2'
+    sp.pod_target_xcconfig = { 'ENABLE_BITCODE' => 'NO' }    
   end
 
 end
