@@ -40,7 +40,6 @@
 @property(nonatomic)NSMutableArray *roomObservers;
 @property(nonatomic)NSMutableArray *systemObservers;
 @property(nonatomic)NSMutableArray *customerServiceObservers;
-@property(nonatomic)NSMutableArray *voipObservers;
 @property(nonatomic)NSMutableArray *rtObservers;
 
 @property(nonatomic)NSMutableData *data;
@@ -79,7 +78,6 @@
         self.roomObservers = [NSMutableArray array];
         self.systemObservers = [NSMutableArray array];
         self.customerServiceObservers = [NSMutableArray array];
-        self.voipObservers = [NSMutableArray array];
         self.rtObservers = [NSMutableArray array];
         
         self.data = [NSMutableData data];
@@ -195,15 +193,6 @@
     }
     if (self.roomID > 0) {
         [self sendEnterRoom:self.roomID];
-    }
-}
-
--(void)handleInputing:(Message*)msg {
-    MessageInputing *inputing = (MessageInputing*)msg.body;
-    for (id<PeerMessageObserver> ob in self.peerObservers) {
-        if ([ob respondsToSelector:@selector(onPeerInputing:)]) {
-            [ob onPeerInputing:inputing.sender];
-        }
     }
 }
 
@@ -340,13 +329,6 @@
     }
 }
 
--(void)handleVOIPControl:(Message*)msg {
-    VOIPControl *ctl = (VOIPControl*)msg.body;
-    id<VOIPObserver> ob = [self.voipObservers lastObject];
-    if (ob) {
-        [ob onVOIPControl:ctl];
-    }
-}
 
 -(void)publishPeerMessage:(IMMessage*)msg {
     for (NSValue *value in self.peerObservers) {
@@ -484,8 +466,6 @@
         [self handleIMMessage:msg];
     } else if (msg.cmd == MSG_GROUP_IM) {
         [self handleGroupIMMessage:msg];
-    } else if (msg.cmd == MSG_INPUTING) {
-        [self handleInputing:msg];
     } else if (msg.cmd == MSG_PONG) {
         [self handlePong:msg];
     } else if (msg.cmd == MSG_GROUP_NOTIFICATION) {
@@ -498,8 +478,6 @@
         [self handleCustomerMessage:msg];
     } else if (msg.cmd == MSG_CUSTOMER_SUPPORT) {
         [self handleCustomerSupportMessage:msg];
-    } else if (msg.cmd == MSG_VOIP_CONTROL) {
-        [self handleVOIPControl:msg];
     } else if (msg.cmd == MSG_RT) {
         [self handleRTMessage:msg];
     } else if (msg.cmd == MSG_SYNC_NOTIFY) {
@@ -617,21 +595,6 @@
     [self.rtObservers removeObject:value];
 }
 
--(void)pushVOIPObserver:(id<VOIPObserver>)ob {
-    [self.voipObservers addObject:ob];
-}
-
--(void)popVOIPObserver:(id<VOIPObserver>)ob {
-    NSInteger count = [self.voipObservers count];
-    if (count == 0) {
-        return;
-    }
-    id<VOIPObserver> top = [self.voipObservers objectAtIndex:count-1];
-    if (top == ob) {
-        [self.voipObservers removeObject:top];
-    }
-}
-
 -(void)removeSuperGroupSyncKey:(int64_t)gid {
     NSNumber *k = [NSNumber numberWithLongLong:gid];
     [self.groupSyncKeys removeObjectForKey:k];
@@ -648,14 +611,6 @@
 -(void)clearSuperGroupSyncKey {
     [self.groupSyncKeys removeAllObjects];
 }
-
--(BOOL)sendVOIPControl:(VOIPControl*)ctl {
-    Message *m = [[Message alloc] init];
-    m.cmd = MSG_VOIP_CONTROL;
-    m.body = ctl;
-    return [self sendMessage:m];
-}
-
 
 -(BOOL)isPeerMessageSending:(int64_t)peer id:(int)msgLocalID {
     for (NSNumber *s in self.peerMessages) {
@@ -917,14 +872,6 @@
 -(void)sendPing {
     Message *msg = [[Message alloc] init];
     msg.cmd = MSG_PING;
-    [self sendMessage:msg];
-}
-
-//正在输入
--(void)sendInputing:(MessageInputing*)inputing {
-    Message *msg = [[Message alloc] init];
-    msg.cmd = MSG_INPUTING;
-    msg.body = inputing;
     [self sendMessage:msg];
 }
 

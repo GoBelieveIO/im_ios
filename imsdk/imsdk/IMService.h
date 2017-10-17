@@ -51,9 +51,6 @@
 //消息发送失败
 -(void)onPeerMessageFailure:(int)msgLocalID uid:(int64_t)uid;
 
-//对方正在输入
--(void)onPeerInputing:(int64_t)uid;
-
 @end
 
 @protocol GroupMessageObserver <NSObject>
@@ -97,11 +94,7 @@
 -(void)onCustomerMessageFailure:(CustomerMessage*)msg;
 @end
 
-@protocol VOIPObserver <NSObject>
 
--(void)onVOIPControl:(VOIPControl*)ctl;
-
-@end
 
 
 /*消息如何接收
@@ -152,8 +145,6 @@
 -(void)enterRoom:(int64_t)roomID;
 -(void)leaveRoom:(int64_t)roomID;
 
-//正在输入
--(void)sendInputing:(MessageInputing*)inputing;
 //更新未读的消息数目
 -(void)sendUnreadCount:(int)unread;
 
@@ -174,11 +165,6 @@
 
 -(void)addRTMessageObserver:(id<RTMessageObserver>)ob;
 -(void)removeRTMessageObserver:(id<RTMessageObserver>)ob;
-    
--(void)pushVOIPObserver:(id<VOIPObserver>)ob;
--(void)popVOIPObserver:(id<VOIPObserver>)ob;
-
--(BOOL)sendVOIPControl:(VOIPControl*)ctl;
 
 @end
 

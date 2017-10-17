@@ -93,10 +93,7 @@
 
 typedef RoomMessage RTMessage;
 
-@interface MessageInputing : NSObject
-@property(nonatomic, assign)int64_t sender;
-@property(nonatomic, assign)int64_t receiver;
-@end
+
 
 @interface AuthenticationToken : NSObject
 @property(nonatomic, copy) NSString *token;
@@ -105,12 +102,6 @@ typedef RoomMessage RTMessage;
 @end
 
 
-@interface VOIPControl : NSObject
-@property(nonatomic, assign) int64_t sender;
-@property(nonatomic, assign) int64_t receiver;
-@property(nonatomic) NSData *content;
-
-@end
 
 typedef NSNumber SyncKey;
 

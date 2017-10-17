@@ -25,10 +25,6 @@
 
 @end
 
-@implementation MessageInputing
-
-@end
-
 @implementation AuthenticationToken
 
 @end
@@ -38,9 +34,7 @@
 
 @end
 
-@implementation VOIPControl
 
-@end
 
 @implementation Message
 -(NSData*)pack {
@@ -107,12 +101,6 @@
     } else if (self.cmd == MSG_ACK) {
         writeInt32([(NSNumber*)self.body intValue], p);
         return [NSData dataWithBytes:buf length:HEAD_SIZE+4];
-    } else if (self.cmd == MSG_INPUTING) {
-        MessageInputing *inputing = (MessageInputing*)self.body;
-        writeInt64(inputing.sender, p);
-        p += 8;
-        writeInt64(inputing.receiver, p);
-        return [NSData dataWithBytes:buf length:HEAD_SIZE + 16];
     } else if (self.cmd == MSG_ENTER_ROOM || self.cmd == MSG_LEAVE_ROOM) {
         NSNumber *n = (NSNumber*)self.body;
         int64_t roomID = [n longLongValue];
@@ -137,17 +125,6 @@
         writeInt32([u intValue], p);
         p += 4;
         return [NSData dataWithBytes:buf length:HEAD_SIZE + 4];
-    } else if (self.cmd == MSG_VOIP_CONTROL) {
-        VOIPControl *ctl = (VOIPControl*)self.body;
-        writeInt64(ctl.sender, p);
-        p += 8;
-        writeInt64(ctl.receiver, p);
-        p += 8;
-        if (ctl.content.length > 0) {
-            [ctl.content getBytes:p length:ctl.content.length];
-            p += ctl.content.length;
-        }
-        return [NSData dataWithBytes:buf length:HEAD_SIZE + 16 + ctl.content.length];
     } else if (self.cmd == MSG_SYNC || self.cmd == MSG_SYNC_KEY) {
         NSNumber *u = (NSNumber*)self.body;
         writeInt64([u longLongValue], p);
@@ -209,14 +186,6 @@
         int seq = readInt32(p);
         self.body = [NSNumber numberWithInt:seq];
         return YES;
-    } else if (self.cmd == MSG_INPUTING) {
-        MessageInputing *inputing = [[MessageInputing alloc] init];
-        inputing.sender = readInt64(p);
-        p += 8;
-        inputing.receiver = readInt64(p);
-        p += 8;
-        self.body = inputing;
-        return YES;
     } else if (self.cmd == MSG_GROUP_NOTIFICATION) {
         self.body = [[NSString alloc] initWithBytes:p length:data.length-HEAD_SIZE encoding:NSUTF8StringEncoding];
         return YES;
@@ -231,15 +200,6 @@
         return YES;
     } else if (self.cmd == MSG_SYSTEM) {
         self.body = [[NSString alloc] initWithBytes:p length:data.length-HEAD_SIZE encoding:NSUTF8StringEncoding];
-        return YES;
-    } else if (self.cmd == MSG_VOIP_CONTROL) {
-        VOIPControl *ctl = [[VOIPControl alloc] init];
-        ctl.sender = readInt64(p);
-        p += 8;
-        ctl.receiver = readInt64(p);
-        p += 8;
-        ctl.content = [NSData dataWithBytes:p length:data.length - 24];
-        self.body = ctl;
         return YES;
     } else if (self.cmd == MSG_SYNC_BEGIN ||
                self.cmd == MSG_SYNC_END ||
