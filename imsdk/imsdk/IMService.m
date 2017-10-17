@@ -89,6 +89,7 @@
         self.customerServiceMessages = [NSMutableDictionary dictionary];
         self.groupSyncKeys = [NSMutableDictionary dictionary];
         
+        self.isSync = YES;
         self.host = HOST;
         self.port = PORT;
         self.heartbeatHZ = HEARTBEAT_HZ;
@@ -828,23 +829,24 @@
         v.peedingSyncKey = 0;
     }
     
-    
     [self sendAuth];
     if (self.roomID > 0) {
         [self sendEnterRoom:self.roomID];
     }
     
-    int now = (int)time(NULL);
-    //send sync
-    [self sendSync:self.syncKey];
-    self.isSyncing = YES;
-    self.syncTimestmap = now;
-    
-    for (NSNumber *k in self.groupSyncKeys) {
-        GroupSync *v = [self.groupSyncKeys objectForKey:k];
-        [self sendGroupSync:v.syncKey gid:v.groupID];
-        v.isSyncing = YES;
-        v.syncTimestamp = now;
+    if (self.isSync) {
+        int now = (int)time(NULL);
+        //send sync
+        [self sendSync:self.syncKey];
+        self.isSyncing = YES;
+        self.syncTimestmap = now;
+        
+        for (NSNumber *k in self.groupSyncKeys) {
+            GroupSync *v = [self.groupSyncKeys objectForKey:k];
+            [self sendGroupSync:v.syncKey gid:v.groupID];
+            v.isSyncing = YES;
+            v.syncTimestamp = now;
+        }
     }
 }
 

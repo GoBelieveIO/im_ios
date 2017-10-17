@@ -117,6 +117,8 @@
 
 //离线消息的同步key
 @property(nonatomic) int64_t syncKey;
+//同步离线消息 default:YES
+@property(nonatomic) BOOL isSync;
 
 @property(nonatomic, weak)id<IMPeerMessageHandler> peerMessageHandler;
 @property(nonatomic, weak)id<IMGroupMessageHandler> groupMessageHandler;
