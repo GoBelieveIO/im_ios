@@ -204,12 +204,13 @@
     NSString *notification = (NSString*)msg.body;
     NSLog(@"group notification:%@", notification);
     [self.groupMessageHandler handleGroupNotification:notification];
-    for (id<GroupMessageObserver> ob in self.groupObservers) {
+    for (NSValue *value in self.groupObservers) {
+        id<GroupMessageObserver> ob = [value nonretainedObjectValue];
         if ([ob respondsToSelector:@selector(onGroupNotification:)]) {
             [ob onGroupNotification:notification];
         }
     }
-    
+
     Message *ack = [[Message alloc] init];
     ack.cmd = MSG_ACK;
     ack.body = [NSNumber numberWithInt:msg.seq];
