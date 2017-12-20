@@ -301,10 +301,7 @@
         NSLog(@"receive repeat msg:%@", m.uuid);
         return;
     }
-    
-    if (self.textMode && m.type != MESSAGE_TEXT) {
-        return;
-    }
+
     
     int now = (int)time(NULL);
     if (now - self.lastReceivedTimestamp > 1) {
@@ -341,10 +338,6 @@
     
     if (m.uuid.length > 0 && [self getMessageWithUUID:m.uuid]) {
         NSLog(@"receive repeat msg:%@", m.uuid);
-        return;
-    }
-    
-    if (self.textMode && m.type != MESSAGE_TEXT) {
         return;
     }
     

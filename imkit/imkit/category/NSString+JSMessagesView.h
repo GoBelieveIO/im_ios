@@ -13,5 +13,6 @@
 
 - (NSString *)trimWhitespace;
 - (NSUInteger)numberOfLines;
-
+//在所有中文字符后面添加一个空格
+- (NSString*)tokenizer;
 @end

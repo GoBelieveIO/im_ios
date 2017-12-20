@@ -10,12 +10,10 @@
 #import "BubbleView.h"
 #import <AVFoundation/AVFoundation.h>
 
-
-#define kAudioViewCellHeight 58 
-#define kAudioCellWidth 210
+#define kAudioHeight 36
+#define kAudioWidth 210
 
 @interface MessageAudioView : BubbleView <AVAudioPlayerDelegate>
-
 @property (nonatomic, strong) UIButton *playBtn;
 @property (nonatomic, strong) UIImageView *unreadImageView;
 @property (nonatomic, strong) UIProgressView *progressView;

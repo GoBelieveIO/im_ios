@@ -13,14 +13,8 @@
 
 #define kLinkWidth  224
 #define kLinkHeight 110
-#define  kMessageLinkViewHeight (kLinkHeight + kMarginTop + kMarginBottom + kPaddingTop + kPaddingBottom)
 
 @interface MessageLinkView : BubbleView
 @property (nonatomic) UIImageView *imageView;
-
-
 @property (nonatomic) UIActivityIndicatorView *downloadIndicatorView;
-@property (nonatomic) UIActivityIndicatorView *uploadIndicatorView;
-
-
 @end

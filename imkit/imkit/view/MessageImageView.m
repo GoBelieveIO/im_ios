@@ -8,25 +8,20 @@
 */
 
 #import "MessageImageView.h"
+#import <SDWebImage/UIImageView+WebCache.h>
 
-#define KInComingMoveRight  2.0
-#define kOuttingMoveRight   3.0
 
 @interface MessageImageView()
 @property(nonatomic) UIView *maskView;
 @end
-@implementation MessageImageView
 
-- (void)dealloc {
-    [self.msg removeObserver:self forKeyPath:@"uploading"];
-}
+@implementation MessageImageView
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if (self) {
         self.backgroundColor = [UIColor clearColor];
         self.imageView = [[UIImageView alloc] init];
-        [self.imageView setUserInteractionEnabled:YES];
         [self addSubview:self.imageView];
         
         self.maskView = [[UIView alloc] init];
@@ -44,16 +39,20 @@
     return self;
 }
 
+- (void)dealloc {
+    [self.msg removeObserver:self forKeyPath:@"uploading"];
+}
+
 - (void)setMsg:(IMessage*)msg {
     [self.msg removeObserver:self forKeyPath:@"uploading"];
-    
     [super setMsg:msg];
+    [self.msg addObserver:self forKeyPath:@"uploading" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
+    
     
     MessageImageContent *content = msg.imageContent;
-    NSString *originURL = content.imageURL;
-    if (originURL) {
-        //在原图URL后面添加"@{width}w_{heigth}h_{1|0}c", 支持128x128, 256x256
-        NSString *url = [NSString stringWithFormat:@"%@@128w_128h_0c", originURL];
+    NSString *littleURL = content.littleImageURL;
+    if (littleURL.length > 0) {
+        NSString *url = littleURL;
         if(![[SDImageCache sharedImageCache] diskImageExistsWithKey:url]){
             [self.downloadIndicatorView startAnimating];
         }
@@ -67,7 +66,7 @@
         }];
     }
     
-    [self.msg addObserver:self forKeyPath:@"uploading" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
+
     
     if (self.msg.uploading) {
         self.maskView.hidden = NO;
@@ -93,31 +92,24 @@
     }
 }
 
-#pragma mark - Drawing
-- (CGRect)bubbleFrame {
-    CGSize bubbleSize = CGSizeMake(kImageWidth + kBubblePaddingHead + kBubblePaddingTail + 8, kImageHeight + kPaddingTop + kPaddingBottom + 8);
-    return CGRectMake(floorf(self.type == BubbleMessageTypeOutgoing ? self.frame.size.width - bubbleSize.width : 0.0f),
-                      floorf(kMarginTop),
-                      floorf(bubbleSize.width),
-                      floorf(bubbleSize.height));
-    
+
+-(CGSize)bubbleSize {
+    int w = self.msg.imageContent.width;
+    int h = self.msg.imageContent.height;
+    if (w > 0 && h > 0) {
+        CGSize size = CGSizeMake(kImageWidth, kImageWidth*(h*1.0/w));
+        return size;
+    } else {
+        CGSize size = CGSizeMake(kImageWidth, kImageHeight);
+        return size;
+    }
 }
-
-
 
 -(void)layoutSubviews {
     [super layoutSubviews];
+    NSLog(@"w:%f h:%f", self.bounds.size.width, self.bounds.size.height);
 
-    CGRect bubbleFrame = [self bubbleFrame];
-
-    CGSize imageSize = CGSizeMake(kImageWidth, kImageHeight);
-    CGFloat imgX = (self.type == BubbleMessageTypeOutgoing ? bubbleFrame.origin.x + kBubblePaddingTail + 4: kBubblePaddingHead + 4);
-    
-
-    CGRect imageFrame = CGRectMake(imgX,
-                                   kMarginTop + kPaddingTop + 4,
-                                   imageSize.width,
-                                   imageSize.height);
+    CGRect imageFrame = self.bounds;
     [self.imageView setFrame:imageFrame];
     self.maskView.frame = imageFrame;
     

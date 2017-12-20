@@ -22,13 +22,22 @@
 @property(nonatomic, strong) FMDatabase *db;
 
 -(id<IMessageIterator>)newMessageIterator:(int64_t)uid;
+//下拉刷新
 -(id<IMessageIterator>)newMessageIterator:(int64_t)uid last:(int)lastMsgID;
+
+-(id<IMessageIterator>)newMiddleMessageIterator:(int64_t)uid messageID:(int)messageID;
+
+//上拉刷新
+-(id<IMessageIterator>)newBackwardMessageIterator:(int64_t)uid messageID:(int)messageID;
 -(id<ConversationIterator>)newConversationIterator;
 
+-(IMessage*)getMessage:(int64_t)msgID;
 -(BOOL)insertMessage:(IMessage*)msg uid:(int64_t)uid;
 -(BOOL)removeMessage:(int)msgLocalID uid:(int64_t)uid;
 -(BOOL)clearConversation:(int64_t)uid;
 -(BOOL)clear;
+-(NSArray*)search:(NSString*)key;
+-(BOOL)updateMessageContent:(int)msgLocalID content:(NSString*)content;
 -(BOOL)acknowledgeMessage:(int)msgLocalID uid:(int64_t)uid;
 -(BOOL)markMessageFailure:(int)msgLocalID uid:(int64_t)uid;
 -(BOOL)markMesageListened:(int)msgLocalID uid:(int64_t)uid;

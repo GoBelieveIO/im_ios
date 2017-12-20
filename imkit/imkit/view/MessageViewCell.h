@@ -11,15 +11,35 @@
 #import "BubbleView.h"
 #import "IMessage.h"
 
-#define NAME_LABEL_HEIGHT 20
+#define kPaddingTop 8.0f
+#define kPaddingBottom 8.0f
+#define kMarginTop 4.0f
+#define kMarginBottom 4.0f
+
+#define kMiddlePaddingTop 4.0f
+#define kMiddlePaddingBottom 4.0f
+
+#define kMessageLinkViewHeight (kLinkHeight + kPaddingTop + kPaddingBottom + kMarginTop + kMarginBottom)
+#define kMessageImagViewHeight (kImageHeight + kPaddingTop + kPaddingBottom + kMarginTop + kMarginBottom)
+#define kMessageLocationViewHeight (kLocationHeight + kPaddingTop + kPaddingBottom + kMarginTop + kMarginBottom)
+#define kMessageAudioViewHeight (kAudioHeight + kPaddingTop + kPaddingBottom + kMarginTop + kMarginBottom)
+#define kMessageVOIPViewHeight (kVOIPHeight + kPaddingTop + kPaddingBottom + kMarginTop + kMarginBottom)
+#define kMessageNotificationViewHeight (kNotificationHeight + kMiddlePaddingTop + kMiddlePaddingBottom + kMarginTop + kMarginBottom)
+#define kMessageUnknowViewHeight (kUnknowHeight + kPaddingTop + kPaddingBottom + kMarginTop + kMarginBottom)
+
+
+#define TRIANGLE_WIDTH 4
+#define TRIANGLE_HEIGHT 8
+
 
 @interface MessageViewCell : UITableViewCell
+//text, image
++ (CGFloat)cellHeightMessage:(IMessage*)msg;
 
-@property (strong, nonatomic) BubbleView *bubbleView;
-@property (strong, nonatomic) UILabel *nameLabel;
-@property (strong, nonatomic) UIImageView *headView;
+@property(nonatomic) IMessage *msg;
+@property(nonatomic) UIView *containerView;
+@property(nonatomic) BubbleView *bubbleView;
+@property(nonatomic, assign) BOOL selectedToShowCopyMenu;
 
 - (id)initWithType:(int)type reuseIdentifier:(NSString *)reuseIdentifier;
-
-- (void)setMessage:(IMessage *)message showName:(BOOL)showName;
 @end

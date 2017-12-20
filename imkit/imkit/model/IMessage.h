@@ -19,6 +19,8 @@
 #define MESSAGE_GROUP_NOTIFICATION 5 //群通知
 #define MESSAGE_LINK 6
 #define MESSAGE_HEADLINE 7  //客服的标题
+#define MESSAGE_VOIP 8
+#define MESSAGE_GROUP_VOIP 9
 
 #define MESSAGE_TIME_BASE  254 //虚拟的消息，不会存入磁盘
 #define MESSAGE_ATTACHMENT 255 //消息附件， 只存在本地磁盘
@@ -38,8 +40,12 @@
 #define NOTIFICATION_GROUP_MEMBER_ADDED 3
 #define NOTIFICATION_GROUP_MEMBER_LEAVED 4
 #define NOTIFICATION_GROUP_NAME_UPDATED 5
+#define NOTIFICATION_GROUP_NOTICE_UPDATED 6
 
-
+#define VOIP_FLAG_CANCELED 1   //取消
+#define VOIP_FLAG_REFUSED 2
+#define VOIP_FLAG_ACCEPTED 3
+#define VOIP_FLAG_UNRECEIVED 4  //未接听
 
 @class IUser;
 
@@ -47,6 +53,7 @@
 
 @property(nonatomic) NSString *raw;
 @property(nonatomic, readonly) NSString *uuid;
+@property(nonatomic, readonly) int type;
 @end
 
 @interface MessageTextContent : MessageContent
@@ -111,6 +118,7 @@
 //GROUP_CREATED,GROUP_NAME_UPDATED
 @property(nonatomic) NSString *groupName;
 
+@property(nonatomic) NSString *notice;
 
 //GROUP_MEMBER_ADDED,GROUP_MEMBER_LEAVED
 @property(nonatomic) int64_t member;
@@ -150,6 +158,23 @@
 
 @end
 
+
+@interface MessageVOIPContent:MessageContent
+@property(nonatomic) int flag;
+@property(nonatomic) int duration;//通话时长
+@property(nonatomic) BOOL videoEnabled;
+
+-(id)initWithFlag:(int)flag duration:(int)duration videoEnabled:(BOOL)videoEnabled;
+@end
+
+@interface MessageGroupVOIPContent:MessageNotificationContent
+
+@property(nonatomic) int64_t initiator;
+@property(nonatomic) BOOL finished;
+
+-(id)initWithInitiator:(int64_t)initiator finished:(BOOL)finished;
+@end
+
 @interface IMessage : NSObject
 @property(nonatomic) int msgLocalID;
 @property(nonatomic) int flags;
@@ -157,18 +182,22 @@
 @property(nonatomic) int64_t receiver;
 
 @property(nonatomic, copy) NSString *rawContent;
-@property(nonatomic) int type;
-
+@property(nonatomic, readonly) int type;
 @property(nonatomic, readonly) NSString *uuid;
 
+@property(nonatomic) MessageContent *content;
 @property(nonatomic, readonly) MessageTextContent *textContent;
 @property(nonatomic, readonly) MessageAudioContent *audioContent;
 @property(nonatomic, readonly) MessageImageContent *imageContent;
 @property(nonatomic, readonly) MessageLocationContent *locationContent;
-@property(nonatomic, readonly) MessageGroupNotificationContent *notificationContent;
 @property(nonatomic, readonly) MessageLinkContent *linkContent;
-@property(nonatomic, readonly) MessageAttachmentContent *attachmentContent;
+@property(nonatomic, readonly) MessageVOIPContent *voipContent;
+@property(nonatomic, readonly) MessageGroupVOIPContent *groupVOIPContent;
 @property(nonatomic, readonly) MessageTimeBaseContent *timeBaseContent;
+@property(nonatomic, readonly) MessageNotificationContent *notificationContent;
+@property(nonatomic, readonly) MessageGroupNotificationContent *groupNotificationContent;
+
+@property(nonatomic, readonly) MessageAttachmentContent *attachmentContent;
 
 @property(nonatomic) int timestamp;
 @property(nonatomic, readonly) BOOL isACK;

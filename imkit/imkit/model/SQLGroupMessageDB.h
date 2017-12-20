@@ -23,11 +23,16 @@
 
 -(id<IMessageIterator>)newMessageIterator:(int64_t)uid;
 -(id<IMessageIterator>)newMessageIterator:(int64_t)uid last:(int)lastMsgID;
+-(id<IMessageIterator>)newMiddleMessageIterator:(int64_t)gid messageID:(int)messageID;
+-(id<IMessageIterator>)newBackwardMessageIterator:(int64_t)gid messageID:(int)messageID;
 -(id<ConversationIterator>)newConversationIterator;
 
+-(IMessage*)getMessage:(int64_t)msgID;
 -(BOOL)insertMessage:(IMessage*)msg;
 -(BOOL)removeMessage:(int)msgLocalID gid:(int64_t)gid;
 -(BOOL)clearConversation:(int64_t)gid;
+-(NSArray*)search:(NSString*)key;
+-(BOOL)updateMessageContent:(int)msgLocalID content:(NSString*)content;
 -(BOOL)acknowledgeMessage:(int)msgLocalID gid:(int64_t)gid;
 -(BOOL)markMessageFailure:(int)msgLocalID gid:(int64_t)gid;
 -(BOOL)markMesageListened:(int)msgLocalID gid:(int64_t)gid;

@@ -17,14 +17,7 @@
 //清空会话的未读消息数
 #define CLEAR_GROUP_NEW_MESSAGE @"clear_group_single_conv_new_message_notify"
 
-#undef TEXT_MODE
-#ifdef TEXT_MODE
-@interface GroupMessageViewController : TextMessageViewController<GroupMessageObserver,  TCPConnectionObserver>
-#else
-@interface GroupMessageViewController : MessageViewController<GroupMessageObserver,  TCPConnectionObserver>
-#endif
-
-@property(nonatomic) int64_t currentUID;
+@interface GroupMessageViewController : MessageViewController<GroupMessageObserver, TCPConnectionObserver>
 @property(nonatomic) int64_t groupID;
 @property(nonatomic, copy) NSString *groupName;
 @property(nonatomic) BOOL disbanded;

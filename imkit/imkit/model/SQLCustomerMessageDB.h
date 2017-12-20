@@ -31,6 +31,7 @@
 -(BOOL)removeMessage:(int)msgLocalID uid:(int64_t)uid;
 -(BOOL)clearConversation:(int64_t)uid;
 -(BOOL)clear;
+-(BOOL)updateMessageContent:(int)msgLocalID content:(NSString*)content;
 -(BOOL)acknowledgeMessage:(int)msgLocalID uid:(int64_t)uid;
 -(BOOL)markMessageFailure:(int)msgLocalID uid:(int64_t)uid;
 -(BOOL)markMesageListened:(int)msgLocalID uid:(int64_t)uid;

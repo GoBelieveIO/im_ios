@@ -16,16 +16,8 @@
 //清空会话的未读消息数
 #define CLEAR_PEER_NEW_MESSAGE @"clear_peer_single_conv_new_message_notify"
 
-#define TEXT_MODE1
-#ifdef TEXT_MODE
-@interface PeerMessageViewController : TextMessageViewController<PeerMessageObserver,  TCPConnectionObserver>
-#else
-@interface PeerMessageViewController : MessageViewController<PeerMessageObserver,  TCPConnectionObserver>
-#endif
-
-@property(nonatomic, assign) int64_t currentUID;
+@interface PeerMessageViewController : MessageViewController<PeerMessageObserver, TCPConnectionObserver>
 @property(nonatomic, assign) int64_t peerUID;
 @property(nonatomic, copy) NSString *peerName;
-
-
+@property(nonatomic, copy) NSString *peerAvatar;
 @end

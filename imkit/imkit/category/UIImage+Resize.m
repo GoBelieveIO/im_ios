@@ -11,6 +11,19 @@
 
 
 @implementation UIImage (Resize)
+- (UIImage *)resize:(CGSize)newSize {
+    //fill mode
+    CGFloat horizontalRatio = newSize.width / self.size.width;
+    CGFloat verticalRatio = newSize.height / self.size.height;
+    CGFloat ratio = MIN(horizontalRatio, verticalRatio);
+    newSize = CGSizeMake(self.size.width * ratio, self.size.height * ratio);
+    
+    UIGraphicsBeginImageContext(newSize);
+    [self drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
+}
 
 - (UIImage *)croppedImage:(CGRect)bounds {
     CGImageRef imageRef = CGImageCreateWithImageInRect([self CGImage], bounds);

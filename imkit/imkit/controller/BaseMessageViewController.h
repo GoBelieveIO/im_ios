@@ -10,50 +10,51 @@
 #import <UIKit/UIKit.h>
 #import "IMService.h"
 #import "IMessage.h"
+#import "IMessageDB.h"
+#import "Outbox.h"
 
 //基类处理tableview相关的数据
 @interface BaseMessageViewController : UIViewController
 
+@property(nonatomic) id<IMessageDB> messageDB;
 
+@property(nonatomic, assign) int64_t currentUID;
+@property(nonatomic, assign) NSString *cid;
+
+@property(nonatomic, assign) int messageID;//加载此消息id前后的消息
 //protected
+@property(nonatomic, assign) BOOL hasLateMore;
+@property(nonatomic, assign) BOOL hasEarlierMore;
 @property(nonatomic) NSMutableArray *messages;
 @property(nonatomic) NSMutableDictionary *attachments;
 
 @property(nonatomic) UIRefreshControl *refreshControl;
 @property(nonatomic) UITableView *tableView;
-
 @property(nonatomic) int lastReceivedTimestamp;
 
-//是否只展示文本消息
-@property(nonatomic) BOOL textMode;
-
-
 //protected overwrite by derived class
-- (BOOL)markMesageListened:(IMessage*)msg;
+-(void)saveMessageAttachment:(IMessage*)msg address:(NSString*)address;
+-(BOOL)saveMessage:(IMessage*)msg;
+-(BOOL)removeMessage:(IMessage*)msg;
+-(BOOL)markMessageFailure:(IMessage*)msg;
+-(BOOL)markMesageListened:(IMessage*)msg;
+-(BOOL)eraseMessageFailure:(IMessage*)msg;
+
 - (void)loadConversationData;
 - (void)loadEarlierData;
+- (void)loadLateData;
 
 
 - (void)initTableViewData;
 
 - (void)insertMessage:(IMessage*)msg;
+- (void)insertMessages:(NSArray*)messages;
 - (void)scrollToBottomAnimated:(BOOL)animated;
 
 - (IMessage*)getMessageWithID:(int)msgLocalID;
 - (IMessage*)getMessageWithUUID:(NSString*)uuid;
 
 - (IMessage*)messageForRowAtIndexPath:(NSIndexPath *)indexPath;
-
-- (NSString *)getWeekDayString:(NSInteger)iDay;
-- (BOOL)isSameDay:(NSDate*)date1 other:(NSDate*)date2 ;
-- (BOOL)isYestoday:(NSDate*)date;
-- (BOOL)isBeforeYestoday:(NSDate*)date;
-- (BOOL)isInWeek:(NSDate*)date;
-- (BOOL)isInMonth:(NSDate*)date;
-- (BOOL)isInYear:(NSDate*)date;
-- (NSDateComponents*)getComponentOfDate:(NSDate *)date ;
-- (NSString *)getConversationTimeString:(NSDate *)date;
-- (NSString*)formatSectionTime:(NSDate*)date;
 
 + (void)playMessageReceivedSound;
 + (void)playMessageSentSound;

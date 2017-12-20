@@ -13,13 +13,13 @@
 #include <dirent.h>
 #import "util.h"
 #import "ReverseFile.h"
-
+#import "NSString+JSMessagesView.h"
 
 @interface SQLGroupMessageIterator : NSObject<IMessageIterator>
-
 -(SQLGroupMessageIterator*)initWithDB:(FMDatabase*)db gid:(int64_t)gid;
-
 -(SQLGroupMessageIterator*)initWithDB:(FMDatabase*)db gid:(int64_t)gid position:(int)msgID;
+-(SQLGroupMessageIterator*)initWithDB:(FMDatabase*)db gid:(int64_t)gid middle:(int)msgID;
+-(SQLGroupMessageIterator*)initWithDB:(FMDatabase*)db gid:(int64_t)gid last:(int)msgID;
 
 @property(nonatomic) FMResultSet *rs;
 @end
@@ -44,6 +44,25 @@
     self = [super init];
     if (self) {
         NSString *sql = @"SELECT id, sender, group_id, timestamp, flags, content FROM group_message WHERE group_id=? AND id < ? ORDER BY id DESC";
+        self.rs = [db executeQuery:sql, @(gid), @(msgID)];
+    }
+    return self;
+}
+
+-(SQLGroupMessageIterator*)initWithDB:(FMDatabase*)db gid:(int64_t)gid middle:(int)msgID {
+    self = [super init];
+    if (self) {
+        NSString *sql = @"SELECT id, sender, group_id, timestamp, flags, content FROM group_message WHERE group_id=? AND id > ? AND id < ? ORDER BY id DESC";
+        self.rs = [db executeQuery:sql, @(gid), @(msgID-10), @(msgID+10)];
+    }
+    return self;
+}
+
+//上拉刷新
+-(SQLGroupMessageIterator*)initWithDB:(FMDatabase*)db gid:(int64_t)gid last:(int)msgID {
+    self = [super init];
+    if (self) {
+        NSString *sql = @"SELECT id, sender, group_id, timestamp, flags, content FROM group_message WHERE group_id=? AND id>? ORDER BY id";
         self.rs = [db executeQuery:sql, @(gid), @(msgID)];
     }
     return self;
@@ -82,14 +101,17 @@
 
 -(IMessage*)getMessage:(int)msgID {
     FMResultSet *rs = [self.db executeQuery:@"SELECT id, sender, group_id, timestamp, flags, content FROM group_message WHERE id= ?", @(msgID)];
-    IMessage *msg = [[IMessage alloc] init];
-    msg.sender = [rs longLongIntForColumn:@"sender"];
-    msg.receiver = [rs longLongIntForColumn:@"group_id"];
-    msg.timestamp = [rs intForColumn:@"timestamp"];
-    msg.flags = [rs intForColumn:@"flags"];
-    msg.rawContent = [rs stringForColumn:@"content"];
-    msg.msgLocalID = [rs intForColumn:@"id"];
-    return msg;
+    if ([rs next]) {
+        IMessage *msg = [[IMessage alloc] init];
+        msg.sender = [rs longLongIntForColumn:@"sender"];
+        msg.receiver = [rs longLongIntForColumn:@"group_id"];
+        msg.timestamp = [rs intForColumn:@"timestamp"];
+        msg.flags = [rs intForColumn:@"flags"];
+        msg.rawContent = [rs stringForColumn:@"content"];
+        msg.msgLocalID = [rs intForColumn:@"id"];
+        return msg;
+    }
+    return nil;
 }
 
 -(SQLGroupConversationIterator*)initWithDB:(FMDatabase*)db {
@@ -147,6 +169,15 @@
     return [[SQLGroupMessageIterator alloc] initWithDB:self.db gid:gid position:lastMsgID];
 }
 
+-(id<IMessageIterator>)newMiddleMessageIterator:(int64_t)gid messageID:(int)messageID {
+    return [[SQLGroupMessageIterator alloc] initWithDB:self.db gid:gid middle:messageID];
+}
+
+-(id<IMessageIterator>)newBackwardMessageIterator:(int64_t)gid messageID:(int)messageID {
+    return [[SQLGroupMessageIterator alloc] initWithDB:self.db gid:gid last:messageID];
+}
+
+
 -(id<ConversationIterator>)newConversationIterator {
     return [[SQLGroupConversationIterator alloc] initWithDB:self.db];
 }
@@ -174,16 +205,39 @@
     return YES;
 }
 
--(BOOL)insertMessage:(IMessage*)msg {
+-(BOOL)updateMessageContent:(int)msgLocalID content:(NSString*)content {
     FMDatabase *db = self.db;
-    BOOL r = [db executeUpdate:@"INSERT INTO group_message (sender, group_id, timestamp, flags, content) VALUES (?, ?, ?, ?, ?)",
-              @(msg.sender), @(msg.receiver), @(msg.timestamp),@(msg.flags), msg.rawContent];
+    
+    BOOL r = [db executeUpdate:@"UPDATE group_message SET content=? WHERE id=?", content, @(msgLocalID)];
     if (!r) {
         NSLog(@"error = %@", [db lastErrorMessage]);
         return NO;
     }
     
-    msg.msgLocalID = [db lastInsertRowId];
+    return [db changes] == 1;
+}
+
+-(BOOL)insertMessage:(IMessage*)msg {
+    FMDatabase *db = self.db;
+    [db beginTransaction];
+    BOOL r = [db executeUpdate:@"INSERT INTO group_message (sender, group_id, timestamp, flags, content) VALUES (?, ?, ?, ?, ?)",
+              @(msg.sender), @(msg.receiver), @(msg.timestamp),@(msg.flags), msg.rawContent];
+    if (!r) {
+        NSLog(@"error = %@", [db lastErrorMessage]);
+        [db rollback];
+        return NO;
+    }
+    
+    int64_t rowID = [db lastInsertRowId];
+    msg.msgLocalID = (int)rowID;
+    
+    if (msg.textContent) {
+        NSString *text = [msg.textContent.text tokenizer];
+        [db executeUpdate:@"INSERT INTO group_message_fts (docid, content) VALUES (?, ?)", @(rowID), text];
+    }
+    
+    
+    [db commit];
     return YES;
 
 }
@@ -196,6 +250,42 @@
         return NO;
     }
     return YES;
+}
+
+-(NSArray*)search:(NSString*)key {
+    FMDatabase *db = self.db;
+    
+    key = [key stringByReplacingOccurrencesOfString:@"'" withString:@"\'"];
+    key = [key tokenizer];
+    NSString *sql = [NSString stringWithFormat:@"SELECT rowid FROM group_message_fts WHERE group_message_fts MATCH '%@'", key];
+    
+    FMResultSet *rs = [db executeQuery:sql];
+    NSMutableArray *array = [NSMutableArray array];
+    while ([rs next]) {
+        int64_t msgID = [rs longLongIntForColumn:@"rowid"];
+        IMessage *msg = [self getMessage:msgID];
+        if (msg) {
+            [array addObject:msg];
+        }
+    }
+    
+    [rs close];
+    return array;
+}
+
+-(IMessage*)getMessage:(int64_t)msgID {
+    FMResultSet *rs = [self.db executeQuery:@"SELECT id, sender, group_id, timestamp, flags, content FROM group_message WHERE id= ?", @(msgID)];
+    if ([rs next]) {
+        IMessage *msg = [[IMessage alloc] init];
+        msg.sender = [rs longLongIntForColumn:@"sender"];
+        msg.receiver = [rs longLongIntForColumn:@"group_id"];
+        msg.timestamp = [rs intForColumn:@"timestamp"];
+        msg.flags = [rs intForColumn:@"flags"];
+        msg.rawContent = [rs stringForColumn:@"content"];
+        msg.msgLocalID = [rs intForColumn:@"id"];
+        return msg;
+    }
+    return nil;
 }
 
 -(BOOL)acknowledgeMessage:(int)msgLocalID gid:(int64_t)gid {

@@ -12,12 +12,6 @@
 #define kLocationWidth  180
 #define kLocationHeight 100
 
-#define kMessageLocationViewHeight (kLocationHeight + kMarginTop + kMarginBottom + kPaddingTop + kPaddingBottom)
-
-@interface MessageLocationView : BubbleView {
-    
-}
+@interface MessageLocationView : BubbleView
 @property (nonatomic) UIImageView *imageView;
-
-
 @end

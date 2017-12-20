@@ -5,14 +5,14 @@
 
 Pod::Spec.new do |s|
   s.name             = "gobelieve"
-  s.version          = "0.1.0"
+  s.version          = "0.1.1"
   s.summary          = "imkit."
   s.description      = "imkit of gobelieve"
   s.homepage         = "http://developer.gobelieve.io"
   s.license          = 'MIT'
   s.author           = { "houxh" => "houxuehua49@gmail.com" }
   s.source           = { :git => 'git@github.com:GoBelieveIO/im_ios.git' }
-  s.platform         = :ios, '7.0'
+  s.platform         = :ios, '8.0'
   s.requires_arc     = true
   s.preserve_paths   = 'imkit/imkit/amr/libopencore-amrnb.a'
   s.library          = 'opencore-amrnb'
@@ -32,6 +32,7 @@ Pod::Spec.new do |s|
     sp.dependency 'Toast', '~> 2.4'
     sp.dependency 'MBProgressHUD', '~> 0.9.1'
     sp.dependency 'FMDB', '~> 2.6.2'
+    sp.dependency 'Masonry', '~>1.0.2'
     sp.pod_target_xcconfig = { 'ENABLE_BITCODE' => 'NO' }    
   end
 

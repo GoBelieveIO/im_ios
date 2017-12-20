@@ -8,13 +8,11 @@
  */
 
 #import "MessageLocationView.h"
-#import "Constants.h"
+#import <SDWebImage/UIImageView+WebCache.h>
+#import <Masonry/Masonry.h>
 
 #define kPinImageWidth 32
 #define kPinImageHeight 39
-
-#define KInComingMoveRight  2.0
-#define kOuttingMoveRight   3.0
 
 #define kAddressHeight  30
 
@@ -34,11 +32,10 @@
     if (self) {
         self.backgroundColor = [UIColor clearColor];
         UIImageView *imageView = [[UIImageView alloc] init];
-        [self addSubview:imageView];
         self.imageView = imageView;
         self.imageView.layer.cornerRadius = 6.0f;
         self.imageView.clipsToBounds = YES;
-        self.imageView.userInteractionEnabled = YES;
+        [self addSubview:imageView];
         
         self.pinImageView = [[UIImageView alloc] init];
         UIImage *image = [UIImage imageNamed:@"PinGreen"];
@@ -58,8 +55,32 @@
         [self.addressBackgroundView addSubview:self.geocodingIndicatorView];
         
         self.indicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-        
         [self addSubview:self.indicatorView];
+        
+        
+        [self.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.edges.equalTo(self);
+        }];
+        
+        [self.indicatorView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.edges.equalTo(self);
+        }];
+        [self.pinImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.center.equalTo(self);
+        }];
+        [self.addressBackgroundView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(self.mas_left);
+            make.right.equalTo(self.mas_right);
+            make.bottom.equalTo(self.mas_bottom);
+            make.height.mas_equalTo(kAddressHeight);
+        }];
+        
+        [self.geocodingIndicatorView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.edges.equalTo(self.addressBackgroundView).insets(UIEdgeInsetsMake(0, 4, 0, 4));
+        }];
+        [self.addressLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.edges.equalTo(self.addressBackgroundView).insets(UIEdgeInsetsMake(0, 4, 0, 4));
+        }];
     }
     return self;
 }
@@ -137,51 +158,10 @@
     }
 }
 
-#pragma mark - Drawing
-- (CGRect)bubbleFrame {
-    CGSize bubbleSize = CGSizeMake(kLocationWidth + kBubblePaddingHead + kBubblePaddingTail + 8, kLocationHeight + kPaddingTop + kPaddingBottom + 8);
-    return CGRectMake(floorf(self.type == BubbleMessageTypeOutgoing ? self.frame.size.width - bubbleSize.width : 0.0f),
-                      floorf(kMarginTop),
-                      floorf(bubbleSize.width),
-                      floorf(bubbleSize.height));
-    
-}
 
-
--(void)layoutSubviews {
-    [super layoutSubviews];
-
-    CGRect bubbleFrame = [self bubbleFrame];
-    
-    if (self.imageView) {
-        
-        CGSize imageSize = CGSizeMake(kLocationWidth, kLocationHeight);
-        CGFloat imgX = (self.type == BubbleMessageTypeOutgoing ? bubbleFrame.origin.x + kBubblePaddingTail + 4: kBubblePaddingHead + 4);
-        
-        CGRect imageFrame = CGRectMake(imgX,
-                                       kMarginTop + kPaddingTop + 4,
-                                       imageSize.width,
-                                       imageSize.height);
-        [self.imageView setFrame:imageFrame];
-        
-        CGRect rect = imageFrame;
-        rect.origin.x = 0;
-        rect.origin.y = rect.size.height - kAddressHeight;
-        rect.size.height = kAddressHeight;
-        self.addressBackgroundView.frame = rect;
-        
-        rect.origin.y = 0;
-        rect.origin.x = 4;
-        rect.size.width -= 8;
-        self.addressLabel.frame = rect;
-        self.geocodingIndicatorView.frame = rect;
-        
-        [self.indicatorView setFrame:imageFrame];
-        //center
-        CGPoint centerPoint = CGPointMake(imageFrame.origin.x + imageFrame.size.width/2, imageFrame.origin.y + imageFrame.size.height/2);
-        CGRect pinFrame = CGRectMake(centerPoint.x - 8, centerPoint.y - 36, kPinImageWidth, kPinImageHeight);
-        self.pinImageView.frame = pinFrame;
-    }
+- (CGSize)bubbleSize {
+    CGSize bubbleSize = CGSizeMake(kLocationWidth, kLocationHeight);
+    return bubbleSize;
 }
 
 @end

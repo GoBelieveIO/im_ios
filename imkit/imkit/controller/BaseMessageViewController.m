@@ -11,6 +11,7 @@
 #import <AudioToolbox/AudioServices.h>
 #import "IMessage.h"
 
+#import "NSDate+Format.h"
 
 @interface BaseMessageViewController ()
 
@@ -27,26 +28,32 @@
     return self;
 }
 
-- (int64_t)sender {
-    NSAssert(NO, @"not implement");
-    return 0;
+
+-(void)saveMessageAttachment:(IMessage*)msg address:(NSString*)address {
+    [self.messageDB saveMessageAttachment:msg address:address];
 }
 
-- (int64_t)receiver {
-    NSAssert(NO, @"not implement");
-    return 0;
+
+-(BOOL)saveMessage:(IMessage*)msg {
+    return [self.messageDB saveMessage:msg];
 }
 
-- (void)loadConversationData {
-    NSAssert(NO, @"not implement");
+-(BOOL)removeMessage:(IMessage*)msg {
+    return [self.messageDB removeMessage:msg];
 }
 
-- (void)loadEarlierData {
-    NSAssert(NO, @"not implement");
+-(BOOL)markMessageFailure:(IMessage*)msg {
+    return [self.messageDB markMessageFailure:msg];
+    
 }
-- (BOOL)markMesageListened:(IMessage*)msg {
-    NSAssert(NO, @"not implement");
-    return NO;
+
+-(BOOL)markMesageListened:(IMessage*)msg {
+    return [self.messageDB markMesageListened:msg];
+    
+}
+
+-(BOOL)eraseMessageFailure:(IMessage*)msg {
+    return [self.messageDB eraseMessageFailure:msg];
 }
 
 
@@ -72,9 +79,9 @@
         
         if (lastDate == nil || msg.timestamp - lastDate.timeIntervalSince1970 > 1*60) {
             MessageTimeBaseContent *tb = [[MessageTimeBaseContent alloc] initWithTimestamp:msg.timestamp];
+            tb.notificationDesc = [[NSDate dateWithTimeIntervalSince1970:tb.timestamp] formatSectionTime];
             IMessage *m = [[IMessage alloc] init];
-            m.rawContent = tb.raw;
-            m.notificationContent.notificationDesc = [self formatSectionTime:[NSDate dateWithTimeIntervalSince1970:tb.timestamp]];
+            m.content = tb;
             [newMessages addObject:m];
             lastDate = [NSDate dateWithTimeIntervalSince1970:msg.timestamp];
         }
@@ -85,6 +92,35 @@
     self.messages = newMessages;
 }
 
+-(void)insertMessages:(NSArray*)messages {
+    NSTimeInterval lastDate = 0;
+    NSInteger count = [self.messages count];
+    
+    for (NSInteger i = count; i > 0; i--) {
+        IMessage *m = [self.messages objectAtIndex:i-1];
+        if (m.type == MESSAGE_TIME_BASE) {
+            lastDate = m.timeBaseContent.timestamp;
+            break;
+        }
+    }
+    
+    for (IMessage *msg in messages) {
+        if (msg.timestamp - lastDate > 1*60) {
+            MessageTimeBaseContent *tb = [[MessageTimeBaseContent alloc] initWithTimestamp:msg.timestamp];
+            tb.notificationDesc = [[NSDate dateWithTimeIntervalSince1970:tb.timestamp] formatSectionTime];
+            IMessage *m = [[IMessage alloc] init];
+            m.content = tb;
+            [self.messages addObject:m];
+            
+            lastDate = msg.timestamp;
+        }
+        [self.messages addObject:msg];
+    }
+    
+    if (messages.count > 0) {
+        [self.tableView reloadData];
+    }
+}
 
 - (void)insertMessage:(IMessage*)msg {
     NSDate *lastDate = nil;
@@ -101,9 +137,9 @@
     NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
     if (lastDate == nil || msg.timestamp - lastDate.timeIntervalSince1970 > 1*60) {
         MessageTimeBaseContent *tb = [[MessageTimeBaseContent alloc] initWithTimestamp:msg.timestamp];
+        tb.notificationDesc = [[NSDate dateWithTimeIntervalSince1970:tb.timestamp] formatSectionTime];
         IMessage *m = [[IMessage alloc] init];
-        m.rawContent = tb.raw;
-        m.notificationContent.notificationDesc = [self formatSectionTime:[NSDate dateWithTimeIntervalSince1970:tb.timestamp]];
+        m.content = tb;
         [self.messages addObject:m];
         NSIndexPath *indexPath = nil;
         indexPath = [NSIndexPath indexPathForRow:self.messages.count - 1 inSection:0];
@@ -176,127 +212,6 @@
 }
 
 
-#pragma mark - function
-- (NSDateComponents*) getComponentOfDate:(NSDate *)date {
-    if (date == nil) {
-        return nil;
-    }
-    
-    NSCalendar *calendar = [NSCalendar currentCalendar];
-    [calendar setTimeZone:[NSTimeZone systemTimeZone]];
-    NSDateComponents *comps = [[NSDateComponents alloc] init];
-    NSInteger unitFlags = NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay|\
-    NSCalendarUnitWeekday|NSCalendarUnitHour|NSCalendarUnitMinute|NSCalendarUnitSecond;
-    comps = [calendar components:unitFlags fromDate:date];
-    return comps;
-}
 
-- (NSString *)getConversationTimeString:(NSDate *)date{
-    NSString *format = @"MM-dd HH:mm";
-    NSDateFormatter *formatter = [[NSDateFormatter alloc] init] ;
-    [formatter setDateFormat:format];
-    [formatter setTimeZone:[NSTimeZone systemTimeZone]];
-    
-    return [formatter stringFromDate:date];
-}
-
-- (NSString*)formatSectionTime:(NSDate*)date {
-    NSDate *curtDate = date;
-    NSDateComponents *components = [self getComponentOfDate:curtDate];
-    NSDate *todayDate = [NSDate date];
-    NSString *timeStr = nil;
-    if ([self isSameDay:curtDate other:todayDate]) {
-        timeStr = [NSString stringWithFormat:@"%02zd:%02zd",components.hour,components.minute];
-    } else if ([self isYestoday:curtDate]) {
-        timeStr = [NSString stringWithFormat:@"昨天 %02zd:%02zd",components.hour,components.minute];
-    } else if ([self isInWeek:curtDate]) {
-        NSString *s = [self getWeekDayString: components.weekday];
-        timeStr = [NSString stringWithFormat:@"%@ %02zd:%02zd", s, components.hour,components.minute];
-    } else if ([self isInYear:curtDate]) {
-        NSString *format = @"MM-dd HH:mm";
-        NSDateFormatter *formatter = [[NSDateFormatter alloc] init] ;
-        [formatter setDateFormat:format];
-        [formatter setTimeZone:[NSTimeZone systemTimeZone]];
-        
-        timeStr = [formatter stringFromDate:curtDate];
-    } else {
-        NSString *format = @"yyy-MM-dd HH:mm";
-        NSDateFormatter *formatter = [[NSDateFormatter alloc] init] ;
-        [formatter setDateFormat:format];
-        [formatter setTimeZone:[NSTimeZone systemTimeZone]];
-        
-        timeStr = [formatter stringFromDate:curtDate];
-    }
-    
-    return timeStr;
-}
-
-// 从数字获取对应的周时间字符串
-- (NSString *) getWeekDayString:(NSInteger)iDay {
-    switch (iDay) {
-        case 1:
-            return @"周日";
-            break;
-        case 2:
-            return @"周一";
-            break;
-        case 3:
-            return @"周二";
-            break;
-        case 4:
-            return @"周三";
-            break;
-        case 5:
-            return @"周四";
-            break;
-        case 6:
-            return @"周五";
-            break;
-        case 7:
-            return @"周六";
-            break;
-        default:
-            return @"";
-    }
-    return nil;
-}
-
-- (BOOL)isSameDay:(NSDate*)date1 other:(NSDate*)date2 {
-    NSDateComponents *c1 = [self getComponentOfDate:date1];
-    NSDateComponents *c2 = [self getComponentOfDate:date2];
-    return c1.year == c2.year && c1.month == c2.month && c1.day == c2.day;
-}
-
-- (BOOL)isYestoday:(NSDate*)date {
-    NSDate *now = [NSDate date];
-    NSDate *y = [now dateByAddingTimeInterval:-24*3600];
-    return [self isSameDay:date other:y];
-}
-- (BOOL)isBeforeYestoday:(NSDate*)date {
-    NSDate *now = [NSDate date];
-    NSDate *y = [now dateByAddingTimeInterval:-2*24*3600];
-    return [self isSameDay:y other:date];
-}
-
--(BOOL)isInWeek:(NSDate*)date {
-    NSDate *now = [NSDate date];
-    NSDate *t = [now dateByAddingTimeInterval:-7*24*3600];
-    return [t compare:date] == NSOrderedAscending && ![self isSameDay:t other:date];
-}
-
-- (BOOL)isInMonth:(NSDate*)date {
-    NSDate *now = [NSDate date];
-    NSDate *t = [now dateByAddingTimeInterval:-30*24*3600];
-    return [t compare:date] == NSOrderedAscending;
-}
-
--(BOOL)isInYear:(NSDate*)date {
-    NSDate *now = [NSDate date];
-    
-    NSDateComponents *c1 = [self getComponentOfDate:now];
-    NSDateComponents *c2 = [self getComponentOfDate:date];
-    
-    return c1.year == c2.year;
-}
 
 @end

@@ -8,10 +8,15 @@
 */
 
 #import "MessageTextView.h"
-#import "Constants.h"
+#import "NSString+JSMessagesView.h"
+#import "KILabel.h"
+
+
+
 
 @interface MessageTextView()
 @property(nonatomic, copy) NSString *text;
+
 @end
 
 @implementation MessageTextView
@@ -20,94 +25,66 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-      
+        self.label = [[KILabel alloc] init];
+        self.label.font = [UIFont systemFontOfSize:14.0f];
+        self.label.numberOfLines = 0;
+        self.label.lineBreakMode = NSLineBreakByWordWrapping;
+        [self addSubview:self.label];
     }
     return self;
 }
 
-
 - (void)setMsg:(IMessage *)msg {
     [super setMsg:msg];
-    
     MessageTextContent *text = msg.textContent;
     self.text = text.text;
-    [self setNeedsDisplay];
-}
-
-#pragma mark - Drawing
-
-
-+ (CGFloat)cellHeightForText:(NSString *)txt
-{
-    return [MessageTextView bubbleSizeForText:txt withFont:[BubbleView font]].height + kMarginTop + kMarginBottom;
-}
-
-+ (CGSize)bubbleSizeForText:(NSString *)txt withFont:(UIFont*)font
-{
-    CGSize textSize = [BubbleView textSizeForText:txt withFont:font];
-    return CGSizeMake(textSize.width + kBubblePaddingHead + kBubblePaddingTail + 16,
-                      textSize.height + kPaddingTop + kPaddingBottom + 16);
+    self.label.text = self.text;
 }
 
 
 
-- (CGRect)bubbleFrame{
-
-    CGSize bubbleSize = [MessageTextView bubbleSizeForText:self.text withFont:[BubbleView font]];
-    bubbleSize.height = MAX(bubbleSize.height, 40);
-    return CGRectMake(floorf(self.type == BubbleMessageTypeOutgoing ? self.frame.size.width - bubbleSize.width : 0.0f),
-                      floorf(kMarginTop),
-                      floorf(bubbleSize.width),
-                      floorf(bubbleSize.height));
-    
+- (CGSize)bubbleSize {
+    UIFont *font = [[self class] font];
+    CGSize textSize = [MessageTextView textSizeForText:self.text withFont:font];
+    return textSize;
 }
 
-- (void)drawRect:(CGRect)frame{
-    [super drawRect:frame];
-    
-    CGRect bubbleFrame = [self bubbleFrame];
-    
-    CGSize textSize = [BubbleView textSizeForText:self.text withFont:[BubbleView font]];
-    
-    CGFloat textX;
-    if (self.type == BubbleMessageTypeOutgoing) {
-        textX = (bubbleFrame.origin.x + 7 + 8);
-    } else {
-        textX = (8 + 8);
-    }
-    
-    CGRect textFrame = CGRectMake(textX,
-                                  kPaddingTop + kMarginTop + 8,
-                                  textSize.width,
-                                  textSize.height);
-    
-    if ([[[UIDevice currentDevice] systemVersion] compare:@"7.0" options:NSNumericSearch] != NSOrderedAscending){
-        UIColor* textColor = RGBACOLOR(31.0f, 31.0f, 31.0f, 1.0f);
-        if (self.selectedToShowCopyMenu){
-            textColor = RGBACOLOR(91.0f, 91.0f, 91.0f, 1.0f);
-        }
-        
-        NSMutableParagraphStyle* paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
-        [paragraphStyle setAlignment:NSTextAlignmentLeft];
-        [paragraphStyle setLineBreakMode:NSLineBreakByWordWrapping];
-        
-        NSDictionary* attributes = @{NSFontAttributeName: [BubbleView font],
-                                     NSParagraphStyleAttributeName: paragraphStyle};
-        
-        
-        NSMutableDictionary* dict = [attributes mutableCopy];
-        [dict setObject:textColor forKey:NSForegroundColorAttributeName];
-        attributes = [NSDictionary dictionaryWithDictionary:dict];
-        
-        [self.text drawInRect:textFrame
-               withAttributes:attributes];
-    }else{
-        [self.text drawInRect:textFrame
-                     withFont:[BubbleView font]
-                lineBreakMode:NSLineBreakByWordWrapping
-                    alignment:NSTextAlignmentLeft];
-    }
++ (int)numberOfLinesForMessage:(NSString *)txt {
+    return (int)(txt.length / [self maxCharactersPerLine]) + 1;
 }
+
+
++ (UIFont *)font {
+    return [UIFont systemFontOfSize:14.0f];
+}
+
++ (CGSize)textSizeForText:(NSString *)txt withFont:(UIFont*)font{
+    CGFloat width = [UIScreen mainScreen].applicationFrame.size.width * 0.75f;
+    CGFloat height = MAX([MessageTextView numberOfLinesForMessage:txt],
+                         [txt numberOfLines]) *  30.0f;
+    
+    UILabel *gettingSizeLabel = [[UILabel alloc] init];
+    gettingSizeLabel.font = font;
+    gettingSizeLabel.text = txt;
+    gettingSizeLabel.numberOfLines = 0;
+    gettingSizeLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    CGSize maximumLabelSize = CGSizeMake(width, height);
+    
+    return  [gettingSizeLabel sizeThatFits:maximumLabelSize];
+}
+
+
++ (int)maxCharactersPerLine {
+    return ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPhone) ? 34 : 109;
+}
+
+-(void)layoutSubviews {
+    [super layoutSubviews];
+    CGRect bubbleFrame = self.bounds;
+
+    self.label.frame = bubbleFrame;
+}
+
 
 
 @end

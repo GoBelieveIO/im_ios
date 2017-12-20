@@ -8,20 +8,6 @@
 */
 
 #import "MessageNotificationView.h"
-#import "Constants.h"
-
-@interface PaddingLabel : UILabel
-
-@end
-
-@implementation PaddingLabel
-
--(CGSize)intrinsicContentSize{
-    CGSize contentSize = [super intrinsicContentSize];
-    return CGSizeMake(contentSize.width + 16, contentSize.height + 6);
-}
-
-@end
 
 @implementation MessageNotificationView
 
@@ -29,24 +15,11 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        
-        self.label = [[PaddingLabel alloc] init];
-        self.label.layer.cornerRadius = 6;
-        self.label.layer.masksToBounds = YES;
-        self.label.backgroundColor = RGBCOLOR(207, 207, 207);
+        self.label = [[UILabel alloc] init];
         self.label.textColor = [UIColor whiteColor];
         self.label.textAlignment = NSTextAlignmentCenter;
-        self.label.translatesAutoresizingMaskIntoConstraints = NO;
         [self.label setFont:[UIFont systemFontOfSize:11.5f]];
-        
         [self addSubview:self.label];
-        
-        
-        [self addConstraint:[NSLayoutConstraint constraintWithItem:self.label attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
-        [self addConstraint:[NSLayoutConstraint constraintWithItem:self.label attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
-        
-        self.alpha = 1.0;
-        
      }
     return self;
 }
@@ -67,8 +40,23 @@
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     if([keyPath isEqualToString:@"notificationDesc"]) {
-        MessageGroupNotificationContent *notification = self.msg.notificationContent;
+        MessageNotificationContent *notification = self.msg.notificationContent;
         self.label.text = notification.notificationDesc;
     }
+}
+
+- (CGSize)bubbleSize {
+    CGFloat width = [UIScreen mainScreen].applicationFrame.size.width * 0.75f;
+    CGRect bounds = CGRectMake(0, 0, width, 44);
+    
+    CGRect r = [self.label textRectForBounds:bounds limitedToNumberOfLines:1];
+    return r.size;
+}
+
+-(void)layoutSubviews {
+    [super layoutSubviews];
+    CGRect bubbleFrame = self.bounds;
+    self.label.frame = bubbleFrame;
+    [self.label sizeToFit];
 }
 @end

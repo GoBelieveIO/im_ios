@@ -10,7 +10,11 @@
 #import <UIKit/UIKit.h>
 #import "BubbleView.h"
 
+@class KILabel;
 @interface MessageTextView : BubbleView
-+ (CGFloat)cellHeightForText:(NSString *)txt;
+@property(nonatomic, strong) KILabel *label;
+
++ (UIFont *)font;
++ (CGSize)textSizeForText:(NSString *)txt withFont:(UIFont*)font;
 
 @end

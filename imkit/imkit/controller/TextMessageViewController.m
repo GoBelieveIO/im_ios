@@ -13,8 +13,9 @@
 #import "IMessage.h"
 #import "PeerMessageDB.h"
 #import "MessageViewCell.h"
-#import "Constants.h"
 #import "MessageTextView.h"
+
+#define NAME_LABEL_HEIGHT 20
 
 #define INPUT_HEIGHT 52.0f
 
@@ -46,7 +47,7 @@
 
 -(id) init {
     if (self = [super init]) {
-        self.textMode = YES;
+
     }
     return self;
 }
@@ -75,8 +76,7 @@
     int w = CGRectGetWidth(screenBounds);
     int h = CGRectGetHeight(screenBounds);
     
-    int y = kStatusBarHeight + KNavigationBarHeight;
-    CGRect tableFrame = CGRectMake(0.0f,  y, w,  h - INPUT_HEIGHT);
+    CGRect tableFrame = CGRectMake(0.0f, 0, w, h - INPUT_HEIGHT);
     CGRect inputFrame = CGRectMake(0.0f, h - INPUT_HEIGHT, w, INPUT_HEIGHT);
 
     
@@ -233,7 +233,7 @@
     int h = CGRectGetHeight(screenBounds);
     int w = CGRectGetWidth(screenBounds);
     
-    int y = kStatusBarHeight + KNavigationBarHeight;
+    int y = 0;
     
     CGRect tableViewFrame = CGRectMake(0.0f,  y, w,  h - INPUT_HEIGHT - keyboardRect.size.height - y);
     y = h - keyboardRect.size.height;
@@ -301,12 +301,7 @@
         cell = [[MessageViewCell alloc] initWithType:message.type reuseIdentifier:CellID];
     }
     
-    if (message.isOutgoing) {
-        [cell setMessage:message showName:NO];
-    } else {
-        [cell setMessage:message showName:self.isShowUserName];
-    }
-
+    cell.msg = message;
     return cell;
 }
 
@@ -338,7 +333,7 @@
         case MESSAGE_TEXT:
         {
             MessageTextContent *content = msg.textContent;
-            return [MessageTextView cellHeightForText:content.text] + nameHeight;
+            return 100 + nameHeight;
         }
         case MESSAGE_GROUP_NOTIFICATION:
             return 40;
@@ -390,9 +385,9 @@
  */
 - (NSString*)getMessageViewCellId:(IMessage*)msg{
     if(msg.isOutgoing) {
-        return [NSString stringWithFormat:@"MessageCell_%d%d", msg.type,BubbleMessageTypeOutgoing];
+        return [NSString stringWithFormat:@"MessageCell_%d%d", msg.type, 0];
     } else {
-        return [NSString stringWithFormat:@"MessageCell_%d%d", msg.type,BubbleMessageTypeIncoming];
+        return [NSString stringWithFormat:@"MessageCell_%d%d", msg.type, 1];
     }
 }
 
