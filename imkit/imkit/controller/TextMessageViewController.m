@@ -14,18 +14,17 @@
 #import "PeerMessageDB.h"
 #import "MessageViewCell.h"
 #import "MessageTextView.h"
+#import "OutMessageCell.h"
+#import "InMessageCell.h"
+#import "MessageViewCell.h"
+#import "MessageNotificationView.h"
+#import "MessageNotificationCell.h"
 
 #define NAME_LABEL_HEIGHT 20
 
 #define INPUT_HEIGHT 52.0f
 
-#define navBarHeadButtonSize 35
-
-#define kTakePicActionSheetTag  101
-
-
 @interface TextMessageViewController()
-
 @property (strong, nonatomic) UIView *inputBar;
 @property (strong, nonatomic) UIButton *sendButton;
 @property (strong, nonatomic) UITextField *inputTextField;
@@ -57,10 +56,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+
     [self setup];
-
-
     [self loadConversationData];
     //content scroll to bottom
     [self.tableView reloadData];
@@ -68,8 +65,7 @@
 }
 
 - (void)setup {
-    
-    self.automaticallyAdjustsScrollViewInsets = NO;
+//    self.automaticallyAdjustsScrollViewInsets = NO;
     self.view.backgroundColor = RGBACOLOR(235, 235, 237, 1);
     
     CGRect screenBounds = [[UIScreen mainScreen] bounds];
@@ -78,9 +74,9 @@
     
     CGRect tableFrame = CGRectMake(0.0f, 0, w, h - INPUT_HEIGHT);
     CGRect inputFrame = CGRectMake(0.0f, h - INPUT_HEIGHT, w, INPUT_HEIGHT);
-
     
     self.tableView = [[UITableView alloc] initWithFrame:tableFrame style:UITableViewStylePlain];
+    self.tableView.estimatedRowHeight = 0;
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     self.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -298,7 +294,15 @@
     MessageViewCell *cell = (MessageViewCell *)[tableView dequeueReusableCellWithIdentifier:CellID];
     
     if(!cell) {
-        cell = [[MessageViewCell alloc] initWithType:message.type reuseIdentifier:CellID];
+        if (message.notificationContent) {
+            cell = [[MessageNotificationCell alloc] initWithType:message.type reuseIdentifier:CellID];
+        } else if (message.isOutgoing) {
+            cell = [[OutMessageCell alloc] initWithType:message.type reuseIdentifier:CellID];
+        } else {
+            InMessageCell *inCell = [[InMessageCell alloc] initWithType:message.type reuseIdentifier:CellID];
+            inCell.showName = YES;
+            cell = inCell;
+        }
     }
     
     cell.msg = message;
@@ -331,12 +335,12 @@
     
     switch (msg.type) {
         case MESSAGE_TEXT:
-        {
-            MessageTextContent *content = msg.textContent;
-            return 100 + nameHeight;
-        }
+            return [MessageViewCell cellHeightMessage:msg] + nameHeight;
+        case MESSAGE_HEADLINE:
+        case MESSAGE_TIME_BASE:
         case MESSAGE_GROUP_NOTIFICATION:
-            return 40;
+        case MESSAGE_GROUP_VOIP:
+            return kMessageNotificationViewHeight;
         default:
             return 0;
     }
