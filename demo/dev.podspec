@@ -33,7 +33,7 @@ Pod::Spec.new do |s|
     sp.dependency 'MBProgressHUD', '~> 0.9.1'
     sp.dependency 'FMDB', '~> 2.6.2'
     sp.dependency 'Masonry', '~>1.0.2'
-    sp.pod_target_xcconfig = { 'ENABLE_BITCODE' => 'NO' }    
+    sp.pod_target_xcconfig = { 'ENABLE_BITCODE' => 'YES' }    
   end
 
 end
