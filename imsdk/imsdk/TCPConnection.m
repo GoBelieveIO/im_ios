@@ -247,7 +247,15 @@
         return [NSString stringWithUTF8String:p];
     }
     return nil;
-    
+}
+
+-(NSString*)IPV62String:(struct in6_addr)addr {
+    char buf[64] = {0};
+    const char *p = inet_ntop(AF_INET6, &addr, buf, 64);
+    if (p) {
+        return [NSString stringWithUTF8String:p];
+    }
+    return nil;
 }
 
 -(NSString*)resolveIP:(NSString*)host {
@@ -262,7 +270,7 @@
     hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_protocol = IPPROTO_TCP;
-    hints.ai_flags = 0;
+    hints.ai_flags = AI_DEFAULT;
     
     s = getaddrinfo([host UTF8String], buf, &hints, &result);
     if (s != 0) {
@@ -272,8 +280,13 @@
     NSString *ip = nil;
     rp = result;
     if (rp != NULL) {
-        struct sockaddr_in *addr = (struct sockaddr_in*)rp->ai_addr;
-        ip = [self IP2String:addr->sin_addr];
+        if (rp->ai_family == AF_INET) {
+            struct sockaddr_in *addr = (struct sockaddr_in*)rp->ai_addr;
+            ip = [self IP2String:addr->sin_addr];
+        } else if (rp->ai_family == AF_INET6) {
+            struct sockaddr_in6 *addr = (struct sockaddr_in6*)rp->ai_addr;
+            ip = [self IPV62String:addr->sin6_addr];
+        }
     }
     freeaddrinfo(result);
     return ip;

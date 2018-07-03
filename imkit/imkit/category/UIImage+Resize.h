@@ -10,6 +10,7 @@
 
 @interface UIImage (Resize)
 
+- (UIImage*)resize;
 - (UIImage *)resize:(CGSize)newSize;
 
 - (UIImage *)croppedImage:(CGRect)bounds;

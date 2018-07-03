@@ -14,38 +14,24 @@
 #import "AudioDownloader.h"
 
 
-@protocol MessageViewControllerUserDelegate <NSObject>
-//从本地获取用户信息, IUser的name字段为空时，显示identifier字段
-- (IUser*)getUser:(int64_t)uid;
-//从服务器获取用户信息
-- (void)asyncGetUser:(int64_t)uid cb:(void(^)(IUser*))cb;
-@end
 
-
+@class EaseChatToolbar;
 @interface MessageViewController : BaseMessageViewController < UIImagePickerControllerDelegate, UINavigationControllerDelegate,
                                                                 UIGestureRecognizerDelegate,
                                                                 AVAudioRecorderDelegate, AVAudioPlayerDelegate,
                                                                 UITableViewDataSource, UITableViewDelegate,
                                                                 OutboxObserver, AudioDownloaderObserver>
-
-@property(nonatomic, weak) id<MessageViewControllerUserDelegate> userDelegate;
 @property(nonatomic) BOOL isShowUserName;
-
+@property(nonatomic) BOOL callEnabled;//是否显示视频呼叫按钮; default:YES
 @property(nonatomic)UIView *inputBar;
+@property(strong, nonatomic) EaseChatToolbar *chatToolbar;
+@property(nonatomic) UIRefreshControl *refreshControl;
+@property(nonatomic) UITableView *tableView;
 
 - (void)setDraft:(NSString*)text;
 - (NSString*)getDraft;
 - (void)disableSend;
 - (void)enableSend;
-
-- (void)downloadMessageContent:(IMessage*)message;
-- (void)downloadMessageContent:(NSArray*)messages count:(int)count;
-
-- (void)loadSenderInfo:(IMessage*)msg;
-- (void)loadSenderInfo:(NSArray*)messages count:(int)count;
-
-- (void)updateNotificationDesc:(IMessage*)message;
-- (void)updateNotificationDesc:(NSArray*)messages count:(int)count;
 
 - (void)stopPlayer;
 
@@ -55,15 +41,9 @@
 - (void)removeObserver;
 
 //protected
-- (void)createMapSnapshot:(IMessage*)msg;
-- (void)reverseGeocodeLocation:(IMessage*)msg;
-- (NSString*)localImageURL;
-- (NSString*)localAudioURL;
+
 - (void)call;
 
-//从本地获取用户信息, IUser的name字段为空时，显示identifier字段
-- (IUser*)getUser:(int64_t)uid;
-//从服务器获取用户信息
-- (void)asyncGetUser:(int64_t)uid cb:(void(^)(IUser*))cb;
+
 
 @end

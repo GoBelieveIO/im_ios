@@ -48,7 +48,7 @@
     MessageLinkContent *content = msg.linkContent;
     NSString *url = content.imageURL;
     if (url.length > 0) {
-        if(![[SDImageCache sharedImageCache] diskImageExistsWithKey:url]){
+        if(![[SDImageCache sharedImageCache] diskImageDataExistsWithKey:url]){
             [self.downloadIndicatorView startAnimating];
         }
 

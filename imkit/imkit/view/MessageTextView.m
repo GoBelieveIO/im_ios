@@ -26,6 +26,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         self.label = [[KILabel alloc] init];
+        self.label.linkDetectionTypes = KILinkTypeOptionURL;
         self.label.font = [UIFont systemFontOfSize:14.0f];
         self.label.numberOfLines = 0;
         self.label.lineBreakMode = NSLineBreakByWordWrapping;

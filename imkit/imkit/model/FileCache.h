@@ -21,4 +21,6 @@
 -(NSString*)queryCacheForKey:(NSString*)key;
 
 -(NSString*)cachePathForKey:(NSString*)key;
+
+-(BOOL)isCached:(NSString*)key;
 @end

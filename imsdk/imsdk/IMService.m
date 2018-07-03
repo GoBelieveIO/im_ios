@@ -87,7 +87,6 @@
         self.customerServiceMessages = [NSMutableDictionary dictionary];
         self.groupSyncKeys = [NSMutableDictionary dictionary];
         
-        self.isSync = YES;
         self.host = HOST;
         self.port = PORT;
         self.heartbeatHZ = HEARTBEAT_HZ;
@@ -107,11 +106,11 @@
     if (m) {
         [self.peerMessageHandler handleMessageACK:m];
         [self.peerMessages removeObjectForKey:seq];
-        [self publishPeerMessageACK:m.msgLocalID uid:m.receiver];
+        [self publishPeerMessageACK:m];
     } else if (m2) {
         [self.groupMessageHandler handleMessageACK:m2];
         [self.groupMessages removeObjectForKey:seq];
-        [self publishGroupMessageACK:m2.msgLocalID gid:m2.receiver];
+        [self publishGroupMessageACK:m2];
     } else if (m3) {
         [self.roomMessages removeObjectForKey:seq];
         [self publishRoomMessageACK:m3];
@@ -131,7 +130,11 @@
     ack.cmd = MSG_ACK;
     ack.body = [NSNumber numberWithInt:msg.seq];
     [self sendMessage:ack];
-    [self publishPeerMessage:im];
+    if (im.secret) {
+        [self publishPeerSecretMessage:im];
+    } else {
+        [self publishPeerMessage:im];
+    }
 }
 
 -(void)handleGroupIMMessage:(Message*)msg {
@@ -210,7 +213,7 @@
             [ob onGroupNotification:notification];
         }
     }
-
+    
     Message *ack = [[Message alloc] init];
     ack.cmd = MSG_ACK;
     ack.body = [NSNumber numberWithInt:msg.seq];
@@ -340,11 +343,21 @@
     }
 }
 
--(void)publishPeerMessageACK:(int)msgLocalID uid:(int64_t)uid {
+-(void)publishPeerSecretMessage:(IMMessage*)msg {
     for (NSValue *value in self.peerObservers) {
         id<PeerMessageObserver> ob = [value nonretainedObjectValue];
-        if ([ob respondsToSelector:@selector(onPeerMessageACK:uid:)]) {
-            [ob onPeerMessageACK:msgLocalID uid:uid];
+        if ([ob respondsToSelector:@selector(onPeerSecretMessage:)]) {
+            [ob onPeerSecretMessage:msg];
+        }
+    }
+}
+
+
+-(void)publishPeerMessageACK:(IMMessage*)msg {
+    for (NSValue *value in self.peerObservers) {
+        id<PeerMessageObserver> ob = [value nonretainedObjectValue];
+        if ([ob respondsToSelector:@selector(onPeerMessageACK:)]) {
+            [ob onPeerMessageACK:msg];
         }
     }
 }
@@ -352,8 +365,8 @@
 -(void)publishPeerMessageFailure:(IMMessage*)msg {
     for (NSValue *value in self.peerObservers) {
         id<PeerMessageObserver> ob = [value nonretainedObjectValue];
-        if ([ob respondsToSelector:@selector(onPeerMessageFailure:uid:)]) {
-            [ob onPeerMessageFailure:msg.msgLocalID uid:msg.receiver];
+        if ([ob respondsToSelector:@selector(onPeerMessageFailure:)]) {
+            [ob onPeerMessageFailure:msg];
         }
     }
 }
@@ -367,11 +380,11 @@
     }
 }
 
--(void)publishGroupMessageACK:(int)msgLocalID gid:(int64_t)gid {
+-(void)publishGroupMessageACK:(IMMessage*)msg {
     for (NSValue *value in self.groupObservers) {
         id<GroupMessageObserver> ob = [value nonretainedObjectValue];
-        if ([ob respondsToSelector:@selector(onGroupMessageACK:gid:)]) {
-            [ob onGroupMessageACK:msgLocalID gid:gid];
+        if ([ob respondsToSelector:@selector(onGroupMessageACK:)]) {
+            [ob onGroupMessageACK:msg];
         }
     }
 }
@@ -379,8 +392,8 @@
 -(void)publishGroupMessageFailure:(IMMessage*)msg {
     for (NSValue *value in self.groupObservers) {
         id<GroupMessageObserver> ob = [value nonretainedObjectValue];
-        if ([ob respondsToSelector:@selector(onGroupMessageFailure:gid:)]) {
-            [ob onGroupMessageFailure:msg.msgLocalID gid:msg.receiver];
+        if ([ob respondsToSelector:@selector(onGroupMessageFailure:)]) {
+            [ob onGroupMessageFailure:msg];
         }
     }
 }
@@ -596,6 +609,7 @@
     [self.rtObservers removeObject:value];
 }
 
+
 -(void)removeSuperGroupSyncKey:(int64_t)gid {
     NSNumber *k = [NSNumber numberWithLongLong:gid];
     [self.groupSyncKeys removeObjectForKey:k];
@@ -785,24 +799,23 @@
         v.peedingSyncKey = 0;
     }
     
+    
     [self sendAuth];
     if (self.roomID > 0) {
         [self sendEnterRoom:self.roomID];
     }
     
-    if (self.isSync) {
-        int now = (int)time(NULL);
-        //send sync
-        [self sendSync:self.syncKey];
-        self.isSyncing = YES;
-        self.syncTimestmap = now;
-        
-        for (NSNumber *k in self.groupSyncKeys) {
-            GroupSync *v = [self.groupSyncKeys objectForKey:k];
-            [self sendGroupSync:v.syncKey gid:v.groupID];
-            v.isSyncing = YES;
-            v.syncTimestamp = now;
-        }
+    int now = (int)time(NULL);
+    //send sync
+    [self sendSync:self.syncKey];
+    self.isSyncing = YES;
+    self.syncTimestmap = now;
+    
+    for (NSNumber *k in self.groupSyncKeys) {
+        GroupSync *v = [self.groupSyncKeys objectForKey:k];
+        [self sendGroupSync:v.syncKey gid:v.groupID];
+        v.isSyncing = YES;
+        v.syncTimestamp = now;
     }
 }
 

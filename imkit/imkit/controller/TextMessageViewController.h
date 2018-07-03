@@ -21,6 +21,8 @@ typedef NSString* (^GetUserNameBlock)(int64_t uid);
 
 @property(nonatomic, copy) GetUserNameBlock getUserName;
 @property(nonatomic) BOOL isShowUserName;
+@property(nonatomic) UIRefreshControl *refreshControl;
+@property(nonatomic) UITableView *tableView;
 
 - (void)setDraft:(NSString*)text;
 - (NSString*)getDraft;

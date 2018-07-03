@@ -1,5 +1,6 @@
 #import "XWCustomerMessageViewController.h"
 #import "IMService.h"
+#import "ICustomerMessage.h"
 #import "CustomerMessageHandler.h"
 #import "UIView+Toast.h"
 

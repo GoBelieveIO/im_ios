@@ -28,7 +28,7 @@ Pod::Spec.new do |s|
     sp.exclude_files    = 'imkit/imkit/third-party'
     sp.resource         = ['imkit/imkit/imKitRes/sounds/*.aiff', 'imkit/imkit/imKitRes/images.xcassets', 'imkit/imkit/imKitRes/gobelieve.db']
     sp.dependency 'gobelieve/imsdk'
-    sp.dependency 'SDWebImage', '~> 3.7.1'
+    sp.dependency 'SDWebImage', '~> 4.4.1'
     sp.dependency 'Toast', '~> 2.4'
     sp.dependency 'MBProgressHUD', '~> 0.9.1'
     sp.dependency 'FMDB', '~> 2.6.2'

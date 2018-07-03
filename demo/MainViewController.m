@@ -310,6 +310,7 @@
         if (self.deviceToken.length > 0) {
             
             [IMHttpAPI unbindDeviceToken:self.deviceToken
+                            pushKitToken:@""
                                success:^{
                                    NSLog(@"unbind device token success");
                                }

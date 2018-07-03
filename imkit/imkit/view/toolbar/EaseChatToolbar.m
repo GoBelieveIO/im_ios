@@ -12,8 +12,12 @@
 #import "EaseEmoji.h"
 #import "EaseEmotionEscape.h"
 
+#import "IUser.h"
+
 @interface EaseChatToolbar()<UITextViewDelegate, EMFaceDelegate>
 
+@property (nonatomic, assign) BOOL at;//是否输入了at
+@property (nonatomic) NSMutableArray *atUsers;
 @property (nonatomic) CGFloat version;
 
 @property (strong, nonatomic) NSMutableArray *leftItems;
@@ -57,42 +61,32 @@
 
 - (instancetype)initWithFrame:(CGRect)frame
 {
-    self = [self initWithFrame:frame horizontalPadding:8 verticalPadding:5 inputViewMinHeight:36 inputViewMaxHeight:120 type:EMChatToolbarTypeGroup];
+    self = [self initWithFrame:frame horizontalPadding:8 verticalPadding:5 inputViewMinHeight:36 inputViewMaxHeight:120];
     if (self) {
-        
+        self.atUsers = [NSMutableArray array];
     }
     
     return self;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame
-                         type:(EMChatToolbarType)type
-{
-    self = [self initWithFrame:frame horizontalPadding:8 verticalPadding:5 inputViewMinHeight:36 inputViewMaxHeight:120 type:type];
-    if (self) {
-        
-    }
-    
-    return self;
-}
+
 
 - (instancetype)initWithFrame:(CGRect)frame
             horizontalPadding:(CGFloat)horizontalPadding
               verticalPadding:(CGFloat)verticalPadding
            inputViewMinHeight:(CGFloat)inputViewMinHeight
            inputViewMaxHeight:(CGFloat)inputViewMaxHeight
-                         type:(EMChatToolbarType)type
 {
     if (frame.size.height < (verticalPadding * 2 + inputViewMinHeight)) {
         frame.size.height = verticalPadding * 2 + inputViewMinHeight;
     }
     self = [super initWithFrame:frame];
     if (self) {
+        self.atUsers = [NSMutableArray array];
         _horizontalPadding = horizontalPadding;
         _verticalPadding = verticalPadding;
         _inputViewMinHeight = inputViewMinHeight;
         _inputViewMaxHeight = inputViewMaxHeight;
-        _chatBarType = type;
         
         _leftItems = [NSMutableArray array];
         _rightItems = [NSMutableArray array];
@@ -226,11 +220,32 @@
 - (UIView *)moreView
 {
     if (_moreView == nil) {
-        _moreView = [[EaseChatBarMoreView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(_toolbarView.frame), self.frame.size.width, 180) type:self.chatBarType];
+        _moreView = [[EaseChatBarMoreView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(_toolbarView.frame), self.frame.size.width, 180)];
         _moreView.backgroundColor = [UIColor colorWithRed:240 / 255.0 green:242 / 255.0 blue:247 / 255.0 alpha:1.0];
     }
     
     return _moreView;
+}
+
+
+- (void)atUser:(IUser*)user {
+    if (user.name.length > 0) {
+        NSInteger index = [self.atUsers indexOfObjectPassingTest:^BOOL(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            IUser *u = (IUser*)obj;
+            if (u.uid == user.uid) {
+                *stop = YES;
+                return YES;
+            }
+            return NO;
+        }];
+        
+        if (index == NSNotFound) {
+            [self.atUsers addObject:user];
+        }
+        NSString *name = [NSString stringWithFormat:@"%@ ", user.name];
+        [self.inputTextView insertText:name];
+        [self.inputTextView becomeFirstResponder];
+    }
 }
 
 #pragma mark - setter
@@ -569,14 +584,52 @@
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
 {
+    self.at = NO;
     if ([text isEqualToString:@"\n"]) {
-        if ([self.delegate respondsToSelector:@selector(didSendText:)]) {
+        if ([self.delegate respondsToSelector:@selector(didSendText: withAt:)]) {
+            NSString *t = textView.text;
+            NSMutableArray *array = [NSMutableArray array];
+            for (IUser *u in self.atUsers) {
+                NSString *a = [NSString stringWithFormat:@"@%@ ", u.name];
+                if ([t containsString:a]) {
+                    [array addObject:u];
+                }
+            }
+            [self.delegate didSendText:textView.text withAt:array];
+            
+            self.inputTextView.text = @"";
+            [self _willShowInputTextViewToHeight:[self _getTextViewContentH:self.inputTextView]];
+        } else if ([self.delegate respondsToSelector:@selector(didSendText:)]) {
             [self.delegate didSendText:textView.text];
             self.inputTextView.text = @"";
             [self _willShowInputTextViewToHeight:[self _getTextViewContentH:self.inputTextView]];
         }
         
+        [self.atUsers removeAllObjects];
         return NO;
+    }
+
+    if ([text isEqualToString:@"@"]) {
+        self.at = YES;
+    } else if (text.length == 0) {
+        //Delete Key
+        NSString *t = textView.text;
+        if ([t compare:@" " options:0 range:range] == NSOrderedSame) {
+            NSRange r = [t rangeOfString:@"@" options:NSBackwardsSearch  range:NSMakeRange(0, range.location)];
+            NSLog(@"@ range:%zd %zd", r.location, r.length);
+            if (r.length == 1) {
+                NSRange r1 = NSMakeRange(r.location + 1, range.location - r.location - 1);
+                NSString *name = [t substringWithRange:r1];
+                for (IUser *u in self.atUsers) {
+                    if ([u.name isEqualToString:name]) {
+                        NSRange r2 = NSMakeRange(r.location, range.location - r.location + 1);
+                        textView.text = [t stringByReplacingCharactersInRange:r2 withString:@""];
+                        NSLog(@"delete at name:%@", name);
+                        return NO;
+                    }
+                }
+            }
+        }
     }
     return YES;
 }
@@ -584,6 +637,13 @@
 - (void)textViewDidChange:(UITextView *)textView
 {
     [self _willShowInputTextViewToHeight:[self _getTextViewContentH:textView]];
+    
+    if (self.at) {
+        self.at = NO;
+        if ([self.delegate respondsToSelector:@selector(didAt)]) {
+            [self.delegate didAt];
+        }
+    }
 }
 
 #pragma mark - DXFaceDelegate
@@ -859,7 +919,7 @@
         item.button.selected = NO;
     }
     
-    [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionCurveEaseInOut|UIViewAnimationOptionBeginFromCurrentState animations:^{
+    [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseInOut|UIViewAnimationOptionBeginFromCurrentState animations:^{
         [self _willShowBottomView:nil];
     } completion:nil];
     

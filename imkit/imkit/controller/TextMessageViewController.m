@@ -14,17 +14,19 @@
 #import "PeerMessageDB.h"
 #import "MessageViewCell.h"
 #import "MessageTextView.h"
-#import "OutMessageCell.h"
-#import "InMessageCell.h"
-#import "MessageViewCell.h"
-#import "MessageNotificationView.h"
-#import "MessageNotificationCell.h"
+#import "NSDate+Format.h"
 
 #define NAME_LABEL_HEIGHT 20
 
 #define INPUT_HEIGHT 52.0f
 
+#define navBarHeadButtonSize 35
+
+#define kTakePicActionSheetTag  101
+
+
 @interface TextMessageViewController()
+
 @property (strong, nonatomic) UIView *inputBar;
 @property (strong, nonatomic) UIButton *sendButton;
 @property (strong, nonatomic) UITextField *inputTextField;
@@ -56,16 +58,19 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
+    
     [self setup];
-    [self loadConversationData];
+
+
+    [self loadData];
     //content scroll to bottom
     [self.tableView reloadData];
     [self.tableView setContentOffset:CGPointMake(0, CGFLOAT_MAX)];
 }
 
 - (void)setup {
-//    self.automaticallyAdjustsScrollViewInsets = NO;
+    
+    self.automaticallyAdjustsScrollViewInsets = NO;
     self.view.backgroundColor = RGBACOLOR(235, 235, 237, 1);
     
     CGRect screenBounds = [[UIScreen mainScreen] bounds];
@@ -74,9 +79,9 @@
     
     CGRect tableFrame = CGRectMake(0.0f, 0, w, h - INPUT_HEIGHT);
     CGRect inputFrame = CGRectMake(0.0f, h - INPUT_HEIGHT, w, INPUT_HEIGHT);
+
     
     self.tableView = [[UITableView alloc] initWithFrame:tableFrame style:UITableViewStylePlain];
-    self.tableView.estimatedRowHeight = 0;
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     self.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -181,6 +186,8 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+
+
 #pragma mark - View rotation
 - (BOOL)shouldAutorotate
 {
@@ -209,6 +216,47 @@
     [self sendTextMessage:text];
     
     self.inputTextField.text = @"";
+}
+
+
+- (BOOL)insertMessage:(IMessage*)msg {
+    NSDate *lastDate = nil;
+    NSInteger count = [self.messages count];
+    
+    for (NSInteger i = count; i > 0; i--) {
+        IMessage *m = [self.messages objectAtIndex:i-1];
+        if (m.type == MESSAGE_TIME_BASE) {
+            lastDate = [NSDate dateWithTimeIntervalSince1970:m.timeBaseContent.timestamp];
+            break;
+        }
+    }
+    
+    BOOL newTimeBase = NO;
+    if (lastDate == nil || msg.timestamp - lastDate.timeIntervalSince1970 > 1*60) {
+        MessageTimeBaseContent *tb = [[MessageTimeBaseContent alloc] initWithTimestamp:msg.timestamp];
+        tb.notificationDesc = [[NSDate dateWithTimeIntervalSince1970:tb.timestamp] formatSectionTime];
+        IMessage *m = [[IMessage alloc] init];
+        m.content = tb;
+        [self.messages addObject:m];
+        newTimeBase = YES;
+        
+    }
+    [self checkAtName:msg];
+    [self.messages addObject:msg];
+    
+    return newTimeBase;
+}
+
+
+- (void)scrollToBottomAnimated:(BOOL)animated
+{
+    if (self.messages.count == 0) {
+        return;
+    }
+    long lastRow = [self.messages count] - 1;
+    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:lastRow inSection:0]
+                          atScrollPosition:UITableViewScrollPositionBottom
+                                  animated:animated];
 }
 
 
@@ -294,15 +342,7 @@
     MessageViewCell *cell = (MessageViewCell *)[tableView dequeueReusableCellWithIdentifier:CellID];
     
     if(!cell) {
-        if (message.notificationContent) {
-            cell = [[MessageNotificationCell alloc] initWithType:message.type reuseIdentifier:CellID];
-        } else if (message.isOutgoing) {
-            cell = [[OutMessageCell alloc] initWithType:message.type reuseIdentifier:CellID];
-        } else {
-            InMessageCell *inCell = [[InMessageCell alloc] initWithType:message.type reuseIdentifier:CellID];
-            inCell.showName = YES;
-            cell = inCell;
-        }
+        cell = [[MessageViewCell alloc] initWithType:message.type reuseIdentifier:CellID];
     }
     
     cell.msg = message;
@@ -335,12 +375,12 @@
     
     switch (msg.type) {
         case MESSAGE_TEXT:
-            return [MessageViewCell cellHeightMessage:msg] + nameHeight;
-        case MESSAGE_HEADLINE:
-        case MESSAGE_TIME_BASE:
+        {
+            MessageTextContent *content = msg.textContent;
+            return 100 + nameHeight;
+        }
         case MESSAGE_GROUP_NOTIFICATION:
-        case MESSAGE_GROUP_VOIP:
-            return kMessageNotificationViewHeight;
+            return 40;
         default:
             return 0;
     }

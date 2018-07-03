@@ -10,6 +10,7 @@
 #import <Foundation/Foundation.h>
 #import "IMessage.h"
 
+
 @protocol AudioDownloaderObserver <NSObject>
 
 -(void)onAudioDownloadSuccess:(IMessage*)msg;
@@ -26,5 +27,8 @@
 
 -(BOOL)isDownloading:(IMessage*)msg;
 -(void)downloadAudio:(IMessage*)msg;
+-(void)downloadImage:(IMessage*)msg;
+-(void)downloadVideoThumbnail:(IMessage*)msg;
+
 
 @end

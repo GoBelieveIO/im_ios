@@ -29,7 +29,11 @@
 
 - (void)setMsg:(IMessage *)msg {
     [super setMsg:msg];
-    self.text = @"未知的消息类型";
+    if (msg.type == MESSAGE_SECRET) {
+        self.text = @"消息未能解密";
+    } else {
+        self.text = @"未知的消息类型";
+    }
     self.label.text = self.text;
 }
 

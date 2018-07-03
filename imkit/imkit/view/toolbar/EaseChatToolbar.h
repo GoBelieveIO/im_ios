@@ -18,15 +18,13 @@
 #define kTouchToFinish NSLocalizedString(@"message.toolBar.record.send", @"loosen to send")
 
 
-
+@class IUser;
 @protocol EMChatToolbarDelegate;
 @interface EaseChatToolbar : UIView
 
 @property (weak, nonatomic) id<EMChatToolbarDelegate> delegate;
 
 @property (nonatomic) UIImage *backgroundImage;
-
-@property (nonatomic, readonly) EMChatToolbarType chatBarType;
 
 @property (nonatomic, readonly) CGFloat inputViewMaxHeight;
 
@@ -66,8 +64,8 @@
  */
 @property (strong, nonatomic) UIView *recordView;
 
-- (instancetype)initWithFrame:(CGRect)frame
-                         type:(EMChatToolbarType)type;
+- (instancetype)initWithFrame:(CGRect)frame;
+
 
 /**
  *  初始化chat bar
@@ -81,8 +79,8 @@
             horizontalPadding:(CGFloat)horizontalPadding
               verticalPadding:(CGFloat)verticalPadding
            inputViewMinHeight:(CGFloat)inputViewMinHeight
-           inputViewMaxHeight:(CGFloat)inputViewMaxHeight
-                         type:(EMChatToolbarType)type;
+           inputViewMaxHeight:(CGFloat)inputViewMaxHeight;
+
 
 /**
  *  默认高度
@@ -97,6 +95,8 @@
 - (void)cancelTouchRecord;
 
 - (void)setText:(NSString*)text;
+
+- (void)atUser:(IUser*)user;
 
 @end
 
@@ -133,6 +133,7 @@
  */
 - (void)didSendText:(NSString *)text withExt:(NSDictionary*)ext;
 
+- (void)didSendText:(NSString *)text withAt:(NSArray*)atUsers;
 /**
  *  发送第三方表情，不会添加到文字输入框中
  *
@@ -164,6 +165,12 @@
  *  当手指再次进入按钮的范围内时，主要也是为了通知外部的HUD
  */
 - (void)didDragInsideAction:(UIView *)recordView;
+
+/**
+ * 用户输入at
+ */
+- (void)didAt;
+
 
 @required
 /**

@@ -11,7 +11,6 @@
 #import "Message.h"
 #import "TCPConnection.h"
 
-@class IMessage;
 
 @protocol IMPeerMessageHandler <NSObject>
 -(BOOL)handleMessage:(IMMessage*)msg;
@@ -45,19 +44,21 @@
 @optional
 -(void)onPeerMessage:(IMMessage*)msg;
 
+-(void)onPeerSecretMessage:(IMMessage*)msg;
+
 //服务器ack
--(void)onPeerMessageACK:(int)msgLocalID uid:(int64_t)uid;
+-(void)onPeerMessageACK:(IMMessage*)msg;
 
 //消息发送失败
--(void)onPeerMessageFailure:(int)msgLocalID uid:(int64_t)uid;
+-(void)onPeerMessageFailure:(IMMessage*)msg;
 
 @end
 
 @protocol GroupMessageObserver <NSObject>
 @optional
 -(void)onGroupMessage:(IMMessage*)msg;
--(void)onGroupMessageACK:(int)msgLocalID gid:(int64_t)gid;
--(void)onGroupMessageFailure:(int)msgLocalID gid:(int64_t)gid;
+-(void)onGroupMessageACK:(IMMessage*)msg;
+-(void)onGroupMessageFailure:(IMMessage*)msg;
 
 -(void)onGroupNotification:(NSString*)notification;
 @end
@@ -95,8 +96,6 @@
 @end
 
 
-
-
 /*消息如何接收
  *1.初始化消息的同步key和所有超级群的同步key
  *2.上线之后，自动同步所有离线消息
@@ -110,8 +109,6 @@
 
 //离线消息的同步key
 @property(nonatomic) int64_t syncKey;
-//同步离线消息 default:YES
-@property(nonatomic) BOOL isSync;
 
 @property(nonatomic, weak)id<IMPeerMessageHandler> peerMessageHandler;
 @property(nonatomic, weak)id<IMGroupMessageHandler> groupMessageHandler;

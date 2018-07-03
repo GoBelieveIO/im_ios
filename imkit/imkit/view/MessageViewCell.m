@@ -17,6 +17,8 @@
 #import "MessageLocationView.h"
 #import "MessageLinkView.h"
 #import "MessageVOIPView.h"
+#import "MessageFileView.h"
+#import "MessageVideoView.h"
 #import "MessageUnknownView.h"
 #import <SDWebImage/UIImageView+WebCache.h>
 
@@ -93,6 +95,7 @@
             case MESSAGE_GROUP_NOTIFICATION:
             case MESSAGE_TIME_BASE:
             case MESSAGE_GROUP_VOIP:
+            case MESSAGE_REVOKE:
             {
                 MessageNotificationView *notificationView = [[MessageNotificationView alloc] initWithFrame:frame];
                 self.bubbleView = notificationView;
@@ -102,6 +105,18 @@
             {
                 MessageVOIPView *voipView = [[MessageVOIPView alloc] initWithFrame:frame];
                 self.bubbleView = voipView;
+            }
+                break;
+            case MESSAGE_FILE:
+            {
+                MessageFileView *fileView = [[MessageFileView alloc] initWithFrame:frame];
+                self.bubbleView = fileView;
+            }
+                break;
+            case MESSAGE_VIDEO:
+            {
+                MessageVideoView *videoView = [[MessageVideoView alloc] initWithFrame:frame];
+                self.bubbleView = videoView;
             }
                 break;
             default:

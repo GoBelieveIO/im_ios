@@ -18,8 +18,6 @@
 #define MSG_GROUP_NOTIFICATION 7
 #define MSG_GROUP_IM 8
 
-#define MSG_INPUTING 10
-
 #define MSG_PING 13
 #define MSG_PONG 14
 #define MSG_AUTH_TOKEN 15
@@ -56,8 +54,6 @@
 #define MSG_GROUP_SYNC_KEY 35
 
 
-#define MSG_VOIP_CONTROL 64
-
 #define PLATFORM_IOS  1
 #define PLATFORM_ANDROID 2
 #define PLATFORM_WEB 3
@@ -71,6 +67,9 @@
 @property(nonatomic, assign)int32_t timestamp;
 @property(nonatomic, assign)int32_t msgLocalID;
 @property(nonatomic, copy)NSString *content;
+
+@property(nonatomic, copy)NSString *plainContent;
+@property(nonatomic, assign)BOOL secret;
 @end
 
 @interface CustomerMessage : NSObject
@@ -93,7 +92,10 @@
 
 typedef RoomMessage RTMessage;
 
-
+@interface MessageInputing : NSObject
+@property(nonatomic, assign)int64_t sender;
+@property(nonatomic, assign)int64_t receiver;
+@end
 
 @interface AuthenticationToken : NSObject
 @property(nonatomic, copy) NSString *token;
@@ -102,6 +104,12 @@ typedef RoomMessage RTMessage;
 @end
 
 
+@interface VOIPControl : NSObject
+@property(nonatomic, assign) int64_t sender;
+@property(nonatomic, assign) int64_t receiver;
+@property(nonatomic) NSData *content;
+
+@end
 
 typedef NSNumber SyncKey;
 

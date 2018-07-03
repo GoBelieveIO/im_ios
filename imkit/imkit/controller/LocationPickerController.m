@@ -248,7 +248,7 @@
 {
     switch (status) {
         case kCLAuthorizationStatusNotDetermined:
-            if ([_locationManager respondsToSelector:@selector(requestAlwaysAuthorization)])
+            if ([_locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)])
             {
                 [_locationManager requestWhenInUseAuthorization];
             }

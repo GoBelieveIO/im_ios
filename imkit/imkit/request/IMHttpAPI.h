@@ -17,21 +17,42 @@
 
 +(IMHttpAPI*)instance;
 
-+(NSOperation*)uploadImage:(UIImage*)image success:(void (^)(NSString *url))success fail:(void (^)())fail;
++(NSOperation*)uploadImageData:(NSData*)data success:(void (^)(NSString *url))success fail:(void (^)(void))fail;
 
-+(NSOperation*)uploadAudio:(NSData*)data success:(void (^)(NSString *url))success fail:(void (^)())fail;
++(NSOperation*)uploadImage:(UIImage*)image success:(void (^)(NSString *url))success fail:(void (^)(void))fail;
+
++(NSOperation*)uploadAudio:(NSData*)data success:(void (^)(NSString *url))success fail:(void (^)(void))fail;
+
++(void)uploadFile:(NSData*)fileData
+          success:(void(^)(NSString* url))success
+             fail:(void(^)(void))fail;
+
++(void)uploadFile:(NSData*)fileData
+         filename:(NSString*)filename
+          success:(void(^)(NSString* url))success
+             fail:(void(^)(void))fail;
+
++(NSOperation*)bindPushKitDeviceToken:(NSString*)deviceToken
+                              success:(void (^)(void))success
+                                 fail:(void (^)(void))fail;
 
 /**
  * 绑定用户的devicetoken,用户登录后调用
  *
  */
-+(NSOperation*)bindDeviceToken:(NSString*)deviceToken success:(void (^)())success fail:(void (^)())fail;
++(NSOperation*)bindDeviceToken:(NSString*)deviceToken
+                       success:(void (^)(void))success
+                          fail:(void (^)(void))fail;
 
 /**
  * 清除绑定在用户上的devicetoken,用户注销前调用.
  *
  */
-+(NSOperation*)unbindDeviceToken:(NSString*)deviceToken success:(void (^)())success fail:(void (^)())fail;
++(NSOperation*)unbindDeviceToken:(NSString*)deviceToken
+                    pushKitToken:(NSString*)pushKitToken
+                         success:(void (^)())success
+                            fail:(void (^)())fail;
+
 
 +(NSOperation*)openGroupNotification:(int64_t)group_id success:(void (^)())success fail:(void (^)())fail;
 +(NSOperation*)closeGroupNotification:(int64_t)group_id success:(void (^)())success fail:(void (^)())fail;

@@ -12,13 +12,12 @@
 #import "FileCache.h"
 #import "GroupOutbox.h"
 #import "AudioDownloader.h"
-#import "DraftDB.h"
 #import "IMessage.h"
 #import "GroupMessageDB.h"
-#import "DraftDB.h"
 #import "UIImage+Resize.h"
-#import "SDImageCache.h"
+#import <SDWebImage/SDImageCache.h>
 #import "IGroupMessageDB.h"
+#import "UIView+Toast.h"
 
 #define PAGE_COUNT 10
 
@@ -101,25 +100,61 @@
         self.lastReceivedTimestamp = now;
     }
     
-    [self downloadMessageContent:m];
     [self loadSenderInfo:m];
-    [self insertMessage:m];
+    [self downloadMessageContent:m];
+    [self updateNotificationDesc:m];
+
+    if (m.type == MESSAGE_REVOKE) {
+        MessageRevoke *r = m.revokeContent;
+        IMessage *revokedMsg = [self getMessageWithUUID:r.msgid];
+        [self replaceMessage:revokedMsg dest:m];
+    } else {
+        [self insertMessage:m];
+    }
 }
 
--(void)onGroupMessageACK:(int)msgLocalID gid:(int64_t)gid {
+-(void)onGroupMessageACK:(IMMessage*)im {
+    int msgLocalID = im.msgLocalID;
+    int64_t gid = im.receiver;
+    
     if (gid != self.groupID) {
         return;
     }
-    IMessage *msg = [self getMessageWithID:msgLocalID];
-    msg.flags = msg.flags|MESSAGE_FLAG_ACK;
+    if (im.msgLocalID > 0) {
+        IMessage *msg = [self getMessageWithID:msgLocalID];
+        msg.flags = msg.flags|MESSAGE_FLAG_ACK;
+    } else {
+        MessageContent *content = [IMessage fromRaw:im.content];
+        if (content.type == MESSAGE_REVOKE) {
+            MessageRevoke *r = (MessageRevoke*)content;
+            IMessage *revokedMsg = [self getMessageWithUUID:r.msgid];
+            if (!revokedMsg) {
+                return;
+            }
+            IMessage *revokeMsg = [revokedMsg copy];
+            revokeMsg.content = r;
+            [self updateNotificationDesc:revokeMsg];
+            [self replaceMessage:revokedMsg dest:revokeMsg];
+        }
+    }
 }
 
--(void)onGroupMessageFailure:(int)msgLocalID gid:(int64_t)gid {
+-(void)onGroupMessageFailure:(IMMessage*)im {
+    int msgLocalID = im.msgLocalID;
+    int64_t gid = im.receiver;
+    
     if (gid != self.groupID) {
         return;
     }
-    IMessage *msg = [self getMessageWithID:msgLocalID];
-    msg.flags = msg.flags|MESSAGE_FLAG_FAILURE;
+    if (im.msgLocalID > 0) {
+        IMessage *msg = [self getMessageWithID:msgLocalID];
+        msg.flags = msg.flags|MESSAGE_FLAG_FAILURE;
+    } else {
+        MessageContent *content = [IMessage fromRaw:im.content];
+        if (content.type == MESSAGE_REVOKE) {
+            [self.view makeToast:@"撤回失败" duration:0.7 position:@"bottom"];
+        }
+    }
 }
 
 

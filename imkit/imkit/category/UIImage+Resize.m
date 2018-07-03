@@ -11,6 +11,60 @@
 
 
 @implementation UIImage (Resize)
+
+- (UIImage*)resize {
+    //宽高均 <= 1280，图片尺寸大小保持不变
+    //宽或高 > 1280 && 宽高比 <= 2，取较大值等于1280，较小值等比例压缩
+    //宽或高 > 1280 && 宽高比 > 2 && 宽或高 < 1280，图片尺寸大小保持不变
+    //宽高均 > 1280 && 宽高比 > 2，取较小值等于1280，较大值等比例压缩
+    
+    CGFloat w = self.size.width;
+    CGFloat h = self.size.height;
+    
+    CGFloat newWidth, newHeight;
+    CGFloat r;
+    if (w > h) {
+        r = w/h;
+    } else {
+        r = h/w;
+    }
+    
+    if (w <= 1280 && h <= 1280) {
+        newWidth = w;
+        newHeight = h;
+    } else{
+        if ( r > 2) {
+            if (w > 1280 && h > 1280 ) {
+                if (w > h) {
+                    newHeight = 1280;
+                    newWidth = newHeight*r;
+                } else {
+                    newWidth = 1280;
+                    newHeight = newWidth*r;
+                }
+            } else {
+                newHeight = h;
+                newWidth = w;
+            }
+        } else {
+            if (w > h) {
+                newWidth = 1280;
+                newHeight = newWidth/r;
+            } else {
+                newHeight = 1280;
+                newWidth = newHeight/r;
+            }
+        }
+    }
+    
+    if (newWidth == w && newHeight == h) {
+        return self;
+    }
+    
+    return [self resize:CGSizeMake(newWidth, newHeight)];
+}
+
+
 - (UIImage *)resize:(CGSize)newSize {
     //fill mode
     CGFloat horizontalRatio = newSize.width / self.size.width;

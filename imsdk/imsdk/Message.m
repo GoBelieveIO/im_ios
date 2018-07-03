@@ -25,6 +25,10 @@
 
 @end
 
+@implementation MessageInputing
+
+@end
+
 @implementation AuthenticationToken
 
 @end
@@ -34,7 +38,9 @@
 
 @end
 
+@implementation VOIPControl
 
+@end
 
 @implementation Message
 -(NSData*)pack {
@@ -70,7 +76,7 @@
         p += 8;
         writeInt32(m.timestamp, p);
         p += 4;
-        writeInt32(m.msgLocalID, p);
+        writeInt32(0, p);
         p += 4;
         const char *s = [m.content UTF8String];
         size_t l = strlen(s);
@@ -162,7 +168,7 @@
         p += 8;
         m.timestamp = readInt32(p);
         p += 4;
-        m.msgLocalID = readInt32(p);
+        m.msgLocalID = 0;
         p += 4;
         m.content = [[NSString alloc] initWithBytes:p length:data.length-32 encoding:NSUTF8StringEncoding];
         self.body = m;

@@ -8,15 +8,8 @@
 */
 
 #import "GroupOutbox.h"
-#import "IMHttpAPI.h"
-#import "../model/FileCache.h"
 #import "IMService.h"
-#import "PeerMessageDB.h"
 #import "GroupMessageDB.h"
-#import "wav_amr.h"
-#import "UIImageView+WebCache.h"
-
-
 
 @implementation GroupOutbox
 +(GroupOutbox*)instance {
@@ -60,6 +53,15 @@
 }
 
 -(void)saveMessageAttachment:(IMessage*)msg url:(NSString*)url {
+#ifdef SQL_ENGINE_DB
+    if (msg.audioContent) {
+        MessageAudioContent *audioContent = [msg.audioContent cloneWithURL:url];
+        [[GroupMessageDB instance] updateMessageContent:msg.msgLocalID content:audioContent.raw];
+    } else if (msg.imageContent) {
+        MessageImageContent *imageContent = [msg.imageContent cloneWithURL:url];
+        [[GroupMessageDB instance] updateMessageContent:msg.msgLocalID content:imageContent.raw];
+    }
+#else
     MessageAttachmentContent *att = [[MessageAttachmentContent alloc] initWithAttachment:msg.msgLocalID url:url];
     IMessage *attachment = [[IMessage alloc] init];
     attachment.sender = msg.sender;
@@ -67,6 +69,12 @@
     attachment.rawContent = att.raw;
     
     [[GroupMessageDB instance] insertMessage:attachment];
+#endif
+}
+
+-(void)saveMessageAttachment:(IMessage*)msg url:(NSString*)url thumbnail:(NSString*)thumbnail {
+    MessageVideoContent *videoContent = [msg.videoContent cloneWithURL:url thumbnail:thumbnail];
+    [[GroupMessageDB instance] updateMessageContent:msg.msgLocalID content:videoContent.raw];
 }
 
 @end

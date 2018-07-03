@@ -31,7 +31,7 @@
         [self.saveBtn setBackgroundImage:[UIImage imageNamed:@"save"] forState:UIControlStateNormal];
         
         [self.view addSubview:self.saveBtn];
-        
+
     }
 }
 
@@ -48,14 +48,12 @@
 }
 
  - (void) saveImage:(id)sender{
-     
      ALAuthorizationStatus status = [ALAssetsLibrary authorizationStatus];
-     if (status != ALAuthorizationStatusAuthorized) {
+     if (status == ALAuthorizationStatusDenied) {
          //show alert for asking the user to give permission
         [self.view makeToast:@"请允许读取相册!可以到系统设置里修改" duration:0.9 position:@"center"];
         return;
      }
-     //TODO 权限问题
      UIImageWriteToSavedPhotosAlbum(self.image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
  }
  

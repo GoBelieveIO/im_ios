@@ -10,15 +10,13 @@
 #import "PeerMessageViewController.h"
 #import "FileCache.h"
 #import "AudioDownloader.h"
-#import "DraftDB.h"
 #import "IMessage.h"
 #import "PeerMessageDB.h"
-#import "DraftDB.h"
 #import "PeerOutbox.h"
 #import "UIImage+Resize.h"
 #import "SDImageCache.h"
 #import "IPeerMessageDB.h"
-
+#import "UIView+Toast.h"
 
 @interface PeerMessageViewController ()
 @end
@@ -29,25 +27,32 @@
 }
 
 - (void)viewDidLoad {
-    IPeerMessageDB *db = [[IPeerMessageDB alloc] init];
+    IPeerMessageDB *db = [[IPeerMessageDB alloc] initWithSecret:self.secret];
     db.currentUID = self.currentUID;
     db.peerUID = self.peerUID;
     self.messageDB = db;
     
+    self.callEnabled = !self.secret;
     [super viewDidLoad];
     
     // Do any additional setup after loading the view.
     if (self.peerName.length > 0) {
-        self.navigationItem.title = self.peerName;
+        if (self.secret) {
+            self.navigationItem.title = [NSString stringWithFormat:@"%@(密)", self.peerName];
+        } else {
+            self.navigationItem.title = self.peerName;
+        }
     } else {
         IUser *u = [self getUser:self.peerUID];
         if (u.name.length > 0) {
-            self.navigationItem.title = u.name;
+            if (self.secret) {
+                self.navigationItem.title = [NSString stringWithFormat:@"%@(密)", u.name];
+            }
         } else {
             self.navigationItem.title = u.identifier;
             [self asyncGetUser:self.peerUID cb:^(IUser *u) {
                 if (u.name.length > 0) {
-                    self.navigationItem.title = u.name;
+                    self.navigationItem.title = [NSString stringWithFormat:@"%@(密)", u.name];
                 }
             }];
         }
@@ -71,21 +76,37 @@
 
 -(void)onBack {
     [super onBack];
-    NSNotification* notification = [[NSNotification alloc] initWithName:CLEAR_PEER_NEW_MESSAGE
-                                                                 object:[NSNumber numberWithLongLong:self.peerUID]
-                                                               userInfo:nil];
-    [[NSNotificationCenter defaultCenter] postNotification:notification];
+    if (self.secret) {
+        NSNotification* notification = [[NSNotification alloc] initWithName:CLEAR_PEER_SECRET_NEW_MESSAGE
+                                                                     object:[NSNumber numberWithLongLong:self.peerUID]
+                                                                   userInfo:nil];
+        [[NSNotificationCenter defaultCenter] postNotification:notification];
+    } else {
+        NSNotification* notification = [[NSNotification alloc] initWithName:CLEAR_PEER_NEW_MESSAGE
+                                                                     object:[NSNumber numberWithLongLong:self.peerUID]
+                                                                   userInfo:nil];
+        [[NSNotificationCenter defaultCenter] postNotification:notification];
+    }
 }
+
+-(void)handleP2PSession:(IMessage*)msg {
+    
+}
+
 
 #pragma mark - MessageObserver
 - (void)onPeerMessage:(IMMessage*)im {
     if (im.sender != self.peerUID && im.receiver != self.peerUID) {
         return;
     }
+    if (self.secret) {
+        return;
+    }
     NSLog(@"receive msg:%@",im);
     IMessage *m = [[IMessage alloc] init];
     m.sender = im.sender;
     m.receiver = im.receiver;
+    m.secret = NO;
     m.msgLocalID = im.msgLocalID;
     m.rawContent = im.content;
     m.timestamp = im.timestamp;
@@ -106,25 +127,109 @@
     
     [self loadSenderInfo:m];
     [self downloadMessageContent:m];
+    [self updateNotificationDesc:m];
+    
+    if (m.type == MESSAGE_REVOKE) {
+        MessageRevoke *r = m.revokeContent;
+        IMessage *revokedMsg = [self getMessageWithUUID:r.msgid];
+        [self replaceMessage:revokedMsg dest:m];
+    } else {
+        [self insertMessage:m];
+    }
+}
 
-    [self insertMessage:m];
+-(void)onPeerSecretMessage:(IMMessage*)im {
+    if (im.sender != self.peerUID && im.receiver != self.peerUID) {
+        return;
+    }
+    if (!self.secret) {
+        return;
+    }
+    NSLog(@"receive msg:%@",im);
+    IMessage *m = [[IMessage alloc] init];
+    m.sender = im.sender;
+    m.receiver = im.receiver;
+    m.secret = YES;
+    m.msgLocalID = im.msgLocalID;
+    m.rawContent = im.content;
+    m.timestamp = im.timestamp;
+    m.isOutgoing = (im.sender == self.currentUID);
+    if (im.sender == self.currentUID) {
+        m.flags = m.flags | MESSAGE_FLAG_ACK;
+    }
+    //判断消息是否重复
+    if (m.uuid.length > 0 && [self getMessageWithUUID:m.uuid]) {
+        return;
+    }
+    
+    int now = (int)time(NULL);
+    if (now - self.lastReceivedTimestamp > 1) {
+        [[self class] playMessageReceivedSound];
+        self.lastReceivedTimestamp = now;
+    }
+    
+    if (m.type == MESSAGE_P2P_SESSION) {
+        [self handleP2PSession:m];
+        return;
+    }
+    
+    [self loadSenderInfo:m];
+    [self downloadMessageContent:m];
+    [self updateNotificationDesc:m];
+    
+    if (m.type == MESSAGE_REVOKE) {
+        MessageRevoke *r = m.revokeContent;
+        IMessage *revokedMsg = [self getMessageWithUUID:r.msgid];
+        [self replaceMessage:revokedMsg dest:m];
+    } else {
+        [self insertMessage:m];
+    }
 }
 
 //服务器ack
-- (void)onPeerMessageACK:(int)msgLocalID uid:(int64_t)uid {
+- (void)onPeerMessageACK:(IMMessage*)im {
+    int msgLocalID = im.msgLocalID;
+    int64_t uid = im.receiver;
+    
     if (uid != self.peerUID) {
         return;
     }
-    IMessage *msg = [self getMessageWithID:msgLocalID];
-    msg.flags = msg.flags|MESSAGE_FLAG_ACK;
+    
+    if (im.msgLocalID > 0) {
+        IMessage *msg = [self getMessageWithID:msgLocalID];
+        msg.flags = msg.flags|MESSAGE_FLAG_ACK;
+    } else {
+        MessageContent *content = [IMessage fromRaw:im.plainContent];
+        if (content.type == MESSAGE_REVOKE) {
+            MessageRevoke *r = (MessageRevoke*)content;
+            IMessage *revokedMsg = [self getMessageWithUUID:r.msgid];
+            if (!revokedMsg) {
+                return;
+            }
+            IMessage *revokeMsg = [revokedMsg copy];
+            revokeMsg.content = r;
+            [self updateNotificationDesc:revokeMsg];
+            [self replaceMessage:revokedMsg dest:revokeMsg];
+        }
+    }
 }
 
-- (void)onPeerMessageFailure:(int)msgLocalID uid:(int64_t)uid {
+- (void)onPeerMessageFailure:(IMMessage*)im {
+    int msgLocalID = im.msgLocalID;
+    int64_t uid = im.receiver;
+    
     if (uid != self.peerUID) {
         return;
     }
-    IMessage *msg = [self getMessageWithID:msgLocalID];
-    msg.flags = msg.flags|MESSAGE_FLAG_FAILURE;
+    if (msgLocalID > 0) {
+        IMessage *msg = [self getMessageWithID:msgLocalID];
+        msg.flags = msg.flags|MESSAGE_FLAG_FAILURE;
+    } else {
+        MessageContent *content = [IMessage fromRaw:im.content];
+        if (content.type == MESSAGE_REVOKE) {
+            [self.view makeToast:@"撤回失败" duration:0.7 position:@"bottom"];
+        }
+    }
 }
 
 
@@ -140,29 +245,71 @@
 
 - (void)sendMessage:(IMessage *)msg withImage:(UIImage*)image {
     msg.uploading = YES;
-    [[PeerOutbox instance] uploadImage:msg withImage:image];
-    NSNotification* notification = [[NSNotification alloc] initWithName:LATEST_PEER_MESSAGE object:msg userInfo:nil];
-    [[NSNotificationCenter defaultCenter] postNotification:notification];
+    if (self.secret) {
+        [[PeerOutbox instance] uploadSecretImage:msg withImage:image];
+    } else {
+        [[PeerOutbox instance] uploadImage:msg withImage:image];
+    }
+    if (self.secret) {
+        NSNotification* notification = [[NSNotification alloc] initWithName:LATEST_PEER_SECRET_MESSAGE object:msg userInfo:nil];
+        [[NSNotificationCenter defaultCenter] postNotification:notification];
+    } else {
+        NSNotification* notification = [[NSNotification alloc] initWithName:LATEST_PEER_MESSAGE object:msg userInfo:nil];
+        [[NSNotificationCenter defaultCenter] postNotification:notification];
+    }
+}
+
+- (BOOL)encrypt:(IMMessage*)msg {
+    return NO;
 }
 
 - (void)sendMessage:(IMessage*)message {
     if (message.type == MESSAGE_AUDIO) {
         message.uploading = YES;
-        [[PeerOutbox instance] uploadAudio:message];
+        if (self.secret) {
+            [[PeerOutbox instance] uploadSecretAudio:message];
+        } else {
+            [[PeerOutbox instance] uploadAudio:message];
+        }
     } else if (message.type == MESSAGE_IMAGE) {
         message.uploading = YES;
-        [[PeerOutbox instance] uploadImage:message];
+        if (self.secret) {
+            [[PeerOutbox instance] uploadSecretImage:message];
+        } else {
+            [[PeerOutbox instance] uploadImage:message];
+        }
+    } else if (message.type == MESSAGE_VIDEO) {
+        message.uploading = YES;
+        if (self.secret) {
+            [[PeerOutbox instance] uploadSecretVideo:message];
+        } else {
+            [[PeerOutbox instance] uploadVideo:message];
+        }
     } else {
         IMMessage *im = [[IMMessage alloc] init];
         im.sender = message.sender;
         im.receiver = message.receiver;
         im.msgLocalID = message.msgLocalID;
         im.content = message.rawContent;
-        [[IMService instance] sendPeerMessage:im];
+        im.plainContent = message.rawContent;
+        
+        BOOL r = YES;
+        if (self.secret) {
+            r = [self encrypt:im];
+        }
+        if (r) {
+            [[IMService instance] sendPeerMessage:im];
+        }
     }
     
-    NSNotification* notification = [[NSNotification alloc] initWithName:LATEST_PEER_MESSAGE object:message userInfo:nil];
-    [[NSNotificationCenter defaultCenter] postNotification:notification];
+    if (self.secret) {
+        NSNotification* notification = [[NSNotification alloc] initWithName:LATEST_PEER_SECRET_MESSAGE object:message userInfo:nil];
+        [[NSNotificationCenter defaultCenter] postNotification:notification];
+    } else {
+        NSNotification* notification = [[NSNotification alloc] initWithName:LATEST_PEER_MESSAGE object:message userInfo:nil];
+        [[NSNotificationCenter defaultCenter] postNotification:notification];
+    }
+
 }
 
 @end

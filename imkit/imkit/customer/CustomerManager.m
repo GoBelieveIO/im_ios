@@ -351,11 +351,14 @@
 -(void)unbindDeviceToken {
     [self storeDictionary];
     if (self.token.length > 0 && self.deviceToken.length > 0) {
-        [IMHttpAPI unbindDeviceToken:self.deviceToken success:^{
-            NSLog(@"unbind device token success");
-        } fail:^{
-            NSLog(@"unbind device token fail");
-        }];
+        [IMHttpAPI unbindDeviceToken:self.deviceToken
+                        pushKitToken:nil
+                             success:^{
+                                 NSLog(@"unbind device token success");
+                             }
+                                fail:^{
+                                    NSLog(@"unbind device token fail");
+                                }];
     }
 }
 

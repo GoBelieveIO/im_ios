@@ -21,6 +21,8 @@
 
 #define kMessageLinkViewHeight (kLinkHeight + kPaddingTop + kPaddingBottom + kMarginTop + kMarginBottom)
 #define kMessageImagViewHeight (kImageHeight + kPaddingTop + kPaddingBottom + kMarginTop + kMarginBottom)
+#define kMessageFileViewHeight (kFileHeight + kPaddingTop + kPaddingBottom + kMarginTop + kMarginBottom)
+#define kMessageVideoViewHeight (kVideoHeight + kPaddingTop + kPaddingBottom + kMarginTop + kMarginBottom)
 #define kMessageLocationViewHeight (kLocationHeight + kPaddingTop + kPaddingBottom + kMarginTop + kMarginBottom)
 #define kMessageAudioViewHeight (kAudioHeight + kPaddingTop + kPaddingBottom + kMarginTop + kMarginBottom)
 #define kMessageVOIPViewHeight (kVOIPHeight + kPaddingTop + kPaddingBottom + kMarginTop + kMarginBottom)

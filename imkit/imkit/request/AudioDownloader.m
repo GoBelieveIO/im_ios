@@ -11,6 +11,8 @@
 #import "TAHttpOperation.h"
 #import "FileCache.h"
 #import "wav_amr.h"
+#import <SDWebImage/UIImageView+WebCache.h>
+#import "UIImage+Resize.h"
 
 @interface AudioDownloader()
 @property(nonatomic)NSMutableArray *observers;
@@ -69,7 +71,7 @@
     }
 }
 
--(IMHttpOperation*)downloadAudio:(NSString*)url success:(void (^)(NSData *data))success fail:(void (^)())fail {
+-(IMHttpOperation*)downloadURL:(NSString*)url success:(void (^)(NSData *data))success fail:(void (^)(void))fail {
     IMHttpOperation *request = [IMHttpOperation httpOperationWithTimeoutInterval:60];
     request.targetURL = url;
     request.method = @"GET";
@@ -85,19 +87,53 @@
     
 }
 
+-(void)downloadImage:(IMessage*)msg {
+    if ([self isDownloading:msg]) {
+        return;
+    }
+    NSString *msgURL = msg.imageContent.imageURL;
+    
+    [self.messages addObject:msg];
+    [self downloadURL: msgURL
+                success:^(NSData *data) {
+                    [self.messages removeObject:msg];
+                    NSAssert(msg.secret, @"");
+                    
+                    //todo save secret data into noncache directory
+                    [[SDImageCache sharedImageCache] storeImageDataToDisk:data forKey:msgURL];
+                    UIImage *image = [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:msgURL];
+                    if (!image) {
+                        //图片解码失败
+                        [self onDownloadSuccess:msg];
+                        return;
+                    }
+                    
+                    UIImage *sizeImage = [image resize:CGSizeMake(256, 256)];
+                    [[SDImageCache sharedImageCache] storeImage:sizeImage  forKey:msg.imageContent.littleImageURL completion:nil];
+                    [self onDownloadSuccess:msg];
+                }
+                   fail:^{
+                       [self.messages removeObject:msg];
+                       [self onDownloadFail:msg];
+                   }];
+    
+    
+}
+
 -(void)downloadAudio:(IMessage*)msg {
     if ([self isDownloading:msg]) {
         return;
     }
+    NSString *msgURL = msg.audioContent.url;
     [self.messages addObject:msg];
-    MessageAudioContent *audio = msg.audioContent;
-    [self downloadAudio: audio.url
+    [self downloadURL: msgURL
                 success:^(NSData *data) {
                     [self.messages removeObject:msg];
-                    FileCache *cache = [FileCache instance];
-                    [cache storeFile:data forKey:audio.url];
                     
-                    NSString *amr_path = [cache queryCacheForKey:audio.url];
+                    FileCache *cache = [FileCache instance];
+                    [cache storeFile:data forKey:msgURL];
+       
+                    NSString *amr_path = [cache queryCacheForKey:msgURL];
                     NSString *wav_path = [NSString stringWithFormat:@"%@.wav", amr_path];
                     int r = decode_amr([amr_path UTF8String], [wav_path UTF8String]);
                     if (r != 0) {
@@ -114,4 +150,30 @@
                    }];
 }
 
+-(void)downloadVideoThumbnail:(IMessage*)msg {
+    if ([self isDownloading:msg]) {
+        return;
+    }
+    NSString *msgURL = msg.videoContent.thumbnailURL;
+    
+    [self.messages addObject:msg];
+    [self downloadURL: msgURL
+              success:^(NSData *data) {
+                  [self.messages removeObject:msg];
+                  NSAssert(msg.secret, @"");
+                  //todo save secret data into noncache directory
+                  [[SDImageCache sharedImageCache] storeImageDataToDisk:data forKey:msgURL];
+                  UIImage *image = [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:msgURL];
+                  if (!image) {
+                      //图片解码失败
+                      [self onDownloadSuccess:msg];
+                      return;
+                  }
+                  [self onDownloadSuccess:msg];
+              }
+                 fail:^{
+                     [self.messages removeObject:msg];
+                     [self onDownloadFail:msg];
+                 }];
+}
 @end

@@ -12,10 +12,6 @@
 
 #import <UIKit/UIKit.h>
 
-typedef enum{
-    EMChatToolbarTypeChat,
-    EMChatToolbarTypeGroup,
-}EMChatToolbarType;
 
 @protocol EaseChatBarMoreViewDelegate;
 @interface EaseChatBarMoreView : UIView
@@ -24,7 +20,7 @@ typedef enum{
 
 @property (nonatomic) UIColor *moreViewBackgroundColor UI_APPEARANCE_SELECTOR;  //moreview背景颜色,default whiteColor
 
-- (instancetype)initWithFrame:(CGRect)frame type:(EMChatToolbarType)type;
+- (instancetype)initWithFrame:(CGRect)frame;
 
 /*!
  @method

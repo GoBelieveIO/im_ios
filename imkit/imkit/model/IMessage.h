@@ -8,22 +8,26 @@
 */
 
 #import <Foundation/Foundation.h>
-#import <CoreLocation/CLLocation.h>
 
-//消息类型
-#define MESSAGE_UNKNOWN 0
-#define MESSAGE_TEXT 1
-#define MESSAGE_IMAGE 2
-#define MESSAGE_AUDIO 3
-#define MESSAGE_LOCATION 4
-#define MESSAGE_GROUP_NOTIFICATION 5 //群通知
-#define MESSAGE_LINK 6
-#define MESSAGE_HEADLINE 7  //客服的标题
-#define MESSAGE_VOIP 8
-#define MESSAGE_GROUP_VOIP 9
-
-#define MESSAGE_TIME_BASE  254 //虚拟的消息，不会存入磁盘
-#define MESSAGE_ATTACHMENT 255 //消息附件， 只存在本地磁盘
+#import "IUser.h"
+#import "MessageContent.h"
+#import "MessageSecret.h"
+#import "MessageNotification.h"
+#import "MessageGroupNotification.h"
+#import "MessageImage.h"
+#import "MessageVOIP.h"
+#import "MessageLocation.h"
+#import "MessageAudio.h"
+#import "MessageHeadline.h"
+#import "MessageAttachment.h"
+#import "MessageText.h"
+#import "MessageLink.h"
+#import "MessageGroupVOIP.h"
+#import "MessageTimeBase.h"
+#import "MessageP2PSession.h"
+#import "MessageVideo.h"
+#import "MessageFile.h"
+#import "MessageRevoke.h"
 
 //消息标志
 #define MESSAGE_FLAG_DELETE 1
@@ -34,152 +38,15 @@
 #define MESSAGE_FLAG_SENDING 32
 #define MESSAGE_FLAG_LISTENED 64
 
-//群组通知消息类型
-#define NOTIFICATION_GROUP_CREATED 1
-#define NOTIFICATION_GROUP_DISBANDED 2
-#define NOTIFICATION_GROUP_MEMBER_ADDED 3
-#define NOTIFICATION_GROUP_MEMBER_LEAVED 4
-#define NOTIFICATION_GROUP_NAME_UPDATED 5
-#define NOTIFICATION_GROUP_NOTICE_UPDATED 6
 
-#define VOIP_FLAG_CANCELED 1   //取消
-#define VOIP_FLAG_REFUSED 2
-#define VOIP_FLAG_ACCEPTED 3
-#define VOIP_FLAG_UNRECEIVED 4  //未接听
+@interface IMessage : NSObject <NSCopying>
++(MessageContent*)fromRaw:(NSString*)raw;
 
-@class IUser;
-
-@interface MessageContent : NSObject
-
-@property(nonatomic) NSString *raw;
-@property(nonatomic, readonly) NSString *uuid;
-@property(nonatomic, readonly) int type;
-@end
-
-@interface MessageTextContent : MessageContent
-- (id)initWithText:(NSString*)text;
-
-@property(nonatomic, readonly) NSString *text;
-@end
-
-@interface MessageAudioContent : MessageContent
-- (id)initWithAudio:(NSString*)url duration:(int)duration;
-
-@property(nonatomic, copy) NSString *url;
-@property(nonatomic) int duration;
-
--(MessageAudioContent*)cloneWithURL:(NSString*)url;
-
-@end
-
-@interface MessageImageContent : MessageContent
-- (id)initWithImageURL:(NSString *)imageURL width:(int)width height:(int)height;
-
-@property(nonatomic, readonly) NSString *imageURL;
-@property(nonatomic, readonly) NSString *littleImageURL;
-
-@property(nonatomic, readonly) int width;
-@property(nonatomic, readonly) int height;
-
--(MessageImageContent*)cloneWithURL:(NSString*)url;
-@end
-
-@interface MessageLinkContent : MessageContent
-@property(nonatomic, readonly) NSString *imageURL;
-@property(nonatomic, readonly) NSString *url;
-@property(nonatomic, readonly) NSString *title;
-@property(nonatomic, readonly) NSString *content;
-@end
-
-@interface MessageLocationContent : MessageContent
-- (id)initWithLocation:(CLLocationCoordinate2D)location;
-
-@property(nonatomic, readonly) CLLocationCoordinate2D location;
-@property(nonatomic, readonly) NSString *snapshotURL;
-@property(nonatomic, copy) NSString *address;
-
-@end
-
-@interface MessageNotificationContent : MessageContent
-@property(nonatomic, copy) NSString *notificationDesc;
-@end
-
-@interface MessageGroupNotificationContent : MessageNotificationContent
-
-@property(nonatomic) int notificationType;
-
-@property(nonatomic) int64_t groupID;
-
-@property(nonatomic) int timestamp;
-
-//created
-@property(nonatomic) int64_t master;
-@property(nonatomic) NSArray *members;
-//GROUP_CREATED,GROUP_NAME_UPDATED
-@property(nonatomic) NSString *groupName;
-
-@property(nonatomic) NSString *notice;
-
-//GROUP_MEMBER_ADDED,GROUP_MEMBER_LEAVED
-@property(nonatomic) int64_t member;
-
-@property(nonatomic, copy) NSString *rawNotification;
-
--(id)initWithNotification:(NSString*)raw;
-
-@end
-
-@interface MessageAttachmentContent : MessageContent
-
-@property(nonatomic) int msgLocalID;
-
-@property(nonatomic) NSString *address;
-@property(nonatomic) NSString *url;
-
-//location
-- (id)initWithAttachment:(int)msgLocalID address:(NSString*)address;
-
-//image/audio
-- (id)initWithAttachment:(int)msgLocalID url:(NSString*)url;
-
-@end
-
-@interface MessageTimeBaseContent : MessageNotificationContent
-@property(nonatomic, readonly) int timestamp;
-
--(id)initWithTimestamp:(int)ts;
-
-@end
-
-@interface MessageHeadlineContent : MessageNotificationContent
-@property(nonatomic, readonly) NSString *headline;
-
--(id)initWithHeadline:(NSString*)headline;
-
-@end
-
-
-@interface MessageVOIPContent:MessageContent
-@property(nonatomic) int flag;
-@property(nonatomic) int duration;//通话时长
-@property(nonatomic) BOOL videoEnabled;
-
--(id)initWithFlag:(int)flag duration:(int)duration videoEnabled:(BOOL)videoEnabled;
-@end
-
-@interface MessageGroupVOIPContent:MessageNotificationContent
-
-@property(nonatomic) int64_t initiator;
-@property(nonatomic) BOOL finished;
-
--(id)initWithInitiator:(int64_t)initiator finished:(BOOL)finished;
-@end
-
-@interface IMessage : NSObject
 @property(nonatomic) int msgLocalID;
 @property(nonatomic) int flags;
 @property(nonatomic) int64_t sender;
 @property(nonatomic) int64_t receiver;
+@property(nonatomic) BOOL secret;
 
 @property(nonatomic, copy) NSString *rawContent;
 @property(nonatomic, readonly) int type;
@@ -196,6 +63,11 @@
 @property(nonatomic, readonly) MessageTimeBaseContent *timeBaseContent;
 @property(nonatomic, readonly) MessageNotificationContent *notificationContent;
 @property(nonatomic, readonly) MessageGroupNotificationContent *groupNotificationContent;
+@property(nonatomic, readonly) MessageP2PSession *p2pSessionContent;
+@property(nonatomic, readonly) MessageSecret *secretContent;
+@property(nonatomic, readonly) MessageVideo *videoContent;
+@property(nonatomic, readonly) MessageFile *fileContent;
+@property(nonatomic, readonly) MessageRevoke *revokeContent;
 
 @property(nonatomic, readonly) MessageAttachmentContent *attachmentContent;
 
@@ -219,23 +91,8 @@
 
 @end
 
-@interface ICustomerMessage : IMessage
-@property(nonatomic) int64_t customerAppID;
-@property(nonatomic) int64_t customerID;
-@property(nonatomic) int64_t storeID;
-@property(nonatomic) int64_t sellerID;
-@property(nonatomic) BOOL  isSupport;
-@end
 
 
-@interface IUser : NSObject
-@property(nonatomic) int64_t uid;
-@property(nonatomic, copy) NSString *name;
-@property(nonatomic, copy) NSString *avatarURL;
-
-//name为nil时，界面显示identifier字段
-@property(nonatomic, copy) NSString *identifier;
-@end
 
 
 

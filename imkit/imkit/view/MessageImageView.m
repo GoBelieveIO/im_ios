@@ -45,29 +45,47 @@
 
 - (void)setMsg:(IMessage*)msg {
     [self.msg removeObserver:self forKeyPath:@"uploading"];
+    [self.msg removeObserver:self forKeyPath:@"downloading"];
     [super setMsg:msg];
     [self.msg addObserver:self forKeyPath:@"uploading" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
-    
+    [self.msg addObserver:self forKeyPath:@"downloading" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
     
     MessageImageContent *content = msg.imageContent;
-    NSString *littleURL = content.littleImageURL;
-    if (littleURL.length > 0) {
-        NSString *url = littleURL;
-        if(![[SDImageCache sharedImageCache] diskImageExistsWithKey:url]){
+    NSString *url = content.littleImageURL;
+    if (msg.secret) {
+        if (msg.downloading) {
             [self.downloadIndicatorView startAnimating];
+        } else {
+            [self.downloadIndicatorView stopAnimating];
         }
-
+        
+        if(![[SDImageCache sharedImageCache] imageFromMemoryCacheForKey:url] &&
+           ![[SDImageCache sharedImageCache] diskImageDataExistsWithKey:url]){
+            UIImage *placehodler = [UIImage imageNamed:@"imageDownloadFail"];
+            [self.imageView sd_setImageWithURL:nil placeholderImage:placehodler
+                                     completed:nil];
+        } else {
+            UIImage *placehodler = [UIImage imageNamed:@"imageDownloadFail"];
+            [self.imageView sd_setImageWithURL: [[NSURL alloc] initWithString:url] placeholderImage:placehodler
+                                     completed:nil];
+        }
+    } else {
+        if(![[SDImageCache sharedImageCache] imageFromMemoryCacheForKey:url] &&
+           ![[SDImageCache sharedImageCache] diskImageDataExistsWithKey:url]){
+            [self.downloadIndicatorView startAnimating];
+        } else {
+            [self.downloadIndicatorView stopAnimating];
+        }
+        
         UIImage *placehodler = [UIImage imageNamed:@"imageDownloadFail"];
         [self.imageView sd_setImageWithURL: [[NSURL alloc] initWithString:url] placeholderImage:placehodler
                                  completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-            if (self.downloadIndicatorView&&[self.downloadIndicatorView isAnimating]) {
-                [self.downloadIndicatorView stopAnimating];
-            }
-        }];
+                                     if (self.downloadIndicatorView&&[self.downloadIndicatorView isAnimating]) {
+                                         [self.downloadIndicatorView stopAnimating];
+                                     }
+                                 }];
     }
-    
 
-    
     if (self.msg.uploading) {
         self.maskView.hidden = NO;
         [self.uploadIndicatorView startAnimating];
@@ -89,7 +107,25 @@
             self.maskView.hidden = YES;
             [self.uploadIndicatorView stopAnimating];
         }
+    } else if ([keyPath isEqualToString:@"downloading"]) {
+        if (self.msg.downloading) {
+            [self.downloadIndicatorView startAnimating];
+        } else {
+            [self.downloadIndicatorView stopAnimating];
+            
+            MessageImageContent *content = self.msg.imageContent;
+            NSString *url = content.littleImageURL;
+            if (self.msg.secret) {
+                if([[SDImageCache sharedImageCache] imageFromMemoryCacheForKey:url] ||
+                   [[SDImageCache sharedImageCache] diskImageDataExistsWithKey:url]){
+                    UIImage *placehodler = [UIImage imageNamed:@"imageDownloadFail"];
+                    [self.imageView sd_setImageWithURL: [[NSURL alloc] initWithString:url] placeholderImage:placehodler
+                                             completed:nil];
+                }
+            }
+        }
     }
+
 }
 
 
