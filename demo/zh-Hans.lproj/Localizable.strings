@@ -223,6 +223,9 @@
 "call.videoRemoteBitrate"="对方比特率: ";
 
 //message
+"message.call" = "视频通话";
+"message.photo" = "照片";
+"message.camera" = "拍摄";
 "message.image" = "图片";
 "message.location" = "位置";
 "message.voice" = "音频";

@@ -223,6 +223,9 @@
 "call.videoRemoteBitrate"="Remote Bitrate: ";
 
 //message
+"message.call" = "call";
+"message.photo" = "photo";
+"message.camera" = "camera";
 "message.image" = "image";
 "message.location" = "location";
 "message.voice" = "audio";
