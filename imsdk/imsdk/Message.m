@@ -51,7 +51,8 @@
     p += 4;
     *p++ = (uint8_t)self.cmd;
     *p++ = (uint8_t)VERSION;
-    p += 2;
+    *p++ = (uint8_t)self.flag;
+    p++;
     
     if (self.cmd == MSG_HEARTBEAT || self.cmd == MSG_PING) {
         return [NSData dataWithBytes:buf length:HEAD_SIZE];
@@ -152,8 +153,9 @@
     self.seq = readInt32(p);
     p += 4;
     self.cmd = *p;
+    self.flag = *(p+2);
     p += 4;
-    NSLog(@"seq:%d cmd:%d", self.seq, self.cmd);
+    NSLog(@"seq:%d cmd:%d flag:%d", self.seq, self.cmd, self.flag);
     if (self.cmd == MSG_PONG) {
         return YES;
     } else if (self.cmd == MSG_AUTH_STATUS) {

@@ -58,7 +58,9 @@
 #define PLATFORM_ANDROID 2
 #define PLATFORM_WEB 3
 
-
+#define MESSAGE_FLAG_TEXT 1
+#define MESSAGE_FLAG_UNPERSISTENT 4
+#define MESSAGE_FLAG_GROUP 8
 
 
 @interface IMMessage : NSObject
@@ -122,6 +124,7 @@ typedef NSNumber SyncKey;
 @interface Message : NSObject
 @property(nonatomic, assign)int cmd;
 @property(nonatomic, assign)int seq;
+@property(nonatomic, assign)int flag;
 @property(nonatomic) NSObject *body;
 
 -(NSData*)pack;
