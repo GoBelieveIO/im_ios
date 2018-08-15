@@ -49,18 +49,6 @@
     return self.roomID;
 }
 
-- (void)loadConversationData {
-    [self initTableViewData];
-}
-
-- (void)loadEarlierData {
-
-}
-
-- (BOOL)isInConversation:(IMessage*)msg {
-    return YES;
-}
-
 -(void)addObserver {
     [[IMService instance] addConnectionObserver:self];
     [[IMService instance] addRoomMessageObserver:self];
@@ -154,8 +142,6 @@
     
     [self insertMessage:msg];
 }
-
-
 
 - (void)sendMessage:(IMessage*)message {
     RoomMessage *im = [[RoomMessage alloc] init];

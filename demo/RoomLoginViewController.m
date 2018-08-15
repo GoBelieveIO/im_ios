@@ -119,13 +119,6 @@
             }
             
             NSLog(@"login success");
-            
-            NSString *path = [self getDocumentPath];
-            NSString *dbPath = [NSString stringWithFormat:@"%@/%lld", path, [tfSender.text longLongValue]];
-            [PeerMessageDB instance].dbPath = [NSString stringWithFormat:@"%@/peer", dbPath];
-            [GroupMessageDB instance].dbPath = [NSString stringWithFormat:@"%@/group", dbPath];
-            [CustomerMessageDB instance].dbPath = [NSString stringWithFormat:@"%@/customer", dbPath];
-            
             [IMHttpAPI instance].accessToken = token;
             [[IMService instance] setToken:token];
             [[IMService instance] start];

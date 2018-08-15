@@ -203,7 +203,7 @@
         NSLog(@"refresh host ip...");
         
         for (int i = 0; i < 10; i++) {
-            NSString *host = @"imnode.gobelieve.io";
+            NSString *host = @"imnode2.gobelieve.io";
             NSString *ip = [self resolveIP:host];
             
             NSString *apiHost = @"api.gobelieve.io";

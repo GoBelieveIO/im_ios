@@ -12,6 +12,9 @@
 
 #import "IMessage.h"
 #import "PeerMessageDB.h"
+#import "MessageNotificationCell.h"
+#import "OutMessageCell.h"
+#import "InMessageCell.h"
 #import "MessageViewCell.h"
 #import "MessageTextView.h"
 #import "NSDate+Format.h"
@@ -220,30 +223,22 @@
 
 
 - (BOOL)insertMessage:(IMessage*)msg {
-    NSDate *lastDate = nil;
-    NSInteger count = [self.messages count];
+    BOOL newTimeBase = [super insertMessage:msg];
     
-    for (NSInteger i = count; i > 0; i--) {
-        IMessage *m = [self.messages objectAtIndex:i-1];
-        if (m.type == MESSAGE_TIME_BASE) {
-            lastDate = [NSDate dateWithTimeIntervalSince1970:m.timeBaseContent.timestamp];
-            break;
-        }
+    NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
+    if (newTimeBase) {
+        NSIndexPath *indexPath = nil;
+        indexPath = [NSIndexPath indexPathForRow:self.messages.count - 2 inSection:0];
+        [indexPaths addObject:indexPath];
     }
     
-    BOOL newTimeBase = NO;
-    if (lastDate == nil || msg.timestamp - lastDate.timeIntervalSince1970 > 1*60) {
-        MessageTimeBaseContent *tb = [[MessageTimeBaseContent alloc] initWithTimestamp:msg.timestamp];
-        tb.notificationDesc = [[NSDate dateWithTimeIntervalSince1970:tb.timestamp] formatSectionTime];
-        IMessage *m = [[IMessage alloc] init];
-        m.content = tb;
-        [self.messages addObject:m];
-        newTimeBase = YES;
-        
-    }
-    [self checkAtName:msg];
-    [self.messages addObject:msg];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.messages.count - 1 inSection:0];
+    [indexPaths addObject:indexPath];
     
+    [UIView beginAnimations:nil context:NULL];
+    [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
+    [self scrollToBottomAnimated:NO];
+    [UIView commitAnimations];
     return newTimeBase;
 }
 
@@ -340,9 +335,16 @@
 
     NSString *CellID = [self getMessageViewCellId:message];
     MessageViewCell *cell = (MessageViewCell *)[tableView dequeueReusableCellWithIdentifier:CellID];
-    
     if(!cell) {
-        cell = [[MessageViewCell alloc] initWithType:message.type reuseIdentifier:CellID];
+        if (message.notificationContent) {
+            cell = [[MessageNotificationCell alloc] initWithType:message.type reuseIdentifier:CellID];
+        } else if (message.isOutgoing) {
+            cell = [[OutMessageCell alloc] initWithType:message.type reuseIdentifier:CellID];
+        } else {
+            InMessageCell *inCell = [[InMessageCell alloc] initWithType:message.type reuseIdentifier:CellID];
+            inCell.showName = self.isShowUserName;
+            cell = inCell;
+        }
     }
     
     cell.msg = message;
@@ -375,10 +377,8 @@
     
     switch (msg.type) {
         case MESSAGE_TEXT:
-        {
-            MessageTextContent *content = msg.textContent;
-            return 100 + nameHeight;
-        }
+            return [MessageViewCell cellHeightMessage:msg] + nameHeight;
+        case MESSAGE_TIME_BASE:
         case MESSAGE_GROUP_NOTIFICATION:
             return 40;
         default:
