@@ -703,15 +703,8 @@
 }
 
 -(BOOL)sendRoomMessage:(RoomMessage*)rm {
-    return [self sendRoomMessage:rm nonpersistent:NO];
-}
-
--(BOOL)sendRoomMessage:(RoomMessage*)rm nonpersistent:(BOOL)nonpersistent {
     Message *m = [[Message alloc] init];
     m.cmd = MSG_ROOM_IM;
-    if (nonpersistent) {
-        m.flag = MESSAGE_FLAG_UNPERSISTENT;
-    }
     m.body = rm;
     BOOL r = [self sendMessage:m];
     if (!r) return r;

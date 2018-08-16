@@ -133,7 +133,6 @@
 -(BOOL)sendPeerMessage:(IMMessage*)msg;
 -(BOOL)sendGroupMessage:(IMMessage*)msg;
 -(BOOL)sendRoomMessage:(RoomMessage*)msg;
--(BOOL)sendRoomMessage:(RoomMessage*)msg nonpersistent:(BOOL)nonpersistent;
 
 //顾客->客服
 -(BOOL)sendCustomerMessage:(CustomerMessage*)im;
