@@ -12,10 +12,8 @@
 #include <netinet/in.h>
 #import "AsyncTCP.h"
 #import "util.h"
-#import "GOReachability.h"
 
 @interface TCPConnection()
-
 @property(atomic, copy) NSString *hostIP;
 @property(atomic, assign) time_t timestmap;
 
@@ -23,19 +21,12 @@
 @property(nonatomic, assign)BOOL suspended;
 @property(nonatomic, assign)BOOL isBackground;
 
-
 @property(nonatomic, strong)dispatch_source_t connectTimer;
-
 @property(nonatomic, strong)dispatch_source_t heartbeatTimer;
 @property(nonatomic)time_t pingTimestamp;
 
-
 @property(nonatomic)int connectFailCount;
-
 @property(nonatomic)NSMutableArray *connectionObservers;
-
-@property(nonatomic)GOReachability *reach;
-@property(nonatomic)BOOL reachable;
 @end
 
 
@@ -64,33 +55,21 @@
     return self;
 }
 
--(void)startRechabilityNotifier {
-    TCPConnection *wself = self;
-    self.reach = [GOReachability reachabilityForInternetConnection];
-    
-    self.reach.reachableBlock = ^(GOReachability*reach) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            NSLog(@"internet reachable");
-            wself.reachable = YES;
-            if (wself != nil && !wself.stopped && !wself.isBackground) {
-                NSLog(@"reconnect im service");
-                [wself suspend];
-                [wself resume];
-            }
-        });
-    };
-    
-    self.reach.unreachableBlock = ^(GOReachability*reach) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            NSLog(@"internet unreachable");
-            wself.reachable = NO;
-            if (wself != nil && !wself.stopped) {
-                [wself suspend];
-            }
-        });
-    };
-    
-    [self.reach startNotifier];
+-(void)onReachabilityChange:(BOOL)reachable {
+    self.reachable = reachable;
+    if (reachable) {
+        NSLog(@"internet reachable");
+        if (!self.stopped && !self.isBackground) {
+            NSLog(@"reconnect im service");
+            [self suspend];
+            [self resume];
+        }
+    } else {
+        NSLog(@"internet unreachable");
+        if (!self.stopped) {
+            [self suspend];
+        }
+    }
 }
 
 -(void)enterForeground {

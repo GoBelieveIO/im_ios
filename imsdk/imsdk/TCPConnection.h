@@ -26,6 +26,7 @@
 //public
 @property(nonatomic, assign)int connectState;
 @property(nonatomic, copy) NSString *host;
+@property(nonatomic)BOOL reachable;
 
 //protect
 @property(nonatomic)int port;
@@ -58,5 +59,5 @@
 -(void)addConnectionObserver:(id<TCPConnectionObserver>)ob;
 -(void)removeConnectionObserver:(id<TCPConnectionObserver>)ob;
 
--(void)startRechabilityNotifier;
+-(void)onReachabilityChange:(BOOL)reachable;
 @end

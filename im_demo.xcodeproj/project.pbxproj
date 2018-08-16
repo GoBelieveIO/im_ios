@@ -36,6 +36,10 @@
 		6D8E72E61B750B04004E069E /* group-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6D8E72E51B750B04004E069E /* group-Info.plist */; };
 		6D9C46C91BEB09DC0053066A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C46CB1BEB09DC0053066A /* InfoPlist.strings */; };
 		6D9C46D41BEB0A940053066A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C46D61BEB0A940053066A /* Localizable.strings */; };
+		6DAC24DF212543820000C067 /* GOReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DAC24DE212543820000C067 /* GOReachability.m */; };
+		6DAC24E0212545990000C067 /* GOReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DAC24DE212543820000C067 /* GOReachability.m */; };
+		6DAC24E1212545990000C067 /* GOReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DAC24DE212543820000C067 /* GOReachability.m */; };
+		6DAC24E2212545990000C067 /* GOReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DAC24DE212543820000C067 /* GOReachability.m */; };
 		6DB34C1B1C4D18D4006D78D4 /* MessageConversationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DB34C181C4D18D4006D78D4 /* MessageConversationCell.m */; };
 		6DB34C1C1C4D18D4006D78D4 /* MessageListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DB34C1A1C4D18D4006D78D4 /* MessageListViewController.m */; };
 		6DB34C241C4D1C5F006D78D4 /* MessageConversationCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6DB34C231C4D1C5F006D78D4 /* MessageConversationCell.xib */; };
@@ -97,6 +101,8 @@
 		6D9C46CC1BEB09E80053066A /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		6D9C46D51BEB0A940053066A /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		6D9C46D81BEB0ABB0053066A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		6DAC24DD212543820000C067 /* GOReachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GOReachability.h; sourceTree = "<group>"; };
+		6DAC24DE212543820000C067 /* GOReachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GOReachability.m; sourceTree = "<group>"; };
 		6DB34C171C4D18D4006D78D4 /* MessageConversationCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageConversationCell.h; sourceTree = "<group>"; };
 		6DB34C181C4D18D4006D78D4 /* MessageConversationCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageConversationCell.m; sourceTree = "<group>"; };
 		6DB34C191C4D18D4006D78D4 /* MessageListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageListViewController.h; sourceTree = "<group>"; };
@@ -242,6 +248,8 @@
 		6DF54D8D1AB5862000197EBC /* demo */ = {
 			isa = PBXGroup;
 			children = (
+				6DAC24DD212543820000C067 /* GOReachability.h */,
+				6DAC24DE212543820000C067 /* GOReachability.m */,
 				6DF54EB91AB58CAA00197EBC /* im_demo-prefix.pch */,
 				6DB34C171C4D18D4006D78D4 /* MessageConversationCell.h */,
 				6DB34C181C4D18D4006D78D4 /* MessageConversationCell.m */,
@@ -669,6 +677,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6D69BCF91B4449D0008EAA8A /* AppDelegate.m in Sources */,
+				6DAC24E0212545990000C067 /* GOReachability.m in Sources */,
 				6D69BD981B444C09008EAA8A /* RoomLoginViewController.m in Sources */,
 				6D69BCFB1B4449D0008EAA8A /* main.m in Sources */,
 				6D69BD951B444BBA008EAA8A /* RoomViewController.m in Sources */,
@@ -680,6 +689,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6DFA63881E12DB4800F954F6 /* Conversation.m in Sources */,
+				6DAC24E1212545990000C067 /* GOReachability.m in Sources */,
 				6D4AB3E61C87104300AFE234 /* GroupLoginViewController.m in Sources */,
 				6D8E72531B750A31004E069E /* AppDelegate.m in Sources */,
 				6D8E72561B750A31004E069E /* main.m in Sources */,
@@ -690,6 +700,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6DAC24E2212545990000C067 /* GOReachability.m in Sources */,
 				6DFA63891E12DB4900F954F6 /* Conversation.m in Sources */,
 				6DBB2CC51DBB355700BC545A /* CustomerViewController.m in Sources */,
 				6DBB2CA61DBB348D00BC545A /* AppDelegate.m in Sources */,
@@ -707,6 +718,7 @@
 				6DF54D941AB5862000197EBC /* AppDelegate.m in Sources */,
 				6DF54D911AB5862000197EBC /* main.m in Sources */,
 				6DBB2CC11DBB34C300BC545A /* MainViewController.m in Sources */,
+				6DAC24DF212543820000C067 /* GOReachability.m in Sources */,
 				6DB34C1B1C4D18D4006D78D4 /* MessageConversationCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

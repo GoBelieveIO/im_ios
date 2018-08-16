@@ -13,7 +13,6 @@
 #import "AsyncTCP.h"
 #import "Message.h"
 #import "util.h"
-#import "GOReachability.h"
 
 #define HEARTBEAT_HZ (180)
 

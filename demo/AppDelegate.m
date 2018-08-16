@@ -31,6 +31,7 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 
+#import "GOReachability.h"
 
 @interface AppDelegate ()
 
@@ -44,6 +45,8 @@
 @property(nonatomic) MainViewController *mainViewController;
 #endif
 
+
+@property(nonatomic) GOReachability *reach;
 @end
 
 @implementation AppDelegate
@@ -76,7 +79,8 @@
     [IMService instance].peerMessageHandler = [PeerMessageHandler instance];
     [IMService instance].groupMessageHandler = [GroupMessageHandler instance];
     [IMService instance].customerMessageHandler = [CustomerMessageHandler instance];
-    [[IMService instance] startRechabilityNotifier];
+    [self startRechabilityNotifier];
+    [IMService instance].reachable = [self.reach isReachable];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
@@ -197,6 +201,25 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
+-(void)startRechabilityNotifier {
+    self.reach = [GOReachability reachabilityForInternetConnection];
+    self.reach.reachableBlock = ^(GOReachability*reach) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSLog(@"internet reachable");
+            [[IMService instance] onReachabilityChange:YES];
+        });
+    };
+    
+    self.reach.unreachableBlock = ^(GOReachability*reach) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSLog(@"internet unreachable");
+            [[IMService instance] onReachabilityChange:NO];
+        });
+    };
+    
+    [self.reach startNotifier];
+
+}
 
 -(void)refreshHost {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
