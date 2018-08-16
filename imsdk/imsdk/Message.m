@@ -25,9 +25,6 @@
 
 @end
 
-@implementation MessageInputing
-
-@end
 
 @implementation AuthenticationToken
 
@@ -38,9 +35,6 @@
 
 @end
 
-@implementation VOIPControl
-
-@end
 
 @implementation Message
 -(NSData*)pack {
