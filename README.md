@@ -8,3 +8,7 @@ gobelieve iOS SDK
 ##Podfile
 
     pod 'gobelieve', :git => 'https://github.com/GoBelieveIO/im_ios.git'
+
+
+##openssl
+    https://github.com/x2on/OpenSSL-for-iPhone.git

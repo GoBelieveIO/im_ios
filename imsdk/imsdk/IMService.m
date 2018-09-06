@@ -17,7 +17,7 @@
 #define HEARTBEAT_HZ (180)
 
 #define HOST  @"imnode2.gobelieve.io"
-#define PORT 23000
+#define PORT 24430
 
 
 @interface GroupSync : NSObject

@@ -12,6 +12,18 @@
 #include <netinet/in.h>
 #include <netdb.h>
 #include <arpa/inet.h>
+#include <openssl/ssl.h>
+
+#define BUF_SIZE (64*1024)
+
+enum AsyncTCPState{
+    TCP_CONNECTING,
+    TCP_SSL_CONNECTING,
+    TCP_READING,
+    TCP_WRITING
+};
+
+
 @interface AsyncTCP()
 @property(nonatomic, strong)ConnectCB connect_cb;
 @property(nonatomic, strong)ReadCB read_cb;
@@ -20,8 +32,11 @@
 @property(nonatomic)BOOL writeSourceActive;
 @property(nonatomic)BOOL readSourceActive;
 @property(nonatomic)int sock;
-@property(nonatomic)BOOL connecting;
 @property(nonatomic)NSMutableData *data;
+
+@property(nonatomic, assign) SSL_CTX *ctx;
+@property(nonatomic, assign) SSL *ssl;
+@property(nonatomic, assign) int state;
 @end
 
 @implementation AsyncTCP
@@ -31,6 +46,7 @@
     if (self) {
         self.data = [NSMutableData data];
         self.sock = -1;
+        self.ctx = SSL_CTX_new(SSLv23_client_method());
     }
     return self;
 }
@@ -41,6 +57,8 @@
     self.writeSource = nil;
     self.connect_cb = nil;
     self.read_cb = nil;
+    
+    SSL_CTX_free(self.ctx);
 }
 
 - (BOOL)synthesizeIPv6:(NSString*)host port:(int)port addr:(struct sockaddr*)addr addrinfo:(struct addrinfo*)info {
@@ -120,55 +138,165 @@
             return FALSE;
         }
     }
+
     
     dispatch_queue_t queue = dispatch_get_main_queue();
     self.writeSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_WRITE, sockfd, 0, queue);
     __weak AsyncTCP *wself = self;
     dispatch_source_set_event_handler(self.writeSource, ^{
-        [wself onWrite];
+        [wself onSocketEvent];
     });
     
     dispatch_resume(self.writeSource);
     self.writeSourceActive = YES;
     
-    self.connecting = YES;
+    self.readSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, sockfd, 0, queue);
+    dispatch_source_set_event_handler(self.readSource, ^{
+        [wself onSocketEvent];
+    });
+    dispatch_resume(self.readSource);
+    self.readSourceActive = YES;
+    
+    SSL *ssl = SSL_new(self.ctx);
+    SSL_set_mode(ssl, SSL_MODE_ACCEPT_MOVING_WRITE_BUFFER);
+    SSL_set_fd(ssl, sockfd);
+    self.ssl = ssl;
+    self.state = TCP_CONNECTING;
     self.connect_cb = cb;
     self.sock = sockfd;
-
     return TRUE;
 }
 
--(void)onWrite {
-    if (self.connecting) {
+-(void)resumeWriteSource {
+    if (!self.writeSourceActive) {
+        NSLog(@"resume write source");
+        dispatch_resume(self.writeSource);
+        self.writeSourceActive = YES;
+    }
+}
+
+-(void)suspendWriteSource {
+    if (self.writeSourceActive) {
+        NSLog(@"suspend write source");
+        dispatch_suspend(self.writeSource);
+        self.writeSourceActive = NO;
+    }
+}
+
+
+
+-(void)onSocketEvent {
+    if (self.state == TCP_CONNECTING) {
         int error;
         socklen_t errorsize = sizeof(int);
         getsockopt(self.sock, SOL_SOCKET, SO_ERROR, &error, &errorsize);
         if (error == EINPROGRESS)
             return;
-        self.connecting = NO;
-        self.connect_cb(self, error);
+        
+        if (error != 0) {
+            self.connect_cb(self, error);
+            return;
+        }
+        self.state = TCP_SSL_CONNECTING;
+        int r = SSL_connect(self.ssl);
+        if (r <= 0) {
+            int e = SSL_get_error(self.ssl, r);
+            if (e == SSL_ERROR_WANT_WRITE) {
+                [self resumeWriteSource];
+                return;
+            }
+            if (e == SSL_ERROR_WANT_READ) {
+                [self suspendWriteSource];
+                return;
+            }
+            self.connect_cb(self, e);
+        } else {
+            [self suspendWriteSource];
+            self.state = TCP_READING;
+            self.connect_cb(self, 0);
+        }
         return;
+    } else if (self.state == TCP_SSL_CONNECTING) {
+        int r = SSL_connect(self.ssl);
+        if (r <= 0) {
+            int e = SSL_get_error(self.ssl, r);
+            if (e == SSL_ERROR_WANT_WRITE) {
+                [self resumeWriteSource];
+                return;
+            }
+            if (e == SSL_ERROR_WANT_READ) {
+                [self suspendWriteSource];
+                return;
+            }
+            self.connect_cb(self, e);
+        } else {
+            [self suspendWriteSource];
+            self.state = TCP_READING;
+            self.connect_cb(self, 0);
+        }
+    } else if (self.state == TCP_WRITING) {
+        if (self.data.length == 0) {
+            [self suspendWriteSource];
+            self.state = TCP_READING;
+            return;
+        }
+        
+        const char *p = [self.data bytes];
+        int n = SSL_write(self.ssl, p, (int)self.data.length);
+        if (n <= 0) {
+            int e = SSL_get_error(self.ssl, n);
+            if (e == SSL_ERROR_WANT_WRITE) {
+                [self resumeWriteSource];
+                return;
+            }
+            if (e == SSL_ERROR_WANT_READ) {
+                //do not support ssl renegotiation, drop connection
+                NSLog(@"ssl write, err:want_read, do not support renegotiation, drop connection");
+            }
+            NSLog(@"sock write error:%d", e);
+            self.read_cb(self, nil, e);
+            return;
+        }
+        
+        self.data = [NSMutableData dataWithBytes:p+n length:self.data.length - n];
+        if (self.data.length == 0) {
+            [self suspendWriteSource];
+            self.state = TCP_READING;
+        }
+    } else if (self.state == TCP_READING) {
+        while (1) {
+            ssize_t nread;
+            char buf[BUF_SIZE];
+            nread = SSL_read(self.ssl, buf, BUF_SIZE);
+            if (nread <= 0) {
+                int e = SSL_get_error(self.ssl, (int)nread);
+                if (e == SSL_ERROR_WANT_READ) {
+                    [self suspendWriteSource];
+                    return;
+                }
+                if (e == SSL_ERROR_WANT_WRITE) {
+                    //do not support ssl renegotiation, drop connection
+                    NSLog(@"ssl read, err:want write, do not support renegotiation, drop connection");
+                }
+                NSLog(@"sock read error:%d", e);
+                self.read_cb(self, nil, e);
+                return;
+            } else {
+                NSData *data = [NSData dataWithBytes:buf length:nread];
+                self.read_cb(self, data, 0);
+                if (nread < BUF_SIZE) {
+                    return;
+                }
+            }
+        }
     }
-    const char *p = [self.data bytes];
-    int n = write_data(self.sock, (uint8_t*)p, (int)self.data.length);
-    if (n < 0) {
-        NSLog(@"sock write error:%d", errno);
-        dispatch_suspend(self.writeSource);
-        self.writeSourceActive = NO;
-        return;
-    }
-    self.data = [NSMutableData dataWithBytes:p+n length:self.data.length - n];
-    if (self.data.length == 0) {
-        dispatch_suspend(self.writeSource);
-        self.writeSourceActive = NO;
-    }
-    return;
 }
+
 
 -(void)close {
     __block int count = 0;
     
-    void (^on_cancel)() = ^{
+    void (^on_cancel)(void) = ^{
         --count;
         if (count == 0) {
             NSLog(@"async tcp closed");
@@ -204,13 +332,20 @@
         close(self.sock);
         self.sock = -1;
     }
+    if (self.ssl) {
+        SSL_free(self.ssl);
+        self.ssl = NULL;
+    }
 }
 
 -(void)write:(NSData*)data {
     [self.data appendData:data];
-    if (!self.writeSourceActive && self.writeSource) {
-        dispatch_resume(self.writeSource);
-        self.writeSourceActive = YES;
+    
+    [self flush];
+    
+    if (self.data.length > 0) {
+        [self resumeWriteSource];
+        self.state = TCP_WRITING;
     }
 }
 
@@ -219,52 +354,19 @@
         return;
     }
     const char *p = [self.data bytes];
-    int n = write_data(self.sock, (uint8_t*)p, (int)self.data.length);
-    if (n < 0) {
-        NSLog(@"sock write error:%d", errno);
+    
+    int n = SSL_write(self.ssl, p, (int)self.data.length);
+    if (n <= 0) {
+        int e = SSL_get_error(self.ssl, n);
+        NSLog(@"sock write error:%d", e);
         return;
     }
     self.data = [NSMutableData dataWithBytes:p+n length:self.data.length - n];
 }
 
-#define BUF_SIZE (64*1024)
--(void)onRead {
-    while (1) {
-        ssize_t nread;
-        char buf[BUF_SIZE];
-        
-        do {
-            nread = read(self.sock, buf, BUF_SIZE);
-        }while (nread < 0 && errno == EINTR);
-        
-        if (nread < 0) {
-            if (errno == EAGAIN || errno == EWOULDBLOCK) {
-                return;
-            } else {
-                self.read_cb(self, nil, errno);
-                return;
-            }
-        } else if (nread == 0) {
-            self.read_cb(self, nil, 0);
-            return;
-        } else {
-            NSData *data = [NSData dataWithBytes:buf length:nread];
-            self.read_cb(self, data, 0);
-            if (nread < BUF_SIZE) {
-                return;
-            }
-        }
-    }
-}
+
+
 -(void)startRead:(ReadCB)cb {
-    dispatch_queue_t queue = dispatch_get_main_queue();
-    self.readSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, self.sock, 0, queue);
-    __weak AsyncTCP *wself = self;
-    dispatch_source_set_event_handler(self.readSource, ^{
-        [wself onRead];
-    });
-    dispatch_resume(self.readSource);
-    self.readSourceActive = YES;
     self.read_cb = cb;
 }
 
