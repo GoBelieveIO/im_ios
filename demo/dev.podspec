@@ -17,9 +17,7 @@ Pod::Spec.new do |s|
 
   s.subspec 'imsdk' do |sp|
     sp.public_header_files = 'imsdk/imsdk/*.h'
-    sp.source_files        = 'imsdk/imsdk/*.{h,m,c}',  'openssl/*.h'
-    sp.xcconfig         = {'HEADER_SEARCH_PATHS' => '"${SRCROOT}/.."'}    
-    sp.vendored_libraries = 'openssl/lib/libcrypto.a', 'openssl/lib/libssl.a'
+    sp.source_files        = 'imsdk/imsdk/*.{h,m,c}'
   end
 
   s.subspec 'imkit' do |sp|
