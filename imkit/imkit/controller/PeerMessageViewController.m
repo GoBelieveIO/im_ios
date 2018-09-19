@@ -114,8 +114,17 @@
     if (im.sender == self.currentUID) {
         m.flags = m.flags | MESSAGE_FLAG_ACK;
     }
+    IMessage *mm = [self getMessageWithUUID:m.uuid];
     //判断消息是否重复
-    if (m.uuid.length > 0 && [self getMessageWithUUID:m.uuid]) {
+    if (mm) {
+        NSLog(@"receive repeat peer msg:%@", m.uuid);
+        //清空消息失败标志位
+        if (im.sender == self.currentUID) {
+            int flags = mm.flags;
+            flags = mm.flags & ~MESSAGE_FLAG_FAILURE;
+            flags = mm.flags | MESSAGE_FLAG_ACK;
+            mm.flags = flags;
+        }
         return;
     }
     

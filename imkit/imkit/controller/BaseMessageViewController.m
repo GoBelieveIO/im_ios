@@ -403,6 +403,9 @@ static int uptime = 0;
 }
 
 - (IMessage*)getMessageWithUUID:(NSString*)uuid {
+    if (uuid.length == 0) {
+        return nil;
+    }
     for (IMessage *msg in self.messages) {
         if ([msg.uuid isEqualToString:uuid]) {
             return msg;

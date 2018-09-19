@@ -37,7 +37,6 @@
     if (self.uid == msg.sender) {
         m.flags = m.flags|MESSAGE_FLAG_ACK;
     }
-    
 
     if (m.type == MESSAGE_REVOKE) {
         BOOL r = YES;
@@ -55,7 +54,6 @@
         }
         return r;
     }
-    
 }
 
 -(BOOL)handleMessageACK:(IMMessage*)msg {
