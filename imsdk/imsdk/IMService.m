@@ -884,7 +884,7 @@
     }
     
     for (NSNumber *seq in self.groupMessages) {
-        IMMessage *msg = [self.peerMessages objectForKey:seq];
+        IMMessage *msg = [self.groupMessages objectForKey:seq];
         [self.groupMessageHandler handleMessageFailure:msg];
         [self publishGroupMessageFailure:msg];
     }
