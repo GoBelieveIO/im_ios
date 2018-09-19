@@ -270,17 +270,6 @@
 - (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
     if (viewController == self) {
         [[IMService instance] stop];
-        
-        if (self.deviceToken.length > 0) {
-            
-            [IMHttpAPI unbindDeviceToken:self.deviceToken
-                                 success:^{
-                                     NSLog(@"unbind device token success");
-                                 }
-                                    fail:^{
-                                        NSLog(@"unbind device token fail");
-                                    }];
-        }
     }
 }
 

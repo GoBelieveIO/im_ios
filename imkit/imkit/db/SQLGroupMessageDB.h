@@ -14,7 +14,7 @@
 #import "IMessageIterator.h"
 #import "ConversationIterator.h"
 
-#import <FMDB/FMDB.h>
+#import <fmdb/FMDB.h>
 
 @interface SQLGroupMessageDB : NSObject
 +(SQLGroupMessageDB*)instance;
@@ -31,6 +31,7 @@
 -(int)getMessageId:(NSString*)uuid;
 -(IMessage*)getMessage:(int64_t)msgID;
 -(BOOL)insertMessage:(IMessage*)msg;
+-(BOOL)insertMessages:(NSArray*)msgs;
 -(BOOL)removeMessage:(int)msgLocalID gid:(int64_t)gid;
 -(BOOL)removeMessageIndex:(int)msgLocalID gid:(int64_t)gid;
 -(BOOL)clearConversation:(int64_t)gid;

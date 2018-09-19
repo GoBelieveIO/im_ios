@@ -19,8 +19,7 @@
 @end
 
 @protocol IMGroupMessageHandler <NSObject>
-
--(BOOL)handleMessage:(IMMessage*)msg;
+-(BOOL)handleMessages:(NSArray*)msgs;
 -(BOOL)handleMessageACK:(IMMessage*)msg;
 -(BOOL)handleMessageFailure:(IMMessage*)msg;
 
@@ -56,7 +55,8 @@
 
 @protocol GroupMessageObserver <NSObject>
 @optional
--(void)onGroupMessage:(IMMessage*)msg;
+-(void)onGroupMessages:(NSArray*)msgs;
+
 -(void)onGroupMessageACK:(IMMessage*)msg;
 -(void)onGroupMessageFailure:(IMMessage*)msg;
 
@@ -133,7 +133,6 @@
 -(BOOL)sendPeerMessage:(IMMessage*)msg;
 -(BOOL)sendGroupMessage:(IMMessage*)msg;
 -(BOOL)sendRoomMessage:(RoomMessage*)msg;
-
 //顾客->客服
 -(BOOL)sendCustomerMessage:(CustomerMessage*)im;
 //客服->顾客

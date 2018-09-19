@@ -217,6 +217,33 @@
     return [db changes] == 1;
 }
 
+-(BOOL)insertMessages:(NSArray*)msgs {
+    FMDatabase *db = self.db;
+    [db beginTransaction];
+    
+    for (IMessage *msg in msgs) {
+        NSString *uuid = msg.uuid ? msg.uuid : @"";
+        BOOL r = [db executeUpdate:@"INSERT INTO group_message (sender, group_id, timestamp, flags, uuid, content) VALUES (?, ?, ?, ?, ?, ?)",
+                  @(msg.sender), @(msg.receiver), @(msg.timestamp),@(msg.flags), uuid, msg.rawContent];
+        if (!r) {
+            NSLog(@"error = %@", [db lastErrorMessage]);
+            [db rollback];
+            return NO;
+        }
+        
+        int64_t rowID = [db lastInsertRowId];
+        msg.msgLocalID = (int)rowID;
+        
+        if (msg.textContent) {
+            NSString *text = [msg.textContent.text tokenizer];
+            [db executeUpdate:@"INSERT INTO group_message_fts (docid, content) VALUES (?, ?)", @(rowID), text];
+        }
+    }
+    
+    [db commit];
+    return YES;
+}
+
 -(BOOL)insertMessage:(IMessage*)msg {
     FMDatabase *db = self.db;
     [db beginTransaction];

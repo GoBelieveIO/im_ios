@@ -650,6 +650,12 @@ alpha:(a)]
     [self onNewMessage:m cid:cid];
 }
 
+-(void)onGroupMessages:(NSArray*)msgs {
+    for (IMMessage *im in msgs) {
+        [self onGroupMessage:im];
+    }
+}
+
 -(void)onGroupMessage:(IMMessage *)im {
     IMessage *m = [[IMessage alloc] init];
     m.sender = im.sender;

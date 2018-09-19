@@ -73,6 +73,12 @@
 
 
 #pragma mark - MessageObserver
+-(void)onGroupMessages:(NSArray*)msgs {
+    for (IMMessage *im in msgs) {
+        [self onGroupMessage:im];
+    }
+}
+
 -(void)onGroupMessage:(IMMessage*)im {
     if (im.receiver != self.groupID) {
         return;

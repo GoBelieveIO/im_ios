@@ -24,32 +24,40 @@
     return m;
 }
 
--(BOOL)handleMessage:(IMMessage*)im {
-    IMessage *m = [[IMessage alloc] init];
-    m.sender = im.sender;
-    m.receiver = im.receiver;
-    m.rawContent = im.content;
-    m.timestamp = im.timestamp;
-    if (self.uid == im.sender) {
-        m.flags = m.flags | MESSAGE_FLAG_ACK;
-    }
-    
-    if (m.type == MESSAGE_REVOKE) {
-        BOOL r = YES;
-        MessageRevoke *revoke = m.revokeContent;
-        int msgId = [[GroupMessageDB instance] getMessageId:revoke.msgid];
-        if (msgId > 0) {
-            r = [[GroupMessageDB instance] updateMessageContent:msgId content:im.content];
-            [[GroupMessageDB instance] removeMessageIndex:msgId gid:im.receiver];
+-(BOOL)handleMessages:(NSArray *)msgs {
+    NSMutableArray *imsgs = [NSMutableArray array];
+    NSMutableArray *insertedMsgs = [NSMutableArray array];
+    for (IMMessage *im in msgs) {
+        IMessage *m = [[IMessage alloc] init];
+        m.sender = im.sender;
+        m.receiver = im.receiver;
+        m.rawContent = im.content;
+        m.timestamp = im.timestamp;
+        if (self.uid == im.sender) {
+            m.flags = m.flags | MESSAGE_FLAG_ACK;
         }
-        return r;
-    } else {
-        BOOL r = [[GroupMessageDB instance] insertMessage:m];
-        if (r) {
-            im.msgLocalID = m.msgLocalID;
+        
+        if (m.type == MESSAGE_REVOKE) {
+            MessageRevoke *revoke = m.revokeContent;
+            int msgId = [[GroupMessageDB instance] getMessageId:revoke.msgid];
+            if (msgId > 0) {
+                [[GroupMessageDB instance] updateMessageContent:msgId content:im.content];
+                [[GroupMessageDB instance] removeMessageIndex:msgId gid:im.receiver];
+            }
+        } else {
+            [imsgs addObject:m];
+            [insertedMsgs addObject:im];
         }
-        return r;
     }
+    if (imsgs.count > 0) {
+        [[GroupMessageDB instance] insertMessages:imsgs];
+    }
+    for (NSInteger i = 0; i < insertedMsgs.count; i++) {
+        IMessage *imsg = [imsgs objectAtIndex:i];
+        IMMessage *im = [insertedMsgs objectAtIndex:i];
+        im.msgLocalID = imsg.msgLocalID;
+    }
+    return YES;
 }
 
 -(BOOL)handleMessageACK:(IMMessage*)msg {

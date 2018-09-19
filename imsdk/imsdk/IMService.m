@@ -1,3 +1,4 @@
+
 /*                                                                            
   Copyright (c) 2014-2015, GoBelieve     
     All rights reserved.		    				     			
@@ -13,6 +14,7 @@
 #import "AsyncTCP.h"
 #import "Message.h"
 #import "util.h"
+
 
 #define HEARTBEAT_HZ (180)
 
@@ -47,6 +49,8 @@
 @property(nonatomic)NSMutableDictionary *roomMessages;
 @property(nonatomic)NSMutableDictionary *customerServiceMessages;
 
+//优化，收到群组消息后，缓存到数组中， 然后一次性调用observer，这样可以只需要更新一次ui
+@property(nonatomic)NSMutableArray *receivedGroupMessages;
 
 //保证一个时刻只存在一个同步过程，否则会导致获取到重复的消息
 @property(nonatomic, assign) int64_t peedingSyncKey;
@@ -78,6 +82,8 @@
         self.systemObservers = [NSMutableArray array];
         self.customerServiceObservers = [NSMutableArray array];
         self.rtObservers = [NSMutableArray array];
+        
+        self.receivedGroupMessages = [NSMutableArray array];
         
         self.data = [NSMutableData data];
         self.peerMessages = [NSMutableDictionary dictionary];
@@ -138,13 +144,12 @@
 
 -(void)handleGroupIMMessage:(Message*)msg {
     IMMessage *im = (IMMessage*)msg.body;
-    [self.groupMessageHandler handleMessage:im];
     NSLog(@"group message sender:%lld receiver:%lld content:%s", im.sender, im.receiver, [im.content UTF8String]);
     Message *ack = [[Message alloc] init];
     ack.cmd = MSG_ACK;
     ack.body = [NSNumber numberWithInt:msg.seq];
     [self sendMessage:ack];
-    [self publishGroupMessage:im];
+    [self.receivedGroupMessages addObject:im];
 }
 
 -(void)handleCustomerSupportMessage:(Message*)msg {
@@ -240,14 +245,21 @@
 
 -(void)handleSyncEnd:(Message*)msg {
     NSLog(@"sync end...:%@", msg.body);
+
+    if (self.receivedGroupMessages.count > 0) {
+        [self.groupMessageHandler handleMessages:self.receivedGroupMessages];
+        [self publishGroupMessages:self.receivedGroupMessages];
+        [self.receivedGroupMessages removeAllObjects];
+    }
     
+
     NSNumber *newSyncKey = (NSNumber*)msg.body;
-    if ([newSyncKey longLongValue] > self.syncKey) {
+    if ([newSyncKey longLongValue] !=  self.syncKey) {
         self.syncKey = [newSyncKey longLongValue];
         [self.syncKeyHandler saveSyncKey:self.syncKey];
         [self sendSyncKey:self.syncKey];
     }
-    
+
     self.isSyncing = NO;
     
     if (self.peedingSyncKey > self.syncKey) {
@@ -283,13 +295,19 @@
     GroupSyncKey *groupSyncKey = (GroupSyncKey*)msg.body;
     NSLog(@"sync group end:%lld %lld", groupSyncKey.groupID, groupSyncKey.syncKey);
     
+    if (self.receivedGroupMessages.count > 0) {
+        [self.groupMessageHandler handleMessages:self.receivedGroupMessages];
+        [self publishGroupMessages:self.receivedGroupMessages];
+        [self.receivedGroupMessages removeAllObjects];
+    }
+    
     GroupSync *s = [self.groupSyncKeys objectForKey:[NSNumber numberWithLongLong:groupSyncKey.groupID]];
     if (!s) {
         NSLog(@"no group:%lld sync key", groupSyncKey.groupID);
         return;
     }
-    
-    if (groupSyncKey.syncKey > s.syncKey) {
+
+    if (groupSyncKey.syncKey != s.syncKey) {
         s.syncKey = groupSyncKey.syncKey;
         [self.syncKeyHandler saveGroupSyncKey:groupSyncKey.syncKey gid:groupSyncKey.groupID];
         [self sendGroupSyncKey:groupSyncKey.syncKey gid:groupSyncKey.groupID];
@@ -370,11 +388,11 @@
     }
 }
 
--(void)publishGroupMessage:(IMMessage*)msg {
+-(void)publishGroupMessages:(NSArray*)msgs {
     for (NSValue *value in self.groupObservers) {
         id<GroupMessageObserver> ob = [value nonretainedObjectValue];
-        if ([ob respondsToSelector:@selector(onGroupMessage:)]) {
-            [ob onGroupMessage:msg];
+        if ([ob respondsToSelector:@selector(onGroupMessages:)]) {
+            [ob onGroupMessages:msgs];
         }
     }
 }
@@ -620,6 +638,7 @@
     s.groupID = gid;
     s.syncKey = syncKey;
     [self.groupSyncKeys setObject:s forKey:k];
+    [self sendGroupSync:syncKey gid:gid];
 }
 
 -(void)clearSuperGroupSyncKey {
@@ -853,6 +872,11 @@
 }
 
 -(void)onClose {
+    if (self.receivedGroupMessages.count) {
+        NSLog(@"received group messages:%@", self.receivedGroupMessages);
+        [self.receivedGroupMessages removeAllObjects];
+    }
+    
     for (NSNumber *seq in self.peerMessages) {
         IMMessage *msg = [self.peerMessages objectForKey:seq];
         [self.peerMessageHandler handleMessageFailure:msg];
