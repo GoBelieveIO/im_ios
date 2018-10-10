@@ -47,4 +47,5 @@
 -(BOOL)markMessageFailure:(int)msgLocalID uid:(int64_t)uid;
 -(BOOL)markMesageListened:(int)msgLocalID uid:(int64_t)uid;
 -(BOOL)eraseMessageFailure:(int)msgLocalID uid:(int64_t)uid;
+-(BOOL)updateFlags:(int)msgLocalID flags:(int)flags;
 @end

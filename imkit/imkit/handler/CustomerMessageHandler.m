@@ -23,6 +23,23 @@
     return m;
 }
 
+
+//将发送失败的消息置为成功
+-(void)repairFailureMessage:(NSString*)uuid {
+    CustomerMessageDB *db = [CustomerMessageDB instance];
+    if (uuid.length > 0) {
+        int msgId = [db getMessageId:uuid];
+        IMessage *mm = [db getMessage:msgId];
+        if (mm != nil) {
+            if ((mm.flags & MESSAGE_FLAG_FAILURE) != 0 || (mm.flags & MESSAGE_FLAG_ACK) == 0) {
+                mm.flags = mm.flags & (~MESSAGE_FLAG_FAILURE);
+                mm.flags = mm.flags | MESSAGE_FLAG_ACK;
+                [db updateFlags:mm.msgLocalID flags:mm.flags];
+            }
+        }
+    }
+}
+
 -(BOOL)handleCustomerSupportMessage:(CustomerMessage*)msg {
     ICustomerMessage *m = [[ICustomerMessage alloc] init];
     m.customerAppID = msg.customerAppID;
@@ -34,10 +51,12 @@
     m.receiver = msg.storeID;
     m.rawContent = msg.content;
     m.timestamp = msg.timestamp;
+
     BOOL r = [[CustomerMessageDB instance] insertMessage:m uid:msg.storeID];
     if (r) {
         msg.msgLocalID = m.msgLocalID;
     }
+    
     return r;
 }
 
@@ -56,7 +75,10 @@
         m.flags = m.flags | MESSAGE_FLAG_ACK;
     }
     
-    if (m.type == MESSAGE_REVOKE) {
+    if (msg.isSelf) {
+        [self repairFailureMessage:m.uuid];
+        return YES;
+    } else if (m.type == MESSAGE_REVOKE) {
         BOOL r = YES;
         MessageRevoke *revoke = m.revokeContent;
         int msgId = [[CustomerMessageDB instance] getMessageId:revoke.msgid];

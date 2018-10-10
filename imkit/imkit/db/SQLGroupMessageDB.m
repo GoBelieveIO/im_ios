@@ -422,6 +422,17 @@
     
 }
 
+-(BOOL)updateFlags:(int)msgLocalID flags:(int)flags {
+    FMDatabase *db = self.db;
+    
+    BOOL r = [db executeUpdate:@"UPDATE group_message SET flags= ? WHERE id= ?", @(flags), @(msgLocalID)];
+    if (!r) {
+        NSLog(@"error = %@", [db lastErrorMessage]);
+        return NO;
+    }
+    
+    return YES;
+}
 
 @end
 

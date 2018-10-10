@@ -128,6 +128,7 @@
 
 -(void)handleIMMessage:(Message*)msg {
     IMMessage *im = (IMMessage*)msg.body;
+    im.isSelf = msg.flag & MESSAGE_FLAG_SELF;
     [self.peerMessageHandler handleMessage:im];
     NSLog(@"peer message sender:%lld receiver:%lld content:%s", im.sender, im.receiver, [im.content UTF8String]);
     
@@ -144,6 +145,7 @@
 
 -(void)handleGroupIMMessage:(Message*)msg {
     IMMessage *im = (IMMessage*)msg.body;
+    im.isSelf = msg.flag & MESSAGE_FLAG_SELF;
     NSLog(@"group message sender:%lld receiver:%lld content:%s", im.sender, im.receiver, [im.content UTF8String]);
     Message *ack = [[Message alloc] init];
     ack.cmd = MSG_ACK;
@@ -154,6 +156,7 @@
 
 -(void)handleCustomerSupportMessage:(Message*)msg {
     CustomerMessage *im = (CustomerMessage*)msg.body;
+    im.isSelf = msg.flag & MESSAGE_FLAG_SELF;
     [self.customerMessageHandler handleCustomerSupportMessage:im];
     
     NSLog(@"customer support message customer id:%lld customer appid:%lld store id:%lld seller id:%lld content:%s",
@@ -168,6 +171,7 @@
 
 -(void)handleCustomerMessage:(Message*)msg {
     CustomerMessage *im = (CustomerMessage*)msg.body;
+    im.isSelf = msg.flag & MESSAGE_FLAG_SELF;
     [self.customerMessageHandler handleMessage:im];
     
     NSLog(@"customer message customer id:%lld customer appid:%lld store id:%lld seller id:%lld content:%s",

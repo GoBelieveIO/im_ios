@@ -139,6 +139,24 @@
     return nil;
 }
 
+-(IMessage*)getMessage:(int)msgID {
+    FMResultSet *rs = [self.db executeQuery:@"SELECT id, customer_id, customer_appid, store_id, seller_id, timestamp, flags, is_support, content FROM customer_message WHERE id= ?", @(msgID)];
+    if ([rs next]) {
+        ICustomerMessage *msg = [[ICustomerMessage alloc] init];
+        msg.customerAppID = [rs longLongIntForColumn:@"customer_appid"];
+        msg.customerID = [rs longLongIntForColumn:@"customer_id"];
+        msg.storeID = [rs longLongIntForColumn:@"store_id"];
+        msg.sellerID = [rs longLongIntForColumn:@"seller_id"];
+        msg.timestamp = [rs intForColumn:@"timestamp"];
+        msg.flags = [rs intForColumn:@"flags"];
+        msg.isSupport = [rs intForColumn:@"is_support"];
+        msg.rawContent = [rs stringForColumn:@"content"];
+        msg.msgLocalID = [rs intForColumn:@"id"];
+        return msg;
+    }
+    return nil;
+}
+
 -(int)getMessageId:(NSString*)uuid {
     FMResultSet *rs = [self.db executeQuery:@"SELECT id FROM customer_message WHERE uuid= ?", uuid];
     if ([rs next]) {
@@ -284,6 +302,19 @@
     return YES;
     
 }
+
+
+-(BOOL)updateFlags:(int)msgLocalID flags:(int)flags {
+    FMDatabase *db = self.db;
+    
+    BOOL r = [db executeUpdate:@"UPDATE customer_message SET flags= ? WHERE id= ?", @(flags), @(msgLocalID)];
+    if (!r) {
+        NSLog(@"error = %@", [db lastErrorMessage]);
+        return NO;
+    }
+    return YES;
+}
+
 
 -(id<IMessageIterator>)newMessageIterator:(int64_t)store {
     return [[SQLCustomerMessageIterator alloc] initWithDB:self.db store:store];

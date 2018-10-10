@@ -106,6 +106,9 @@
         }
         return;
     }
+    if (im.isSelf) {
+        return;
+    }
     
     NSLog(@"receive group msg");
     int now = (int)time(NULL);

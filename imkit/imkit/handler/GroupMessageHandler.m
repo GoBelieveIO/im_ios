@@ -24,6 +24,23 @@
     return m;
 }
 
+//将发送失败的消息置为成功
+-(void)repairFailureMessage:(NSString*)uuid {
+    GroupMessageDB *db = [GroupMessageDB instance];
+    if (uuid.length > 0) {
+        int msgId = [db getMessageId:uuid];
+        IMessage *mm = [db getMessage:msgId];
+        if (mm != nil) {
+            if ((mm.flags & MESSAGE_FLAG_FAILURE) != 0 || (mm.flags & MESSAGE_FLAG_ACK) == 0) {
+                mm.flags = mm.flags & (~MESSAGE_FLAG_FAILURE);
+                mm.flags = mm.flags | MESSAGE_FLAG_ACK;
+                [db updateFlags:mm.msgLocalID flags:mm.flags];
+            }
+        }
+    }
+}
+
+
 -(BOOL)handleMessages:(NSArray *)msgs {
     NSMutableArray *imsgs = [NSMutableArray array];
     NSMutableArray *insertedMsgs = [NSMutableArray array];
@@ -37,7 +54,10 @@
             m.flags = m.flags | MESSAGE_FLAG_ACK;
         }
         
-        if (m.type == MESSAGE_REVOKE) {
+        if (im.isSelf) {
+            NSAssert(im.sender == self.uid, @"");
+            [self repairFailureMessage:m.uuid];
+        } else if (m.type == MESSAGE_REVOKE) {
             MessageRevoke *revoke = m.revokeContent;
             int msgId = [[GroupMessageDB instance] getMessageId:revoke.msgid];
             if (msgId > 0) {

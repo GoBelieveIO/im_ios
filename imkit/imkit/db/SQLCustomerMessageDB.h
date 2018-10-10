@@ -28,6 +28,7 @@
 -(id<ConversationIterator>)newConversationIterator;
 
 -(IMessage*)getLastMessage:(int64_t)storeID;
+-(IMessage*)getMessage:(int)msgID;
 -(int)getMessageId:(NSString*)uuid;
 -(BOOL)insertMessage:(IMessage*)msg uid:(int64_t)storeID;
 -(BOOL)removeMessage:(int)msgLocalID uid:(int64_t)storeID;
@@ -39,4 +40,5 @@
 -(BOOL)markMessageFailure:(int)msgLocalID uid:(int64_t)storeID;
 -(BOOL)markMesageListened:(int)msgLocalID uid:(int64_t)storeID;
 -(BOOL)eraseMessageFailure:(int)msgLocalID uid:(int64_t)storeID;
+-(BOOL)updateFlags:(int)msgLocalID flags:(int)flags;
 @end

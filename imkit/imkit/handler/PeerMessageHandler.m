@@ -25,6 +25,22 @@
     return m;
 }
 
+//将发送失败的消息置为成功
+-(void)repairFailureMessage:(NSString*)uuid {
+    PeerMessageDB *db = [PeerMessageDB instance];
+    if (uuid.length > 0) {
+        int msgId = [db getMessageId:uuid];
+        IMessage *mm = [db getMessage:msgId];
+        if (mm != nil) {
+            if ((mm.flags & MESSAGE_FLAG_FAILURE) != 0 || (mm.flags & MESSAGE_FLAG_ACK) == 0) {
+                mm.flags = mm.flags & (~MESSAGE_FLAG_FAILURE);
+                mm.flags = mm.flags | MESSAGE_FLAG_ACK;
+                [db updateFlags:mm.msgLocalID flags:mm.flags];
+            }
+        }
+    }
+}
+
 -(BOOL)handleMessage:(IMMessage*)msg {
     int64_t pid = self.uid == msg.sender ? msg.receiver : msg.sender;
     IMMessage *im = msg;
@@ -38,7 +54,12 @@
         m.flags = m.flags|MESSAGE_FLAG_ACK;
     }
 
-    if (m.type == MESSAGE_REVOKE) {
+
+    if (im.isSelf) {
+        NSAssert(im.sender == self.uid, @"");
+        [self repairFailureMessage:m.uuid];
+        return true;
+    } else if (m.type == MESSAGE_REVOKE) {
         BOOL r = YES;
         MessageRevoke *revoke = m.revokeContent;
         int msgId = [[PeerMessageDB instance] getMessageId:revoke.msgid];

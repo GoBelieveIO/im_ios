@@ -141,6 +141,9 @@
         return;
     }
 
+    if (im.isSelf) {
+        return;
+    }
     
     int now = (int)time(NULL);
     if (now - self.lastReceivedTimestamp > 1) {

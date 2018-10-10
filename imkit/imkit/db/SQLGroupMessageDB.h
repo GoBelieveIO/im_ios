@@ -40,4 +40,5 @@
 -(BOOL)acknowledgeMessage:(int)msgLocalID gid:(int64_t)gid;
 -(BOOL)markMessageFailure:(int)msgLocalID gid:(int64_t)gid;
 -(BOOL)markMesageListened:(int)msgLocalID gid:(int64_t)gid;
+-(BOOL)updateFlags:(int)msgLocalID flags:(int)flags;
 @end

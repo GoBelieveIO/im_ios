@@ -345,6 +345,19 @@
     
 }
 
+-(BOOL)updateFlags:(int)msgLocalID flags:(int)flags {
+    FMDatabase *db = self.db;
+    
+    BOOL r = [db executeUpdate:@"UPDATE peer_message SET flags= ? WHERE id= ?", @(flags), @(msgLocalID)];
+    if (!r) {
+        NSLog(@"error = %@", [db lastErrorMessage]);
+        return NO;
+    }
+    
+    return YES;
+}
+
+
 -(id<IMessageIterator>)newMessageIterator:(int64_t)uid {
     return [[SQLPeerMessageIterator alloc] initWithDB:self.db peer:uid secret:self.secret];
 }

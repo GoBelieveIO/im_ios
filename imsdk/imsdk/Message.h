@@ -59,8 +59,9 @@
 #define PLATFORM_WEB 3
 
 #define MESSAGE_FLAG_TEXT 1
-#define MESSAGE_FLAG_UNPERSISTENT 4
-#define MESSAGE_FLAG_GROUP 8
+#define MESSAGE_FLAG_UNPERSISTENT 2
+#define MESSAGE_FLAG_GROUP 4
+#define MESSAGE_FLAG_SELF 8
 
 
 @interface IMMessage : NSObject
@@ -72,6 +73,9 @@
 
 @property(nonatomic, copy)NSString *plainContent;
 @property(nonatomic, assign)BOOL secret;
+
+//消息由当前用户在当前设备发出
+@property(nonatomic, assign) BOOL isSelf;
 @end
 
 @interface CustomerMessage : NSObject
@@ -84,6 +88,9 @@
 @property(nonatomic, assign)int64_t sellerID;
 @property(nonatomic, assign)int32_t timestamp;
 @property(nonatomic, copy)NSString *content;
+
+//消息由当前用户在当前设备发出
+@property(nonatomic, assign) BOOL isSelf;
 @end
 
 @interface RoomMessage : NSObject
