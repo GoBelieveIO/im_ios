@@ -23,22 +23,29 @@
 @property(nonatomic, strong) FMDatabase *db;
 
 
--(id<IMessageIterator>)newMessageIterator:(int64_t)uid;
--(id<IMessageIterator>)newMessageIterator:(int64_t)uid last:(int)lastMsgID;
+-(id<IMessageIterator>)newMessageIterator:(int64_t)storeID;
+-(id<IMessageIterator>)newMessageIterator:(int64_t)storeID last:(int)lastMsgID;
+
+-(id<IMessageIterator>)newMessageIterator:(int64_t)uid appID:(int64_t)appID;
+-(id<IMessageIterator>)newMessageIterator:(int64_t)uid appID:(int64_t)appID last:(int)lastMsgID;
+
 -(id<ConversationIterator>)newConversationIterator;
 
+-(IMessage*)getLastMessage:(int64_t)uid appID:(int64_t)appID;
 -(IMessage*)getLastMessage:(int64_t)storeID;
 -(IMessage*)getMessage:(int)msgID;
 -(int)getMessageId:(NSString*)uuid;
--(BOOL)insertMessage:(IMessage*)msg uid:(int64_t)storeID;
--(BOOL)removeMessage:(int)msgLocalID uid:(int64_t)storeID;
--(BOOL)removeMessageIndex:(int)msgLocalID uid:(int64_t)storeID;
+-(BOOL)insertMessage:(IMessage*)msg;
+-(BOOL)removeMessage:(int)msgLocalID;
+-(BOOL)removeMessageIndex:(int)msgLocalID;
+
 -(BOOL)clearConversation:(int64_t)storeID;
+-(BOOL)clearConversation:(int64_t)uid appID:(int64_t)appID;
 -(BOOL)clear;
 -(BOOL)updateMessageContent:(int)msgLocalID content:(NSString*)content;
--(BOOL)acknowledgeMessage:(int)msgLocalID uid:(int64_t)storeID;
--(BOOL)markMessageFailure:(int)msgLocalID uid:(int64_t)storeID;
--(BOOL)markMesageListened:(int)msgLocalID uid:(int64_t)storeID;
--(BOOL)eraseMessageFailure:(int)msgLocalID uid:(int64_t)storeID;
+-(BOOL)acknowledgeMessage:(int)msgLocalID;
+-(BOOL)markMessageFailure:(int)msgLocalID;
+-(BOOL)markMesageListened:(int)msgLocalID;
+-(BOOL)eraseMessageFailure:(int)msgLocalID;
 -(BOOL)updateFlags:(int)msgLocalID flags:(int)flags;
 @end

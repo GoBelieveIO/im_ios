@@ -46,7 +46,7 @@
 
 -(void)markMessageFailure:(IMessage*)msg {
     ICustomerMessage *cm = (ICustomerMessage*)msg;
-    [[CustomerMessageDB instance] markMessageFailure:cm.msgLocalID uid:cm.storeID];
+    [[CustomerMessageDB instance] markMessageFailure:cm.msgLocalID];
 }
 
 -(void)saveMessageAttachment:(IMessage*)msg url:(NSString*)url {

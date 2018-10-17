@@ -46,6 +46,8 @@
 }
 
 
+
+
 - (NSArray*)loadConversationData:(int)messageID {
     return nil;
 }
@@ -89,28 +91,23 @@
 
 
 -(BOOL)saveMessage:(IMessage*)msg {
-    ICustomerMessage *cm = (ICustomerMessage*)msg;
-    return [[CustomerMessageDB instance] insertMessage:msg uid:cm.storeID];
+    return [[CustomerMessageDB instance] insertMessage:msg];
 }
 
 -(BOOL)removeMessage:(IMessage*)msg {
-    ICustomerMessage *cm = (ICustomerMessage*)msg;
-    return [[CustomerMessageDB instance] removeMessage:msg.msgLocalID uid:cm.storeID];
+    return [[CustomerMessageDB instance] removeMessage:msg.msgLocalID];
     
 }
 -(BOOL)markMessageFailure:(IMessage*)msg {
-    ICustomerMessage *cm = (ICustomerMessage*)msg;
-    return [[CustomerMessageDB instance] markMessageFailure:msg.msgLocalID uid:cm.storeID];
+    return [[CustomerMessageDB instance] markMessageFailure:msg.msgLocalID];
 }
 
 -(BOOL)markMesageListened:(IMessage*)msg {
-    ICustomerMessage *cm = (ICustomerMessage*)msg;
-    return [[CustomerMessageDB instance] markMesageListened:msg.msgLocalID uid:cm.storeID];
+    return [[CustomerMessageDB instance] markMesageListened:msg.msgLocalID];
 }
 
 -(BOOL)eraseMessageFailure:(IMessage*)msg {
-    ICustomerMessage *cm = (ICustomerMessage*)msg;
-    return [[CustomerMessageDB instance] eraseMessageFailure:msg.msgLocalID uid:cm.storeID];
+    return [[CustomerMessageDB instance] eraseMessageFailure:msg.msgLocalID];
 }
 
 -(IMessage*)newMessage {
@@ -119,11 +116,8 @@
 }
 -(IMessage*)newOutMessage {
     ICustomerMessage *msg = [[ICustomerMessage alloc] init];
-    msg.sender = self.currentUID;
-    msg.receiver = self.storeID;
-    
-    msg.customerID = self.currentUID;
-    msg.customerAppID = self.appID;
+    msg.customerID = self.customerID;
+    msg.customerAppID = self.customerAppID;
     msg.storeID = self.storeID;
     msg.sellerID = self.sellerID;
     return msg;

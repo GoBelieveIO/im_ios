@@ -6,6 +6,10 @@
 
 -(SQLCustomerMessageIterator*)initWithDB:(FMDatabase*)db store:(int64_t)store position:(int)msgID;
 
+-(SQLCustomerMessageIterator*)initWithDB:(FMDatabase*)db uid:(int64_t)uid appID:(int64_t)appID;
+
+-(SQLCustomerMessageIterator*)initWithDB:(FMDatabase*)db uid:(int64_t)uid appID:(int64_t)appID position:(int)msgID;
+
 @property(nonatomic) FMResultSet *rs;
 @end
 
@@ -33,6 +37,25 @@
     }
     return self;
 }
+
+-(SQLCustomerMessageIterator*)initWithDB:(FMDatabase*)db uid:(int64_t)uid appID:(int64_t)appID {
+    self = [super init];
+    if (self) {
+        NSString *sql = @"SELECT  id, customer_id, customer_appid, store_id, seller_id, timestamp, flags, is_support, content FROM customer_message WHERE customer_id = ? AND customer_appid=? ORDER BY id DESC";
+        self.rs = [db executeQuery:sql, @(uid), @(appID)];
+    }
+    return self;
+}
+
+-(SQLCustomerMessageIterator*)initWithDB:(FMDatabase*)db uid:(int64_t)uid appID:(int64_t)appID position:(int)msgID {
+    self = [super init];
+    if (self) {
+        NSString *sql = @"SELECT  id, customer_id, customer_appid, store_id, seller_id, timestamp, flags, is_support, content FROM customer_message WHERE customer_id = ? AND customer_appid=? AND id < ? ORDER BY id DESC";
+        self.rs = [db executeQuery:sql, @(uid), @(appID), @(msgID)];
+    }
+    return self;
+}
+
 
 -(IMessage*)next {
     BOOL r = [self.rs next];
@@ -121,6 +144,24 @@
     return m;
 }
 
+-(IMessage*)getLastMessage:(int64_t)uid appID:(int64_t)appID {
+    FMResultSet *rs = [self.db executeQuery:@"SELECT id, customer_id, customer_appid, store_id, seller_id, timestamp, flags, is_support, content FROM customer_message WHERE customer_id= ? AND customer_appid=? ORDER BY id DESC", @(uid), @(appID)];
+    if ([rs next]) {
+        ICustomerMessage *msg = [[ICustomerMessage alloc] init];
+        msg.customerAppID = [rs longLongIntForColumn:@"customer_appid"];
+        msg.customerID = [rs longLongIntForColumn:@"customer_id"];
+        msg.storeID = [rs longLongIntForColumn:@"store_id"];
+        msg.sellerID = [rs longLongIntForColumn:@"seller_id"];
+        msg.timestamp = [rs intForColumn:@"timestamp"];
+        msg.flags = [rs intForColumn:@"flags"];
+        msg.isSupport = [rs intForColumn:@"is_support"];
+        msg.rawContent = [rs stringForColumn:@"content"];
+        msg.msgLocalID = [rs intForColumn:@"id"];
+        return msg;
+    }
+    return nil;
+}
+
 -(IMessage*)getLastMessage:(int64_t)storeID {
     FMResultSet *rs = [self.db executeQuery:@"SELECT id, customer_id, customer_appid, store_id, seller_id, timestamp, flags, is_support, content FROM customer_message WHERE store_id= ? ORDER BY id DESC", @(storeID)];
     if ([rs next]) {
@@ -168,7 +209,7 @@
     return 0;
 }
 
--(BOOL)insertMessage:(IMessage*)msg uid:(int64_t)uid{
+-(BOOL)insertMessage:(IMessage*)msg {
     ICustomerMessage *cm = (ICustomerMessage*)msg;
     FMDatabase *db = self.db;
     int is_support = cm.isSupport ? 1 : 0;
@@ -185,7 +226,7 @@
     return YES;
 }
 
--(BOOL)removeMessage:(int)msgLocalID uid:(int64_t)storeID {
+-(BOOL)removeMessage:(int)msgLocalID {
     FMDatabase *db = self.db;
     BOOL r = [db executeUpdate:@"DELETE FROM customer_message WHERE id=?", @(msgLocalID)];
     if (!r) {
@@ -202,9 +243,19 @@
     return YES;
 }
 
--(BOOL)removeMessageIndex:(int)msgLocalID uid:(int64_t)storeID {
+-(BOOL)removeMessageIndex:(int)msgLocalID {
     FMDatabase *db = self.db;
     BOOL r = [db executeUpdate:@"DELETE FROM customer_message_fts WHERE rowid=?", @(msgLocalID)];
+    if (!r) {
+        NSLog(@"error = %@", [db lastErrorMessage]);
+        return NO;
+    }
+    return YES;
+}
+
+-(BOOL)clearConversation:(int64_t)uid appID:(int64_t)appID {
+    FMDatabase *db = self.db;
+    BOOL r = [db executeUpdate:@"DELETE FROM customer_message WHERE customer_id=? AND customer_appid=?", @(uid), @(appID)];
     if (!r) {
         NSLog(@"error = %@", [db lastErrorMessage]);
         return NO;
@@ -244,15 +295,15 @@
     return YES;
 }
 
--(BOOL)acknowledgeMessage:(int)msgLocalID uid:(int64_t)uid {
+-(BOOL)acknowledgeMessage:(int)msgLocalID {
     return [self addFlag:msgLocalID flag:MESSAGE_FLAG_ACK];
 }
 
--(BOOL)markMessageFailure:(int)msgLocalID uid:(int64_t)uid {
+-(BOOL)markMessageFailure:(int)msgLocalID {
     return [self addFlag:msgLocalID flag:MESSAGE_FLAG_FAILURE];
 }
 
--(BOOL)markMesageListened:(int)msgLocalID uid:(int64_t)uid {
+-(BOOL)markMesageListened:(int)msgLocalID {
     return [self addFlag:msgLocalID  flag:MESSAGE_FLAG_LISTENED];
 }
 
@@ -279,7 +330,7 @@
 }
 
 
--(BOOL)eraseMessageFailure:(int)msgLocalID uid:(int64_t)uid {
+-(BOOL)eraseMessageFailure:(int)msgLocalID {
     FMDatabase *db = self.db;
     FMResultSet *rs = [db executeQuery:@"SELECT flags FROM customer_message WHERE id=?", @(msgLocalID)];
     if (!rs) {
@@ -322,6 +373,14 @@
 
 -(id<IMessageIterator>)newMessageIterator:(int64_t)store last:(int)lastMsgID {
     return [[SQLCustomerMessageIterator alloc] initWithDB:self.db store:store position:lastMsgID];
+}
+
+-(id<IMessageIterator>)newMessageIterator:(int64_t)uid appID:(int64_t)appID {
+    return [[SQLCustomerMessageIterator alloc] initWithDB:self.db uid:uid appID:appID];
+}
+
+-(id<IMessageIterator>)newMessageIterator:(int64_t)uid appID:(int64_t)appID last:(int)lastMsgID {
+    return [[SQLCustomerMessageIterator alloc] initWithDB:self.db uid:uid appID:appID position:lastMsgID];
 }
 
 -(id<ConversationIterator>)newConversationIterator {

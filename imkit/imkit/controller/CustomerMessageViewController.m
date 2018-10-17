@@ -26,8 +26,8 @@
 
 - (void)viewDidLoad {
     ICustomerMessageDB *db = [[ICustomerMessageDB alloc] init];
-    db.appID = self.appID;
-    db.currentUID = self.currentUID;
+    db.customerAppID = self.appID;
+    db.customerID = self.currentUID;
     db.storeID = self.storeID;
     db.sellerID = self.sellerID;
     self.messageDB = db;
