@@ -148,7 +148,6 @@
 -(int)getMessageId:(NSString*)uuid {
     FMResultSet *rs = [self.db executeQuery:@"SELECT id FROM customer_message WHERE uuid= ?", uuid];
     if ([rs next]) {
-        IMessage *msg = [[IMessage alloc] init];
         int msgId = (int)[rs longLongIntForColumn:@"id"];
         [rs close];
         return msgId;

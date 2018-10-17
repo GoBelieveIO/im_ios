@@ -84,63 +84,26 @@ alpha:(a)]
     [[NSNotificationCenter defaultCenter] addObserver: self selector:@selector(clearSinglePeerNewState:) name:CLEAR_PEER_NEW_MESSAGE object:nil];
     [[NSNotificationCenter defaultCenter] addObserver: self selector:@selector(clearSingleGroupNewState:) name:CLEAR_GROUP_NEW_MESSAGE object:nil];
     
-
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillResignActive) name:UIApplicationWillResignActiveNotification object:nil];
 
-    id<ConversationIterator> iterator =  [[PeerMessageDB instance] newConversationIterator];
-    IMessage * msg = [iterator next];
-    while (msg) {
-        Conversation *c = [[Conversation alloc] init];
-        c.message = msg;
-        c.cid = (self.currentUID == msg.sender) ? msg.receiver : msg.sender;
-        c.type = CONVERSATION_PEER;
-        [self.conversations addObject:c];
-        msg = [iterator next];
-    }
-    
-    iterator = [[GroupMessageDB instance] newConversationIterator];
-    msg = [iterator next];
-    while (msg) {
-        Conversation *c = [[Conversation alloc] init];
-        c.message = msg;
-        c.cid = msg.receiver;
-        c.type = CONVERSATION_GROUP;
-        [self.conversations addObject:c];
-        msg = [iterator next];
-    }
- 
+    self.conversations = [NSMutableArray array];
     for (Conversation *conv in self.conversations) {
         [self updateConversationName:conv];
         [self updateConversationDetail:conv];
     }
+
+    ICustomerMessage *msg = [[ICustomerMessage alloc] init];
+    ICustomerMessage *m = (ICustomerMessage*)msg;
+    m.sender = 0;
+    m.receiver = self.currentUID;
+    m.storeID = KEFU_ID;
+    m.sellerID = 0;
+    m.customerID = self.currentUID;
+    m.customerAppID = APPID;
     
-    id<IMessageIterator> iter = [[CustomerMessageDB instance] newMessageIterator:KEFU_ID];
-    msg = nil;
-    //返回第一条不是附件的消息
-    while (YES) {
-        msg = [iter next];
-        if (msg == nil) {
-            break;
-        }
-        if (msg.type != MESSAGE_ATTACHMENT) {
-            break;
-        }
-    }
-    if (!msg) {
-        msg = [[ICustomerMessage alloc] init];
-        ICustomerMessage *m = (ICustomerMessage*)msg;
-        m.sender = 0;
-        m.receiver = self.currentUID;
-        m.storeID = KEFU_ID;
-        m.sellerID = 0;
-        m.customerID = self.currentUID;
-        m.customerAppID = APPID;
-        
-        MessageTextContent *content = [[MessageTextContent alloc] initWithText:@"如果你在使用过程中有任何问题和建议，记得给我们发信反馈哦"];
-        m.rawContent = content.raw;
-        m.timestamp = (int)time(NULL);
-    }
+    MessageTextContent *content = [[MessageTextContent alloc] initWithText:@"如果你在使用过程中有任何问题和建议，记得给我们发信反馈哦"];
+    m.rawContent = content.raw;
+    m.timestamp = (int)time(NULL);
 
     Conversation *conv = [[Conversation alloc] init];
     conv.message = msg;
@@ -169,8 +132,6 @@ alpha:(a)]
     
     self.conversations = [NSMutableArray arrayWithArray:sortedArray];
     
-
-
     self.navigationItem.title = @"对话";
     if ([[IMService instance] connectState] == STATE_CONNECTING) {
         self.navigationItem.title = @"连接中...";
@@ -238,7 +199,7 @@ alpha:(a)]
 - (void)updateNotificationDesc:(Conversation*)conv {
     IMessage *message = conv.message;
     if (message.type == MESSAGE_GROUP_NOTIFICATION) {
-        MessageGroupNotificationContent *notification = message.notificationContent;
+        MessageGroupNotificationContent *notification = (MessageGroupNotificationContent*)message.notificationContent;
         int type = notification.notificationType;
         if (type == NOTIFICATION_GROUP_CREATED) {
             if (self.currentUID == notification.master) {
