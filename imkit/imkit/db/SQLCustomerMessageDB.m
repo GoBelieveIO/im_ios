@@ -181,7 +181,7 @@
         NSLog(@"error = %@", [db lastErrorMessage]);
         return NO;
     }
-    msg.msgLocalID = [self.db lastInsertRowId];
+    msg.msgId = [self.db lastInsertRowId];
     return YES;
 }
 

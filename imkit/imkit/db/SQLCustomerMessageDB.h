@@ -14,7 +14,7 @@
 #import "IMessageIterator.h"
 #import "ConversationIterator.h"
 
-#import <FMDB/FMDB.h>
+#import <fmdb/FMDB.h>
 
 
 @interface SQLCustomerMessageDB : NSObject

@@ -148,7 +148,7 @@
     }
     
     int64_t rowID = [self.db lastInsertRowId];
-    msg.msgLocalID = (int)rowID;
+    msg.msgId = rowID;
     
     if (msg.textContent) {
         NSString *text = [msg.textContent.text tokenizer];

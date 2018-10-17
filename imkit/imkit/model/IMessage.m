@@ -116,6 +116,14 @@
     return m;
 }
 
+-(int)msgLocalID {
+    return (int)self.msgId;
+}
+
+-(void)setMsgLocalID:(int)msgLocalID {
+    self.msgId = msgLocalID;
+}
+
 -(BOOL)isACK {
     return self.flags&MESSAGE_FLAG_ACK;
 }
