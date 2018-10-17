@@ -146,15 +146,6 @@
             }
             
             NSLog(@"login success");
-
-
-            
-#ifdef FILE_ENGINE_DB
-            NSString *path = [self getDocumentPath];
-            NSString *dbPath = [NSString stringWithFormat:@"%@/%lld", path, [tfSender.text longLongValue]];
-            [self mkdir:dbPath];
-
-#elif defined SQL_ENGINE_DB
             NSString *path = [self getDocumentPath];
             NSString *dbPath = [NSString stringWithFormat:@"%@/gobelieve_%lld.db", path, [tfSender.text longLongValue]];
 
@@ -171,23 +162,10 @@
                 db = nil;
                 NSAssert(NO, @"");
             }
-#else
-#error dd
-#endif
-            
-            
 
-#ifdef FILE_ENGINE_DB
-            [PeerMessageDB instance].dbPath = [NSString stringWithFormat:@"%@/peer", dbPath];
-            [GroupMessageDB instance].dbPath = [NSString stringWithFormat:@"%@/group", dbPath];
-            [CustomerMessageDB instance].dbPath = [NSString stringWithFormat:@"%@/customer", dbPath];
-#elif defined SQL_ENGINE_DB
             [PeerMessageDB instance].db = db;
             [GroupMessageDB instance].db = db;
             [CustomerMessageDB instance].db = db;
-#else
-
-#endif
 
             [PeerMessageHandler instance].uid = [tfSender.text longLongValue];
             [GroupMessageHandler instance].uid = [tfSender.text longLongValue];

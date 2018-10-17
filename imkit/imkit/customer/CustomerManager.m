@@ -170,11 +170,7 @@
 -(void)login {
 
     NSString *path = [self getDocumentPath];
-#ifdef FILE_ENGINE_DB
-    NSString *dbPath = [NSString stringWithFormat:@"%@/%lld", path, self.clientID];
-    [self mkdir:dbPath];
-    [CustomerMessageDB instance].dbPath = [NSString stringWithFormat:@"%@/customer", dbPath];
-#elif defined SQL_ENGINE_DB
+
     NSString *dbPath = [NSString stringWithFormat:@"%@/gobelieve_%lld.db", path, self.clientID];
     //检查数据库文件是否已经存在
     NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -190,11 +186,7 @@
         NSAssert(NO, @"");
     }
     [CustomerMessageDB instance].db = db;
-#else
-#error no engine
-#endif
-    
-    
+
     [CustomerMessageHandler instance].uid = self.clientID;
     [IMService instance].customerMessageHandler = [CustomerMessageHandler instance];
     [IMService instance].token = self.token;

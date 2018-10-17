@@ -10,7 +10,6 @@
 #import <Foundation/Foundation.h>
 #import "IMessage.h"
 #import "MessageDB.h"
-#import "ConversationIterator.h"
 #import "IMessageIterator.h"
 
 #import <FMDB/FMDB.h>
@@ -30,7 +29,7 @@
 
 //上拉刷新
 -(id<IMessageIterator>)newBackwardMessageIterator:(int64_t)uid messageID:(int)messageID;
--(id<ConversationIterator>)newConversationIterator;
+
 
 //获取最新的消息
 -(IMessage*)getLastMessage:(int64_t)uid;

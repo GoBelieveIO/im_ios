@@ -180,16 +180,7 @@
 
 -(void)saveMessageAttachment:(IMessage*)msg address:(NSString*)address {
     //以附件的形式存储，以免第二次查询
-#ifdef SQL_ENGINE_DB
     [self.db updateMessageContent:msg.msgLocalID content:msg.rawContent];
-#else
-    MessageAttachmentContent *att = [[MessageAttachmentContent alloc] initWithAttachment:msg.msgLocalID address:address];
-    IMessage *attachment = [[IMessage alloc] init];
-    attachment.sender = msg.sender;
-    attachment.receiver = msg.receiver;
-    attachment.rawContent = att.raw;
-    [self saveMessage:attachment];
-#endif
 }
 
 -(BOOL)saveMessage:(IMessage*)msg {

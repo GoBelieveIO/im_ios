@@ -7,14 +7,8 @@
  of patent rights can be found in the PATENTS file in the same directory.
  */
 #import "MessageDB.h"
-
-#ifdef FILE_ENGINE_DB
-#import "FileGroupMessageDB.h"
-typedef FileGroupMessageDB GroupMessageDB;
-#elif defined SQL_ENGINE_DB
 #import "SQLGroupMessageDB.h"
+
 typedef SQLGroupMessageDB GroupMessageDB;
-#else
-#error "no engine"
-#endif
+
 

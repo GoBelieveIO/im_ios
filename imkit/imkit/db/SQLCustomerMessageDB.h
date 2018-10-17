@@ -12,7 +12,6 @@
 #import "ICustomerMessage.h"
 #import "MessageDB.h"
 #import "IMessageIterator.h"
-#import "ConversationIterator.h"
 
 #import <fmdb/FMDB.h>
 
@@ -28,8 +27,6 @@
 
 -(id<IMessageIterator>)newMessageIterator:(int64_t)uid appID:(int64_t)appID;
 -(id<IMessageIterator>)newMessageIterator:(int64_t)uid appID:(int64_t)appID last:(int)lastMsgID;
-
--(id<ConversationIterator>)newConversationIterator;
 
 -(IMessage*)getLastMessage:(int64_t)uid appID:(int64_t)appID;
 -(IMessage*)getLastMessage:(int64_t)storeID;

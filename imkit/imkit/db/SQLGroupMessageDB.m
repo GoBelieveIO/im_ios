@@ -8,11 +8,6 @@
  */
 
 #import "SQLGroupMessageDB.h"
-#import "MessageDB.h"
-#include <sys/stat.h>
-#include <dirent.h>
-#import "util.h"
-#import "ReverseFile.h"
 #import "NSString+JSMessagesView.h"
 
 @interface SQLGroupMessageIterator : NSObject<IMessageIterator>
@@ -87,57 +82,6 @@
 @end
 
 
-@interface SQLGroupConversationIterator : NSObject<ConversationIterator>
-@property(nonatomic) FMResultSet *rs;
-@property(nonatomic) FMDatabase *db;
-@end
-
-@implementation SQLGroupConversationIterator
-
-//thread safe problem
--(void)dealloc {
-    [self.rs close];
-}
-
--(IMessage*)getMessage:(int)msgID {
-    FMResultSet *rs = [self.db executeQuery:@"SELECT id, sender, group_id, timestamp, flags, content FROM group_message WHERE id= ?", @(msgID)];
-    if ([rs next]) {
-        IMessage *msg = [[IMessage alloc] init];
-        msg.sender = [rs longLongIntForColumn:@"sender"];
-        msg.receiver = [rs longLongIntForColumn:@"group_id"];
-        msg.timestamp = [rs intForColumn:@"timestamp"];
-        msg.flags = [rs intForColumn:@"flags"];
-        msg.rawContent = [rs stringForColumn:@"content"];
-        msg.msgLocalID = [rs intForColumn:@"id"];
-        return msg;
-    }
-    return nil;
-}
-
--(SQLGroupConversationIterator*)initWithDB:(FMDatabase*)db {
-    self = [super init];
-    if (self) {
-        self.db = db;
-        self.rs = [db executeQuery:@"SELECT MAX(id) as id, group_id FROM group_message GROUP BY group_id"];
-    }
-    return self;
-}
-
--(IMessage*)next {
-    BOOL r = [self.rs next];
-    if (!r) {
-        return nil;
-    }
-    
-    int msgID = [self.rs intForColumn:@"id"];
-    
-    return [self getMessage:msgID];
-}
-
-@end
-
-
-
 
 @implementation SQLGroupMessageDB
 
@@ -176,12 +120,6 @@
 -(id<IMessageIterator>)newBackwardMessageIterator:(int64_t)gid messageID:(int)messageID {
     return [[SQLGroupMessageIterator alloc] initWithDB:self.db gid:gid last:messageID];
 }
-
-
--(id<ConversationIterator>)newConversationIterator {
-    return [[SQLGroupConversationIterator alloc] initWithDB:self.db];
-}
-
 
 
 -(BOOL)clearConversation:(int64_t)gid {

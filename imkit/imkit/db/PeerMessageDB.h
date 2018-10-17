@@ -7,18 +7,9 @@
  of patent rights can be found in the PATENTS file in the same directory.
  */
 #import "MessageDB.h"
-
-#ifdef FILE_ENGINE_DB
-#import "FilePeerMessageDB.h"
-typedef FilePeerMessageDB PeerMessageDB;
-#elif defined SQL_ENGINE_DB
 #import "SQLPeerMessageDB.h"
 
 @interface PeerMessageDB : SQLPeerMessageDB
 +(PeerMessageDB*)instance;
 @end
-
-#else
-#error "no engine"
-#endif
 

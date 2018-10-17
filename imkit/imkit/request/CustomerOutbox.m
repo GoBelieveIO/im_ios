@@ -50,7 +50,6 @@
 }
 
 -(void)saveMessageAttachment:(IMessage*)msg url:(NSString*)url {
-#ifdef SQL_ENGINE_DB
     if (msg.audioContent) {
         MessageAudioContent *audioContent = [msg.audioContent cloneWithURL:url];
         [[CustomerMessageDB instance] updateMessageContent:msg.msgLocalID content:audioContent.raw];
@@ -58,25 +57,11 @@
         MessageImageContent *imageContent = [msg.imageContent cloneWithURL:url];
         [[CustomerMessageDB instance] updateMessageContent:msg.msgLocalID content:imageContent.raw];
     }
-#else
-    ICustomerMessage *cm = (ICustomerMessage*)msg;
-    MessageAttachmentContent *att = [[MessageAttachmentContent alloc] initWithAttachment:msg.msgLocalID url:url];
-    ICustomerMessage *attachment = [[ICustomerMessage alloc] init];
-    attachment.storeID = cm.storeID;
-    attachment.sellerID = cm.sellerID;
-    attachment.customerID = cm.customerID;
-    attachment.customerAppID = cm.customerAppID;
-    attachment.rawContent = att.raw;
-    
-    [[CustomerMessageDB instance] insertMessage:attachment uid:cm.storeID];
-#endif
 }
 
 -(void)saveMessageAttachment:(IMessage*)msg url:(NSString*)url thumbnail:(NSString*)thumbnail {
-#ifdef SQL_ENGINE_DB
     MessageVideoContent *videoContent = [msg.videoContent cloneWithURL:url thumbnail:thumbnail];
     [[CustomerMessageDB instance] updateMessageContent:msg.msgLocalID content:videoContent.raw];
-#endif
 }
 
 @end

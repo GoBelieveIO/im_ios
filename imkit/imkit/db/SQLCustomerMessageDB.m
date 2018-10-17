@@ -79,59 +79,6 @@
 @end
 
 
-@interface SQLCustomerConversationIterator : NSObject<ConversationIterator>
-@property(nonatomic) FMResultSet *rs;
-@property(nonatomic) FMDatabase *db;
-@end
-
-@implementation SQLCustomerConversationIterator
-
-//thread safe problem
--(void)dealloc {
-    [self.rs close];
-}
-
--(IMessage*)getMessage:(int)msgID {
-    FMResultSet *rs = [self.db executeQuery:@"SELECT id, customer_id, customer_appid, store_id, seller_id, timestamp, flags, is_support, content FROM customer_message WHERE id= ?", @(msgID)];
-    if ([rs next]) {
-        ICustomerMessage *msg = [[ICustomerMessage alloc] init];
-        msg.customerAppID = [rs longLongIntForColumn:@"customer_appid"];
-        msg.customerID = [rs longLongIntForColumn:@"customer_id"];
-        msg.storeID = [rs longLongIntForColumn:@"store_id"];
-        msg.sellerID = [rs longLongIntForColumn:@"seller_id"];
-        msg.timestamp = [rs intForColumn:@"timestamp"];
-        msg.flags = [rs intForColumn:@"flags"];
-        msg.isSupport = [rs intForColumn:@"is_support"];
-        msg.rawContent = [rs stringForColumn:@"content"];
-        msg.msgLocalID = [rs intForColumn:@"id"];
-        return msg;
-    }
-    return nil;
-}
-
--(SQLCustomerConversationIterator*)initWithDB:(FMDatabase*)db {
-    self = [super init];
-    if (self) {
-        self.db = db;
-        self.rs = [db executeQuery:@"SELECT MAX(id) as id, store_id FROM customer_message GROUP BY store_id"];
-    }
-    return self;
-}
-
--(IMessage*)next {
-    BOOL r = [self.rs next];
-    if (!r) {
-        return nil;
-    }
-    
-    int msgID = [self.rs intForColumn:@"id"];
-    
-    return [self getMessage:msgID];
-}
-
-@end
-
-
 @implementation SQLCustomerMessageDB
 +(SQLCustomerMessageDB*)instance {
     static SQLCustomerMessageDB *m;
@@ -383,9 +330,6 @@
     return [[SQLCustomerMessageIterator alloc] initWithDB:self.db uid:uid appID:appID position:lastMsgID];
 }
 
--(id<ConversationIterator>)newConversationIterator {
-    return [[SQLCustomerConversationIterator alloc] initWithDB:self.db];
-}
 
 @end
 

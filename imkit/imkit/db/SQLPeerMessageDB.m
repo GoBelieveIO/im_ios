@@ -78,57 +78,6 @@
 @end
 
 
-@interface SQLPeerConversationIterator : NSObject<ConversationIterator>
-@property(nonatomic, strong) FMResultSet *rs;
-@property(nonatomic, strong) FMDatabase *db;
-@end
-
-@implementation SQLPeerConversationIterator
-
-//thread safe problem
--(void)dealloc {
-    [self.rs close];
-}
-
--(IMessage*)getMessage:(int)msgID {
-    FMResultSet *rs = [self.db executeQuery:@"SELECT id, sender, receiver, timestamp, secret, flags, content FROM peer_message WHERE id= ?", @(msgID)];
-    if ([rs next]) {
-        IMessage *msg = [[IMessage alloc] init];
-        msg.sender = [rs longLongIntForColumn:@"sender"];
-        msg.receiver = [rs longLongIntForColumn:@"receiver"];
-        msg.timestamp = [rs intForColumn:@"timestamp"];
-        msg.flags = [rs intForColumn:@"flags"];
-        msg.secret = [rs intForColumn:@"secret"] == 1;
-        msg.rawContent = [rs stringForColumn:@"content"];
-        msg.msgLocalID = [rs intForColumn:@"id"];
-        return msg;
-    }
-    return nil;
-
-}
-
--(SQLPeerConversationIterator*)initWithDB:(FMDatabase*)db {
-    self = [super init];
-    if (self) {
-        self.db = db;
-        self.rs = [db executeQuery:@"SELECT MAX(id) as id, peer FROM peer_message GROUP BY peer"];
-    }
-    return self;
-}
-
--(IMessage*)next {
-    BOOL r = [self.rs next];
-    if (!r) {
-        return nil;
-    }
-    
-    int msgID = [self.rs intForColumn:@"id"];
-    
-    return [self getMessage:msgID];
-}
-
-@end
-
 
 @implementation SQLPeerMessageDB
 
@@ -373,9 +322,6 @@
     return [[SQLPeerMessageIterator alloc] initWithDB:self.db peer:uid last:messageID secret:self.secret];
 }
 
--(id<ConversationIterator>)newConversationIterator {
-    return [[SQLPeerConversationIterator alloc] initWithDB:self.db];
-}
 
 @end
 

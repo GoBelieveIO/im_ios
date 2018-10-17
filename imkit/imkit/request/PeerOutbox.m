@@ -52,7 +52,6 @@
 }
 
 -(void)saveMessageAttachment:(IMessage*)msg url:(NSString*)url {
-#ifdef SQL_ENGINE_DB
     if (msg.audioContent) {
         MessageAudioContent *audioContent = [msg.audioContent cloneWithURL:url];
         [[PeerMessageDB instance] updateMessageContent:msg.msgLocalID content:audioContent.raw];
@@ -60,15 +59,6 @@
         MessageImageContent *imageContent = [msg.imageContent cloneWithURL:url];
         [[PeerMessageDB instance] updateMessageContent:msg.msgLocalID content:imageContent.raw];
     }
-#else
-    MessageAttachmentContent *att = [[MessageAttachmentContent alloc] initWithAttachment:msg.msgLocalID url:url];
-    IMessage *attachment = [[IMessage alloc] init];
-    attachment.sender = msg.sender;
-    attachment.receiver = msg.receiver;
-    attachment.rawContent = att.raw;
-    
-    [[PeerMessageDB instance] insertMessage:attachment uid:msg.receiver];
-#endif
 }
 
 -(void)saveMessageAttachment:(IMessage*)msg url:(NSString*)url thumbnail:(NSString*)thumbnail {
