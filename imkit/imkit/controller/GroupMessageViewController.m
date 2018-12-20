@@ -100,8 +100,8 @@
         //清空消息失败标志位
         if (im.sender == self.currentUID) {
             int flags = mm.flags;
-            flags = mm.flags & ~MESSAGE_FLAG_FAILURE;
-            flags = mm.flags | MESSAGE_FLAG_ACK;
+            flags = flags & ~MESSAGE_FLAG_FAILURE;
+            flags = flags | MESSAGE_FLAG_ACK;
             mm.flags = flags;
         }
         return;
