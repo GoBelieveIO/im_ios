@@ -9,12 +9,12 @@
 #import "TCPConnection.h"
 #include <netdb.h>
 #include <arpa/inet.h>
-#include <netinet/in.h>
 #import "AsyncTCP.h"
 #import "util.h"
 
 @interface TCPConnection()
 @property(atomic, copy) NSString *hostIP;
+@property(atomic, assign) struct sockaddr_storage hostAddr;
 @property(atomic, assign) time_t timestmap;
 
 @property(nonatomic, assign)BOOL stopped;
@@ -237,7 +237,8 @@
     return nil;
 }
 
--(NSString*)resolveIP:(NSString*)host {
+
+-(NSString*)resolveIP:(NSString*)host address:(struct sockaddr*)address {
     struct addrinfo hints;
     struct addrinfo *result, *rp;
     int s;
@@ -246,25 +247,33 @@
     snprintf(buf, 32, "%d", 0);
     
     memset(&hints, 0, sizeof(struct addrinfo));
-    hints.ai_family = AF_INET;
+    hints.ai_family = PF_UNSPEC;
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_protocol = IPPROTO_TCP;
     hints.ai_flags = AI_DEFAULT;
     
-    s = getaddrinfo([host UTF8String], buf, &hints, &result);
+    NSString *port = [NSString stringWithFormat:@"%d", self.port];
+    s = getaddrinfo([host UTF8String], [port UTF8String], &hints, &result);
     if (s != 0) {
         NSLog(@"get addr info error:%s", gai_strerror(s));
         return nil;
     }
+    struct addrinfo *res;
+    for (res = result; res; res = res->ai_next) {
+        NSLog(@"family:%d socktype;%d protocol:%d", res->ai_family, res->ai_socktype, res->ai_protocol);
+    }
+    
     NSString *ip = nil;
     rp = result;
     if (rp != NULL) {
         if (rp->ai_family == AF_INET) {
             struct sockaddr_in *addr = (struct sockaddr_in*)rp->ai_addr;
             ip = [self IP2String:addr->sin_addr];
+            memcpy(address, addr, sizeof(struct sockaddr_in));
         } else if (rp->ai_family == AF_INET6) {
             struct sockaddr_in6 *addr = (struct sockaddr_in6*)rp->ai_addr;
             ip = [self IPV62String:addr->sin6_addr];
+            memcpy(address, addr, sizeof(struct sockaddr_in6));
         }
     }
     freeaddrinfo(result);
@@ -272,12 +281,13 @@
 }
 
 -(void)refreshHostIP {
-    
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         NSLog(@"refresh host ip...");
-        NSString *ip = [self resolveIP:self.host];
+        struct sockaddr_storage addr = {0};
+        NSString *ip = [self resolveIP:self.host address:(struct sockaddr*)&addr];
         NSLog(@"host:%@ ip:%@", self.host, ip);
         if ([ip length] > 0) {
+            self.hostAddr = addr;
             self.hostIP = ip;
             self.timestmap = time(NULL);
         }
@@ -309,7 +319,8 @@
     [self publishConnectState:STATE_CONNECTING];
     self.tcp = [[AsyncTCP alloc] init];
     __weak TCPConnection *wself = self;
-    BOOL r = [self.tcp connect:self.hostIP port:self.port cb:^(AsyncTCP *tcp, int err) {
+    struct sockaddr_storage addr = self.hostAddr;
+    BOOL r = [self.tcp connect:(struct sockaddr*)&addr cb:^(AsyncTCP *tcp, int err) {
         if (err) {
             NSLog(@"tcp connect err");
             wself.connectFailCount = wself.connectFailCount + 1;

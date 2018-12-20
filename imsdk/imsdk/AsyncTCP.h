@@ -16,6 +16,7 @@ typedef void(^CloseCB)(AsyncTCP *tcp, int err);
 
 @interface AsyncTCP : NSObject
 -(BOOL)connect:(NSString*)host port:(int)port cb:(ConnectCB)cb;
+-(BOOL)connect:(struct sockaddr*)addr cb:(ConnectCB)cb;
 -(void)close;
 -(void)write:(NSData*)data;
 -(void)flush;

@@ -85,32 +85,22 @@
     freeaddrinfo(res0);
     return r;
 }
-
--(BOOL)connect:(NSString*)host port:(int)port cb:(ConnectCB)cb {
-    struct sockaddr_in6 addr;
-    struct addrinfo addrinfo;
-    
-    BOOL res = [self synthesizeIPv6:host port:port addr:(struct sockaddr*)&addr addrinfo:&addrinfo];
-    if (!res) {
-        NSLog(@"synthesize ipv6 fail");
-        return NO;
-    }
-    
+-(BOOL)connect:(struct sockaddr*)addr cb:(ConnectCB)cb {
     int r;
     int sockfd;
     
-    sockfd = socket(addrinfo.ai_family, addrinfo.ai_socktype, addrinfo.ai_protocol);
+    sockfd = socket(addr->sa_family, SOCK_STREAM, IPPROTO_TCP);
     sock_nonblock(sockfd, 1);
     
     int value = 1;
     setsockopt(sockfd, SOL_SOCKET, SO_NOSIGPIPE, &value, sizeof(value));
-
+    
     do {
-        if (addrinfo.ai_family == AF_INET) {
-            r = connect(sockfd, (struct sockaddr*)&addr, sizeof(struct sockaddr_in));
+        if (addr->sa_family == AF_INET) {
+            r = connect(sockfd, (struct sockaddr*)addr, sizeof(struct sockaddr_in));
         } else {
             //ipv6
-            r = connect(sockfd, (struct sockaddr*)&addr, sizeof(struct sockaddr_in6));
+            r = connect(sockfd, (struct sockaddr*)addr, sizeof(struct sockaddr_in6));
         }
     } while (r == -1 && errno == EINTR);
     if (r == -1) {
@@ -134,8 +124,20 @@
     self.connecting = YES;
     self.connect_cb = cb;
     self.sock = sockfd;
-
+    
     return TRUE;
+}
+-(BOOL)connect:(NSString*)host port:(int)port cb:(ConnectCB)cb {
+    struct sockaddr_in6 addr;
+    struct addrinfo addrinfo;
+    
+    BOOL res = [self synthesizeIPv6:host port:port addr:(struct sockaddr*)&addr addrinfo:&addrinfo];
+    if (!res) {
+        NSLog(@"synthesize ipv6 fail");
+        return NO;
+    }
+    
+    return [self connect:(struct sockaddr*)&addr cb:cb];
 }
 
 -(void)onWrite {
