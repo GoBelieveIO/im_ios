@@ -10,7 +10,7 @@
 #import "MessageTextView.h"
 #import "NSString+JSMessagesView.h"
 #import "KILabel.h"
-
+#import "HCDChatHelper.h"
 
 
 
@@ -38,8 +38,10 @@
 - (void)setMsg:(IMessage *)msg {
     [super setMsg:msg];
     MessageTextContent *text = msg.textContent;
+    
+    NSAttributedString *attrText = [HCDChatHelper formatMessageString: text.text withFont:[MessageTextView font]];
     self.text = text.text;
-    self.label.text = self.text;
+    [self.label setAttributedText:attrText];
 }
 
 
@@ -65,8 +67,9 @@
                          [txt numberOfLines]) *  30.0f;
     
     UILabel *gettingSizeLabel = [[UILabel alloc] init];
+    NSAttributedString *attrText = [HCDChatHelper formatMessageString:txt withFont:font];
     gettingSizeLabel.font = font;
-    gettingSizeLabel.text = txt;
+    [gettingSizeLabel setAttributedText:attrText];
     gettingSizeLabel.numberOfLines = 0;
     gettingSizeLabel.lineBreakMode = NSLineBreakByWordWrapping;
     CGSize maximumLabelSize = CGSizeMake(width, height);

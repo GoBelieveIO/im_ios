@@ -45,8 +45,6 @@
 #import "FileDownloadViewController.h"
 
 #import "EaseChatToolbar.h"
-#import "EaseEmoji.h"
-#import "EaseEmotionManager.h"
 
 #define INPUT_HEIGHT 52.0f
 
@@ -62,9 +60,6 @@
 
 
 @property(strong, nonatomic) EaseChatBarMoreView *chatBarMoreView;
-
-@property(strong, nonatomic) EaseFaceView *faceView;
-
 @property(strong, nonatomic) EaseRecordView *recordView;
 
 @property (nonatomic,strong) UIImage *willSendImage;
@@ -235,15 +230,11 @@
     if (!self.callEnabled) {
         [self.chatBarMoreView removeItematIndex:3];
     }
-    self.faceView = (EaseFaceView*)[(EaseChatToolbar *)self.chatToolbar faceView];
     self.recordView = (EaseRecordView*)[(EaseChatToolbar *)self.chatToolbar recordView];
     self.chatToolbar.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
     [self.view addSubview:self.chatToolbar];
     self.inputBar = self.chatToolbar;
-    
-    EaseEmotionManager *manager= [[EaseEmotionManager alloc] initWithType:EMEmotionDefault emotionRow:3 emotionCol:7 emotions:[EaseEmoji allEmoji]];
-    [self.faceView setEmotionManagers:@[manager]];
-    
+
     if ([[IMService instance] connectState] == STATE_CONNECTED) {
         [self enableSend];
     } else {

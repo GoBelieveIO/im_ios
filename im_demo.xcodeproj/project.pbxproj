@@ -511,6 +511,7 @@
 				"${PODS_ROOT}/../imkit/imkit/imKitRes/sounds/messageReceived.aiff",
 				"${PODS_ROOT}/../imkit/imkit/imKitRes/sounds/messageSent.aiff",
 				"${PODS_ROOT}/../imkit/imkit/imKitRes/images.xcassets",
+				"${PODS_ROOT}/../imkit/imkit/imKitRes/Emoji.xcassets",
 				"${PODS_ROOT}/../imkit/imkit/imKitRes/gobelieve.db",
 			);
 			name = "[CP] Copy Pods Resources";
@@ -553,6 +554,7 @@
 				"${PODS_ROOT}/../imkit/imkit/imKitRes/sounds/messageReceived.aiff",
 				"${PODS_ROOT}/../imkit/imkit/imKitRes/sounds/messageSent.aiff",
 				"${PODS_ROOT}/../imkit/imkit/imKitRes/images.xcassets",
+				"${PODS_ROOT}/../imkit/imkit/imKitRes/Emoji.xcassets",
 				"${PODS_ROOT}/../imkit/imkit/imKitRes/gobelieve.db",
 			);
 			name = "[CP] Copy Pods Resources";
@@ -577,6 +579,7 @@
 				"${PODS_ROOT}/../imkit/imkit/imKitRes/sounds/messageReceived.aiff",
 				"${PODS_ROOT}/../imkit/imkit/imKitRes/sounds/messageSent.aiff",
 				"${PODS_ROOT}/../imkit/imkit/imKitRes/images.xcassets",
+				"${PODS_ROOT}/../imkit/imkit/imKitRes/Emoji.xcassets",
 				"${PODS_ROOT}/../imkit/imkit/imKitRes/gobelieve.db",
 			);
 			name = "[CP] Copy Pods Resources";
@@ -619,6 +622,7 @@
 				"${PODS_ROOT}/../imkit/imkit/imKitRes/sounds/messageReceived.aiff",
 				"${PODS_ROOT}/../imkit/imkit/imKitRes/sounds/messageSent.aiff",
 				"${PODS_ROOT}/../imkit/imkit/imKitRes/images.xcassets",
+				"${PODS_ROOT}/../imkit/imkit/imKitRes/Emoji.xcassets",
 				"${PODS_ROOT}/../imkit/imkit/imKitRes/gobelieve.db",
 			);
 			name = "[CP] Copy Pods Resources";

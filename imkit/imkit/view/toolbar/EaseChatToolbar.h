@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-#import "EaseFaceView.h"
 #import "EaseTextView.h"
 #import "EaseRecordView.h"
 #import "EaseChatBarMoreView.h"
