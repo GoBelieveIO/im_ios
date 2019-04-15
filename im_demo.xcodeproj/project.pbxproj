@@ -507,23 +507,21 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-im_demo/Pods-im_demo-resources.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-im_demo/Pods-im_demo-resources.sh",
 				"${PODS_ROOT}/../imkit/imkit/imKitRes/sounds/messageReceived.aiff",
 				"${PODS_ROOT}/../imkit/imkit/imKitRes/sounds/messageSent.aiff",
 				"${PODS_ROOT}/../imkit/imkit/imKitRes/images.xcassets",
 				"${PODS_ROOT}/../imkit/imkit/imKitRes/Emoji.xcassets",
-				"${PODS_ROOT}/../imkit/imkit/imKitRes/gobelieve.db",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/messageReceived.aiff",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/messageSent.aiff",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Assets.car",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/gobelieve.db",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-im_demo/Pods-im_demo-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-im_demo/Pods-im_demo-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		1E68C9D5AEF64270CC32F130 /* [CP] Check Pods Manifest.lock */ = {
@@ -550,23 +548,21 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-group_demo/Pods-group_demo-resources.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-group_demo/Pods-group_demo-resources.sh",
 				"${PODS_ROOT}/../imkit/imkit/imKitRes/sounds/messageReceived.aiff",
 				"${PODS_ROOT}/../imkit/imkit/imKitRes/sounds/messageSent.aiff",
 				"${PODS_ROOT}/../imkit/imkit/imKitRes/images.xcassets",
 				"${PODS_ROOT}/../imkit/imkit/imKitRes/Emoji.xcassets",
-				"${PODS_ROOT}/../imkit/imkit/imKitRes/gobelieve.db",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/messageReceived.aiff",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/messageSent.aiff",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Assets.car",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/gobelieve.db",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-group_demo/Pods-group_demo-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-group_demo/Pods-group_demo-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		572FF97F35D20FC18181459F /* [CP] Copy Pods Resources */ = {
@@ -575,23 +571,21 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-room_demo/Pods-room_demo-resources.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-room_demo/Pods-room_demo-resources.sh",
 				"${PODS_ROOT}/../imkit/imkit/imKitRes/sounds/messageReceived.aiff",
 				"${PODS_ROOT}/../imkit/imkit/imKitRes/sounds/messageSent.aiff",
 				"${PODS_ROOT}/../imkit/imkit/imKitRes/images.xcassets",
 				"${PODS_ROOT}/../imkit/imkit/imKitRes/Emoji.xcassets",
-				"${PODS_ROOT}/../imkit/imkit/imKitRes/gobelieve.db",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/messageReceived.aiff",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/messageSent.aiff",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Assets.car",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/gobelieve.db",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-room_demo/Pods-room_demo-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-room_demo/Pods-room_demo-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		6DBB2CA31DBB348D00BC545A /* [CP] Check Pods Manifest.lock */ = {
@@ -618,23 +612,21 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-customer_demo/Pods-customer_demo-resources.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-customer_demo/Pods-customer_demo-resources.sh",
 				"${PODS_ROOT}/../imkit/imkit/imKitRes/sounds/messageReceived.aiff",
 				"${PODS_ROOT}/../imkit/imkit/imKitRes/sounds/messageSent.aiff",
 				"${PODS_ROOT}/../imkit/imkit/imKitRes/images.xcassets",
 				"${PODS_ROOT}/../imkit/imkit/imKitRes/Emoji.xcassets",
-				"${PODS_ROOT}/../imkit/imkit/imKitRes/gobelieve.db",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/messageReceived.aiff",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/messageSent.aiff",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Assets.car",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/gobelieve.db",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-customer_demo/Pods-customer_demo-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-customer_demo/Pods-customer_demo-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		7073A1CAFADC4BBB419F3E4A /* [CP] Check Pods Manifest.lock */ = {
