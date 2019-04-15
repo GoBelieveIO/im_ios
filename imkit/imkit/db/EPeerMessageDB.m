@@ -27,4 +27,17 @@
     }
     return self;
 }
+
+
+-(void)saveMessageAttachment:(IMessage*)msg address:(NSString*)address {
+    //以附件的形式存储，以免第二次查询
+    [self updateMessageContent:msg.msgLocalID content:msg.rawContent];
+}
+
+-(BOOL)saveMessage:(IMessage*)msg {
+    NSAssert(msg.isOutgoing, @"");
+    return [self insertMessage:msg uid:msg.receiver];
+}
+
+
 @end

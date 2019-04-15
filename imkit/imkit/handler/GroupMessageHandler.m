@@ -62,7 +62,7 @@
             int msgId = [[GroupMessageDB instance] getMessageId:revoke.msgid];
             if (msgId > 0) {
                 [[GroupMessageDB instance] updateMessageContent:msgId content:im.content];
-                [[GroupMessageDB instance] removeMessageIndex:msgId gid:im.receiver];
+                [[GroupMessageDB instance] removeMessageIndex:msgId];
             }
         } else {
             [imsgs addObject:m];
@@ -82,7 +82,7 @@
 
 -(BOOL)handleMessageACK:(IMMessage*)msg {
     if (msg.msgLocalID > 0) {
-        return [[GroupMessageDB instance] acknowledgeMessage:msg.msgLocalID gid:msg.receiver];
+        return [[GroupMessageDB instance] acknowledgeMessage:msg.msgLocalID];
     } else {
         MessageContent *content = [IMessage fromRaw:msg.content];
         if (content.type == MESSAGE_REVOKE) {
@@ -90,7 +90,7 @@
             int revokedMsgId = [[GroupMessageDB instance] getMessageId:revoke.msgid];
             if (revokedMsgId > 0) {
                 [[GroupMessageDB instance]  updateMessageContent:revokedMsgId content:msg.content];
-                [[GroupMessageDB instance] removeMessageIndex:revokedMsgId gid:msg.receiver];
+                [[GroupMessageDB instance] removeMessageIndex:revokedMsgId];
             }
         }
         return YES;
@@ -98,7 +98,7 @@
 }
 
 -(BOOL)handleMessageFailure:(IMMessage*)msg {
-    return [[GroupMessageDB instance] markMessageFailure:msg.msgLocalID gid:msg.receiver];
+    return [[GroupMessageDB instance] markMessageFailure:msg.msgLocalID];
 }
 
 -(BOOL)handleGroupNotification:(NSString*)notification {

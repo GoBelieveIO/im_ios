@@ -10,20 +10,20 @@
 #import <Foundation/Foundation.h>
 
 #import "ICustomerMessage.h"
-#import "MessageDB.h"
 #import "IMessageIterator.h"
+#import "IMessageDB.h"
 
 #import <fmdb/FMDB.h>
 
 
-@interface SQLCustomerMessageDB : NSObject
+@interface SQLCustomerMessageDB : NSObject<IMessageDB>
 +(SQLCustomerMessageDB*)instance;
 
 @property(nonatomic, strong) FMDatabase *db;
 
 
 -(id<IMessageIterator>)newMessageIterator:(int64_t)storeID;
--(id<IMessageIterator>)newMessageIterator:(int64_t)storeID last:(int)lastMsgID;
+-(id<IMessageIterator>)newForwardMessageIterator:(int64_t)storeID last:(int)lastMsgID;
 
 -(id<IMessageIterator>)newMessageIterator:(int64_t)uid appID:(int64_t)appID;
 -(id<IMessageIterator>)newMessageIterator:(int64_t)uid appID:(int64_t)appID last:(int)lastMsgID;

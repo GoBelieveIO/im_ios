@@ -7,7 +7,6 @@
 //
 
 #import "CustomerMessageHandler.h"
-#import "MessageDB.h"
 #import "Message.h"
 #import "CustomerMessageDB.h"
 

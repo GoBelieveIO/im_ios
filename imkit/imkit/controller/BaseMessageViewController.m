@@ -83,21 +83,21 @@ static int uptime = 0;
 }
 
 -(BOOL)removeMessage:(IMessage*)msg {
-    return [self.messageDB removeMessage:msg];
+    return [self.messageDB removeMessage:msg.msgLocalID];
 }
 
 -(BOOL)markMessageFailure:(IMessage*)msg {
-    return [self.messageDB markMessageFailure:msg];
+    return [self.messageDB markMessageFailure:msg.msgLocalID];
     
 }
 
 -(BOOL)markMesageListened:(IMessage*)msg {
-    return [self.messageDB markMesageListened:msg];
+    return [self.messageDB markMesageListened:msg.msgLocalID];
     
 }
 
 -(BOOL)eraseMessageFailure:(IMessage*)msg {
-    return [self.messageDB eraseMessageFailure:msg];
+    return [self.messageDB eraseMessageFailure:msg.msgLocalID];
 }
 
 
@@ -134,9 +134,9 @@ static int uptime = 0;
 - (void)loadData {
     NSArray *messages;
     if (self.messageID > 0) {
-        messages = [self.messageDB loadConversationData:self.messageID];
+        messages = [self loadConversationData:self.messageID];
     } else {
-        messages = [self.messageDB loadConversationData];
+        messages = [self loadConversationData];
     }
     
     if (messages.count == 0) {
@@ -196,7 +196,7 @@ static int uptime = 0;
         }
     }
     
-    NSArray *newMessages = [self.messageDB loadEarlierData:last.msgLocalID];
+    NSArray *newMessages = [self loadEarlierData:last.msgLocalID];
     if (newMessages.count == 0) {
         self.hasEarlierMore = NO;
         return 0;
@@ -266,7 +266,7 @@ static int uptime = 0;
         return newCount;
     }
     
-    NSArray *newMessages = [self.messageDB loadLateData:messageID];
+    NSArray *newMessages = [self loadLateData:messageID];
     
     if (newMessages.count == 0) {
         self.hasLateMore = NO;
@@ -304,6 +304,158 @@ static int uptime = 0;
     newCount = (int)newMessages.count;
     return newCount;
 }
+
+
+
+- (NSArray*)loadConversationData {
+    
+    NSMutableArray *messages = [NSMutableArray array];
+    
+    NSMutableSet *uuidSet = [NSMutableSet set];
+    int count = 0;
+    int pageSize;
+    id<IMessageIterator> iterator;
+    
+    iterator = [self.messageDB newMessageIterator: self.conversationID];
+    pageSize = PAGE_COUNT;
+    
+    
+    IMessage *msg = [iterator next];
+    while (msg) {
+        //重复的消息
+        if (msg.uuid.length > 0 && [uuidSet containsObject:msg.uuid]) {
+            msg = [iterator next];
+            continue;
+        }
+        
+        if (msg.uuid.length > 0){
+            [uuidSet addObject:msg.uuid];
+        }
+        
+        if (msg.type == MESSAGE_ATTACHMENT) {
+            MessageAttachmentContent *att = msg.attachmentContent;
+            [self.attachments setObject:att
+                                 forKey:[NSNumber numberWithInt:att.msgLocalID]];
+        } else {
+            msg.isOutgoing = (msg.sender == self.currentUID);
+            [messages insertObject:msg atIndex:0];
+            if (++count >= pageSize) {
+                break;
+            }
+        }
+        
+        msg = [iterator next];
+    }
+    
+    
+    return messages;
+}
+
+//navigator from search
+- (NSArray*)loadConversationData:(int)messageID {
+    NSMutableArray *messages = [NSMutableArray array];
+    int count = 0;
+    id<IMessageIterator> iterator;
+    
+    IMessage *msg = [self.messageDB getMessage:messageID];
+    if (!msg) {
+        return nil;
+    }
+    [messages addObject:msg];
+    
+    iterator = [self.messageDB newBackwardMessageIterator:self.conversationID messageID:messageID];
+    msg = [iterator next];
+    while (msg) {
+        if (msg.type == MESSAGE_ATTACHMENT) {
+            MessageAttachmentContent *att = msg.attachmentContent;
+            [self.attachments setObject:att
+                                 forKey:[NSNumber numberWithInt:att.msgLocalID]];
+        } else {
+            msg.isOutgoing = (msg.sender == self.currentUID);
+            [messages addObject:msg];
+            if (++count >= PAGE_COUNT) {
+                break;
+            }
+        }
+        
+        msg = [iterator next];
+    }
+    
+    count = 0;
+    iterator = [self.messageDB newForwardMessageIterator:self.conversationID last:messageID];
+    msg = [iterator next];
+    while (msg) {
+        if (msg.type == MESSAGE_ATTACHMENT) {
+            MessageAttachmentContent *att = msg.attachmentContent;
+            [self.attachments setObject:att
+                                 forKey:[NSNumber numberWithInt:att.msgLocalID]];
+        } else {
+            msg.isOutgoing = (msg.sender == self.currentUID);
+            [messages insertObject:msg atIndex:0];
+            if (++count >= PAGE_COUNT) {
+                break;
+            }
+        }
+        msg = [iterator next];
+    }
+    return messages;
+}
+
+
+- (NSArray*)loadEarlierData:(int)messageID {
+    NSMutableArray *messages = [NSMutableArray array];
+    
+    id<IMessageIterator> iterator =  [self.messageDB newForwardMessageIterator:self.conversationID last:messageID];
+    
+    int count = 0;
+    IMessage *msg = [iterator next];
+    while (msg) {
+        if (msg.type == MESSAGE_ATTACHMENT) {
+            MessageAttachmentContent *att = msg.attachmentContent;
+            [self.attachments setObject:att
+                                 forKey:[NSNumber numberWithInt:att.msgLocalID]];
+            
+        } else {
+            msg.isOutgoing = (msg.sender == self.currentUID);
+            [messages insertObject:msg atIndex:0];
+            if (++count >= PAGE_COUNT) {
+                break;
+            }
+        }
+        msg = [iterator next];
+    }
+    NSLog(@"load earlier messages:%d", count);
+    return messages;
+}
+
+//加载后面的聊天记录
+-(NSArray*)loadLateData:(int)messageID {
+    id<IMessageIterator> iterator = [self.messageDB newBackwardMessageIterator:self.conversationID messageID:messageID];
+    NSMutableArray *newMessages = [NSMutableArray array];
+    int count = 0;
+    IMessage *msg = [iterator next];
+    while (msg) {
+        if (msg.type == MESSAGE_ATTACHMENT) {
+            MessageAttachmentContent *att = msg.attachmentContent;
+            [self.attachments setObject:att
+                                 forKey:[NSNumber numberWithInt:att.msgLocalID]];
+            
+        } else {
+            msg.isOutgoing = (msg.sender == self.currentUID);
+            [newMessages addObject:msg];
+            if (++count >= PAGE_COUNT) {
+                break;
+            }
+        }
+        msg = [iterator next];
+    }
+    
+    NSLog(@"load late messages:%d", count);
+    return newMessages;
+}
+
+
+
 
 
 -(void)insertMessages:(NSArray*)messages {
@@ -669,7 +821,7 @@ static int uptime = 0;
 
 #pragma mark - send message
 - (void)sendLocationMessage:(CLLocationCoordinate2D)location address:(NSString*)address {
-    IMessage *msg = [self.messageDB newOutMessage];
+    IMessage *msg = [self newOutMessage];
     
     MessageLocationContent *content = [[MessageLocationContent alloc] initWithLocation:location];
     msg.rawContent = content.raw;
@@ -695,7 +847,7 @@ static int uptime = 0;
 }
 
 - (void)sendAudioMessage:(NSString*)path second:(int)second {
-    IMessage *msg = [self.messageDB newOutMessage];
+    IMessage *msg = [self newOutMessage];
     MessageAudioContent *content = [[MessageAudioContent alloc] initWithAudio:[self localAudioURL] duration:second];
     msg.rawContent = content.raw;
     msg.timestamp = (int)time(NULL);
@@ -747,7 +899,7 @@ static int uptime = 0;
                                                                                       height:height
                                                                                     duration:duration
                                                                                         size:size];
-                IMessage *msg = [self.messageDB newOutMessage];
+                IMessage *msg = [self newOutMessage];
                 msg.rawContent = content.raw;
                 msg.timestamp = (int)time(NULL);
                 msg.isOutgoing = YES;
@@ -771,7 +923,7 @@ static int uptime = 0;
     int newHeight = image.size.height;
     NSLog(@"image size:%f %f resize to %d %d", image.size.width, image.size.height, newWidth, newHeight);
     
-    IMessage *msg = [self.messageDB newOutMessage];
+    IMessage *msg = [self newOutMessage];
     MessageImageContent *content = [[MessageImageContent alloc] initWithImageURL:[self localImageURL] width:newWidth height:newHeight];
     msg.rawContent = content.raw;
     msg.timestamp = (int)time(NULL);
@@ -790,7 +942,7 @@ static int uptime = 0;
 }
 
 -(void) sendTextMessage:(NSString*)text at:(NSArray*)atUsers atNames:(NSArray*)atNames {
-    IMessage *msg = [self.messageDB newOutMessage];
+    IMessage *msg = [self newOutMessage];
     
     MessageTextContent *content = [[MessageTextContent alloc] initWithText:text at:atUsers atNames:atNames];
     msg.rawContent = content.raw;
@@ -863,7 +1015,7 @@ static int uptime = 0;
     }
     
     MessageRevoke *revoke = [[MessageRevoke alloc] initWithMsgId:message.uuid];
-    IMessage *imsg = [self.messageDB newOutMessage];
+    IMessage *imsg = [self newOutMessage];
     imsg.timestamp = now;
     imsg.content = revoke;
     imsg.isOutgoing = YES;
@@ -874,6 +1026,11 @@ static int uptime = 0;
     message.flags = message.flags & (~MESSAGE_FLAG_FAILURE);
     [self eraseMessageFailure:message];
     [self sendMessage:message];
+}
+
+-(IMessage*)newOutMessage {
+    NSAssert(NO, @"not implement");
+    return nil;
 }
 
 - (void)sendMessage:(IMessage *)msg withImage:(UIImage*)image {

@@ -16,7 +16,7 @@
 #import "GroupMessageDB.h"
 #import "UIImage+Resize.h"
 #import <SDWebImage/SDImageCache.h>
-#import "IGroupMessageDB.h"
+#import "GroupMessageDB.h"
 #import "UIView+Toast.h"
 
 #define PAGE_COUNT 10
@@ -28,10 +28,8 @@
 @implementation GroupMessageViewController
 
 - (void)viewDidLoad {
-    IGroupMessageDB *db = [[IGroupMessageDB alloc] init];
-    db.groupID = self.groupID;
-    db.currentUID = self.currentUID;
-    self.messageDB = db;
+    self.messageDB = [GroupMessageDB instance];
+    self.conversationID = self.groupID;
     
     [super viewDidLoad];
     
@@ -230,5 +228,11 @@
     [[NSNotificationCenter defaultCenter] postNotification:notification];
 }
 
+-(IMessage*)newOutMessage {
+    IMessage *msg = [[IMessage alloc] init];
+    msg.sender = self.currentUID;
+    msg.receiver = self.groupID;
+    return msg;
+}
 
 @end

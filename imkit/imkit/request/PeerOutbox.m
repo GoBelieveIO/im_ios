@@ -48,7 +48,7 @@
 }
 
 -(void)markMessageFailure:(IMessage*)msg {
-    [[PeerMessageDB instance] markMessageFailure:msg.msgLocalID uid:msg.receiver];
+    [[PeerMessageDB instance] markMessageFailure:msg.msgLocalID];
 }
 
 -(void)saveMessageAttachment:(IMessage*)msg url:(NSString*)url {

@@ -6,10 +6,10 @@
  LICENSE file in the root directory of this source tree. An additional grant
  of patent rights can be found in the PATENTS file in the same directory.
  */
-#import "MessageDB.h"
 #import "SQLPeerMessageDB.h"
+#import "IMessageDB.h"
 
-@interface PeerMessageDB : SQLPeerMessageDB
+@interface PeerMessageDB : SQLPeerMessageDB<IMessageDB>
 +(PeerMessageDB*)instance;
 @end
 

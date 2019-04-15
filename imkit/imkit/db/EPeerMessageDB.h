@@ -7,6 +7,9 @@
 
 #import <Foundation/Foundation.h>
 #import "SQLPeerMessageDB.h"
-@interface EPeerMessageDB : SQLPeerMessageDB
+#import "IMessageDB.h"
+
+@interface EPeerMessageDB : SQLPeerMessageDB<IMessageDB>
 +(EPeerMessageDB*)instance;
+
 @end

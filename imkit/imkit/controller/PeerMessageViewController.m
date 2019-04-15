@@ -15,7 +15,9 @@
 #import "PeerOutbox.h"
 #import "UIImage+Resize.h"
 #import "SDImageCache.h"
-#import "IPeerMessageDB.h"
+#import "PeerMessageDB.h"
+#import "EPeerMessageDB.h"
+
 #import "UIView+Toast.h"
 
 @interface PeerMessageViewController ()
@@ -27,10 +29,12 @@
 }
 
 - (void)viewDidLoad {
-    IPeerMessageDB *db = [[IPeerMessageDB alloc] initWithSecret:self.secret];
-    db.currentUID = self.currentUID;
-    db.peerUID = self.peerUID;
-    self.messageDB = db;
+    if (self.secret) {
+        self.messageDB = [EPeerMessageDB instance];
+    } else {
+        self.messageDB = [PeerMessageDB instance];
+    }
+    self.conversationID = self.peerUID;
     
     self.callEnabled = !self.secret;
     [super viewDidLoad];
@@ -323,6 +327,14 @@
         [[NSNotificationCenter defaultCenter] postNotification:notification];
     }
 
+}
+
+-(IMessage*)newOutMessage {
+    IMessage *msg = [[IMessage alloc] init];
+    msg.sender = self.currentUID;
+    msg.receiver = self.peerUID;
+    msg.secret = self.secret;
+    return msg;
 }
 
 @end

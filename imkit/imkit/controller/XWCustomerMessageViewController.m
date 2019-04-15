@@ -21,22 +21,14 @@
     
     [super viewDidLoad];
     
-    
-
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appDidEnterBackground:)
                                                  name:UIApplicationDidEnterBackgroundNotification object:nil];
-    
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillEnterForeground:)
                                                  name:UIApplicationWillEnterForegroundNotification object:nil];
     
-    
-    
-
     [[IMService instance] start];
     
     [self loadSupporter];
-    
 }
 
 - (void)viewWillAppear:(BOOL)animated {

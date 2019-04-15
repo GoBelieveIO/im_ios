@@ -8,7 +8,6 @@
 */
 
 #import "PeerMessageHandler.h"
-#import "MessageDB.h"
 #import "Message.h"
 #import "PeerMessageDB.h"
 #import "EPeerMessageDB.h"
@@ -65,7 +64,7 @@
         int msgId = [[PeerMessageDB instance] getMessageId:revoke.msgid];
         if (msgId > 0) {
             r = [[PeerMessageDB instance] updateMessageContent:msgId content:msg.content];
-            [[PeerMessageDB instance] removeMessageIndex:msgId uid:pid];
+            [[PeerMessageDB instance] removeMessageIndex:msgId];
         }
         return r;
     } else {
@@ -80,7 +79,7 @@
 -(BOOL)handleMessageACK:(IMMessage*)msg {
     int64_t pid = self.uid == msg.sender ? msg.receiver : msg.sender;
     if (msg.msgLocalID > 0) {
-        return [[PeerMessageDB instance] acknowledgeMessage:msg.msgLocalID uid:pid];
+        return [[PeerMessageDB instance] acknowledgeMessage:msg.msgLocalID];
     } else {
         MessageContent *content = [IMessage fromRaw:msg.plainContent];
         if (content.type == MESSAGE_REVOKE) {
@@ -88,7 +87,7 @@
             int revokedMsgId = [[PeerMessageDB instance] getMessageId:revoke.msgid];
             if (revokedMsgId > 0) {
                 [[PeerMessageDB instance]  updateMessageContent:revokedMsgId content:content.raw];
-                [[PeerMessageDB instance] removeMessageIndex:revokedMsgId uid:pid];
+                [[PeerMessageDB instance] removeMessageIndex:revokedMsgId];
             }
         }
         return YES;
@@ -98,7 +97,7 @@
 -(BOOL)handleMessageFailure:(IMMessage*)msg {
     int64_t pid = self.uid == msg.sender ? msg.receiver : msg.sender;
     PeerMessageDB *db = [PeerMessageDB instance];
-    return [db markMessageFailure:msg.msgLocalID uid:pid];
+    return [db markMessageFailure:msg.msgLocalID];
 }
 
 @end

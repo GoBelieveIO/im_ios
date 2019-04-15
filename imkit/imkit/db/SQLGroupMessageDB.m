@@ -109,7 +109,7 @@
     return [[SQLGroupMessageIterator alloc] initWithDB:self.db gid:gid];
 }
 
--(id<IMessageIterator>)newMessageIterator:(int64_t)gid last:(int)lastMsgID {
+-(id<IMessageIterator>)newForwardMessageIterator:(int64_t)gid last:(int)lastMsgID {
     return [[SQLGroupMessageIterator alloc] initWithDB:self.db gid:gid position:lastMsgID];
 }
 
@@ -208,7 +208,7 @@
 
 }
 
--(BOOL)removeMessage:(int)msgLocalID gid:(int64_t)gid {
+-(BOOL)removeMessage:(int)msgLocalID {
     FMDatabase *db = self.db;
     BOOL r = [db executeUpdate:@"DELETE FROM group_message WHERE id=?", @(msgLocalID)];
     if (!r) {
@@ -225,7 +225,7 @@
     return YES;
 }
 
--(BOOL)removeMessageIndex:(int)msgLocalID gid:(int64_t)gid {
+-(BOOL)removeMessageIndex:(int)msgLocalID {
     FMDatabase *db = self.db;
     BOOL r = [db executeUpdate:@"DELETE FROM group_message_fts WHERE rowid=?", @(msgLocalID)];
     if (!r) {
@@ -299,15 +299,15 @@
     return nil;
 }
 
--(BOOL)acknowledgeMessage:(int)msgLocalID gid:(int64_t)gid {
+-(BOOL)acknowledgeMessage:(int)msgLocalID {
     return [self addFlag:msgLocalID flag:MESSAGE_FLAG_ACK];
 }
 
--(BOOL)markMessageFailure:(int)msgLocalID gid:(int64_t)gid {
+-(BOOL)markMessageFailure:(int)msgLocalID {
     return [self addFlag:msgLocalID flag:MESSAGE_FLAG_FAILURE];
 }
 
--(BOOL)markMesageListened:(int)msgLocalID gid:(int64_t)gid{
+-(BOOL)markMesageListened:(int)msgLocalID {
     return [self addFlag:msgLocalID flag:MESSAGE_FLAG_LISTENED];
 }
 
@@ -335,7 +335,7 @@
 }
 
 
--(BOOL)eraseMessageFailure:(int)msgLocalID gid:(int64_t)gid {
+-(BOOL)eraseMessageFailure:(int)msgLocalID {
     FMDatabase *db = self.db;
     FMResultSet *rs = [db executeQuery:@"SELECT flags FROM group_message WHERE id=?", @(msgLocalID)];
     if (!rs) {
@@ -369,6 +369,21 @@
     }
     
     return YES;
+}
+
+
+-(void)saveMessageAttachment:(IMessage*)msg address:(NSString*)address {
+    //以附件的形式存储，以免第二次查询
+    MessageAttachmentContent *att = [[MessageAttachmentContent alloc] initWithAttachment:msg.msgLocalID address:address];
+    IMessage *attachment = [[IMessage alloc] init];
+    attachment.sender = msg.sender;
+    attachment.receiver = msg.receiver;
+    attachment.rawContent = att.raw;
+    [self saveMessage:attachment];
+}
+
+-(BOOL)saveMessage:(IMessage*)msg {
+    return [self insertMessage:msg];
 }
 
 @end

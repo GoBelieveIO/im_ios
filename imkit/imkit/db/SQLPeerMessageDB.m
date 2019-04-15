@@ -108,7 +108,7 @@
     return r;
 }
 
--(BOOL)removeMessage:(int)msgLocalID uid:(int64_t)uid{
+-(BOOL)removeMessage:(int)msgLocalID {
     FMDatabase *db = self.db;
     BOOL r = [db executeUpdate:@"DELETE FROM peer_message WHERE id=?", @(msgLocalID)];
     if (!r) {
@@ -124,7 +124,7 @@
     return YES;
 }
 
--(BOOL)removeMessageIndex:(int)msgLocalID uid:(int64_t)uid {
+-(BOOL)removeMessageIndex:(int)msgLocalID {
     FMDatabase *db = self.db;
     BOOL r = [db executeUpdate:@"DELETE FROM peer_message_fts WHERE rowid=?", @(msgLocalID)];
     if (!r) {
@@ -235,15 +235,15 @@
     
 }
 
--(BOOL)acknowledgeMessage:(int)msgLocalID uid:(int64_t)uid {
+-(BOOL)acknowledgeMessage:(int)msgLocalID{
     return [self addFlag:msgLocalID flag:MESSAGE_FLAG_ACK];
 }
 
--(BOOL)markMessageFailure:(int)msgLocalID uid:(int64_t)uid {
+-(BOOL)markMessageFailure:(int)msgLocalID {
     return [self addFlag:msgLocalID flag:MESSAGE_FLAG_FAILURE];
 }
 
--(BOOL)markMesageListened:(int)msgLocalID uid:(int64_t)uid {
+-(BOOL)markMesageListened:(int)msgLocalID {
     return [self addFlag:msgLocalID  flag:MESSAGE_FLAG_LISTENED];
 }
 
@@ -270,7 +270,7 @@
 }
 
 
--(BOOL)eraseMessageFailure:(int)msgLocalID uid:(int64_t)uid {
+-(BOOL)eraseMessageFailure:(int)msgLocalID {
     FMDatabase *db = self.db;
     FMResultSet *rs = [db executeQuery:@"SELECT flags FROM peer_message WHERE id=?", @(msgLocalID)];
     if (!rs) {
@@ -311,7 +311,7 @@
     return [[SQLPeerMessageIterator alloc] initWithDB:self.db peer:uid secret:self.secret];
 }
 
--(id<IMessageIterator>)newMessageIterator:(int64_t)uid last:(int)lastMsgID {
+-(id<IMessageIterator>)newForwardMessageIterator:(int64_t)uid last:(int)lastMsgID {
     return [[SQLPeerMessageIterator alloc] initWithDB:self.db peer:uid position:lastMsgID secret:self.secret];
 }
 -(id<IMessageIterator>)newMiddleMessageIterator:(int64_t)uid messageID:(int)messageID {

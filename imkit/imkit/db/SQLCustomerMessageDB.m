@@ -317,7 +317,7 @@
     return [[SQLCustomerMessageIterator alloc] initWithDB:self.db store:store];
 }
 
--(id<IMessageIterator>)newMessageIterator:(int64_t)store last:(int)lastMsgID {
+-(id<IMessageIterator>)newForwardMessageIterator:(int64_t)store last:(int)lastMsgID {
     return [[SQLCustomerMessageIterator alloc] initWithDB:self.db store:store position:lastMsgID];
 }
 
@@ -328,6 +328,29 @@
 -(id<IMessageIterator>)newMessageIterator:(int64_t)uid appID:(int64_t)appID last:(int)lastMsgID {
     return [[SQLCustomerMessageIterator alloc] initWithDB:self.db uid:uid appID:appID position:lastMsgID];
 }
+
+-(void)saveMessageAttachment:(IMessage*)msg address:(NSString*)address {
+    //以附件的形式存储，以免第二次查询
+    MessageAttachmentContent *att = [[MessageAttachmentContent alloc] initWithAttachment:msg.msgLocalID address:address];
+    ICustomerMessage *attachment = [[ICustomerMessage alloc] init];
+    attachment.rawContent = att.raw;
+    [self saveMessage:attachment];
+}
+
+
+-(BOOL)saveMessage:(IMessage*)msg {
+    return [self insertMessage:msg];
+}
+
+- (id<IMessageIterator>)newBackwardMessageIterator:(int64_t)conversationID messageID:(int)messageID {
+    return nil;
+}
+
+
+- (id<IMessageIterator>)newMiddleMessageIterator:(int64_t)conversationID messageID:(int)messageID {
+    return nil;
+}
+
 
 
 @end

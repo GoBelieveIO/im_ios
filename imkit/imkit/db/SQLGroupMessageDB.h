@@ -10,19 +10,18 @@
 #import <Foundation/Foundation.h>
 
 #import "IMessage.h"
-#import "MessageDB.h"
 #import "IMessageIterator.h"
-
+#import "IMessageDB.h"
 
 #import <fmdb/FMDB.h>
 
-@interface SQLGroupMessageDB : NSObject
+@interface SQLGroupMessageDB : NSObject<IMessageDB>
 +(SQLGroupMessageDB*)instance;
 
 @property(nonatomic, strong) FMDatabase *db;
 
 -(id<IMessageIterator>)newMessageIterator:(int64_t)uid;
--(id<IMessageIterator>)newMessageIterator:(int64_t)uid last:(int)lastMsgID;
+-(id<IMessageIterator>)newForwardMessageIterator:(int64_t)uid last:(int)lastMsgID;
 -(id<IMessageIterator>)newMiddleMessageIterator:(int64_t)gid messageID:(int)messageID;
 -(id<IMessageIterator>)newBackwardMessageIterator:(int64_t)gid messageID:(int)messageID;
 
@@ -32,13 +31,13 @@
 -(IMessage*)getMessage:(int64_t)msgID;
 -(BOOL)insertMessage:(IMessage*)msg;
 -(BOOL)insertMessages:(NSArray*)msgs;
--(BOOL)removeMessage:(int)msgLocalID gid:(int64_t)gid;
--(BOOL)removeMessageIndex:(int)msgLocalID gid:(int64_t)gid;
+-(BOOL)removeMessage:(int)msgLocalID;
+-(BOOL)removeMessageIndex:(int)msgLocalID;
 -(BOOL)clearConversation:(int64_t)gid;
 -(NSArray*)search:(NSString*)key;
 -(BOOL)updateMessageContent:(int)msgLocalID content:(NSString*)content;
--(BOOL)acknowledgeMessage:(int)msgLocalID gid:(int64_t)gid;
--(BOOL)markMessageFailure:(int)msgLocalID gid:(int64_t)gid;
--(BOOL)markMesageListened:(int)msgLocalID gid:(int64_t)gid;
+-(BOOL)acknowledgeMessage:(int)msgLocalID;
+-(BOOL)markMessageFailure:(int)msgLocalID;
+-(BOOL)markMesageListened:(int)msgLocalID;
 -(BOOL)updateFlags:(int)msgLocalID flags:(int)flags;
 @end

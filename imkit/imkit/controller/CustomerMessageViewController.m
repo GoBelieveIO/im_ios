@@ -9,7 +9,7 @@
 #import "CustomerMessageViewController.h"
 #import "CustomerOutbox.h"
 #import "ICustomerMessage.h"
-#import "ICustomerMessageDB.h"
+#import "CustomerMessageDB.h"
 #import "UIView+Toast.h"
 
 #define PAGE_COUNT 10
@@ -25,12 +25,9 @@
 
 
 - (void)viewDidLoad {
-    ICustomerMessageDB *db = [[ICustomerMessageDB alloc] init];
-    db.customerAppID = self.appID;
-    db.customerID = self.currentUID;
-    db.storeID = self.storeID;
-    db.sellerID = self.sellerID;
-    self.messageDB = db;
+    self.messageDB = [CustomerMessageDB instance];
+    self.conversationID = self.storeID;
+    
     self.callEnabled = NO;
     
     [super viewDidLoad];
@@ -233,6 +230,15 @@
     
     NSNotification* notification = [[NSNotification alloc] initWithName:LATEST_CUSTOMER_MESSAGE object:message userInfo:nil];
     [[NSNotificationCenter defaultCenter] postNotification:notification];
+}
+
+-(IMessage*)newOutMessage {
+    ICustomerMessage *msg = [[ICustomerMessage alloc] init];
+    msg.customerID = self.currentUID;
+    msg.customerAppID = self.appID;
+    msg.storeID = self.storeID;
+    msg.sellerID = self.sellerID;
+    return msg;
 }
 
 @end

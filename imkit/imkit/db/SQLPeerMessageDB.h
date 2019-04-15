@@ -9,10 +9,9 @@
 
 #import <Foundation/Foundation.h>
 #import "IMessage.h"
-#import "MessageDB.h"
 #import "IMessageIterator.h"
 
-#import <FMDB/FMDB.h>
+#import <fmdb/FMDB.h>
 
 @interface SQLPeerMessageDB : NSObject
 
@@ -23,7 +22,7 @@
 
 -(id<IMessageIterator>)newMessageIterator:(int64_t)uid;
 //下拉刷新
--(id<IMessageIterator>)newMessageIterator:(int64_t)uid last:(int)lastMsgID;
+-(id<IMessageIterator>)newForwardMessageIterator:(int64_t)uid last:(int)lastMsgID;
 
 -(id<IMessageIterator>)newMiddleMessageIterator:(int64_t)uid messageID:(int)messageID;
 
@@ -36,15 +35,15 @@
 -(IMessage*)getMessage:(int64_t)msgID;
 -(int)getMessageId:(NSString*)uuid;
 -(BOOL)insertMessage:(IMessage*)msg uid:(int64_t)uid;
--(BOOL)removeMessage:(int)msgLocalID uid:(int64_t)uid;
--(BOOL)removeMessageIndex:(int)msgLocalID uid:(int64_t)uid;
+-(BOOL)removeMessage:(int)msgLocalID;
+-(BOOL)removeMessageIndex:(int)msgLocalID;
 -(BOOL)clearConversation:(int64_t)uid;
 -(BOOL)clear;
 -(NSArray*)search:(NSString*)key;
 -(BOOL)updateMessageContent:(int)msgLocalID content:(NSString*)content;
--(BOOL)acknowledgeMessage:(int)msgLocalID uid:(int64_t)uid;
--(BOOL)markMessageFailure:(int)msgLocalID uid:(int64_t)uid;
--(BOOL)markMesageListened:(int)msgLocalID uid:(int64_t)uid;
--(BOOL)eraseMessageFailure:(int)msgLocalID uid:(int64_t)uid;
+-(BOOL)acknowledgeMessage:(int)msgLocalID;
+-(BOOL)markMessageFailure:(int)msgLocalID;
+-(BOOL)markMesageListened:(int)msgLocalID;
+-(BOOL)eraseMessageFailure:(int)msgLocalID;
 -(BOOL)updateFlags:(int)msgLocalID flags:(int)flags;
 @end

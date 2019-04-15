@@ -45,6 +45,7 @@
 @property(nonatomic, assign) NSString *cid;
 
 @property(nonatomic, assign) int messageID;//加载此消息id前后的消息
+@property(nonatomic, assign) int64_t conversationID;
 
 @property(nonatomic, weak) id<MessageViewControllerUserDelegate> userDelegate;
 
@@ -62,6 +63,7 @@
 - (void)asyncGetUser:(int64_t)uid cb:(void(^)(IUser*))cb;
 - (void)sendMessage:(IMessage *)msg withImage:(UIImage*)image;
 - (void)sendMessage:(IMessage*)message;
+- (IMessage*)newOutMessage;
 
 -(void)resendMessage:(IMessage*)message;
 -(void)saveMessageAttachment:(IMessage*)msg address:(NSString*)address;

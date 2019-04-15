@@ -49,7 +49,7 @@
 
 //override
 -(void)markMessageFailure:(IMessage*)msg {
-    [[GroupMessageDB instance] markMessageFailure:msg.msgLocalID gid:msg.receiver];
+    [[GroupMessageDB instance] markMessageFailure:msg.msgLocalID];
 }
 
 -(void)saveMessageAttachment:(IMessage*)msg url:(NSString*)url {
