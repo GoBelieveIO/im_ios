@@ -76,16 +76,33 @@ gobelieve iOS SDK
 
         [[IMService instance] start];
 
-8. app进入后台,断开socket链接
+8. 添加消息observer，处理相应类型的消息
+
+        //连接状态
+        [[IMService instance] addConnectionObserver:ob];
+
+        //点对点消息
+        [[IMService instance] addPeerMessageObserver:ob];
+        //群组消息
+        [[IMService instance] addGroupMessageObserver:ob];
+        //直播的聊天室消息
+        [[IMService instance] addRoomMessageObserver:ob];
+        //实时消息,用于voip的信令
+        [[IMService instance] addRTMessageObserver:ob];
+        //系统消息
+        [[IMService instance] addSystemMessageObserver:ob];
+
+        
+9. app进入后台,断开socket链接
 
         [[IMService instance] enterBackground];
 
-9.  app返回前台,重新链接socket
 
-        [[IMService instance] enterForeground];
+10. app返回前台,重新链接socket
+ 
+        [[IMService instance] enterForeground]; 
 
-
-10. 发送点对点消息
+12. 发送点对点消息
 
         PeerMessageViewController* msgController = [[PeerMessageViewController alloc] init];
         msgController.peerUID = peerUID;
@@ -93,7 +110,7 @@ gobelieve iOS SDK
         msgController.currentUID = uid;
         [self.navigationController pushViewController:msgController animated:YES];
 
-11. 发送群组消息
+13. 发送群组消息
 
         GroupMessageViewController* msgController = [[GroupMessageViewController alloc] init];
         msgController.groupID = groupID;
@@ -101,6 +118,6 @@ gobelieve iOS SDK
         msgController.currentUID = uid;
         [self.navigationController pushViewController:msgController animated:YES];
 
-12. 用户注销
+14. 用户注销
 
         [[IMService instance] stop]
