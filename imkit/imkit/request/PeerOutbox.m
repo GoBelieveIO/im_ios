@@ -44,7 +44,7 @@
     
     im.content = msg.rawContent;
 
-    [[IMService instance] sendPeerMessage:im];
+    [[IMService instance] sendPeerMessageAsync:im];
 }
 
 -(void)markMessageFailure:(IMessage*)msg {

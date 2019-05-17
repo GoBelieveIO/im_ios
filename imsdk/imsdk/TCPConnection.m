@@ -27,6 +27,9 @@
 
 @property(nonatomic)int connectFailCount;
 @property(nonatomic)NSMutableArray *connectionObservers;
+
+@property(nonatomic, copy) NSString *mainQueueLabel;
+@property(nonatomic, copy) NSString *queueLabel;
 @end
 
 
@@ -34,18 +37,10 @@
 -(id)init {
     self = [super init];
     if (self) {
-        dispatch_queue_t queue = dispatch_get_main_queue();
-        self.connectTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0,queue);
-        dispatch_source_set_event_handler(self.connectTimer, ^{
-            [self connect];
-        });
-        
-        self.heartbeatTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0,queue);
-        dispatch_source_set_event_handler(self.heartbeatTimer, ^{
-            [self ping];
-        });
+        self.queue = dispatch_get_main_queue();
+        const char *label = dispatch_queue_get_label(dispatch_get_main_queue());
+        self.mainQueueLabel = label ? [[NSString alloc] initWithUTF8String:label] : @"";
         self.connectionObservers = [NSMutableArray array];
-
         self.connectState = STATE_UNCONNECTED;
         self.stopped = YES;
         self.suspended = YES;
@@ -55,24 +50,56 @@
     return self;
 }
 
--(void)onReachabilityChange:(BOOL)reachable {
-    self.reachable = reachable;
-    if (reachable) {
-        NSLog(@"internet reachable");
-        if (!self.stopped && !self.isBackground) {
-            NSLog(@"reconnect im service");
-            [self suspend];
-            [self resume];
-        }
-    } else {
-        NSLog(@"internet unreachable");
-        if (!self.stopped) {
-            [self suspend];
-        }
+-(void)setQueue:(dispatch_queue_t)queue {
+    _queue = queue;
+    const char *label = dispatch_queue_get_label(queue);
+    NSAssert(label && strlen(label) > 0, @"queue label null");
+    self.queueLabel = label ? [[NSString alloc] initWithUTF8String:label] : @"";
+}
+
+-(void)createTimer {
+    if (self.connectTimer != nil && self.heartbeatTimer != nil) {
+        return;
     }
+    
+    dispatch_queue_t queue = self.queue;
+    self.connectTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0,queue);
+    dispatch_source_set_event_handler(self.connectTimer, ^{
+        [self connect];
+    });
+    
+    self.heartbeatTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0,queue);
+    dispatch_source_set_event_handler(self.heartbeatTimer, ^{
+        [self ping];
+    });
+}
+
+-(void)onReachabilityChange:(BOOL)reachable {
+    [self runOnWorkQueue:^{
+        self.reachable = reachable;
+        if (reachable) {
+            NSLog(@"internet reachable");
+            if (!self.stopped && !self.isBackground) {
+                NSLog(@"reconnect im service");
+                [self suspend];
+                [self resume];
+            }
+        } else {
+            NSLog(@"internet unreachable");
+            if (!self.stopped) {
+                [self suspend];
+            }
+        }
+    }];
 }
 
 -(void)enterForeground {
+    [self runOnWorkQueue:^{
+        [self _enterForeground];
+    }];
+}
+
+-(void)_enterForeground {
     NSLog(@"im service enter foreground");
     self.isBackground = NO;
     if (!self.stopped && self.reachable) {
@@ -81,6 +108,12 @@
 }
 
 -(void)enterBackground {
+    [self runOnWorkQueue:^{
+        [self _enterBackground];
+    }];
+}
+
+-(void)_enterBackground {
     NSLog(@"im service enter background");
     self.isBackground = YES;
     if (!self.stopped) {
@@ -89,6 +122,12 @@
 }
 
 -(void)start {
+    [self runOnWorkQueue:^{
+        [self _start];
+    }];
+}
+
+-(void)_start {
     if (!self.host || !self.port) {
         NSLog(@"should init im server host and port");
         exit(1);
@@ -98,12 +137,19 @@
     }
     NSLog(@"start im service");
     self.stopped = NO;
+    [self createTimer];
     if (self.reachable) {
         [self resume];
     }
 }
 
 -(void)stop {
+    [self runOnWorkQueue:^{
+        [self _stop];
+    }];
+}
+
+-(void)_stop {
     if (self.stopped) {
         return;
     }
@@ -317,7 +363,7 @@
     self.pingTimestamp = 0;
     self.connectState = STATE_CONNECTING;
     [self publishConnectState:STATE_CONNECTING];
-    self.tcp = [[AsyncTCP alloc] init];
+    self.tcp = [[AsyncTCP alloc] initWithQueue:self.queue];
     __weak TCPConnection *wself = self;
     struct sockaddr_storage addr = self.hostAddr;
     BOOL r = [self.tcp connect:(struct sockaddr*)&addr cb:^(AsyncTCP *tcp, int err) {
@@ -403,4 +449,31 @@
     }
 }
 
+-(void)runOnQueue:(NSString*)queueLabel block:(dispatch_block_t)block {
+    const char *s = dispatch_queue_get_label(DISPATCH_CURRENT_QUEUE_LABEL);
+    NSString *label = s ? [[NSString alloc] initWithUTF8String:s] : @"";
+    
+    if ([queueLabel isEqualToString:label]) {
+        block();
+    } else {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            block();
+        });
+    }
+}
+-(void)runOnMainThread:(dispatch_block_t)block {
+    [self runOnQueue:self.mainQueueLabel block:block];
+}
+
+-(void)runOnWorkQueue:(dispatch_block_t)block {
+    [self runOnQueue:self.queueLabel block:block];
+}
+
+-(void)assertWorkQueue {
+    if (@available(iOS 10.0, *)) {
+        dispatch_assert_queue_debug(self.queue);
+    } else {
+        // Fallback on earlier versions
+    }
+}
 @end

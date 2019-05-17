@@ -15,6 +15,8 @@ typedef void(^ReadCB)(AsyncTCP *tcp, NSData *data, int err);
 typedef void(^CloseCB)(AsyncTCP *tcp, int err);
 
 @interface AsyncTCP : NSObject
+-(id)init;
+-(id)initWithQueue:(dispatch_queue_t)queue;
 -(BOOL)connect:(NSString*)host port:(int)port cb:(ConnectCB)cb;
 -(BOOL)connect:(struct sockaddr*)addr cb:(ConnectCB)cb;
 -(void)close;

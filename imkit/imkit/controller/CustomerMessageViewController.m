@@ -225,7 +225,7 @@
         im.msgLocalID = message.msgLocalID;
         im.content = message.rawContent;
         
-        [[IMService instance] sendCustomerMessage:im];
+        [[IMService instance] sendCustomerMessageAsync:im];
     }
     
     NSNotification* notification = [[NSNotification alloc] initWithName:LATEST_CUSTOMER_MESSAGE object:message userInfo:nil];

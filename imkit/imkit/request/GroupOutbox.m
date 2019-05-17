@@ -43,7 +43,7 @@
     
     im.content = msg.rawContent;
 
-    [[IMService instance] sendGroupMessage:im];
+    [[IMService instance] sendGroupMessageAsync:im];
 }
 
 
