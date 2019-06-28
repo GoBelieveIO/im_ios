@@ -52,6 +52,9 @@
 //优化，收到群组消息后，缓存到数组中， 然后一次性调用observer，这样可以只需要更新一次ui
 @property(nonatomic)NSMutableArray *receivedGroupMessages;
 
+//服务器主动下发的消息
+@property(nonatomic)Message *pushMessage;
+
 //保证一个时刻只存在一个同步过程，否则会导致获取到重复的消息
 @property(nonatomic, assign) int64_t peedingSyncKey;
 @property(nonatomic, assign) BOOL isSyncing;
@@ -100,7 +103,8 @@
 }
 
 -(void)handleACK:(Message*)msg {
-    NSNumber *seq = (NSNumber*)msg.body;
+    MessageACK *ack = (MessageACK*)msg.body;
+    NSNumber *seq = @(ack.seq);
     IMMessage *m = (IMMessage*)[self.peerMessages objectForKey:seq];
     IMMessage *m2 = (IMMessage*)[self.groupMessages objectForKey:seq];
     RoomMessage *m3 = (RoomMessage*)[self.roomMessages objectForKey:seq];
@@ -132,10 +136,7 @@
     [self.peerMessageHandler handleMessage:im];
     NSLog(@"peer message sender:%lld receiver:%lld content:%s", im.sender, im.receiver, [im.content UTF8String]);
     
-    Message *ack = [[Message alloc] init];
-    ack.cmd = MSG_ACK;
-    ack.body = [NSNumber numberWithInt:msg.seq];
-    [self sendMessage:ack];
+    [self sendACK:msg.seq];
     if (im.secret) {
         [self publishPeerSecretMessage:im];
     } else {
@@ -147,10 +148,7 @@
     IMMessage *im = (IMMessage*)msg.body;
     im.isSelf = msg.flag & MESSAGE_FLAG_SELF;
     NSLog(@"group message sender:%lld receiver:%lld content:%s", im.sender, im.receiver, [im.content UTF8String]);
-    Message *ack = [[Message alloc] init];
-    ack.cmd = MSG_ACK;
-    ack.body = [NSNumber numberWithInt:msg.seq];
-    [self sendMessage:ack];
+    [self sendACK:msg.seq];
     [self.receivedGroupMessages addObject:im];
 }
 
@@ -162,10 +160,7 @@
     NSLog(@"customer support message customer id:%lld customer appid:%lld store id:%lld seller id:%lld content:%s",
           im.customerID, im.customerAppID, im.storeID, im.sellerID, [im.content UTF8String]);
     
-    Message *ack = [[Message alloc] init];
-    ack.cmd = MSG_ACK;
-    ack.body = [NSNumber numberWithInt:msg.seq];
-    [self sendMessage:ack];
+    [self sendACK:msg.seq];
     [self publishCustomerSupportMessage:im];
 }
 
@@ -177,10 +172,7 @@
     NSLog(@"customer message customer id:%lld customer appid:%lld store id:%lld seller id:%lld content:%s",
           im.customerID, im.customerAppID, im.storeID, im.sellerID, [im.content UTF8String]);
     
-    Message *ack = [[Message alloc] init];
-    ack.cmd = MSG_ACK;
-    ack.body = [NSNumber numberWithInt:msg.seq];
-    [self sendMessage:ack];
+    [self sendACK:msg.seq];
     [self publishCustomerMessage:im];
 }
 
@@ -222,10 +214,7 @@
         }
     }
     
-    Message *ack = [[Message alloc] init];
-    ack.cmd = MSG_ACK;
-    ack.body = [NSNumber numberWithInt:msg.seq];
-    [self sendMessage:ack];
+    [self sendACK:msg.seq];
 }
 
 -(void)handleRoomMessage:(Message*)msg {
@@ -237,10 +226,7 @@
     NSString *sys = (NSString*)msg.body;
     [self publishSystemMessage:sys];
     
-    Message *ack = [[Message alloc] init];
-    ack.cmd = MSG_ACK;
-    ack.body = [NSNumber numberWithInt:msg.seq];
-    [self sendMessage:ack];
+    [self sendACK:msg.seq];
 }
 
 -(void)handleSyncBegin:(Message*)msg {
@@ -277,7 +263,28 @@
 
 -(void)handleSyncNotify:(Message*)msg {
     NSLog(@"sync notify:%@", msg.body);
-    NSNumber *newSyncKey = (NSNumber*)msg.body;
+    SyncNotify *notify = (SyncNotify*)msg.body;
+    NSNumber *newSyncKey = @(notify.syncKey);
+    
+    //处理服务器推到客户端的消息, pushMessage和notify消息必须是连续的
+    if (notify.prevSyncKey > 0 && notify.prevSyncKey == self.syncKey && self.pushMessage && self.pushMessage.seq + 1 == msg.seq) {
+        self.pushMessage.flag = self.pushMessage.flag & ~MESSAGE_FLAG_PUSH;
+        [self handleMessage:self.pushMessage];
+        self.pushMessage = nil;
+        
+        if (self.receivedGroupMessages.count > 0) {
+            [self.groupMessageHandler handleMessages:self.receivedGroupMessages];
+            [self publishGroupMessages:self.receivedGroupMessages];
+            [self.receivedGroupMessages removeAllObjects];
+        }
+        if ([newSyncKey longLongValue] !=  self.syncKey) {
+            self.syncKey = [newSyncKey longLongValue];
+            [self.syncKeyHandler saveSyncKey:self.syncKey];
+            [self sendSyncKey:self.syncKey];
+        }
+        return;
+    }
+    
     int now = (int)time(NULL);
     //4s同步超时
     BOOL isSyncing = self.isSyncing && (now - self.syncTimestmap < 4);
@@ -329,28 +336,48 @@
 }
 
 -(void)handleSyncGroupNotify:(Message*)msg {
-    GroupSyncKey *groupSyncKey = (GroupSyncKey*)msg.body;
-    NSLog(@"sync group notify:%lld %lld", groupSyncKey.groupID, groupSyncKey.syncKey);
+    GroupSyncNotify *notify = (GroupSyncNotify*)msg.body;
+    NSLog(@"sync group notify:%lld %lld %lld", notify.groupID, notify.syncKey, notify.prevSyncKey);
     
-    int now = (int)time(NULL);
-    GroupSync *s = [self.groupSyncKeys objectForKey:[NSNumber numberWithLongLong:groupSyncKey.groupID]];
+    GroupSync *s = [self.groupSyncKeys objectForKey:[NSNumber numberWithLongLong:notify.groupID]];
     if (!s) {
         //新加入的超级群
         s = [[GroupSync alloc] init];
-        s.groupID = groupSyncKey.groupID;
+        s.groupID = notify.groupID;
         s.syncKey = 0;
-        [self.groupSyncKeys setObject:s forKey:[NSNumber numberWithLongLong:groupSyncKey.groupID]];
+        [self.groupSyncKeys setObject:s forKey:[NSNumber numberWithLongLong:notify.groupID]];
     }
     
+    //处理服务器推到客户端的消息, pushMessage和notify消息必须是连续的
+    if (notify.prevSyncKey > 0 && notify.prevSyncKey == s.syncKey && self.pushMessage && self.pushMessage.seq + 1 == msg.seq) {
+        self.pushMessage.flag = self.pushMessage.flag & ~MESSAGE_FLAG_PUSH;
+        [self handleMessage:self.pushMessage];
+        self.pushMessage = nil;
+        
+        if (self.receivedGroupMessages.count > 0) {
+            [self.groupMessageHandler handleMessages:self.receivedGroupMessages];
+            [self publishGroupMessages:self.receivedGroupMessages];
+            [self.receivedGroupMessages removeAllObjects];
+        }
+        
+        if (notify.syncKey != s.syncKey) {
+            s.syncKey = notify.syncKey;
+            [self.syncKeyHandler saveGroupSyncKey:notify.syncKey gid:notify.groupID];
+            [self sendGroupSyncKey:notify.syncKey gid:notify.groupID];
+        }
+        return;
+    }
+    
+    int now = (int)time(NULL);
     //4s同步超时
     BOOL isSyncing = s.isSyncing && (now - s.syncTimestamp < 4);
     
-    if (!isSyncing && groupSyncKey.syncKey > s.syncKey) {
+    if (!isSyncing && notify.syncKey > s.syncKey) {
         [self sendGroupSync:s.syncKey gid:s.groupID];
         s.syncTimestamp = now;
         s.isSyncing = YES;
-    } else if (groupSyncKey.syncKey > s.peedingSyncKey) {
-        s.peedingSyncKey = groupSyncKey.syncKey;
+    } else if (notify.syncKey > s.peedingSyncKey) {
+        s.peedingSyncKey = notify.syncKey;
     }
 }
 
@@ -493,6 +520,10 @@
 
 -(void)handleMessage:(Message*)msg {
     NSLog(@"message cmd:%d", msg.cmd);
+    if (msg.flag & MESSAGE_FLAG_PUSH) {
+        self.pushMessage = msg;
+        return;
+    }
     if (msg.cmd == MSG_AUTH_STATUS) {
         [self handleAuthStatus:msg];
     } else if (msg.cmd == MSG_ACK) {
@@ -881,6 +912,11 @@
         [self.receivedGroupMessages removeAllObjects];
     }
     
+    if (self.pushMessage) {
+        NSLog(@"socket closed, push message:%@", self.pushMessage);
+        self.pushMessage = nil;
+    }
+    
     for (NSNumber *seq in self.peerMessages) {
         IMMessage *msg = [self.peerMessages objectForKey:seq];
         [self.peerMessageHandler handleMessageFailure:msg];
@@ -908,6 +944,15 @@
     [self.groupMessages removeAllObjects];
     [self.roomMessages removeAllObjects];
     [self.customerServiceMessages removeAllObjects];
+}
+
+-(void)sendACK:(int)seq {
+    MessageACK *a = [[MessageACK alloc] init];
+    a.seq = seq;
+    Message *ack = [[Message alloc] init];
+    ack.cmd = MSG_ACK;
+    ack.body = a;
+    [self sendMessage:ack];
 }
 
 -(void)sendPing {

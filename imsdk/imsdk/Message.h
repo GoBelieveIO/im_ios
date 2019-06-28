@@ -58,10 +58,20 @@
 #define PLATFORM_ANDROID 2
 #define PLATFORM_WEB 3
 
+//message flag
 #define MESSAGE_FLAG_TEXT 1
 #define MESSAGE_FLAG_UNPERSISTENT 2
 #define MESSAGE_FLAG_GROUP 4
 #define MESSAGE_FLAG_SELF 8
+#define MESSAGE_FLAG_PUSH 0x10
+
+
+//message ack
+#define MESSAGE_ACK_SUCCESS  0
+#define MESSAGE_ACK_NOT_MY_FRIEND  1
+#define MESSAGE_ACK_NOT_YOUR_FRIEND  2
+#define MESSAGE_ACK_IN_YOUR_BLACKLIST  3
+#define MESSAGE_ACK_NOT_GROUP_MEMBER  64
 
 
 @interface IMMessage : NSObject
@@ -109,6 +119,11 @@ typedef RoomMessage RTMessage;
 @end
 
 
+@interface MessageACK : NSObject
+@property(nonatomic, assign) int seq;
+@property(nonatomic, assign) int status;
+@end
+
 typedef NSNumber SyncKey;
 
 @interface GroupSyncKey : NSObject
@@ -116,6 +131,16 @@ typedef NSNumber SyncKey;
 @property(nonatomic, assign) int64_t syncKey;
 @end
 
+@interface SyncNotify : NSObject
+@property(nonatomic, assign) int64_t syncKey;
+@property(nonatomic, assign) int64_t prevSyncKey;
+@end
+
+@interface GroupSyncNotify : NSObject
+@property(nonatomic, assign) int64_t groupID;
+@property(nonatomic, assign) int64_t syncKey;
+@property(nonatomic, assign) int64_t prevSyncKey;
+@end
 
 @interface Message : NSObject
 @property(nonatomic, assign)int cmd;
