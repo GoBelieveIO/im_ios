@@ -38,11 +38,9 @@
 
 @end
 
-@implementation SyncNotify
 
-@end
 
-@implementation GroupSyncNotify
+@implementation Metadata
 
 @end
 
@@ -220,13 +218,15 @@
         self.body = [[NSString alloc] initWithBytes:p length:data.length-HEAD_SIZE encoding:NSUTF8StringEncoding];
         return YES;
     } else if (self.cmd == MSG_SYNC_BEGIN ||
-               self.cmd == MSG_SYNC_END) {
+               self.cmd == MSG_SYNC_END ||
+               self.cmd == MSG_SYNC_NOTIFY) {
         int64_t k = readInt64(p);
         p += 8;
         self.body = [NSNumber numberWithLongLong:k];
         return YES;
     } else if (self.cmd == MSG_SYNC_GROUP_BEGIN ||
-               self.cmd == MSG_SYNC_GROUP_END) {
+               self.cmd == MSG_SYNC_GROUP_END ||
+               self.cmd == MSG_SYNC_GROUP_NOTIFY) {
         GroupSyncKey *groupSyncKey = [[GroupSyncKey alloc] init];
         groupSyncKey.groupID = readInt64(p);
         p += 8;
@@ -234,23 +234,13 @@
         p += 8;
         self.body = groupSyncKey;
         return YES;
-    } else if (self.cmd == MSG_SYNC_NOTIFY) {
-        SyncNotify *notify = [[SyncNotify alloc] init];
-        notify.syncKey = readInt64(p);
+    } else if (self.cmd == MSG_METADATA) {
+        Metadata *meta = [[Metadata alloc] init];
+        meta.syncKey = readInt64(p);
         p += 8;
-        notify.prevSyncKey = readInt64(p);
+        meta.prevSyncKey = readInt64(p);
         p += 8;
-        self.body = notify;
-        return YES;
-    } else if (self.cmd == MSG_SYNC_GROUP_NOTIFY) {
-        GroupSyncNotify *notify = [[GroupSyncNotify alloc] init];
-        notify.groupID = readInt64(p);
-        p += 8;
-        notify.syncKey = readInt64(p);
-        p += 8;
-        notify.prevSyncKey = readInt64(p);
-        p += 8;
-        self.body = notify;
+        self.body = meta;
         return YES;
     } else {
         self.body = [NSData dataWithBytes:p length:data.length-8];

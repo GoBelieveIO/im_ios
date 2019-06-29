@@ -53,6 +53,8 @@
 #define MSG_SYNC_KEY  34
 #define MSG_GROUP_SYNC_KEY 35
 
+#define MSG_METADATA 37
+
 
 #define PLATFORM_IOS  1
 #define PLATFORM_ANDROID 2
@@ -64,7 +66,7 @@
 #define MESSAGE_FLAG_GROUP 4
 #define MESSAGE_FLAG_SELF 8
 #define MESSAGE_FLAG_PUSH 0x10
-
+#define MESSAGE_FLAG_SUPER_GROUP 0x20
 
 //message ack
 #define MESSAGE_ACK_SUCCESS  0
@@ -131,13 +133,12 @@ typedef NSNumber SyncKey;
 @property(nonatomic, assign) int64_t syncKey;
 @end
 
-@interface SyncNotify : NSObject
-@property(nonatomic, assign) int64_t syncKey;
-@property(nonatomic, assign) int64_t prevSyncKey;
-@end
+typedef SyncKey SyncNotify;
 
-@interface GroupSyncNotify : NSObject
-@property(nonatomic, assign) int64_t groupID;
+typedef GroupSyncKey GroupSyncNotify;
+
+
+@interface Metadata : NSObject
 @property(nonatomic, assign) int64_t syncKey;
 @property(nonatomic, assign) int64_t prevSyncKey;
 @end
