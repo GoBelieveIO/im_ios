@@ -68,12 +68,6 @@
 #define MESSAGE_FLAG_PUSH 0x10
 #define MESSAGE_FLAG_SUPER_GROUP 0x20
 
-//message ack
-#define MESSAGE_ACK_SUCCESS  0
-#define MESSAGE_ACK_NOT_MY_FRIEND  1
-#define MESSAGE_ACK_NOT_YOUR_FRIEND  2
-#define MESSAGE_ACK_IN_YOUR_BLACKLIST  3
-#define MESSAGE_ACK_NOT_GROUP_MEMBER  64
 
 
 @interface IMMessage : NSObject
@@ -123,7 +117,6 @@ typedef RoomMessage RTMessage;
 
 @interface MessageACK : NSObject
 @property(nonatomic, assign) int seq;
-@property(nonatomic, assign) int status;
 @end
 
 typedef NSNumber SyncKey;

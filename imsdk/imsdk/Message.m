@@ -11,7 +11,7 @@
 #import "util.h"
 
 #define HEAD_SIZE 8
-#define VERSION 2
+#define VERSION 1
 
 @implementation IMMessage
 
@@ -111,8 +111,7 @@
         MessageACK *ack = (MessageACK*)self.body;
         writeInt32(ack.seq, p);
         p += 4;
-        *p++ = (uint8_t)ack.status;
-        return [NSData dataWithBytes:buf length:HEAD_SIZE+5];
+        return [NSData dataWithBytes:buf length:HEAD_SIZE+4];
     } else if (self.cmd == MSG_ENTER_ROOM || self.cmd == MSG_LEAVE_ROOM) {
         NSNumber *n = (NSNumber*)self.body;
         int64_t roomID = [n longLongValue];
@@ -199,7 +198,6 @@
         MessageACK *ack = [[MessageACK alloc] init];
         ack.seq = readInt32(p);
         p += 4;
-        ack.status = *p;
         self.body = ack;
         return YES;
     } else if (self.cmd == MSG_GROUP_NOTIFICATION) {
