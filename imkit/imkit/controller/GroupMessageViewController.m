@@ -209,7 +209,7 @@
         im.receiver = message.receiver;
         im.msgLocalID = message.msgLocalID;
         im.content = message.rawContent;
-        [[IMService instance] sendGroupMessage:im];
+        [[IMService instance] sendGroupMessageAsync:im];
     }
     
     NSNotification* notification = [[NSNotification alloc] initWithName:LATEST_GROUP_MESSAGE

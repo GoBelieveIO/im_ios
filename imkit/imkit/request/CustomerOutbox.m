@@ -41,7 +41,7 @@
     im.msgLocalID = msg.msgLocalID;
     im.content = msg.rawContent;
     
-    [[IMService instance] sendCustomerMessage:im];
+    [[IMService instance] sendCustomerMessageAsync:im];
 }
 
 -(void)markMessageFailure:(IMessage*)msg {

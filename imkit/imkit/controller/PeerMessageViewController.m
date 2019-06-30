@@ -315,7 +315,7 @@
             r = [self encrypt:im];
         }
         if (r) {
-            [[IMService instance] sendPeerMessage:im];
+            [[IMService instance] sendPeerMessageAsync:im];
         }
     }
     

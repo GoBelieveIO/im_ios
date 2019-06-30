@@ -130,6 +130,16 @@
                          customerAppID:(int64_t)customerAppID;
 -(BOOL)isCustomerMessageSending:(int)msgLocalID storeID:(int64_t)storeID;
 
+
+-(void)sendPeerMessageAsync:(IMMessage*)msg;
+-(void)sendGroupMessageAsync:(IMMessage*)msg;
+-(void)sendRoomMessageAsync:(RoomMessage*)msg;
+//顾客->客服
+-(void)sendCustomerMessageAsync:(CustomerMessage*)im;
+//客服->顾客
+-(void)sendCustomerSupportMessageAsync:(CustomerMessage*)im;
+-(void)sendRTMessageAsync:(RTMessage*)msg;
+
 -(BOOL)sendPeerMessage:(IMMessage*)msg;
 -(BOOL)sendGroupMessage:(IMMessage*)msg;
 -(BOOL)sendRoomMessage:(RoomMessage*)msg;

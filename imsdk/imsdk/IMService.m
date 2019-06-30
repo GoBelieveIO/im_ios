@@ -184,12 +184,9 @@
 
 -(void)handleRTMessage:(Message*)msg {
     RTMessage *rt = (RTMessage*)msg.body;
-    for (NSValue *value in self.rtObservers) {
-        id<RTMessageObserver> ob = [value nonretainedObjectValue];
-        if ([ob respondsToSelector:@selector(onRTMessage:)]) {
-            [ob onRTMessage:rt];
-        }
-    }
+    [self publishRTMessage:rt];
+    
+
 }
 
 -(void)handleAuthStatus:(Message*)msg {
@@ -352,139 +349,186 @@
 }
 
 -(void)publishPeerMessage:(IMMessage*)msg {
-    for (NSValue *value in self.peerObservers) {
-        id<PeerMessageObserver> ob = [value nonretainedObjectValue];
-        if ([ob respondsToSelector:@selector(onPeerMessage:)]) {
-            [ob onPeerMessage:msg];
+    [self runOnMainThread:^{
+        for (NSValue *value in self.peerObservers) {
+            id<PeerMessageObserver> ob = [value nonretainedObjectValue];
+            if ([ob respondsToSelector:@selector(onPeerMessage:)]) {
+                [ob onPeerMessage:msg];
+            }
         }
-    }
+    }];
+
 }
 
 -(void)publishPeerSecretMessage:(IMMessage*)msg {
-    for (NSValue *value in self.peerObservers) {
-        id<PeerMessageObserver> ob = [value nonretainedObjectValue];
-        if ([ob respondsToSelector:@selector(onPeerSecretMessage:)]) {
-            [ob onPeerSecretMessage:msg];
+    [self runOnMainThread:^{
+        for (NSValue *value in self.peerObservers) {
+            id<PeerMessageObserver> ob = [value nonretainedObjectValue];
+            if ([ob respondsToSelector:@selector(onPeerSecretMessage:)]) {
+                [ob onPeerSecretMessage:msg];
+            }
         }
-    }
+    }];
+
 }
 
 
 -(void)publishPeerMessageACK:(IMMessage*)msg {
-    for (NSValue *value in self.peerObservers) {
-        id<PeerMessageObserver> ob = [value nonretainedObjectValue];
-        if ([ob respondsToSelector:@selector(onPeerMessageACK:)]) {
-            [ob onPeerMessageACK:msg];
+    [self runOnMainThread:^{
+        for (NSValue *value in self.peerObservers) {
+            id<PeerMessageObserver> ob = [value nonretainedObjectValue];
+            if ([ob respondsToSelector:@selector(onPeerMessageACK:)]) {
+                [ob onPeerMessageACK:msg];
+            }
         }
-    }
+    }];
 }
 
 -(void)publishPeerMessageFailure:(IMMessage*)msg {
-    for (NSValue *value in self.peerObservers) {
-        id<PeerMessageObserver> ob = [value nonretainedObjectValue];
-        if ([ob respondsToSelector:@selector(onPeerMessageFailure:)]) {
-            [ob onPeerMessageFailure:msg];
+    [self runOnMainThread:^{
+        for (NSValue *value in self.peerObservers) {
+            id<PeerMessageObserver> ob = [value nonretainedObjectValue];
+            if ([ob respondsToSelector:@selector(onPeerMessageFailure:)]) {
+                [ob onPeerMessageFailure:msg];
+            }
         }
-    }
+    }];
+
 }
 
 -(void)publishGroupMessages:(NSArray*)msgs {
-    for (NSValue *value in self.groupObservers) {
-        id<GroupMessageObserver> ob = [value nonretainedObjectValue];
-        if ([ob respondsToSelector:@selector(onGroupMessages:)]) {
-            [ob onGroupMessages:msgs];
+    [self runOnMainThread:^{
+        for (NSValue *value in self.groupObservers) {
+            id<GroupMessageObserver> ob = [value nonretainedObjectValue];
+            if ([ob respondsToSelector:@selector(onGroupMessages:)]) {
+                [ob onGroupMessages:msgs];
+            }
         }
-    }
+    }];
+
 }
 
 -(void)publishGroupMessageACK:(IMMessage*)msg {
-    for (NSValue *value in self.groupObservers) {
-        id<GroupMessageObserver> ob = [value nonretainedObjectValue];
-        if ([ob respondsToSelector:@selector(onGroupMessageACK:)]) {
-            [ob onGroupMessageACK:msg];
+    [self runOnMainThread:^{
+        for (NSValue *value in self.groupObservers) {
+            id<GroupMessageObserver> ob = [value nonretainedObjectValue];
+            if ([ob respondsToSelector:@selector(onGroupMessageACK:)]) {
+                [ob onGroupMessageACK:msg];
+            }
         }
-    }
+    }];
 }
 
 -(void)publishGroupMessageFailure:(IMMessage*)msg {
-    for (NSValue *value in self.groupObservers) {
-        id<GroupMessageObserver> ob = [value nonretainedObjectValue];
-        if ([ob respondsToSelector:@selector(onGroupMessageFailure:)]) {
-            [ob onGroupMessageFailure:msg];
+    [self runOnMainThread:^{
+        for (NSValue *value in self.groupObservers) {
+            id<GroupMessageObserver> ob = [value nonretainedObjectValue];
+            if ([ob respondsToSelector:@selector(onGroupMessageFailure:)]) {
+                [ob onGroupMessageFailure:msg];
+            }
         }
-    }
+    }];
+
 }
 
 -(void)publishRoomMessage:(RoomMessage*)msg {
-    for (NSValue *value in self.roomObservers) {
-        id<RoomMessageObserver> ob = [value nonretainedObjectValue];
-        if ([ob respondsToSelector:@selector(onRoomMessage:)]) {
-            [ob onRoomMessage:msg];
+    [self runOnMainThread:^{
+        for (NSValue *value in self.roomObservers) {
+            id<RoomMessageObserver> ob = [value nonretainedObjectValue];
+            if ([ob respondsToSelector:@selector(onRoomMessage:)]) {
+                [ob onRoomMessage:msg];
+            }
         }
-    }
+    }];
 }
 
 -(void)publishRoomMessageACK:(RoomMessage*)msg {
-    for (NSValue *value in self.roomObservers) {
-        id<RoomMessageObserver> ob = [value nonretainedObjectValue];
-        if ([ob respondsToSelector:@selector(onRoomMessageACK:)]) {
-            [ob onRoomMessageACK:msg];
+    [self runOnMainThread:^{
+        for (NSValue *value in self.roomObservers) {
+            id<RoomMessageObserver> ob = [value nonretainedObjectValue];
+            if ([ob respondsToSelector:@selector(onRoomMessageACK:)]) {
+                [ob onRoomMessageACK:msg];
+            }
         }
-    }
+    }];
 }
 
 -(void)publishRoomMessageFailure:(RoomMessage*)msg {
-    for (NSValue *value in self.roomObservers) {
-        id<RoomMessageObserver> ob = [value nonretainedObjectValue];
-        if ([ob respondsToSelector:@selector(onRoomMessageFailure:)]) {
-            [ob onRoomMessageFailure:msg];
+    [self runOnMainThread:^{
+        for (NSValue *value in self.roomObservers) {
+            id<RoomMessageObserver> ob = [value nonretainedObjectValue];
+            if ([ob respondsToSelector:@selector(onRoomMessageFailure:)]) {
+                [ob onRoomMessageFailure:msg];
+            }
         }
-    }
+    }];
+}
+
+-(void)publishRTMessage:(RTMessage*)rt {
+    [self runOnMainThread:^{
+        for (NSValue *value in self.rtObservers) {
+            id<RTMessageObserver> ob = [value nonretainedObjectValue];
+            if ([ob respondsToSelector:@selector(onRTMessage:)]) {
+                [ob onRTMessage:rt];
+            }
+        }
+    }];
 }
 
 -(void)publishSystemMessage:(NSString*)sys {
-    for (NSValue *value in self.systemObservers) {
-        id<SystemMessageObserver> ob = [value nonretainedObjectValue];
-        if ([ob respondsToSelector:@selector(onSystemMessage:)]) {
-            [ob onSystemMessage:sys];
+    [self runOnMainThread:^{
+        for (NSValue *value in self.systemObservers) {
+            id<SystemMessageObserver> ob = [value nonretainedObjectValue];
+            if ([ob respondsToSelector:@selector(onSystemMessage:)]) {
+                [ob onSystemMessage:sys];
+            }
         }
-    }
+    }];
+
 }
 
 -(void)publishCustomerSupportMessage:(CustomerMessage*)msg {
-    for (NSValue *value in self.customerServiceObservers) {
-        id<CustomerMessageObserver> ob = [value nonretainedObjectValue];
-        if ([ob respondsToSelector:@selector(onCustomerSupportMessage:)]) {
-            [ob onCustomerSupportMessage:msg];
+    [self runOnMainThread:^{
+        for (NSValue *value in self.customerServiceObservers) {
+            id<CustomerMessageObserver> ob = [value nonretainedObjectValue];
+            if ([ob respondsToSelector:@selector(onCustomerSupportMessage:)]) {
+                [ob onCustomerSupportMessage:msg];
+            }
         }
-    }
+    }];
 }
 
 -(void)publishCustomerMessage:(CustomerMessage*)msg {
-    for (NSValue *value in self.customerServiceObservers) {
-        id<CustomerMessageObserver> ob = [value nonretainedObjectValue];
-        if ([ob respondsToSelector:@selector(onCustomerMessage:)]) {
-            [ob onCustomerMessage:msg];
+    [self runOnMainThread:^{
+        for (NSValue *value in self.customerServiceObservers) {
+            id<CustomerMessageObserver> ob = [value nonretainedObjectValue];
+            if ([ob respondsToSelector:@selector(onCustomerMessage:)]) {
+                [ob onCustomerMessage:msg];
+            }
         }
-    }
+    }];
 }
 
 -(void)publishCustomerMessageACK:(CustomerMessage*)msg {
-    for (NSValue *value in self.customerServiceObservers) {
-        id<CustomerMessageObserver> ob = [value nonretainedObjectValue];
-        if ([ob respondsToSelector:@selector(onCustomerMessageACK:)]) {
-            [ob onCustomerMessageACK:msg];
+    [self runOnMainThread:^{
+        for (NSValue *value in self.customerServiceObservers) {
+            id<CustomerMessageObserver> ob = [value nonretainedObjectValue];
+            if ([ob respondsToSelector:@selector(onCustomerMessageACK:)]) {
+                [ob onCustomerMessageACK:msg];
+            }
         }
-    }
+    }];
 }
 
 -(void)publishCustomerMessageFailure:(CustomerMessage*)msg {
-    for (NSValue *value in self.customerServiceObservers) {
-        id<CustomerMessageObserver> ob = [value nonretainedObjectValue];
-        if ([ob respondsToSelector:@selector(onCustomerMessageFailure:)]) {
-            [ob onCustomerMessageFailure:msg];
+    [self runOnMainThread:^{
+        for (NSValue *value in self.customerServiceObservers) {
+            id<CustomerMessageObserver> ob = [value nonretainedObjectValue];
+            if ([ob respondsToSelector:@selector(onCustomerMessageFailure:)]) {
+                [ob onCustomerMessageFailure:msg];
+            }
         }
-    }
+    }];
 }
 
 -(void)handleMessage:(Message*)msg {
@@ -756,7 +800,18 @@
     return NO;
 }
 
+-(void)sendPeerMessageAsync:(IMMessage *)im {
+    dispatch_async(self.queue, ^{
+        BOOL r = [self sendPeerMessage:im];
+        if (!r) {
+            [self.peerMessageHandler handleMessageFailure:im];
+            [self publishPeerMessageFailure:im];
+        }
+    });
+}
+
 -(BOOL)sendPeerMessage:(IMMessage *)im {
+    [self assertWorkQueue];
     Message *m = [[Message alloc] init];
     m.cmd = MSG_IM;
     m.body = im;
@@ -773,7 +828,18 @@
     return r;
 }
 
+-(void)sendGroupMessageAsync:(IMMessage *)im {
+    dispatch_async(self.queue, ^{
+        BOOL r = [self sendGroupMessage:im];
+        if (!r) {
+            [self.groupMessageHandler handleMessageFailure:im];
+            [self publishGroupMessageFailure:im];
+        }
+    });
+}
+
 -(BOOL)sendGroupMessage:(IMMessage *)im {
+    [self assertWorkQueue];
     Message *m = [[Message alloc] init];
     m.cmd = MSG_GROUP_IM;
     m.body = im;
@@ -788,7 +854,14 @@
     return r;
 }
 
+-(void)sendRoomMessageAsync:(RoomMessage*)rm {
+    dispatch_async(self.queue, ^{
+        [self sendRoomMessage:rm];
+    });
+}
+
 -(BOOL)sendRoomMessage:(RoomMessage*)rm {
+    [self assertWorkQueue];
     Message *m = [[Message alloc] init];
     m.cmd = MSG_ROOM_IM;
     m.body = rm;
@@ -798,7 +871,18 @@
     return r;
 }
 
+-(void)sendCustomerSupportMessageAsync:(CustomerMessage *)im {
+    dispatch_async(self.queue, ^{
+        BOOL r = [self sendCustomerSupportMessage:im];
+        if (!r) {
+            [self.customerMessageHandler handleMessageFailure:im];
+            [self publishCustomerMessageFailure:im];
+        }
+    });
+}
+
 -(BOOL)sendCustomerSupportMessage:(CustomerMessage*)im {
+    [self assertWorkQueue];
     Message *m = [[Message alloc] init];
     m.cmd = MSG_CUSTOMER_SUPPORT;
     m.body = im;
@@ -815,7 +899,18 @@
     return r;
 }
 
+-(void)sendCustomerMessageAsync:(CustomerMessage *)im {
+    dispatch_async(self.queue, ^{
+        BOOL r = [self sendCustomerMessage:im];
+        if (!r) {
+            [self.customerMessageHandler handleMessageFailure:im];
+            [self publishCustomerMessageFailure:im];
+        }
+    });
+}
+
 -(BOOL)sendCustomerMessage:(CustomerMessage*)im {
+    [self assertWorkQueue];
     Message *m = [[Message alloc] init];
     m.cmd = MSG_CUSTOMER;
     m.body = im;
@@ -832,7 +927,14 @@
     return r;
 }
 
+-(void)sendRTMessageAsync:(RTMessage *)rt {
+    dispatch_async(self.queue, ^{
+        [self sendRTMessage:rt];
+    });
+}
+
 -(BOOL)sendRTMessage:(RTMessage *)rt {
+    [self assertWorkQueue];
     Message *m = [[Message alloc] init];
     m.cmd = MSG_RT;
     m.body = rt;
@@ -1019,16 +1121,24 @@
     if (roomID == 0) {
         return;
     }
-    self.roomID = roomID;
-    [self sendEnterRoom:self.roomID];
+    [self runOnWorkQueue:^{
+        self.roomID = roomID;
+        [self sendEnterRoom:self.roomID];
+    }];
 }
 
 -(void)leaveRoom:(int64_t)roomID {
-    if (roomID != self.roomID || roomID == 0) {
+    if ( roomID == 0) {
         return;
     }
-    [self sendLeaveRoom:self.roomID];
-    self.roomID = 0;
+    
+    [self runOnWorkQueue:^{
+        if (roomID != self.roomID) {
+            return;
+        }
+        [self sendLeaveRoom:self.roomID];
+        self.roomID = 0;
+    }];
 }
 
 @end

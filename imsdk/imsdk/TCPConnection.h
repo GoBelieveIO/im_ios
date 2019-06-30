@@ -27,6 +27,7 @@
 @property(nonatomic, assign)int connectState;
 @property(nonatomic, copy) NSString *host;
 @property(nonatomic)BOOL reachable;
+@property(nonatomic, strong) dispatch_queue_t queue;
 
 //protect
 @property(nonatomic)int port;
@@ -48,6 +49,10 @@
 -(void)ping;
 -(void)pong;
 -(void)reconnect2S;
+
+-(void)runOnMainThread:(dispatch_block_t)block;
+-(void)runOnWorkQueue:(dispatch_block_t)block;
+-(void)assertWorkQueue;
 
 //public method
 -(void)start;

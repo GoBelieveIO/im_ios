@@ -82,6 +82,10 @@
     [self startRechabilityNotifier];
     [IMService instance].reachable = [self.reach isReachable];
     
+    dispatch_queue_t queue = dispatch_queue_create("com.beetle.im", DISPATCH_QUEUE_SERIAL);
+    [IMService instance].queue = queue;
+    
+    
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];

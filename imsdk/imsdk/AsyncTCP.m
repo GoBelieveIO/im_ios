@@ -22,6 +22,7 @@
 @property(nonatomic)int sock;
 @property(nonatomic)BOOL connecting;
 @property(nonatomic)NSMutableData *data;
+@property(nonatomic, strong)dispatch_queue_t queue;
 @end
 
 @implementation AsyncTCP
@@ -29,6 +30,17 @@
 -(id)init {
     self = [super init];
     if (self) {
+        self.queue = dispatch_get_main_queue();
+        self.data = [NSMutableData data];
+        self.sock = -1;
+    }
+    return self;
+}
+
+-(id)initWithQueue:(dispatch_queue_t)queue {
+    self = [super init];
+    if (self) {
+        self.queue = queue;
         self.data = [NSMutableData data];
         self.sock = -1;
     }
@@ -111,7 +123,7 @@
         }
     }
     
-    dispatch_queue_t queue = dispatch_get_main_queue();
+    dispatch_queue_t queue = self.queue;
     self.writeSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_WRITE, sockfd, 0, queue);
     __weak AsyncTCP *wself = self;
     dispatch_source_set_event_handler(self.writeSource, ^{
@@ -259,7 +271,7 @@
     }
 }
 -(void)startRead:(ReadCB)cb {
-    dispatch_queue_t queue = dispatch_get_main_queue();
+    dispatch_queue_t queue = self.queue;
     self.readSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, self.sock, 0, queue);
     __weak AsyncTCP *wself = self;
     dispatch_source_set_event_handler(self.readSource, ^{
