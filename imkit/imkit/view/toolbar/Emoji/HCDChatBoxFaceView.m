@@ -34,54 +34,38 @@
         [self addSubview:self.faceMenuView];
         [self addSubview:self.scrollView];
         [self addSubview:self.pageControl];
+        for (HCDChatFaceItemView *pageView in self.facePageViewArray) {
+            [self.scrollView addSubview:pageView];
+        }
+        
+        [self.scrollView  setFrame:CGRectMake(0, 0, frame.size.width, frame.size.height - HEIGHT_BOTTOM_VIEW - 18 - (isFullScreen() ? 39 : 0))];
+        [self.pageControl setFrame:CGRectMake(0, self.scrollView.height + 3, frame.size.width, 8)];
+        
+        for (HCDChatFaceItemView *pageView in self.facePageViewArray) {
+            [pageView setFrame:self.scrollView.bounds];
+        }
+        
+        self.curGroup = [[[HCDChatFaceHeleper sharedFaceHelper] faceGroupArray] objectAtIndex:0];
+        if (self.curGroup.facesArray == nil) {
+            self.curGroup.facesArray = [[HCDChatFaceHeleper sharedFaceHelper] getFaceArrayByGroupID:self.curGroup.groupID];
+        }
+        
+        [self reloadScrollView];
     }
     return self;
 }
 
-- (void)setFrame:(CGRect)frame {
-    [super setFrame:frame];
-    [self.scrollView  setFrame:CGRectMake(0, 0, frame.size.width, frame.size.height - HEIGHT_BOTTOM_VIEW - 18 - (isFullScreen() ? 39 : 0))];
-    [self.pageControl setFrame:CGRectMake(0, self.scrollView.height + 3, frame.size.width, 8)];
-    /**
-     *  开始就添加三张？
-     */
-    for (HCDChatFaceItemView *pageView in self.facePageViewArray) {
-        [self.scrollView addSubview:pageView];
-    }
-}
 
 #pragma mark - HCDChatBoxFaceMenuViewDelegate
-- (void)chatBoxFaceMenuView:(HCDChatFaceMenuView *)chatBoxFaceMenuView didSelectedFaceMenuIndex:(NSInteger)index {
-    /**
-     *   这个index 就是菜单栏中的表情组的 index ，其实这里是想通过选中的 表情组的index来更新 ScrollView
-     */
-    _curGroup = [[[HCDChatFaceHeleper sharedFaceHelper] faceGroupArray] objectAtIndex:index];
-    if (_curGroup.facesArray == nil) {
-        /**
-         *   这个groupID 就是该组特有的 ID 例如，系统表情就是 0 自己添加的一组就是 1 等等
-         */
-        _curGroup.facesArray = [[HCDChatFaceHeleper sharedFaceHelper] getFaceArrayByGroupID:_curGroup.groupID];
-    }
-    
-    [self reloadScrollView];
-}
-
-
 /**
  *  菜单发送按钮
  */
 - (void)chatBoxFaceMenuViewSendButtonDown {
     if (_delegate && [_delegate respondsToSelector:@selector(chatBoxFaceViewDeleteButtonDown)]) {
-        
         [_delegate chatBoxFaceViewSendButtonDown];
     }
 }
 
-- (void)chatBoxFaceMenuViewAddButtonDown {
-    if (_delegate && [_delegate respondsToSelector:@selector(chatBoxFaceViewSendButtonDown)]) {
-        [_delegate chatBoxFaceViewSendButtonDown];
-    }
-}
 
 
 #pragma mark - UIScrollViewDelegate
@@ -149,20 +133,16 @@
     [self.pageControl setCurrentPage:index];
     int count = _curGroup.faceType == HCDFaceTypeEmoji ? 23 : 9;
     if (_curPage == -1) {
-        
         HCDChatFaceItemView *pageView1 = [self.facePageViewArray objectAtIndex:0];
         [pageView1 showFaceGroup:_curGroup formIndex:0 count:0];
         [pageView1 setOrigin:CGPointMake(-SCREEN_WIDTH, 0)];
-        [pageView1 addTarget:self action:@selector(didSelectedFace:) forControlEvents:UIControlEventTouchUpInside];
-        
+
         HCDChatFaceItemView *pageView2 = [self.facePageViewArray objectAtIndex:1];
         [pageView2 showFaceGroup:_curGroup formIndex:0 count:count];
         [pageView2 setOrigin:CGPointMake(0, 0)];
-        [pageView2 addTarget:self action:@selector(didSelectedFace:) forControlEvents:UIControlEventTouchUpInside];
         
         HCDChatFaceItemView *pageView3 = [self.facePageViewArray objectAtIndex:2];
         [pageView3 showFaceGroup:_curGroup formIndex:count count:count];
-        [pageView3 addTarget:self action:@selector(didSelectedFace:) forControlEvents:UIControlEventTouchUpInside];
         [pageView3 setOrigin:CGPointMake(SCREEN_WIDTH, 0)];
         
     } else {
@@ -196,7 +176,6 @@
     if (_faceMenuView == nil) {
         _faceMenuView = [[HCDChatFaceMenuView alloc] initWithFrame:CGRectMake(0, self.height - HEIGHT_BOTTOM_VIEW - (isFullScreen() ? 39 : 0), SCREEN_WIDTH, HEIGHT_BOTTOM_VIEW)];
         [_faceMenuView setDelegate:self];
-        [_faceMenuView setFaceGroupArray:[[HCDChatFaceHeleper sharedFaceHelper] faceGroupArray]];
     }
     return _faceMenuView;
 }
@@ -231,6 +210,7 @@
         for (int i = 0; i < 3; i ++) {
             HCDChatFaceItemView *view = [[HCDChatFaceItemView alloc] initWithFrame:self.scrollView.bounds];
             [_facePageViewArray addObject:view];
+            [view addTarget:self action:@selector(didSelectedFace:) forControlEvents:UIControlEventTouchUpInside];
         }
     }
     return _facePageViewArray;

@@ -53,7 +53,12 @@
         } else {
             HCDChatFace  *face = [group.facesArray objectAtIndex:i];
             button.tag = i;
-            [button setImage:[UIImage imageNamed:face.faceName] forState:UIControlStateNormal];
+            
+            if (face.emoji.length > 0) {
+                [button setTitle:face.emoji forState:UIControlStateNormal];
+            } else {
+                [button setImage:[UIImage imageNamed:face.faceName] forState:UIControlStateNormal];
+            }
             [button setFrame:CGRectMake(x, y, w, h)];
             [button setHidden:NO];
             x = (index % col == 0 ? spaceX: x + w);

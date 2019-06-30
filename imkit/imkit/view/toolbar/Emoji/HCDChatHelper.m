@@ -31,7 +31,7 @@
         //获取原字符串中对应的值
         NSString *subStr = [text substringWithRange:range];
         
-        HCDChatFaceGroup *group = [[[HCDChatFaceHeleper  sharedFaceHelper] faceGroupArray] objectAtIndex:1];
+        HCDChatFaceGroup *group = [[HCDChatFaceHeleper  sharedFaceHelper] totalFaceGroup];
         for (HCDChatFace *face in group.facesArray) {
             if ([face.faceName isEqualToString:subStr]) {
                 //face[i][@"png"]就是我们要加载的图片

@@ -11,6 +11,10 @@
 @class HCDChatFace, HCDChatFaceGroup;
 @interface HCDChatFaceHeleper : NSObject
 @property (nonatomic, strong) NSMutableArray<HCDChatFaceGroup *> *faceGroupArray;
+@property(nonatomic, readonly) HCDChatFaceGroup *totalFaceGroup;
+
 + (HCDChatFaceHeleper *) sharedFaceHelper;
 - (NSArray<HCDChatFace *>*) getFaceArrayByGroupID:(NSString *)groupID;
+
+-(BOOL)isSurrogatePair:(NSString*)s;
 @end

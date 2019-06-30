@@ -11,7 +11,7 @@
 #import "IUser.h"
 #import "HCDChatBoxFaceView.h"
 #import "HCDChatInputBarDefine.h"
-
+#import "HCDChatFaceHeleper.h"
 
 @interface EaseChatToolbar()<UITextViewDelegate, HCDChatBoxFaceViewDelegate>
 
@@ -206,10 +206,6 @@
     if (_faceView == nil) {
         _faceView = [[HCDChatBoxFaceView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(_toolbarView.frame) + HEIGHT_CHATBOXVIEW, SCREEN_WIDTH, HEIGHT_CHATBOXVIEW)];
         [(HCDChatBoxFaceView *)_faceView setDelegate:self];
-        
-        //_faceView = [[EaseFaceView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(_toolbarView.frame), self.frame.size.width, 180)];
-        //[(EaseFaceView *)_faceView setDelegate:self];
-        //_faceView.backgroundColor = [UIColor colorWithRed:240 / 255.0 green:242 / 255.0 blue:247 / 255.0 alpha:1.0];
     }
     
     return _faceView;
@@ -664,7 +660,11 @@
 }
 
 - (void)addEmojiFace:(HCDChatFace *)face {
-    [self.inputTextView setText:[self.inputTextView.text stringByAppendingString:face.faceName]];
+    if (face.emoji.length > 0) {
+        [self.inputTextView setText:[self.inputTextView.text stringByAppendingString:face.emoji]];
+    } else {
+        [self.inputTextView setText:[self.inputTextView.text stringByAppendingString:face.faceName]];
+    }
     [self textViewDidChange:self.inputTextView];
 }
 
@@ -712,8 +712,12 @@
             if (pos != -1) {
                 length = range.location - pos;
             }
+        } else if (range.location >= 2) {
+            NSString *trailer = [chatText substringWithRange:NSMakeRange(range.location - 2, 2)];
+            if ([[HCDChatFaceHeleper sharedFaceHelper] isSurrogatePair:trailer]) {
+                length = 2;
+            }
         }
-        
         self.inputTextView.attributedText = [self backspaceText:attr length:length];
         [self textViewDidChange:self.inputTextView];
     }

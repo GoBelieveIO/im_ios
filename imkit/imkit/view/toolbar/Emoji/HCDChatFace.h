@@ -19,6 +19,10 @@ typedef NS_ENUM(NSInteger, HCDFaceType) {
 @interface HCDChatFace : NSObject
 //@property (nonatomic, strong) NSString *faceID;
 @property (nonatomic, strong) NSString *faceName;
+
+@property(nonatomic, copy) NSString *emoji;
+
++ (HCDChatFace *)emojiWithCode:(int)code;
 @end
 
 
