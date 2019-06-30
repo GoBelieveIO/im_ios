@@ -52,9 +52,6 @@
 //优化，收到群组消息后，缓存到数组中， 然后一次性调用observer，这样可以只需要更新一次ui
 @property(nonatomic)NSMutableArray *receivedGroupMessages;
 
-//服务器主动下发的消息
-@property(nonatomic)Message *pushMessage;
-
 @property(nonatomic)Message *metaMessage;
 
 //保证一个时刻只存在一个同步过程，否则会导致获取到重复的消息
@@ -948,9 +945,9 @@
         [self.receivedGroupMessages removeAllObjects];
     }
     
-    if (self.pushMessage) {
-        NSLog(@"socket closed, push message:%@", self.pushMessage);
-        self.pushMessage = nil;
+    if (self.metaMessage) {
+        NSLog(@"socket closed, meta message:%@", self.metaMessage);
+        self.metaMessage = nil;
     }
     
     for (NSNumber *seq in self.peerMessages) {
