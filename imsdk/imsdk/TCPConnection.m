@@ -441,12 +441,14 @@
 
 
 -(void)publishConnectState:(int)state {
-    for (NSValue *value in self.connectionObservers) {
-        id<TCPConnectionObserver> ob = [value nonretainedObjectValue];
-        if ([ob respondsToSelector:@selector(onConnectState:)]) {
-            [ob onConnectState:state];
+    [self runOnMainThread:^{
+        for (NSValue *value in self.connectionObservers) {
+            id<TCPConnectionObserver> ob = [value nonretainedObjectValue];
+            if ([ob respondsToSelector:@selector(onConnectState:)]) {
+                [ob onConnectState:state];
+            }
         }
-    }
+    }];
 }
 
 -(void)runOnQueue:(NSString*)queueLabel block:(dispatch_block_t)block {
