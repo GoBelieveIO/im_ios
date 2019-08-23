@@ -8,7 +8,7 @@
 */
 
 #import "MessageLinkView.h"
-#import <SDWebImage/UIImageView+WebCache.h>
+#import <SDWebImage/SDWebImage.h>
 
 @interface MessageLinkView()
 @property(nonatomic) UILabel *titleLabel;

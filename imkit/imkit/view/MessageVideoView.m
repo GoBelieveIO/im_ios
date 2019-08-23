@@ -9,7 +9,7 @@
 
 
 #import "MessageVideoView.h"
-#import <SDWebImage/UIImageView+WebCache.h>
+#import <SDWebImage/SDWebImage.h>
 #import <Masonry/Masonry.h>
 
 @interface MessageVideoView()

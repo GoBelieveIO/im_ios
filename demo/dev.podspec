@@ -28,11 +28,11 @@ Pod::Spec.new do |s|
     sp.exclude_files    = 'imkit/imkit/third-party'
     sp.resource         = ['imkit/imkit/imKitRes/sounds/*.aiff', 'imkit/imkit/imKitRes/images.xcassets', 'imkit/imkit/imKitRes/Emoji.xcassets', 'imkit/imkit/imKitRes/gobelieve.db']
     sp.dependency 'gobelieve/imsdk'
-    sp.dependency 'SDWebImage', '~> 4.4.1'
-    sp.dependency 'Toast', '~> 2.4'
+    sp.dependency 'SDWebImage', '~> 5.1.0'
+    sp.dependency 'Toast', '~> 4.0.0'
     sp.dependency 'MBProgressHUD', '~> 0.9.1'
-    sp.dependency 'FMDB', '~> 2.6.2'
-    sp.dependency 'Masonry', '~>1.0.2'
+    sp.dependency 'FMDB', '~> 2.7.0'
+    sp.dependency 'Masonry', '~>1.1.0'
     sp.pod_target_xcconfig = { 'ENABLE_BITCODE' => 'YES' }    
   end
 

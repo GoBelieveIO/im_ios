@@ -10,8 +10,7 @@
 #import "IMHttpAPI.h"
 #import "FileCache.h"
 #import "wav_amr.h"
-#import "UIImageView+WebCache.h"
-
+#import <SDWebImage/SDWebImage.h>
 
 @interface Outbox()
 @property(nonatomic) NSMutableArray *observers;

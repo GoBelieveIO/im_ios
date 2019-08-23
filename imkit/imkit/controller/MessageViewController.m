@@ -10,7 +10,7 @@
 #import "MessageViewController.h"
 #import "IMService.h"
 #import <MobileCoreServices/MobileCoreServices.h>
-#import <SDWebImage/UIImageView+WebCache.h>
+#import <SDWebImage/SDWebImage.h>
 #import <AVFoundation/AVFoundation.h>
 #import <AVKit/AVKit.h>
 

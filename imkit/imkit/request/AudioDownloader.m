@@ -11,7 +11,7 @@
 #import "TAHttpOperation.h"
 #import "FileCache.h"
 #import "wav_amr.h"
-#import <SDWebImage/UIImageView+WebCache.h>
+#import <SDWebImage/SDWebImage.h>
 #import "UIImage+Resize.h"
 
 @interface AudioDownloader()

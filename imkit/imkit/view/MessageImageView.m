@@ -8,7 +8,7 @@
 */
 
 #import "MessageImageView.h"
-#import <SDWebImage/UIImageView+WebCache.h>
+#import <SDWebImage/SDWebImage.h>
 
 
 @interface MessageImageView()
