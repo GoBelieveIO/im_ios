@@ -97,6 +97,8 @@
         content = [[MessageVideo alloc] initWithRaw:rawContent];
     } else if ([dict objectForKey:@"revoke"]) {
         content = [[MessageRevoke alloc] initWithRaw:rawContent];
+    } else if ([dict objectForKey:@"ack"]) {
+        content = [[MessageACK alloc] initWithRaw:rawContent];
     }
     
     return content;
@@ -189,7 +191,8 @@
         self.type == MESSAGE_TIME_BASE ||
         self.type == MESSAGE_HEADLINE ||
         self.type == MESSAGE_GROUP_VOIP ||
-        self.type == MESSAGE_REVOKE) {
+        self.type == MESSAGE_REVOKE ||
+        self.type == MESSAGE_ACK) {
         return (MessageNotificationContent*)self.content;
     }
     return nil;
@@ -268,6 +271,13 @@
 -(MessageRevoke*)revokeContent {
     if (self.type == MESSAGE_REVOKE) {
         return (MessageRevoke*)self.content;
+    }
+    return nil;
+}
+
+-(MessageACK*)ackContent {
+    if (self.type == MESSAGE_ACK) {
+        return (MessageACK*)self.content;
     }
     return nil;
 }

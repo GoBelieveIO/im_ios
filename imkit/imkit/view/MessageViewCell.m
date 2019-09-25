@@ -96,6 +96,7 @@
             case MESSAGE_TIME_BASE:
             case MESSAGE_GROUP_VOIP:
             case MESSAGE_REVOKE:
+            case MESSAGE_ACK:
             {
                 MessageNotificationView *notificationView = [[MessageNotificationView alloc] initWithFrame:frame];
                 self.bubbleView = notificationView;

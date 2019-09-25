@@ -128,28 +128,40 @@
     }
 }
 
--(void)onGroupMessageACK:(IMMessage*)im {
+-(void)onGroupMessageACK:(IMMessage*)im error:(int)error {
     int msgLocalID = im.msgLocalID;
     int64_t gid = im.receiver;
     
     if (gid != self.groupID) {
         return;
     }
-    if (im.msgLocalID > 0) {
-        IMessage *msg = [self getMessageWithID:msgLocalID];
-        msg.flags = msg.flags|MESSAGE_FLAG_ACK;
-    } else {
-        MessageContent *content = [IMessage fromRaw:im.content];
-        if (content.type == MESSAGE_REVOKE) {
-            MessageRevoke *r = (MessageRevoke*)content;
-            IMessage *revokedMsg = [self getMessageWithUUID:r.msgid];
-            if (!revokedMsg) {
-                return;
+    if (error == MSG_ACK_SUCCESS) {
+        if (im.msgLocalID > 0) {
+            IMessage *msg = [self getMessageWithID:msgLocalID];
+            msg.flags = msg.flags|MESSAGE_FLAG_ACK;
+        } else {
+            MessageContent *content = [IMessage fromRaw:im.content];
+            if (content.type == MESSAGE_REVOKE) {
+                MessageRevoke *r = (MessageRevoke*)content;
+                IMessage *revokedMsg = [self getMessageWithUUID:r.msgid];
+                if (!revokedMsg) {
+                    return;
+                }
+                IMessage *revokeMsg = [revokedMsg copy];
+                revokeMsg.content = r;
+                [self updateNotificationDesc:revokeMsg];
+                [self replaceMessage:revokedMsg dest:revokeMsg];
             }
-            IMessage *revokeMsg = [revokedMsg copy];
-            revokeMsg.content = r;
-            [self updateNotificationDesc:revokeMsg];
-            [self replaceMessage:revokedMsg dest:revokeMsg];
+        }
+    } else {
+        if (im.msgLocalID > 0) {
+            IMessage *msg = [self getMessageWithID:msgLocalID];
+            msg.flags = msg.flags|MESSAGE_FLAG_FAILURE;
+        } else {
+            MessageContent *content = [IMessage fromRaw:im.content];
+            if (content.type == MESSAGE_REVOKE) {
+                [self.view makeToast:@"撤回失败" duration:0.7 position:@"bottom"];
+            }
         }
     }
 }

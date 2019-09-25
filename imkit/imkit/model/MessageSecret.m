@@ -12,10 +12,10 @@
 
 @implementation MessageSecret
 
--(id)initWithCiphertext:(NSString*)ciphertext cipherType:(int)type {
+-(id)initWithCiphertext:(NSString*)ciphertext cipherType:(int)type uuid:(NSString*)uuid {
     self = [super init];
     if (self) {
-        NSDictionary *dic = @{@"secret":@{@"ciphertext":ciphertext, @"type":@(type)}};
+        NSDictionary *dic = @{@"secret":@{@"ciphertext":ciphertext, @"type":@(type)}, @"uuid":uuid ? uuid : @""};
         NSString* newStr = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:dic options:0 error:nil] encoding:NSUTF8StringEncoding];
         self.raw =  newStr;
     }

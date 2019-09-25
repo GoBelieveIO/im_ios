@@ -76,26 +76,41 @@
     }
 }
 
--(BOOL)handleMessageACK:(IMMessage*)msg {
-    int64_t pid = self.uid == msg.sender ? msg.receiver : msg.sender;
-    if (msg.msgLocalID > 0) {
-        return [[PeerMessageDB instance] acknowledgeMessage:msg.msgLocalID];
-    } else {
-        MessageContent *content = [IMessage fromRaw:msg.plainContent];
-        if (content.type == MESSAGE_REVOKE) {
-            MessageRevoke *revoke = (MessageRevoke*)content;
-            int revokedMsgId = [[PeerMessageDB instance] getMessageId:revoke.msgid];
-            if (revokedMsgId > 0) {
-                [[PeerMessageDB instance]  updateMessageContent:revokedMsgId content:content.raw];
-                [[PeerMessageDB instance] removeMessageIndex:revokedMsgId];
+-(BOOL)handleMessageACK:(IMMessage*)msg error:(int)error {
+    if (error == MSG_ACK_SUCCESS) {
+        if (msg.msgLocalID > 0) {
+            return [[PeerMessageDB instance] acknowledgeMessage:msg.msgLocalID];
+        } else {
+            MessageContent *content = [IMessage fromRaw:msg.plainContent];
+            if (content.type == MESSAGE_REVOKE) {
+                MessageRevoke *revoke = (MessageRevoke*)content;
+                int revokedMsgId = [[PeerMessageDB instance] getMessageId:revoke.msgid];
+                if (revokedMsgId > 0) {
+                    [[PeerMessageDB instance]  updateMessageContent:revokedMsgId content:content.raw];
+                    [[PeerMessageDB instance] removeMessageIndex:revokedMsgId];
+                }
             }
+            return YES;
         }
-        return YES;
+    } else {
+        PeerMessageDB *db = [PeerMessageDB instance];
+        
+        MessageACK *ack = [[MessageACK alloc] initWithError:error];
+        IMessage *ackMsg = [[IMessage alloc] init];
+        ackMsg.sender = 0;
+        ackMsg.receiver = msg.sender;
+        ackMsg.timestamp = (int)time(NULL);
+        ackMsg.content = ack;
+        [db insertMessage:ackMsg uid:msg.receiver];
+        
+        if (msg.msgLocalID > 0) {
+            return [db markMessageFailure:msg.msgLocalID];
+        }
+        return true;
     }
 }
 
 -(BOOL)handleMessageFailure:(IMMessage*)msg {
-    int64_t pid = self.uid == msg.sender ? msg.receiver : msg.sender;
     PeerMessageDB *db = [PeerMessageDB instance];
     return [db markMessageFailure:msg.msgLocalID];
 }

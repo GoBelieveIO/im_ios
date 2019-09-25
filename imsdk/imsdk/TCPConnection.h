@@ -33,9 +33,10 @@
 @property(nonatomic)int port;
 @property(nonatomic, assign)int heartbeatHZ;
 @property(nonatomic)AsyncTCP *tcp;
+@property(nonatomic, assign)BOOL suspended;
 
 //subclass override
--(void)sendPing;
+-(BOOL)sendPing;
 
 
 -(BOOL)handleData:(NSData*)data;

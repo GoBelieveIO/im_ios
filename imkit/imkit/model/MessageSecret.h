@@ -17,5 +17,5 @@
 @property(nonatomic, copy) NSString *ciphertext;
 @property(nonatomic, assign) int cipherType;
 
--(id)initWithCiphertext:(NSString*)ciphertext cipherType:(int)type;
+-(id)initWithCiphertext:(NSString*)ciphertext cipherType:(int)type uuid:(NSString*)uuid;
 @end

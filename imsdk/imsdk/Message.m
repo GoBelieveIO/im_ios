@@ -11,7 +11,7 @@
 #import "util.h"
 
 #define HEAD_SIZE 8
-#define VERSION 1
+#define VERSION 2
 
 @implementation IMMessage
 
@@ -30,7 +30,7 @@
 
 @end
 
-@implementation MessageACK
+@implementation ACKMessage
 
 @end
 
@@ -108,10 +108,11 @@
         memcpy(p, s, l);
         return [NSData dataWithBytes:buf length:HEAD_SIZE + 36 + l];
     } else if (self.cmd == MSG_ACK) {
-        MessageACK *ack = (MessageACK*)self.body;
+        ACKMessage *ack = (ACKMessage*)self.body;
         writeInt32(ack.seq, p);
         p += 4;
-        return [NSData dataWithBytes:buf length:HEAD_SIZE+4];
+        *p++ = (uint8_t)ack.status;
+        return [NSData dataWithBytes:buf length:HEAD_SIZE+5];
     } else if (self.cmd == MSG_ENTER_ROOM || self.cmd == MSG_LEAVE_ROOM) {
         NSNumber *n = (NSNumber*)self.body;
         int64_t roomID = [n longLongValue];
@@ -195,9 +196,10 @@
         self.body = m;
         return YES;
     } else if (self.cmd == MSG_ACK) {
-        MessageACK *ack = [[MessageACK alloc] init];
+        ACKMessage *ack = [[ACKMessage alloc] init];
         ack.seq = readInt32(p);
         p += 4;
+        ack.status = *p;
         self.body = ack;
         return YES;
     } else if (self.cmd == MSG_GROUP_NOTIFICATION) {

@@ -80,18 +80,26 @@
     return YES;
 }
 
--(BOOL)handleMessageACK:(IMMessage*)msg {
-    if (msg.msgLocalID > 0) {
-        return [[GroupMessageDB instance] acknowledgeMessage:msg.msgLocalID];
-    } else {
-        MessageContent *content = [IMessage fromRaw:msg.content];
-        if (content.type == MESSAGE_REVOKE) {
-            MessageRevoke *revoke = (MessageRevoke*)content;
-            int revokedMsgId = [[GroupMessageDB instance] getMessageId:revoke.msgid];
-            if (revokedMsgId > 0) {
-                [[GroupMessageDB instance]  updateMessageContent:revokedMsgId content:msg.content];
-                [[GroupMessageDB instance] removeMessageIndex:revokedMsgId];
+
+-(BOOL)handleMessageACK:(IMMessage*)msg error:(int)error {
+    if (error == MSG_ACK_SUCCESS) {
+        if (msg.msgLocalID > 0) {
+            return [[GroupMessageDB instance] acknowledgeMessage:msg.msgLocalID];
+        } else {
+            MessageContent *content = [IMessage fromRaw:msg.content];
+            if (content.type == MESSAGE_REVOKE) {
+                MessageRevoke *revoke = (MessageRevoke*)content;
+                int revokedMsgId = [[GroupMessageDB instance] getMessageId:revoke.msgid];
+                if (revokedMsgId > 0) {
+                    [[GroupMessageDB instance]  updateMessageContent:revokedMsgId content:msg.content];
+                    [[GroupMessageDB instance] removeMessageIndex:revokedMsgId];
+                }
             }
+            return YES;
+        }
+    } else {
+        if (msg.msgLocalID > 0) {
+            return [[GroupMessageDB instance] markMessageFailure:msg.msgLocalID];
         }
         return YES;
     }

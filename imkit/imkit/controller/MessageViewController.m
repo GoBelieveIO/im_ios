@@ -956,6 +956,7 @@
         case MESSAGE_TIME_BASE:
         case MESSAGE_GROUP_NOTIFICATION:
         case MESSAGE_GROUP_VOIP:
+        case MESSAGE_ACK:
             return kMessageNotificationViewHeight;
         case MESSAGE_LINK:
             return kMessageLinkViewHeight + nameHeight;

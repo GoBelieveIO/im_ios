@@ -18,7 +18,6 @@
 @property(atomic, assign) time_t timestmap;
 
 @property(nonatomic, assign)BOOL stopped;
-@property(nonatomic, assign)BOOL suspended;
 @property(nonatomic, assign)BOOL isBackground;
 
 @property(nonatomic, strong)dispatch_source_t connectTimer;
@@ -308,7 +307,7 @@
     for (res = result; res; res = res->ai_next) {
         NSLog(@"family:%d socktype;%d protocol:%d", res->ai_family, res->ai_socktype, res->ai_protocol);
     }
-    
+
     NSString *ip = nil;
     rp = result;
     if (rp != NULL) {
@@ -366,6 +365,7 @@
     self.tcp = [[AsyncTCP alloc] initWithQueue:self.queue];
     __weak TCPConnection *wself = self;
     struct sockaddr_storage addr = self.hostAddr;
+    NSLog(@"tcp connect host:%@ host ip:%@", self.host, self.hostIP);
     BOOL r = [self.tcp connect:(struct sockaddr*)&addr cb:^(AsyncTCP *tcp, int err) {
         if (err) {
             NSLog(@"tcp connect err");
@@ -401,15 +401,13 @@
     self.pingTimestamp = 0;
 }
 
--(void)sendPing {
+-(BOOL)sendPing {
     NSAssert(NO, @"not implemented");
+    return NO;
 }
 
 -(void)ping {
-    if (self.tcp != nil && self.pingTimestamp == 0) {
-        NSLog(@"send ping");
-        [self sendPing];
-        
+    if (self.pingTimestamp == 0 && [self sendPing]) {
         self.pingTimestamp = time(NULL);
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             time_t now = time(NULL);
@@ -441,14 +439,12 @@
 
 
 -(void)publishConnectState:(int)state {
-    [self runOnMainThread:^{
-        for (NSValue *value in self.connectionObservers) {
-            id<TCPConnectionObserver> ob = [value nonretainedObjectValue];
-            if ([ob respondsToSelector:@selector(onConnectState:)]) {
-                [ob onConnectState:state];
-            }
+    for (NSValue *value in self.connectionObservers) {
+        id<TCPConnectionObserver> ob = [value nonretainedObjectValue];
+        if ([ob respondsToSelector:@selector(onConnectState:)]) {
+            [ob onConnectState:state];
         }
-    }];
+    }
 }
 
 -(void)runOnQueue:(NSString*)queueLabel block:(dispatch_block_t)block {

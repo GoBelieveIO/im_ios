@@ -689,6 +689,15 @@ static int uptime = 0;
                 }];
             }
         }
+    } else if (message.type == MESSAGE_ACK) {
+        MessageACK *ack = message.ackContent;
+        if (ack.error == MSG_ACK_NOT_YOUR_FRIEND) {
+            ack.notificationDesc = @"你还不是他（她）朋友";
+        } else if (ack.error == MSG_ACK_IN_YOUR_BLACKLIST) {
+            ack.notificationDesc = @"消息已发出，但被对方拒收了。";
+        } else if (ack.error == MSG_ACK_NOT_MY_FRIEND) {
+            ack.notificationDesc = @"对方已不是你的朋友";
+        }
     }
 }
 

@@ -14,15 +14,14 @@
 
 @protocol IMPeerMessageHandler <NSObject>
 -(BOOL)handleMessage:(IMMessage*)msg;
--(BOOL)handleMessageACK:(IMMessage*)msg;
+-(BOOL)handleMessageACK:(IMMessage*)msg error:(int)error;
 -(BOOL)handleMessageFailure:(IMMessage*)msg;
 @end
 
 @protocol IMGroupMessageHandler <NSObject>
 -(BOOL)handleMessages:(NSArray*)msgs;
--(BOOL)handleMessageACK:(IMMessage*)msg;
+-(BOOL)handleMessageACK:(IMMessage*)msg error:(int)error;
 -(BOOL)handleMessageFailure:(IMMessage*)msg;
-
 -(BOOL)handleGroupNotification:(NSString*)notification;
 @end
 
@@ -42,12 +41,9 @@
 @protocol PeerMessageObserver <NSObject>
 @optional
 -(void)onPeerMessage:(IMMessage*)msg;
-
 -(void)onPeerSecretMessage:(IMMessage*)msg;
-
 //服务器ack
--(void)onPeerMessageACK:(IMMessage*)msg;
-
+-(void)onPeerMessageACK:(IMMessage*)msg error:(int)error;
 //消息发送失败
 -(void)onPeerMessageFailure:(IMMessage*)msg;
 
@@ -56,8 +52,7 @@
 @protocol GroupMessageObserver <NSObject>
 @optional
 -(void)onGroupMessages:(NSArray*)msgs;
-
--(void)onGroupMessageACK:(IMMessage*)msg;
+-(void)onGroupMessageACK:(IMMessage*)msg error:(int)error;
 -(void)onGroupMessageFailure:(IMMessage*)msg;
 
 -(void)onGroupNotification:(NSString*)notification;
@@ -66,8 +61,6 @@
 @protocol RoomMessageObserver <NSObject>
 @optional
 -(void)onRoomMessage:(RoomMessage*)rm;
--(void)onRoomMessageACK:(RoomMessage*)rm;
--(void)onRoomMessageFailure:(RoomMessage*)rm;
 
 @end
 
@@ -121,14 +114,6 @@
 -(void)addSuperGroupSyncKey:(int64_t)syncKey gid:(int64_t)gid;
 -(void)removeSuperGroupSyncKey:(int64_t)gid;
 -(void)clearSuperGroupSyncKey;
-
-
--(BOOL)isPeerMessageSending:(int64_t)peer id:(int)msgLocalID;
--(BOOL)isGroupMessageSending:(int64_t)groupID id:(int)msgLocalID;
--(BOOL)isCustomerSupportMessageSending:(int)msgLocalID
-                            customerID:(int64_t)customerID
-                         customerAppID:(int64_t)customerAppID;
--(BOOL)isCustomerMessageSending:(int)msgLocalID storeID:(int64_t)storeID;
 
 
 -(void)sendPeerMessageAsync:(IMMessage*)msg;

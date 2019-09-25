@@ -44,10 +44,8 @@
 @property(nonatomic)NSMutableArray *rtObservers;
 
 @property(nonatomic)NSMutableData *data;
-@property(nonatomic)NSMutableDictionary *peerMessages;
-@property(nonatomic)NSMutableDictionary *groupMessages;
-@property(nonatomic)NSMutableDictionary *roomMessages;
-@property(nonatomic)NSMutableDictionary *customerServiceMessages;
+
+@property(nonatomic)NSMutableArray *messages;//发送中的消息
 
 //优化，收到群组消息后，缓存到数组中， 然后一次性调用observer，这样可以只需要更新一次ui
 @property(nonatomic)NSMutableArray *receivedGroupMessages;
@@ -88,10 +86,7 @@
         self.receivedGroupMessages = [NSMutableArray array];
         
         self.data = [NSMutableData data];
-        self.peerMessages = [NSMutableDictionary dictionary];
-        self.groupMessages = [NSMutableDictionary dictionary];
-        self.roomMessages = [NSMutableDictionary dictionary];
-        self.customerServiceMessages = [NSMutableDictionary dictionary];
+        self.messages = [NSMutableArray array];
         self.groupSyncKeys = [NSMutableDictionary dictionary];
         
         self.host = HOST;
@@ -102,36 +97,84 @@
 }
 
 -(void)handleACK:(Message*)msg {
-    MessageACK *ack = (MessageACK*)msg.body;
+    ACKMessage *ack = (ACKMessage*)msg.body;
     NSNumber *seq = @(ack.seq);
-    IMMessage *m = (IMMessage*)[self.peerMessages objectForKey:seq];
-    IMMessage *m2 = (IMMessage*)[self.groupMessages objectForKey:seq];
-    RoomMessage *m3 = (RoomMessage*)[self.roomMessages objectForKey:seq];
-    CustomerMessage *m4 = [self.customerServiceMessages objectForKey:seq];
-    if (!m && !m2 && !m3 && !m4) {
+    
+    NSInteger index = -1;
+    for (NSInteger i = 0; i < self.messages.count; i++) {
+        Message *m = [self.messages objectAtIndex:i];
+        if (m.seq == [seq intValue]) {
+            index = i;
+            break;
+        }
+    }
+    
+    if (index == -1) {
+        return;
+    }
+    
+    Message *message = [self.messages objectAtIndex:index];
+    [self.messages removeObjectAtIndex:index];
+    IMMessage *m = nil;
+    IMMessage *m2 = nil;
+    CustomerMessage *m4 = nil;
+    
+    if (message.cmd == MSG_IM) {
+        m = (IMMessage*)message.body;
+    } else if (message.cmd == MSG_GROUP_IM) {
+        m2 = (IMMessage*)message.body;
+    } else if (message.cmd == MSG_CUSTOMER || message.cmd == MSG_CUSTOMER_SUPPORT) {
+        m4 = (CustomerMessage*)message.body;
+    }
+    
+    if (!m && !m2 && !m4) {
         return;
     }
     if (m) {
-        [self.peerMessageHandler handleMessageACK:m];
-        [self.peerMessages removeObjectForKey:seq];
-        [self publishPeerMessageACK:m];
+        [self.peerMessageHandler handleMessageACK:m error:ack.status];
+        [self publishPeerMessageACK:m error:ack.status];
     } else if (m2) {
-        [self.groupMessageHandler handleMessageACK:m2];
-        [self.groupMessages removeObjectForKey:seq];
-        [self publishGroupMessageACK:m2];
-    } else if (m3) {
-        [self.roomMessages removeObjectForKey:seq];
-        [self publishRoomMessageACK:m3];
+        [self.groupMessageHandler handleMessageACK:m2 error:ack.status];
+        [self publishGroupMessageACK:m2 error:ack.status];
     } else if (m4) {
         [self.customerMessageHandler handleMessageACK:m4];
-        [self.customerServiceMessages removeObjectForKey:seq];
         [self publishCustomerMessageACK:m4];
+    }
+    
+    //保存synckey
+    Message *metaMessage = self.metaMessage;
+    Metadata *metadata;
+    self.metaMessage = nil;
+    if (metaMessage && metaMessage.seq + 1 == msg.seq) {
+        metadata = (Metadata*)metaMessage.body;
+        if (metadata.prevSyncKey == 0 || metadata.syncKey == 0) {
+            return;
+        }
+        int64_t newSyncKey = metadata.syncKey;
+        if (msg.flag & MSG_FLAG_SUPER_GROUP) {
+            if (m2 == nil) {
+                return;
+            }
+            int64_t groupID = m2.receiver;
+            GroupSync *s = [self.groupSyncKeys objectForKey:@(groupID)];
+            if (s.syncKey == metadata.prevSyncKey && newSyncKey != s.syncKey) {
+                s.syncKey = newSyncKey;
+                [self.syncKeyHandler saveGroupSyncKey:newSyncKey gid:groupID];
+                [self sendGroupSyncKey:newSyncKey gid:groupID];
+            }
+        } else {
+            if (self.syncKey == metadata.prevSyncKey && newSyncKey !=  self.syncKey) {
+                self.syncKey = newSyncKey;
+                [self.syncKeyHandler saveSyncKey:self.syncKey];
+                [self sendSyncKey:self.syncKey];
+            }
+        }
     }
 }
 
 -(void)handleIMMessage:(Message*)msg {
     IMMessage *im = (IMMessage*)msg.body;
-    im.isSelf = msg.flag & MESSAGE_FLAG_SELF;
+    im.isSelf = msg.flag & MSG_FLAG_SELF;
     [self.peerMessageHandler handleMessage:im];
     NSLog(@"peer message sender:%lld receiver:%lld content:%s", im.sender, im.receiver, [im.content UTF8String]);
     
@@ -145,11 +188,11 @@
 
 -(void)handleGroupIMMessage:(Message*)msg {
     IMMessage *im = (IMMessage*)msg.body;
-    im.isSelf = msg.flag & MESSAGE_FLAG_SELF;
+    im.isSelf = msg.flag & MSG_FLAG_SELF;
     NSLog(@"group message sender:%lld receiver:%lld content:%s", im.sender, im.receiver, [im.content UTF8String]);
     [self sendACK:msg.seq];
     
-    if (msg.flag & MESSAGE_FLAG_PUSH) {
+    if (msg.flag & MSG_FLAG_PUSH) {
         NSArray *array = @[im];
         [self.groupMessageHandler handleMessages:array];
         [self publishGroupMessages:array];
@@ -160,7 +203,7 @@
 
 -(void)handleCustomerSupportMessage:(Message*)msg {
     CustomerMessage *im = (CustomerMessage*)msg.body;
-    im.isSelf = msg.flag & MESSAGE_FLAG_SELF;
+    im.isSelf = msg.flag & MSG_FLAG_SELF;
     [self.customerMessageHandler handleCustomerSupportMessage:im];
     
     NSLog(@"customer support message customer id:%lld customer appid:%lld store id:%lld seller id:%lld content:%s",
@@ -172,7 +215,7 @@
 
 -(void)handleCustomerMessage:(Message*)msg {
     CustomerMessage *im = (CustomerMessage*)msg.body;
-    im.isSelf = msg.flag & MESSAGE_FLAG_SELF;
+    im.isSelf = msg.flag & MSG_FLAG_SELF;
     [self.customerMessageHandler handleMessage:im];
     
     NSLog(@"customer message customer id:%lld customer appid:%lld store id:%lld seller id:%lld content:%s",
@@ -373,12 +416,12 @@
 }
 
 
--(void)publishPeerMessageACK:(IMMessage*)msg {
+-(void)publishPeerMessageACK:(IMMessage*)msg error:(int)error {
     [self runOnMainThread:^{
         for (NSValue *value in self.peerObservers) {
             id<PeerMessageObserver> ob = [value nonretainedObjectValue];
-            if ([ob respondsToSelector:@selector(onPeerMessageACK:)]) {
-                [ob onPeerMessageACK:msg];
+            if ([ob respondsToSelector:@selector(onPeerMessageACK:error:)]) {
+                [ob onPeerMessageACK:msg error:error];
             }
         }
     }];
@@ -408,12 +451,12 @@
 
 }
 
--(void)publishGroupMessageACK:(IMMessage*)msg {
+-(void)publishGroupMessageACK:(IMMessage*)msg error:(int)error {
     [self runOnMainThread:^{
         for (NSValue *value in self.groupObservers) {
             id<GroupMessageObserver> ob = [value nonretainedObjectValue];
-            if ([ob respondsToSelector:@selector(onGroupMessageACK:)]) {
-                [ob onGroupMessageACK:msg];
+            if ([ob respondsToSelector:@selector(onGroupMessageACK:error:)]) {
+                [ob onGroupMessageACK:msg error:error];
             }
         }
     }];
@@ -437,28 +480,6 @@
             id<RoomMessageObserver> ob = [value nonretainedObjectValue];
             if ([ob respondsToSelector:@selector(onRoomMessage:)]) {
                 [ob onRoomMessage:msg];
-            }
-        }
-    }];
-}
-
--(void)publishRoomMessageACK:(RoomMessage*)msg {
-    [self runOnMainThread:^{
-        for (NSValue *value in self.roomObservers) {
-            id<RoomMessageObserver> ob = [value nonretainedObjectValue];
-            if ([ob respondsToSelector:@selector(onRoomMessageACK:)]) {
-                [ob onRoomMessageACK:msg];
-            }
-        }
-    }];
-}
-
--(void)publishRoomMessageFailure:(RoomMessage*)msg {
-    [self runOnMainThread:^{
-        for (NSValue *value in self.roomObservers) {
-            id<RoomMessageObserver> ob = [value nonretainedObjectValue];
-            if ([ob respondsToSelector:@selector(onRoomMessageFailure:)]) {
-                [ob onRoomMessageFailure:msg];
             }
         }
     }];
@@ -537,7 +558,7 @@
     Metadata *metadata = nil;
     
     //处理服务器推到客户端的消息,
-    if (msg.flag & MESSAGE_FLAG_PUSH) {
+    if (msg.flag & MSG_FLAG_PUSH) {
         Message *metaMessage = self.metaMessage;
         self.metaMessage = nil;
         if (metaMessage && metaMessage.seq + 1 == msg.seq) {
@@ -554,7 +575,7 @@
         }
         
         //校验metadata中的synckey是否连续
-        if (msg.flag & MESSAGE_FLAG_SUPER_GROUP) {
+        if (msg.flag & MSG_FLAG_SUPER_GROUP) {
             if (msg.cmd != MSG_GROUP_IM) {
                 return;
             }
@@ -613,10 +634,10 @@
         NSLog(@"cmd:%d no handler", msg.cmd);
     }
     
-    if (msg.flag & MESSAGE_FLAG_PUSH) {
+    if (msg.flag & MSG_FLAG_PUSH) {
         //保存synckey
         int64_t newSyncKey = metadata.syncKey;
-        if (msg.flag & MESSAGE_FLAG_SUPER_GROUP) {
+        if (msg.flag & MSG_FLAG_SUPER_GROUP) {
             if (msg.cmd != MSG_GROUP_IM) {
                 return;
             }
@@ -757,49 +778,6 @@
     [self.groupSyncKeys removeAllObjects];
 }
 
--(BOOL)isPeerMessageSending:(int64_t)peer id:(int)msgLocalID {
-    for (NSNumber *s in self.peerMessages) {
-        IMMessage *im = [self.peerMessages objectForKey:s];
-        if (im.receiver == peer && im.msgLocalID == msgLocalID) {
-            return YES;
-        }
-    }
-    return NO;
-}
-
--(BOOL)isGroupMessageSending:(int64_t)groupID id:(int)msgLocalID {
-    for (NSNumber *s in self.groupMessages) {
-        IMMessage *im = [self.groupMessages objectForKey:s];
-        if (im.receiver == groupID && im.msgLocalID == msgLocalID) {
-            return YES;
-        }
-    }
-    return NO;
-}
-
--(BOOL)isCustomerSupportMessageSending:(int)msgLocalID customerID:(int64_t)customerID customerAppID:(int64_t)customerAppID {
-    for (NSNumber *s in self.customerServiceMessages) {
-        CustomerMessage *im = [self.customerServiceMessages objectForKey:s];
-        if (im.msgLocalID == msgLocalID &&
-            im.customerID == customerID &&
-            im.customerAppID == customerAppID) {
-            return YES;
-        }
-    }
-    return NO;
-}
-
--(BOOL)isCustomerMessageSending:(int)msgLocalID  storeID:(int64_t)storeID {
-    for (NSNumber *s in self.customerServiceMessages) {
-        CustomerMessage *im = [self.customerServiceMessages objectForKey:s];
-        
-        if (im.msgLocalID == msgLocalID && im.storeID == storeID) {
-            return YES;
-        }
-    }
-    return NO;
-}
-
 -(void)sendPeerMessageAsync:(IMMessage *)im {
     dispatch_async(self.queue, ^{
         BOOL r = [self sendPeerMessage:im];
@@ -817,15 +795,18 @@
     m.body = im;
     BOOL r = [self sendMessage:m];
 
-    if (!r) {
-        return r;
+    if (r) {
+        [self.messages addObject:m];
+        //在发送需要回执的消息时尽快发现socket已经断开的情况
+        [self ping];
+        return YES;
+    } else if (!self.suspended) {
+        m.failCount = 1;
+        [self.messages addObject:m];
+        return YES;
+    } else {
+        return NO;
     }
-    [self.peerMessages setObject:im forKey:[NSNumber numberWithInt:m.seq]];
-    
-    //在发送需要回执的消息时尽快发现socket已经断开的情况
-    [self ping];
-    
-    return r;
 }
 
 -(void)sendGroupMessageAsync:(IMMessage *)im {
@@ -846,12 +827,19 @@
     BOOL r = [self sendMessage:m];
     
     if (!r) return r;
-    [self.groupMessages setObject:im forKey:[NSNumber numberWithInt:m.seq]];
     
-    //在发送需要回执的消息时尽快发现socket已经断开的情况
-    [self ping];
-    
-    return r;
+    if (r) {
+        [self.messages addObject:m];
+        //在发送需要回执的消息时尽快发现socket已经断开的情况
+        [self ping];
+        return YES;
+    } else if (!self.suspended) {
+        m.failCount = 1;
+        [self.messages addObject:m];
+        return YES;
+    } else {
+        return NO;
+    }
 }
 
 -(void)sendRoomMessageAsync:(RoomMessage*)rm {
@@ -866,8 +854,6 @@
     m.cmd = MSG_ROOM_IM;
     m.body = rm;
     BOOL r = [self sendMessage:m];
-    if (!r) return r;
-    [self.roomMessages setObject:rm forKey:[NSNumber numberWithInt:m.seq]];
     return r;
 }
 
@@ -888,15 +874,18 @@
     m.body = im;
     BOOL r = [self sendMessage:m];
     
-    if (!r) {
-        return r;
+    if (r) {
+        [self.messages addObject:m];
+        //在发送需要回执的消息时尽快发现socket已经断开的情况
+        [self ping];
+        return YES;
+    } else if (!self.suspended) {
+        m.failCount = 1;
+        [self.messages addObject:m];
+        return YES;
+    } else {
+        return NO;
     }
-    [self.customerServiceMessages setObject:im forKey:[NSNumber numberWithInt:m.seq]];
-    
-    //在发送需要回执的消息时尽快发现socket已经断开的情况
-    [self ping];
-    
-    return r;
 }
 
 -(void)sendCustomerMessageAsync:(CustomerMessage *)im {
@@ -916,15 +905,18 @@
     m.body = im;
     BOOL r = [self sendMessage:m];
     
-    if (!r) {
-        return r;
+    if (r) {
+        [self.messages addObject:m];
+        //在发送需要回执的消息时尽快发现socket已经断开的情况
+        [self ping];
+        return YES;
+    } else if (!self.suspended) {
+        m.failCount = 1;
+        [self.messages addObject:m];
+        return YES;
+    } else {
+        return NO;
     }
-    [self.customerServiceMessages setObject:im forKey:[NSNumber numberWithInt:m.seq]];
-    
-    //在发送需要回执的消息时尽快发现socket已经断开的情况
-    [self ping];
-    
-    return r;
 }
 
 -(void)sendRTMessageAsync:(RTMessage *)rt {
@@ -1005,6 +997,11 @@
         v.isSyncing = YES;
         v.syncTimestamp = now;
     }
+    
+    //重发失败的消息
+    for (Message *m in self.messages) {
+        [self sendMessage:m];
+    }
 }
 
 -(void)sendSync:(int64_t)syncKey {
@@ -1052,37 +1049,46 @@
         self.metaMessage = nil;
     }
     
-    for (NSNumber *seq in self.peerMessages) {
-        IMMessage *msg = [self.peerMessages objectForKey:seq];
+    
+    NSMutableArray *peerMessages = [NSMutableArray array];
+    NSMutableArray *groupMessages = [NSMutableArray array];
+    NSMutableArray *customerMessages = [NSMutableArray array];
+    NSMutableArray *resendMessages = [NSMutableArray array];
+    for (NSInteger i = 0; i < self.messages.count; i++) {
+        Message *m = [self.messages objectAtIndex:i];
+        if (m.failCount > 0 || self.suspended) {
+            if (m.cmd == MSG_IM) {
+                [peerMessages addObject:m.body];
+            } else if (m.cmd == MSG_GROUP_IM) {
+                [groupMessages addObject:m.body];
+            } else if (m.cmd == MSG_CUSTOMER || m.cmd == MSG_CUSTOMER_SUPPORT) {
+                [customerMessages addObject:m.body];
+            }
+        } else {
+            m.failCount += 1;
+            [resendMessages addObject:m];
+        }
+    }
+    
+    for (IMMessage *msg in peerMessages) {
         [self.peerMessageHandler handleMessageFailure:msg];
         [self publishPeerMessageFailure:msg];
     }
     
-    for (NSNumber *seq in self.groupMessages) {
-        IMMessage *msg = [self.groupMessages objectForKey:seq];
+    for (IMMessage *msg in groupMessages) {
         [self.groupMessageHandler handleMessageFailure:msg];
         [self publishGroupMessageFailure:msg];
     }
     
-    for (NSNumber *seq in self.roomMessages) {
-        RoomMessage *msg = [self.roomMessages objectForKey:seq];
-        [self publishRoomMessageFailure:msg];
-    }
-    
-    for (NSNumber *seq in self.customerServiceMessages) {
-        CustomerMessage *msg = [self.customerServiceMessages objectForKey:seq];
+    for (CustomerMessage *msg in customerMessages) {
         [self.customerMessageHandler handleMessageFailure:msg];
         [self publishCustomerMessageFailure:msg];
     }
-    
-    [self.peerMessages removeAllObjects];
-    [self.groupMessages removeAllObjects];
-    [self.roomMessages removeAllObjects];
-    [self.customerServiceMessages removeAllObjects];
+    self.messages = resendMessages;
 }
 
 -(void)sendACK:(int)seq {
-    MessageACK *a = [[MessageACK alloc] init];
+    ACKMessage *a = [[ACKMessage alloc] init];
     a.seq = seq;
     Message *ack = [[Message alloc] init];
     ack.cmd = MSG_ACK;
@@ -1090,10 +1096,10 @@
     [self sendMessage:ack];
 }
 
--(void)sendPing {
+-(BOOL)sendPing {
     Message *msg = [[Message alloc] init];
     msg.cmd = MSG_PING;
-    [self sendMessage:msg];
+    return [self sendMessage:msg];
 }
 
 -(void)sendUnreadCount:(int)unread {

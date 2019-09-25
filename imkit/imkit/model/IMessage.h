@@ -28,6 +28,7 @@
 #import "MessageVideo.h"
 #import "MessageFile.h"
 #import "MessageRevoke.h"
+#import "MessageACK.h"
 
 //消息标志
 #define MESSAGE_FLAG_DELETE 1
@@ -69,6 +70,7 @@
 @property(nonatomic, readonly) MessageVideo *videoContent;
 @property(nonatomic, readonly) MessageFile *fileContent;
 @property(nonatomic, readonly) MessageRevoke *revokeContent;
+@property(nonatomic, readonly) MessageACK *ackContent;
 
 @property(nonatomic, readonly) MessageAttachmentContent *attachmentContent;
 
