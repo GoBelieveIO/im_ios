@@ -23,6 +23,9 @@ typedef void(^CloseCB)(AsyncTCP *tcp, int err);
 -(void)write:(NSData*)data;
 -(void)flush;
 -(void)startRead:(ReadCB)cb;
+
+//protected
+- (BOOL)synthesizeIPv6:(NSString*)host port:(int)port addr:(struct sockaddr*)addr addrinfo:(struct addrinfo*)info;
 @end
 
 

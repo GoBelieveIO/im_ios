@@ -9,7 +9,12 @@
 #import "TCPConnection.h"
 #include <netdb.h>
 #include <arpa/inet.h>
-#import "AsyncTCP.h"
+
+#ifdef ENABLE_SSL
+#import "AsyncSSLTCP.h"
+#else
+#import "AsyncRawTCP.h"
+#endif
 #import "util.h"
 
 @interface TCPConnection()
@@ -362,7 +367,11 @@
     self.pingTimestamp = 0;
     self.connectState = STATE_CONNECTING;
     [self publishConnectState:STATE_CONNECTING];
-    self.tcp = [[AsyncTCP alloc] initWithQueue:self.queue];
+#ifdef ENABLE_SSL
+    self.tcp = [[AsyncSSLTCP alloc] initWithQueue:self.queue];
+#else
+    self.tcp = [[AsyncRawTCP alloc] initWithQueue:self.queue];
+#endif
     __weak TCPConnection *wself = self;
     struct sockaddr_storage addr = self.hostAddr;
     NSLog(@"tcp connect host:%@ host ip:%@", self.host, self.hostIP);
@@ -439,12 +448,14 @@
 
 
 -(void)publishConnectState:(int)state {
-    for (NSValue *value in self.connectionObservers) {
-        id<TCPConnectionObserver> ob = [value nonretainedObjectValue];
-        if ([ob respondsToSelector:@selector(onConnectState:)]) {
-            [ob onConnectState:state];
+    [self runOnMainThread:^{
+        for (NSValue *value in self.connectionObservers) {
+            id<TCPConnectionObserver> ob = [value nonretainedObjectValue];
+            if ([ob respondsToSelector:@selector(onConnectState:)]) {
+                [ob onConnectState:state];
+            }
         }
-    }
+    }];
 }
 
 -(void)runOnQueue:(NSString*)queueLabel block:(dispatch_block_t)block {

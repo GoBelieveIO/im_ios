@@ -13,6 +13,16 @@
 #define STATE_CONNECTED 2
 #define STATE_CONNECTFAIL 3
 
+
+#define ENABLE_SSL
+
+#define HOST  @"imnode2.gobelieve.io"
+#ifdef ENABLE_SSL
+#define PORT 24430
+#else
+#define PORT 23000
+#endif
+
 @protocol TCPConnectionObserver <NSObject>
 @optional
 //同IM服务器连接的状态变更通知

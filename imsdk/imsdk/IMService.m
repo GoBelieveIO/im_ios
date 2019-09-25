@@ -7,19 +7,16 @@
   LICENSE file in the root directory of this source tree. An additional grant
   of patent rights can be found in the PATENTS file in the same directory.
 */
+#import "IMService.h"
 #include <netdb.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
-#import "IMService.h"
-#import "AsyncTCP.h"
 #import "Message.h"
+#import "AsyncTCP.h"
 #import "util.h"
 
 
 #define HEARTBEAT_HZ (180)
-
-#define HOST  @"imnode2.gobelieve.io"
-#define PORT 23000
 
 
 @interface GroupSync : NSObject
