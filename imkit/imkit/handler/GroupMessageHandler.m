@@ -48,12 +48,26 @@
         IMessage *m = [[IMessage alloc] init];
         m.sender = im.sender;
         m.receiver = im.receiver;
-        m.rawContent = im.content;
         m.timestamp = im.timestamp;
         if (self.uid == im.sender) {
             m.flags = m.flags | MESSAGE_FLAG_ACK;
         }
-        
+        if (im.isGroupNotification) {
+            MessageGroupNotificationContent *obj = [[MessageGroupNotificationContent alloc] initWithNotification:im.content];
+            im.receiver = obj.groupID;
+            im.timestamp = obj.timestamp;
+            
+            m.rawContent = obj.raw;
+            m.receiver = obj.groupID;
+            if (obj.timestamp > 0) {
+                m.timestamp = obj.timestamp;
+            } else {
+                m.timestamp = (int)time(NULL);
+            }
+        } else {
+            m.rawContent = im.content;
+        }
+
         if (im.isSelf) {
             NSAssert(im.sender == self.uid, @"");
             [self repairFailureMessage:m.uuid];
@@ -109,20 +123,4 @@
     return [[GroupMessageDB instance] markMessageFailure:msg.msgLocalID];
 }
 
--(BOOL)handleGroupNotification:(NSString*)notification {
-    MessageGroupNotificationContent *obj = [[MessageGroupNotificationContent alloc] initWithNotification:notification];
-    
-    IMessage *m = [[IMessage alloc] init];
-    m.sender = 0;
-    m.receiver = obj.groupID;
-    m.rawContent = obj.raw;
-
-    if (obj.timestamp > 0) {
-        m.timestamp = obj.timestamp;
-    } else {
-        m.timestamp = (int)time(NULL);
-    }
-    BOOL r = [[GroupMessageDB instance] insertMessage:m];
-    return r;
-}
 @end

@@ -90,6 +90,8 @@
 
 //消息由当前用户在当前设备发出
 @property(nonatomic, assign) BOOL isSelf;
+//群组通知消息
+@property(nonatomic, assign) BOOL isGroupNotification;
 @end
 
 @interface CustomerMessage : NSObject

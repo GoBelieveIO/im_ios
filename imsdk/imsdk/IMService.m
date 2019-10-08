@@ -198,6 +198,24 @@
     }
 }
 
+
+-(void)handleGroupNotification:(Message*)msg {
+    NSString *notification = (NSString*)msg.body;
+    NSLog(@"group notification:%@", notification);
+    
+    IMMessage *im = [[IMMessage alloc] init];
+    im.content = notification;
+    im.isGroupNotification = YES;
+    if (msg.flag & MSG_FLAG_PUSH) {
+        NSArray *array = @[im];
+        [self.groupMessageHandler handleMessages:array];
+        [self publishGroupMessages:array];
+    } else {
+        [self.receivedGroupMessages addObject:im];
+    }
+    [self sendACK:msg.seq];
+}
+
 -(void)handleCustomerSupportMessage:(Message*)msg {
     CustomerMessage *im = (CustomerMessage*)msg.body;
     im.isSelf = msg.flag & MSG_FLAG_SELF;
@@ -225,8 +243,6 @@
 -(void)handleRTMessage:(Message*)msg {
     RTMessage *rt = (RTMessage*)msg.body;
     [self publishRTMessage:rt];
-    
-
 }
 
 -(void)handleAuthStatus:(Message*)msg {
@@ -246,19 +262,6 @@
     [self pong];
 }
 
--(void)handleGroupNotification:(Message*)msg {
-    NSString *notification = (NSString*)msg.body;
-    NSLog(@"group notification:%@", notification);
-    [self.groupMessageHandler handleGroupNotification:notification];
-    for (NSValue *value in self.groupObservers) {
-        id<GroupMessageObserver> ob = [value nonretainedObjectValue];
-        if ([ob respondsToSelector:@selector(onGroupNotification:)]) {
-            [ob onGroupNotification:notification];
-        }
-    }
-    
-    [self sendACK:msg.seq];
-}
 
 -(void)handleRoomMessage:(Message*)msg {
     RoomMessage *rm = (RoomMessage*)msg.body;
@@ -282,7 +285,7 @@
     if (self.receivedGroupMessages.count > 0) {
         [self.groupMessageHandler handleMessages:self.receivedGroupMessages];
         [self publishGroupMessages:self.receivedGroupMessages];
-        [self.receivedGroupMessages removeAllObjects];
+        self.receivedGroupMessages = [NSMutableArray array];
     }
     
 
@@ -332,7 +335,7 @@
     if (self.receivedGroupMessages.count > 0) {
         [self.groupMessageHandler handleMessages:self.receivedGroupMessages];
         [self publishGroupMessages:self.receivedGroupMessages];
-        [self.receivedGroupMessages removeAllObjects];
+        self.receivedGroupMessages = [NSMutableArray array];
     }
     
     GroupSync *s = [self.groupSyncKeys objectForKey:[NSNumber numberWithLongLong:groupSyncKey.groupID]];

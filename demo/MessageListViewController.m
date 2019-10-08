@@ -613,7 +613,11 @@ alpha:(a)]
 
 -(void)onGroupMessages:(NSArray*)msgs {
     for (IMMessage *im in msgs) {
-        [self onGroupMessage:im];
+        if (im.isGroupNotification) {
+            [self onGroupNotification:im.content];
+        } else {
+            [self onGroupMessage:im];
+        }
     }
 }
 
@@ -714,7 +718,6 @@ alpha:(a)]
     if (shouldClearNewCount) {
         [self clearNewOnTarBar];
     }
-
 }
 
 - (void)setNewOnTabBar {

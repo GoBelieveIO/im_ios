@@ -70,10 +70,14 @@
 
 
 
-#pragma mark - MessageObserver
+#pragma mark - GroupMessageObserver
 -(void)onGroupMessages:(NSArray*)msgs {
     for (IMMessage *im in msgs) {
-        [self onGroupMessage:im];
+        if (im.isGroupNotification) {
+            [self onGroupNotification:im.content];
+        } else {
+            [self onGroupMessage:im];
+        }
     }
 }
 

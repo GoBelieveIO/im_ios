@@ -22,7 +22,6 @@
 -(BOOL)handleMessages:(NSArray*)msgs;
 -(BOOL)handleMessageACK:(IMMessage*)msg error:(int)error;
 -(BOOL)handleMessageFailure:(IMMessage*)msg;
--(BOOL)handleGroupNotification:(NSString*)notification;
 @end
 
 @protocol IMCustomerMessageHandler <NSObject>
@@ -54,8 +53,6 @@
 -(void)onGroupMessages:(NSArray*)msgs;
 -(void)onGroupMessageACK:(IMMessage*)msg error:(int)error;
 -(void)onGroupMessageFailure:(IMMessage*)msg;
-
--(void)onGroupNotification:(NSString*)notification;
 @end
 
 @protocol RoomMessageObserver <NSObject>
