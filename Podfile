@@ -23,3 +23,18 @@ target 'customer_demo' do
   shared_pods
 end
 
+
+#https://github.com/CocoaPods/CocoaPods/issues/8122
+post_install do |installer|
+  project_path = 'im_demo.xcodeproj'
+  project = Xcodeproj::Project.open(project_path)
+  project.targets.each do |target|
+    build_phase = target.build_phases.find { |bp| bp.display_name == '[CP] Copy Pods Resources' }
+    
+    if build_phase.present?
+      target.build_phases.delete(build_phase)
+    end
+  end
+  
+  project.save(project_path)
+end

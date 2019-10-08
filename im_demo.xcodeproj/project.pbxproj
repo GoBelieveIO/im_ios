@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6D014FBE234C2171006FF116 /* Emoji.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6D014FB9234C214E006FF116 /* Emoji.xcassets */; };
+		6D014FBF234C2171006FF116 /* gobelieve.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6D014FBA234C214E006FF116 /* gobelieve.xcassets */; };
+		6D014FC0234C2171006FF116 /* messageReceived.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 6D014FBC234C214E006FF116 /* messageReceived.aiff */; };
+		6D014FC1234C2171006FF116 /* messageSent.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 6D014FBD234C214E006FF116 /* messageSent.aiff */; };
+		6D014FC3234C21FD006FF116 /* gobelieve.db in Resources */ = {isa = PBXBuildFile; fileRef = 6D014FC2234C21FD006FF116 /* gobelieve.db */; };
 		6D4AB3E61C87104300AFE234 /* GroupLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D8E72E81B750B79004E069E /* GroupLoginViewController.m */; };
 		6D61543A1BF6EB5F005648FA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C46D61BEB0A940053066A /* Localizable.strings */; };
 		6D61543B1BF6EB5F005648FA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C46D61BEB0A940053066A /* Localizable.strings */; };
@@ -87,6 +92,11 @@
 		4D143B1C47D908DE0CEA52E9 /* libPods-im_demo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-im_demo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5130738AFF321052F126F808 /* libPods-customer_demo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-customer_demo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		60FCFF5BAB10B7E466379BAB /* Pods-im_demo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-im_demo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-im_demo/Pods-im_demo.debug.xcconfig"; sourceTree = "<group>"; };
+		6D014FB9234C214E006FF116 /* Emoji.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Emoji.xcassets; path = imkit/imkit/imKitRes/Emoji.xcassets; sourceTree = "<group>"; };
+		6D014FBA234C214E006FF116 /* gobelieve.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = gobelieve.xcassets; path = imkit/imkit/imKitRes/gobelieve.xcassets; sourceTree = "<group>"; };
+		6D014FBC234C214E006FF116 /* messageReceived.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = messageReceived.aiff; sourceTree = "<group>"; };
+		6D014FBD234C214E006FF116 /* messageSent.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = messageSent.aiff; sourceTree = "<group>"; };
+		6D014FC2234C21FD006FF116 /* gobelieve.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = gobelieve.db; path = imkit/imkit/imKitRes/gobelieve.db; sourceTree = "<group>"; };
 		6D69BD821B4449D0008EAA8A /* room_demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = room_demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6D69BD911B444B79008EAA8A /* room-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "room-Info.plist"; sourceTree = "<group>"; };
 		6D69BD931B444BBA008EAA8A /* RoomViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RoomViewController.h; sourceTree = "<group>"; };
@@ -221,9 +231,23 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		6D014FBB234C214E006FF116 /* sounds */ = {
+			isa = PBXGroup;
+			children = (
+				6D014FBC234C214E006FF116 /* messageReceived.aiff */,
+				6D014FBD234C214E006FF116 /* messageSent.aiff */,
+			);
+			name = sounds;
+			path = imkit/imkit/imKitRes/sounds;
+			sourceTree = "<group>";
+		};
 		6DF54D821AB5862000197EBC = {
 			isa = PBXGroup;
 			children = (
+				6D014FC2234C21FD006FF116 /* gobelieve.db */,
+				6D014FB9234C214E006FF116 /* Emoji.xcassets */,
+				6D014FBA234C214E006FF116 /* gobelieve.xcassets */,
+				6D014FBB234C214E006FF116 /* sounds */,
 				6DBB2CC71DBBBE4200BC545A /* customer_demo.entitlements */,
 				6DBB2CC61DBBBDD600BC545A /* im_demo.entitlements */,
 				6DF54D8D1AB5862000197EBC /* demo */,
@@ -336,7 +360,6 @@
 				6D69BCF01B4449D0008EAA8A /* Sources */,
 				6D69BD0C1B4449D0008EAA8A /* Frameworks */,
 				6D69BD161B4449D0008EAA8A /* Resources */,
-				572FF97F35D20FC18181459F /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -355,7 +378,6 @@
 				6D8E724A1B750A31004E069E /* Sources */,
 				6D8E72681B750A31004E069E /* Frameworks */,
 				6D8E72721B750A31004E069E /* Resources */,
-				323341E462813A8CCBE6F8B3 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -374,7 +396,6 @@
 				6DBB2CA41DBB348D00BC545A /* Sources */,
 				6DBB2CAA1DBB348D00BC545A /* Frameworks */,
 				6DBB2CB31DBB348D00BC545A /* Resources */,
-				6DBB2CBB1DBB348D00BC545A /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -393,7 +414,6 @@
 				6DF54D871AB5862000197EBC /* Sources */,
 				6DF54D881AB5862000197EBC /* Frameworks */,
 				6DF54D891AB5862000197EBC /* Resources */,
-				03DD3334DB1AD7ACB710CD1B /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -436,6 +456,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 				"zh-Hans",
@@ -489,8 +510,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6D014FBE234C2171006FF116 /* Emoji.xcassets in Resources */,
+				6D014FBF234C2171006FF116 /* gobelieve.xcassets in Resources */,
+				6D014FC0234C2171006FF116 /* messageReceived.aiff in Resources */,
+				6D014FC1234C2171006FF116 /* messageSent.aiff in Resources */,
 				6DB34C241C4D1C5F006D78D4 /* MessageConversationCell.xib in Resources */,
 				6D9C46C91BEB09DC0053066A /* InfoPlist.strings in Resources */,
+				6D014FC3234C21FD006FF116 /* gobelieve.db in Resources */,
 				6D69BD921B444B79008EAA8A /* room-Info.plist in Resources */,
 				6D8E72E61B750B04004E069E /* group-Info.plist in Resources */,
 				6D9C46D41BEB0A940053066A /* Localizable.strings in Resources */,
@@ -501,31 +527,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		03DD3334DB1AD7ACB710CD1B /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-im_demo/Pods-im_demo-resources.sh",
-				"${PODS_ROOT}/../imkit/imkit/imKitRes/sounds/messageReceived.aiff",
-				"${PODS_ROOT}/../imkit/imkit/imKitRes/sounds/messageSent.aiff",
-				"${PODS_ROOT}/../imkit/imkit/imKitRes/images.xcassets",
-				"${PODS_ROOT}/../imkit/imkit/imKitRes/Emoji.xcassets",
-				"${PODS_ROOT}/../imkit/imkit/imKitRes/gobelieve.db",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/messageReceived.aiff",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/messageSent.aiff",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Assets.car",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/gobelieve.db",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-im_demo/Pods-im_demo-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		1E68C9D5AEF64270CC32F130 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -544,56 +545,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		323341E462813A8CCBE6F8B3 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-group_demo/Pods-group_demo-resources.sh",
-				"${PODS_ROOT}/../imkit/imkit/imKitRes/sounds/messageReceived.aiff",
-				"${PODS_ROOT}/../imkit/imkit/imKitRes/sounds/messageSent.aiff",
-				"${PODS_ROOT}/../imkit/imkit/imKitRes/images.xcassets",
-				"${PODS_ROOT}/../imkit/imkit/imKitRes/Emoji.xcassets",
-				"${PODS_ROOT}/../imkit/imkit/imKitRes/gobelieve.db",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/messageReceived.aiff",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/messageSent.aiff",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Assets.car",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/gobelieve.db",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-group_demo/Pods-group_demo-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		572FF97F35D20FC18181459F /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-room_demo/Pods-room_demo-resources.sh",
-				"${PODS_ROOT}/../imkit/imkit/imKitRes/sounds/messageReceived.aiff",
-				"${PODS_ROOT}/../imkit/imkit/imKitRes/sounds/messageSent.aiff",
-				"${PODS_ROOT}/../imkit/imkit/imKitRes/images.xcassets",
-				"${PODS_ROOT}/../imkit/imkit/imKitRes/Emoji.xcassets",
-				"${PODS_ROOT}/../imkit/imkit/imKitRes/gobelieve.db",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/messageReceived.aiff",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/messageSent.aiff",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Assets.car",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/gobelieve.db",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-room_demo/Pods-room_demo-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		6DBB2CA31DBB348D00BC545A /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -610,31 +561,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		6DBB2CBB1DBB348D00BC545A /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-customer_demo/Pods-customer_demo-resources.sh",
-				"${PODS_ROOT}/../imkit/imkit/imKitRes/sounds/messageReceived.aiff",
-				"${PODS_ROOT}/../imkit/imkit/imKitRes/sounds/messageSent.aiff",
-				"${PODS_ROOT}/../imkit/imkit/imKitRes/images.xcassets",
-				"${PODS_ROOT}/../imkit/imkit/imKitRes/Emoji.xcassets",
-				"${PODS_ROOT}/../imkit/imkit/imKitRes/gobelieve.db",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/messageReceived.aiff",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/messageSent.aiff",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Assets.car",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/gobelieve.db",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-customer_demo/Pods-customer_demo-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		7073A1CAFADC4BBB419F3E4A /* [CP] Check Pods Manifest.lock */ = {

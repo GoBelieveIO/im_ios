@@ -26,7 +26,7 @@ Pod::Spec.new do |s|
   s.subspec 'imkit' do |sp|
     sp.source_files     = 'imkit/imkit/**/*.{h,m,c}'
     sp.exclude_files    = 'imkit/imkit/third-party'
-    sp.resource         = ['imkit/imkit/imKitRes/sounds/*.aiff', 'imkit/imkit/imKitRes/images.xcassets', 'imkit/imkit/imKitRes/Emoji.xcassets', 'imkit/imkit/imKitRes/gobelieve.db']
+    sp.resource         = ['imkit/imkit/imKitRes/sounds/*.aiff', 'imkit/imkit/imKitRes/gobelieve.xcassets', 'imkit/imkit/imKitRes/Emoji.xcassets', 'imkit/imkit/imKitRes/gobelieve.db']
     sp.dependency 'gobelieve/imsdk'
     sp.dependency 'SDWebImage', '~> 5.1.0'
     sp.dependency 'Toast', '~> 4.0.0'
