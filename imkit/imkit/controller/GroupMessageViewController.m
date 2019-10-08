@@ -220,6 +220,7 @@
         im.sender = message.sender;
         im.receiver = message.receiver;
         im.msgLocalID = message.msgLocalID;
+        im.isText = YES;
         im.content = message.rawContent;
         [[IMService instance] sendGroupMessageAsync:im];
     }

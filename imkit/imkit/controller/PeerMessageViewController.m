@@ -328,6 +328,7 @@
         im.sender = message.sender;
         im.receiver = message.receiver;
         im.msgLocalID = message.msgLocalID;
+        im.isText = YES;
         im.content = message.rawContent;
         im.plainContent = message.rawContent;
         

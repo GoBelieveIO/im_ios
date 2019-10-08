@@ -85,6 +85,9 @@
 @property(nonatomic, copy)NSString *plainContent;
 @property(nonatomic, assign)BOOL secret;
 
+//文本消息
+@property(nonatomic, assign) BOOL isText;
+
 //消息由当前用户在当前设备发出
 @property(nonatomic, assign) BOOL isSelf;
 @end

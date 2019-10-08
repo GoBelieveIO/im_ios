@@ -790,6 +790,9 @@
     Message *m = [[Message alloc] init];
     m.cmd = MSG_IM;
     m.body = im;
+    if (im.isText) {
+        m.flag = MSG_FLAG_TEXT;
+    }
     BOOL r = [self sendMessage:m];
 
     if (r) {
@@ -821,6 +824,9 @@
     Message *m = [[Message alloc] init];
     m.cmd = MSG_GROUP_IM;
     m.body = im;
+    if (im.isText) {
+        m.flag = MSG_FLAG_TEXT;
+    }
     BOOL r = [self sendMessage:m];
     
     if (!r) return r;
