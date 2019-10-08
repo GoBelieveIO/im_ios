@@ -94,6 +94,7 @@
  *2.上线之后，自动同步所有离线消息
  *3.收到同步消息的通知后，同步新消息
 */
+__attribute__((objc_runtime_name("GoBelieveIMService")))
 @interface IMService : TCPConnection
 @property(nonatomic, copy) NSString *deviceID;
 @property(nonatomic, copy) NSString *token;
