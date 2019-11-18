@@ -198,11 +198,11 @@
     [self refreshHostIP];
 }
 
-//2s后重新连接
+
 -(void)reconnect2S {
     [self onClose];
-    self.connectState = STATE_UNCONNECTED;
-    [self publishConnectState:STATE_UNCONNECTED];
+    self.connectState = STATE_AUTHENTICATION_FAIL;
+    [self publishConnectState:STATE_AUTHENTICATION_FAIL];
     
     self.connectFailCount = 2;
     [self close];

@@ -12,7 +12,7 @@
 #define STATE_CONNECTING 1
 #define STATE_CONNECTED 2
 #define STATE_CONNECTFAIL 3
-
+#define STATE_AUTHENTICATION_FAIL 4
 
 #define ENABLE_SSL
 
@@ -59,6 +59,8 @@
 //protect method
 -(void)ping;
 -(void)pong;
+
+//认证失败，2s后重新连接
 -(void)reconnect2S;
 
 -(void)runOnMainThread:(dispatch_block_t)block;
