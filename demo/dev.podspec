@@ -14,9 +14,6 @@ Pod::Spec.new do |s|
   s.source           = { :git => 'git@github.com:GoBelieveIO/im_ios.git' }
   s.platform         = :ios, '8.0'
   s.requires_arc     = true
-  s.preserve_paths   = 'imkit/imkit/amr/libopencore-amrnb.a'
-  s.library          = 'opencore-amrnb'
-  s.xcconfig         = { 'LIBRARY_SEARCH_PATHS' => '"${SRCROOT}/imkit/imkit/amr"' }
 
   s.subspec 'imsdk' do |sp|
     sp.public_header_files = 'imsdk/imsdk/*.h'
@@ -25,6 +22,9 @@ Pod::Spec.new do |s|
 
   s.subspec 'imkit' do |sp|
     sp.source_files     = 'imkit/imkit/**/*.{h,m,c}'
+    sp.preserve_paths   = 'imkit/imkit/amr/libopencore-amrnb.a'
+    sp.library          = 'opencore-amrnb'
+    sp.xcconfig         = { 'LIBRARY_SEARCH_PATHS' => '"${SRCROOT}/imkit/imkit/amr"' }
     sp.exclude_files    = 'imkit/imkit/third-party'
     sp.resource         = ['imkit/imkit/imKitRes/sounds/*.aiff', 'imkit/imkit/imKitRes/gobelieve.xcassets', 'imkit/imkit/imKitRes/Emoji.xcassets', 'imkit/imkit/imKitRes/gobelieve.db']
     sp.dependency 'gobelieve/imsdk'
