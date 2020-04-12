@@ -8,7 +8,6 @@
 */
 
 #import "MessageViewController.h"
-#import "TextMessageViewController.h"
 
 
 //最近发出的消息

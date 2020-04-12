@@ -20,14 +20,23 @@ Pod::Spec.new do |s|
     sp.source_files        = 'imsdk/*.{h,m,c}'
   end
 
+  s.subspec 'imlib' do |sp|
+     sp.source_files     = 'imlib/**/*.{h,m,c}'
+     sp.dependency 'gobelieve/imsdk'
+     sp.dependency 'SDWebImage', '~> 5.1.0'
+     sp.dependency 'FMDB', '~> 2.7.0'
+     sp.dependency 'Masonry', '~>1.1.0'
+     sp.pod_target_xcconfig = { 'ENABLE_BITCODE' => 'YES' }    
+  end
+
   s.subspec 'imkit' do |sp|
     sp.preserve_paths   = 'imkit/amr/libopencore-amrnb.a'
     sp.library          = 'opencore-amrnb'
     sp.xcconfig         = { 'LIBRARY_SEARCH_PATHS' => '"$(PODS_ROOT)/gobelieve/imkit/amr"' }
     sp.source_files     = 'imkit/**/*.{h,m,c}'
-    sp.exclude_files    = 'imkit/third-party'
     sp.resource         = ['imkit/imKitRes/sounds/*.aiff', 'imkit/imKitRes/gobelieve.xcassets', 'imkit/imKitRes/Emoji.xcassets', 'imkit/imKitRes/gobelieve.db']
     sp.dependency 'gobelieve/imsdk'
+    sp.dependency 'gobelieve/imlib'
     sp.dependency 'SDWebImage', '~> 5.1.0'
     sp.dependency 'Toast', '~> 4.0.0'
     sp.dependency 'MBProgressHUD', '~> 0.9.1'

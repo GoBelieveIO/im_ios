@@ -10,7 +10,6 @@
 #import "MainViewController.h"
 
 #import <gobelieve/IMService.h>
-#import <gobelieve/TextMessageViewController.h>
 #import <gobelieve/MessageViewController.h>
 #import <gobelieve/IMHttpAPI.h>
 #import <gobelieve/PeerMessageViewController.h>
