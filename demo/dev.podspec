@@ -16,17 +16,17 @@ Pod::Spec.new do |s|
   s.requires_arc     = true
 
   s.subspec 'imsdk' do |sp|
-    sp.public_header_files = 'imsdk/imsdk/*.h'
-    sp.source_files        = 'imsdk/imsdk/*.{h,m,c}'
+    sp.public_header_files = 'imsdk/*.h'
+    sp.source_files        = 'imsdk/*.{h,m,c}'
   end
 
   s.subspec 'imkit' do |sp|
-    sp.source_files     = 'imkit/imkit/**/*.{h,m,c}'
-    sp.preserve_paths   = 'imkit/imkit/amr/libopencore-amrnb.a'
+    sp.source_files     = 'imkit/**/*.{h,m,c}'
+    sp.preserve_paths   = 'imkit/amr/libopencore-amrnb.a'
     sp.library          = 'opencore-amrnb'
-    sp.xcconfig         = { 'LIBRARY_SEARCH_PATHS' => '"${SRCROOT}/imkit/imkit/amr"' }
-    sp.exclude_files    = 'imkit/imkit/third-party'
-    sp.resource         = ['imkit/imkit/imKitRes/sounds/*.aiff', 'imkit/imkit/imKitRes/gobelieve.xcassets', 'imkit/imkit/imKitRes/Emoji.xcassets', 'imkit/imkit/imKitRes/gobelieve.db']
+    sp.xcconfig         = { 'LIBRARY_SEARCH_PATHS' => '"${PODS_ROOT}/../imkit/amr"' }
+    sp.exclude_files    = 'imkit/third-party'
+    sp.resource         = ['imkit/imKitRes/sounds/*.aiff', 'imkit/imKitRes/gobelieve.xcassets', 'imkit/imKitRes/Emoji.xcassets', 'imkit/imKitRes/gobelieve.db']
     sp.dependency 'gobelieve/imsdk'
     sp.dependency 'SDWebImage', '~> 5.1.0'
     sp.dependency 'Toast', '~> 4.0.0'

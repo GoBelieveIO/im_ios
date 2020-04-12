@@ -7,11 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6D014FBE234C2171006FF116 /* Emoji.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6D014FB9234C214E006FF116 /* Emoji.xcassets */; };
-		6D014FBF234C2171006FF116 /* gobelieve.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6D014FBA234C214E006FF116 /* gobelieve.xcassets */; };
-		6D014FC0234C2171006FF116 /* messageReceived.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 6D014FBC234C214E006FF116 /* messageReceived.aiff */; };
-		6D014FC1234C2171006FF116 /* messageSent.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 6D014FBD234C214E006FF116 /* messageSent.aiff */; };
-		6D014FC3234C21FD006FF116 /* gobelieve.db in Resources */ = {isa = PBXBuildFile; fileRef = 6D014FC2234C21FD006FF116 /* gobelieve.db */; };
+		59029F81F74A83DBA4374A71 /* Pods_room_demo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B2FEACAB1CF5A1D32EF4D1E9 /* Pods_room_demo.framework */; };
 		6D4AB3E61C87104300AFE234 /* GroupLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D8E72E81B750B79004E069E /* GroupLoginViewController.m */; };
 		6D61543A1BF6EB5F005648FA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C46D61BEB0A940053066A /* Localizable.strings */; };
 		6D61543B1BF6EB5F005648FA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C46D61BEB0A940053066A /* Localizable.strings */; };
@@ -79,18 +75,16 @@
 		6DFA63861E12CF7400F954F6 /* Conversation.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DFA63851E12CF7400F954F6 /* Conversation.m */; };
 		6DFA63881E12DB4800F954F6 /* Conversation.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DFA63851E12CF7400F954F6 /* Conversation.m */; };
 		6DFA63891E12DB4900F954F6 /* Conversation.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DFA63851E12CF7400F954F6 /* Conversation.m */; };
-		85DA487FCFFA669A8F1BFBEB /* libPods-im_demo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D143B1C47D908DE0CEA52E9 /* libPods-im_demo.a */; };
-		99692241B97A15AE5279890F /* libPods-group_demo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3885308284109E25A900C604 /* libPods-group_demo.a */; };
-		AD6CAE0B0DCA80C329BE28A1 /* libPods-customer_demo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5130738AFF321052F126F808 /* libPods-customer_demo.a */; };
-		FA4A56ED0420218EC7AFCFC0 /* libPods-room_demo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 872E33CE29515A7D564B1D4B /* libPods-room_demo.a */; };
+		A5BB77274658BF84729FF674 /* Pods_group_demo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06463699B28B42D154BF3735 /* Pods_group_demo.framework */; };
+		CD45AB6EAF2D6E26E98A67F3 /* Pods_customer_demo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4283C02284CF490FDEA8214E /* Pods_customer_demo.framework */; };
+		D09DE27E7C30D16C5965D0C8 /* Pods_im_demo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8FC9360CCFF16616DBD9448C /* Pods_im_demo.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		06463699B28B42D154BF3735 /* Pods_group_demo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_group_demo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2A64DD9022886E571A34506B /* Pods-room_demo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-room_demo.release.xcconfig"; path = "Pods/Target Support Files/Pods-room_demo/Pods-room_demo.release.xcconfig"; sourceTree = "<group>"; };
-		3885308284109E25A900C604 /* libPods-group_demo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-group_demo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B330308ECEAAA0851805ABB /* Pods-group_demo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-group_demo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-group_demo/Pods-group_demo.debug.xcconfig"; sourceTree = "<group>"; };
-		4D143B1C47D908DE0CEA52E9 /* libPods-im_demo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-im_demo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		5130738AFF321052F126F808 /* libPods-customer_demo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-customer_demo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4283C02284CF490FDEA8214E /* Pods_customer_demo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_customer_demo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		60FCFF5BAB10B7E466379BAB /* Pods-im_demo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-im_demo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-im_demo/Pods-im_demo.debug.xcconfig"; sourceTree = "<group>"; };
 		6D014FB9234C214E006FF116 /* Emoji.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Emoji.xcassets; path = imkit/imkit/imKitRes/Emoji.xcassets; sourceTree = "<group>"; };
 		6D014FBA234C214E006FF116 /* gobelieve.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = gobelieve.xcassets; path = imkit/imkit/imKitRes/gobelieve.xcassets; sourceTree = "<group>"; };
@@ -144,10 +138,11 @@
 		6DF54EBA1AB58D6600197EBC /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		6DFA63841E12CF7400F954F6 /* Conversation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Conversation.h; sourceTree = "<group>"; };
 		6DFA63851E12CF7400F954F6 /* Conversation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Conversation.m; sourceTree = "<group>"; };
-		872E33CE29515A7D564B1D4B /* libPods-room_demo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-room_demo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8FC9360CCFF16616DBD9448C /* Pods_im_demo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_im_demo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8FCF25C41C94E80DF3736F6E /* Pods-group_demo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-group_demo.release.xcconfig"; path = "Pods/Target Support Files/Pods-group_demo/Pods-group_demo.release.xcconfig"; sourceTree = "<group>"; };
 		A6560539F9457BB00BEB9CE0 /* Pods-im_demo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-im_demo.release.xcconfig"; path = "Pods/Target Support Files/Pods-im_demo/Pods-im_demo.release.xcconfig"; sourceTree = "<group>"; };
 		ABAB26D880AE3D6D95762990 /* Pods-customer_demo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-customer_demo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-customer_demo/Pods-customer_demo.debug.xcconfig"; sourceTree = "<group>"; };
+		B2FEACAB1CF5A1D32EF4D1E9 /* Pods_room_demo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_room_demo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE4A1C463DEC1F14D460B780 /* Pods-customer_demo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-customer_demo.release.xcconfig"; path = "Pods/Target Support Files/Pods-customer_demo/Pods-customer_demo.release.xcconfig"; sourceTree = "<group>"; };
 		FADDFF0FFAA1AC5383BE6596 /* Pods-room_demo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-room_demo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-room_demo/Pods-room_demo.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -164,7 +159,7 @@
 				6D69BD111B4449D0008EAA8A /* UIKit.framework in Frameworks */,
 				6D69BD121B4449D0008EAA8A /* AVFoundation.framework in Frameworks */,
 				6D69BD131B4449D0008EAA8A /* AssetsLibrary.framework in Frameworks */,
-				FA4A56ED0420218EC7AFCFC0 /* libPods-room_demo.a in Frameworks */,
+				59029F81F74A83DBA4374A71 /* Pods_room_demo.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -179,7 +174,7 @@
 				6D8E726D1B750A31004E069E /* UIKit.framework in Frameworks */,
 				6D8E726E1B750A31004E069E /* AVFoundation.framework in Frameworks */,
 				6D8E726F1B750A31004E069E /* AssetsLibrary.framework in Frameworks */,
-				99692241B97A15AE5279890F /* libPods-group_demo.a in Frameworks */,
+				A5BB77274658BF84729FF674 /* Pods_group_demo.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -194,7 +189,7 @@
 				6DBB2CAF1DBB348D00BC545A /* UIKit.framework in Frameworks */,
 				6DBB2CB01DBB348D00BC545A /* AVFoundation.framework in Frameworks */,
 				6DBB2CB11DBB348D00BC545A /* AssetsLibrary.framework in Frameworks */,
-				AD6CAE0B0DCA80C329BE28A1 /* libPods-customer_demo.a in Frameworks */,
+				CD45AB6EAF2D6E26E98A67F3 /* Pods_customer_demo.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -209,7 +204,7 @@
 				6DF54E5D1AB58AD000197EBC /* UIKit.framework in Frameworks */,
 				6DF54E5B1AB58AC900197EBC /* AVFoundation.framework in Frameworks */,
 				6DF54E591AB58AC400197EBC /* AssetsLibrary.framework in Frameworks */,
-				85DA487FCFFA669A8F1BFBEB /* libPods-im_demo.a in Frameworks */,
+				D09DE27E7C30D16C5965D0C8 /* Pods_im_demo.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -341,10 +336,10 @@
 				6DF54E5C1AB58AD000197EBC /* UIKit.framework */,
 				6DF54E5A1AB58AC900197EBC /* AVFoundation.framework */,
 				6DF54E581AB58AC400197EBC /* AssetsLibrary.framework */,
-				3885308284109E25A900C604 /* libPods-group_demo.a */,
-				4D143B1C47D908DE0CEA52E9 /* libPods-im_demo.a */,
-				872E33CE29515A7D564B1D4B /* libPods-room_demo.a */,
-				5130738AFF321052F126F808 /* libPods-customer_demo.a */,
+				4283C02284CF490FDEA8214E /* Pods_customer_demo.framework */,
+				06463699B28B42D154BF3735 /* Pods_group_demo.framework */,
+				8FC9360CCFF16616DBD9448C /* Pods_im_demo.framework */,
+				B2FEACAB1CF5A1D32EF4D1E9 /* Pods_room_demo.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -360,6 +355,7 @@
 				6D69BCF01B4449D0008EAA8A /* Sources */,
 				6D69BD0C1B4449D0008EAA8A /* Frameworks */,
 				6D69BD161B4449D0008EAA8A /* Resources */,
+				F9C261396B633AB0EDAC2F7A /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -378,6 +374,7 @@
 				6D8E724A1B750A31004E069E /* Sources */,
 				6D8E72681B750A31004E069E /* Frameworks */,
 				6D8E72721B750A31004E069E /* Resources */,
+				9C170172DEC17C04582592C8 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -396,6 +393,7 @@
 				6DBB2CA41DBB348D00BC545A /* Sources */,
 				6DBB2CAA1DBB348D00BC545A /* Frameworks */,
 				6DBB2CB31DBB348D00BC545A /* Resources */,
+				03AC4FF093938DCF5B36ECAB /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -414,6 +412,7 @@
 				6DF54D871AB5862000197EBC /* Sources */,
 				6DF54D881AB5862000197EBC /* Frameworks */,
 				6DF54D891AB5862000197EBC /* Resources */,
+				AEDFC90137FAC85E53CBACE0 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -510,13 +509,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6D014FBE234C2171006FF116 /* Emoji.xcassets in Resources */,
-				6D014FBF234C2171006FF116 /* gobelieve.xcassets in Resources */,
-				6D014FC0234C2171006FF116 /* messageReceived.aiff in Resources */,
-				6D014FC1234C2171006FF116 /* messageSent.aiff in Resources */,
 				6DB34C241C4D1C5F006D78D4 /* MessageConversationCell.xib in Resources */,
 				6D9C46C91BEB09DC0053066A /* InfoPlist.strings in Resources */,
-				6D014FC3234C21FD006FF116 /* gobelieve.db in Resources */,
 				6D69BD921B444B79008EAA8A /* room-Info.plist in Resources */,
 				6D8E72E61B750B04004E069E /* group-Info.plist in Resources */,
 				6D9C46D41BEB0A940053066A /* Localizable.strings in Resources */,
@@ -527,6 +521,34 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		03AC4FF093938DCF5B36ECAB /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-customer_demo/Pods-customer_demo-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/FMDB/FMDB.framework",
+				"${BUILT_PRODUCTS_DIR}/MBProgressHUD/MBProgressHUD.framework",
+				"${BUILT_PRODUCTS_DIR}/Masonry/Masonry.framework",
+				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
+				"${BUILT_PRODUCTS_DIR}/Toast/Toast.framework",
+				"${BUILT_PRODUCTS_DIR}/gobelieve/gobelieve.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FMDB.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MBProgressHUD.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Masonry.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Toast.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/gobelieve.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-customer_demo/Pods-customer_demo-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		1E68C9D5AEF64270CC32F130 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -597,6 +619,90 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		9C170172DEC17C04582592C8 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-group_demo/Pods-group_demo-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/FMDB/FMDB.framework",
+				"${BUILT_PRODUCTS_DIR}/MBProgressHUD/MBProgressHUD.framework",
+				"${BUILT_PRODUCTS_DIR}/Masonry/Masonry.framework",
+				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
+				"${BUILT_PRODUCTS_DIR}/Toast/Toast.framework",
+				"${BUILT_PRODUCTS_DIR}/gobelieve/gobelieve.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FMDB.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MBProgressHUD.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Masonry.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Toast.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/gobelieve.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-group_demo/Pods-group_demo-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		AEDFC90137FAC85E53CBACE0 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-im_demo/Pods-im_demo-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/FMDB/FMDB.framework",
+				"${BUILT_PRODUCTS_DIR}/MBProgressHUD/MBProgressHUD.framework",
+				"${BUILT_PRODUCTS_DIR}/Masonry/Masonry.framework",
+				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
+				"${BUILT_PRODUCTS_DIR}/Toast/Toast.framework",
+				"${BUILT_PRODUCTS_DIR}/gobelieve/gobelieve.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FMDB.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MBProgressHUD.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Masonry.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Toast.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/gobelieve.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-im_demo/Pods-im_demo-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F9C261396B633AB0EDAC2F7A /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-room_demo/Pods-room_demo-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/FMDB/FMDB.framework",
+				"${BUILT_PRODUCTS_DIR}/MBProgressHUD/MBProgressHUD.framework",
+				"${BUILT_PRODUCTS_DIR}/Masonry/Masonry.framework",
+				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
+				"${BUILT_PRODUCTS_DIR}/Toast/Toast.framework",
+				"${BUILT_PRODUCTS_DIR}/gobelieve/gobelieve.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FMDB.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MBProgressHUD.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Masonry.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Toast.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/gobelieve.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-room_demo/Pods-room_demo-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
