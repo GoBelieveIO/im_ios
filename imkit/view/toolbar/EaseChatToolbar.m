@@ -606,7 +606,7 @@
 
     if ([text isEqualToString:@"@"]) {
         self.at = YES;
-    } else if (text.length == 0) {
+    } else if (text.length == 0 && viewText.length > 0) {
         //Delete Key
         NSString *t = textView.text;
         if ([t compare:@" " options:0 range:range] == NSOrderedSame) {
