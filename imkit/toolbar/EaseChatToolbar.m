@@ -17,7 +17,7 @@
 
 @property (nonatomic, assign) BOOL at;//是否输入了at
 @property (nonatomic) NSMutableArray *atUsers;
-@property (nonatomic) CGFloat version;
+
 
 @property (strong, nonatomic) NSMutableArray *leftItems;
 @property (strong, nonatomic) NSMutableArray *rightItems;
@@ -52,28 +52,25 @@
 
 @implementation EaseChatToolbar
 
-@synthesize faceView = _faceView;
-@synthesize moreView = _moreView;
-@synthesize recordView = _recordView;
-
-- (instancetype)initWithFrame:(CGRect)frame
-{
-    self = [self initWithFrame:frame horizontalPadding:8 verticalPadding:5 inputViewMinHeight:36 inputViewMaxHeight:120];
+- (instancetype)initWithFrame:(CGRect)frame {
+    self = [self initWithFrame:frame
+             horizontalPadding:8
+               verticalPadding:5
+            inputViewMinHeight:36
+            inputViewMaxHeight:120];
     if (self) {
-        self.atUsers = [NSMutableArray array];
+
     }
     
     return self;
 }
 
 
-
 - (instancetype)initWithFrame:(CGRect)frame
             horizontalPadding:(CGFloat)horizontalPadding
               verticalPadding:(CGFloat)verticalPadding
            inputViewMinHeight:(CGFloat)inputViewMinHeight
-           inputViewMaxHeight:(CGFloat)inputViewMaxHeight
-{
+           inputViewMaxHeight:(CGFloat)inputViewMaxHeight {
     if (frame.size.height < (verticalPadding * 2 + inputViewMinHeight)) {
         frame.size.height = verticalPadding * 2 + inputViewMinHeight;
     }
@@ -87,20 +84,24 @@
         
         _leftItems = [NSMutableArray array];
         _rightItems = [NSMutableArray array];
-        _version = [[[UIDevice currentDevice] systemVersion] floatValue];
         _isShowButtomView = NO;
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(chatKeyboardWillChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
-        
-        [self _setupSubviews];
     }
     return self;
 }
 
 #pragma mark - setup subviews
 
-- (void)_setupSubviews
-{
+- (void)setupSubviews:(NSDictionary*)config {
+    
+    CGRect moreFrame = CGRectMake(0, CGRectGetMaxY(self.bounds), self.frame.size.width, 180);
+    self.moreView = [[EaseChatBarMoreView alloc] initWithFrame:moreFrame config:config];
+    self.moreView.backgroundColor = [UIColor colorWithRed:240 / 255.0 green:242 / 255.0 blue:247 / 255.0 alpha:1.0];
+    
+    CGRect faceFrame = CGRectMake(0, CGRectGetMaxY(self.bounds) + HEIGHT_CHATBOXVIEW, SCREEN_WIDTH, HEIGHT_CHATBOXVIEW);
+    HCDChatBoxFaceView *faceView = [[HCDChatBoxFaceView alloc] initWithFrame:faceFrame];
+    faceView.delegate = self;
+    self.faceView = faceView;
+
     //backgroundImageView
     _backgroundImageView = [[UIImageView alloc] initWithFrame:self.bounds];
     _backgroundImageView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
@@ -181,45 +182,12 @@
     [self setInputViewRightItems:@[faceItem, moreItem]];
 }
 
-- (void)dealloc
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillChangeFrameNotification object:nil];
-    
+- (void)dealloc {
     _delegate = nil;
     _inputTextView.delegate = nil;
     _inputTextView = nil;
 }
 
-#pragma mark - getter
-
-- (UIView *)recordView
-{
-    if (_recordView == nil) {
-        _recordView = [[EaseRecordView alloc] initWithFrame:CGRectMake(90, 130, 140, 140)];
-    }
-    
-    return _recordView;
-}
-
-- (UIView *)faceView
-{
-    if (_faceView == nil) {
-        _faceView = [[HCDChatBoxFaceView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(_toolbarView.frame) + HEIGHT_CHATBOXVIEW, SCREEN_WIDTH, HEIGHT_CHATBOXVIEW)];
-        [(HCDChatBoxFaceView *)_faceView setDelegate:self];
-    }
-    
-    return _faceView;
-}
-
-- (UIView *)moreView
-{
-    if (_moreView == nil) {
-        _moreView = [[EaseChatBarMoreView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(_toolbarView.frame), self.frame.size.width, 180)];
-        _moreView.backgroundColor = [UIColor colorWithRed:240 / 255.0 green:242 / 255.0 blue:247 / 255.0 alpha:1.0];
-    }
-    
-    return _moreView;
-}
 
 
 - (void)atUser:(IUser*)user {
@@ -247,49 +215,6 @@
 - (void)setText:(NSString*)text {
     self.inputTextView.text = text;
     [self _willShowInputTextViewToHeight:[self _getTextViewContentH:self.inputTextView]];
-}
-
-- (void)setDelegate:(id<EMChatToolbarDelegate>)delegate
-{
-    _delegate = delegate;
-    if ([_moreView isKindOfClass:[EaseChatBarMoreView class]]) {
-        [(EaseChatBarMoreView *)_moreView setDelegate:delegate];
-    }
-}
-
-- (void)setRecordView:(UIView *)recordView
-{
-    if(_recordView != recordView){
-        _recordView = recordView;
-    }
-}
-
-- (void)setMoreView:(UIView *)moreView
-{
-    if (_moreView != moreView) {
-        _moreView = moreView;
-        
-        for (EaseChatToolbarItem *item in self.rightItems) {
-            if (item.button == self.moreButton) {
-                item.button2View = _moreView;
-                break;
-            }
-        }
-    }
-}
-
-- (void)setFaceView:(UIView *)faceView
-{
-    if (_faceView != faceView) {
-        _faceView = faceView;
-        
-        for (EaseChatToolbarItem *item in self.rightItems) {
-            if (item.button == self.faceButton) {
-                item.button2View = _faceView;
-                break;
-            }
-        }
-    }
 }
 
 - (void)setInputViewLeftItems:(NSArray *)inputViewLeftItems
@@ -390,14 +315,8 @@
 
 #pragma mark - private input view
 
-- (CGFloat)_getTextViewContentH:(UITextView *)textView
-{
-    if (self.version >= 7.0)
-    {
-        return ceilf([textView sizeThatFits:textView.frame.size].height);
-    } else {
-        return textView.contentSize.height;
-    }
+- (CGFloat)_getTextViewContentH:(UITextView *)textView {
+    return ceilf([textView sizeThatFits:textView.frame.size].height);
 }
 
 - (void)setInputTextViewHeight:(CGFloat)toHeight {
@@ -871,42 +790,42 @@
 
 - (void)recordButtonTouchDown
 {
-    if (_delegate && [_delegate respondsToSelector:@selector(didStartRecordingVoiceAction:)]) {
-        [_delegate didStartRecordingVoiceAction:self.recordView];
+    if (_delegate && [_delegate respondsToSelector:@selector(didStartRecordingVoiceAction)]) {
+        [_delegate didStartRecordingVoiceAction];
     }
 }
 
 - (void)recordButtonTouchUpOutside
 {
-    if (_delegate && [_delegate respondsToSelector:@selector(didCancelRecordingVoiceAction:)])
+    if (_delegate && [_delegate respondsToSelector:@selector(didCancelRecordingVoiceAction)])
     {
-        [_delegate didCancelRecordingVoiceAction:self.recordView];
+        [_delegate didCancelRecordingVoiceAction];
     }
 }
 
 - (void)recordButtonTouchUpInside
 {
     self.recordButton.enabled = NO;
-    if ([self.delegate respondsToSelector:@selector(didFinishRecoingVoiceAction:)])
+    if ([self.delegate respondsToSelector:@selector(didFinishRecoingVoiceAction)])
     {
-        [self.delegate didFinishRecoingVoiceAction:self.recordView];
+        [self.delegate didFinishRecoingVoiceAction];
     }
     self.recordButton.enabled = YES;
 }
 
 - (void)recordDragOutside
 {
-    if ([self.delegate respondsToSelector:@selector(didDragOutsideAction:)])
+    if ([self.delegate respondsToSelector:@selector(didDragOutsideAction)])
     {
-        [self.delegate didDragOutsideAction:self.recordView];
+        [self.delegate didDragOutsideAction];
     }
 }
 
 - (void)recordDragInside
 {
-    if ([self.delegate respondsToSelector:@selector(didDragInsideAction:)])
+    if ([self.delegate respondsToSelector:@selector(didDragInsideAction)])
     {
-        [self.delegate didDragInsideAction:self.recordView];
+        [self.delegate didDragInsideAction];
     }
 }
 
@@ -938,17 +857,6 @@
     } completion:nil];
     
     return result;
-}
-
-/**
- *  取消触摸录音键
- */
-- (void)cancelTouchRecord
-{
-    if ([_recordView isKindOfClass:[EaseRecordView class]]) {
-        [(EaseRecordView *)_recordView recordButtonTouchUpInside];
-        [_recordView removeFromSuperview];
-    }
 }
 
 @end

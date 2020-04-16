@@ -35,8 +35,7 @@
         self.messageDB = [PeerMessageDB instance];
     }
     self.conversationID = self.peerUID;
-    
-    self.callEnabled = !self.secret;
+
     [super viewDidLoad];
     
     // Do any additional setup after loading the view.

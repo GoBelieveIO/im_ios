@@ -58,28 +58,6 @@
  */
 @property (strong, nonatomic) UIView *faceView;
 
-/**
- *  录音的附加页面
- */
-@property (strong, nonatomic) UIView *recordView;
-
-- (instancetype)initWithFrame:(CGRect)frame;
-
-
-/**
- *  初始化chat bar
- * @param horizontalPadding  default 8
- * @param verticalPadding    default 5
- * @param inputViewMinHeight default 36
- * @param inputViewMaxHeight default 150
- * @param type               default EMChatToolbarTypeGroup
- */
-- (instancetype)initWithFrame:(CGRect)frame
-            horizontalPadding:(CGFloat)horizontalPadding
-              verticalPadding:(CGFloat)verticalPadding
-           inputViewMinHeight:(CGFloat)inputViewMinHeight
-           inputViewMaxHeight:(CGFloat)inputViewMaxHeight;
-
 
 /**
  *  默认高度
@@ -88,14 +66,30 @@
  */
 + (CGFloat)defaultHeight;
 
+
+- (instancetype)initWithFrame:(CGRect)frame;
+
 /**
- *  取消触摸录音键
+ *  初始化chat bar
+ * @param horizontalPadding  default 8
+ * @param verticalPadding    default 5
+ * @param inputViewMinHeight default 36
+ * @param inputViewMaxHeight default 150
  */
-- (void)cancelTouchRecord;
+- (instancetype)initWithFrame:(CGRect)frame
+            horizontalPadding:(CGFloat)horizontalPadding
+              verticalPadding:(CGFloat)verticalPadding
+           inputViewMinHeight:(CGFloat)inputViewMinHeight
+           inputViewMaxHeight:(CGFloat)inputViewMaxHeight;
+
+//moreview config
+- (void)setupSubviews:(NSDictionary*)config;
 
 - (void)setText:(NSString*)text;
 
 - (void)atUser:(IUser*)user;
+
+- (void)chatKeyboardWillChangeFrame:(NSNotification *)notification;
 
 @end
 
@@ -143,27 +137,27 @@
 /**
  *  按下录音按钮开始录音
  */
-- (void)didStartRecordingVoiceAction:(UIView *)recordView;
+- (void)didStartRecordingVoiceAction;
 
 /**
  *  手指向上滑动取消录音
  */
-- (void)didCancelRecordingVoiceAction:(UIView *)recordView;
+- (void)didCancelRecordingVoiceAction;
 
 /**
  *  松开手指完成录音
  */
-- (void)didFinishRecoingVoiceAction:(UIView *)recordView;
+- (void)didFinishRecoingVoiceAction;
 
 /**
  *  当手指离开按钮的范围内时，主要为了通知外部的HUD
  */
-- (void)didDragOutsideAction:(UIView *)recordView;
+- (void)didDragOutsideAction;
 
 /**
  *  当手指再次进入按钮的范围内时，主要也是为了通知外部的HUD
  */
-- (void)didDragInsideAction:(UIView *)recordView;
+- (void)didDragInsideAction;
 
 /**
  * 用户输入at

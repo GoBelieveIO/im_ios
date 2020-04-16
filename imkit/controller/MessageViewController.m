@@ -54,12 +54,9 @@
 
 @interface MessageViewController()<LocationPickerControllerDelegate,
                                     EMChatToolbarDelegate,
+                                    EaseChatBarMoreViewDelegate,
                                     FileDownloadViewControllerDelegate,
                                     UIDocumentInteractionControllerDelegate>
-
-
-
-@property(strong, nonatomic) EaseChatBarMoreView *chatBarMoreView;
 @property(strong, nonatomic) EaseRecordView *recordView;
 
 @property (nonatomic,strong) UIImage *willSendImage;
@@ -103,7 +100,7 @@
 
 - (id)init {
     if (self = [super init]) {
-        self.callEnabled = YES;
+
     }
     return self;
 }
@@ -180,10 +177,14 @@
 -(void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     self.firstAppeared = YES;
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleKeyboardWillChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
+    
 }
 
 -(void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillChangeFrameNotification object:nil];
     if (!self.navigationController || [self.navigationController.viewControllers indexOfObject:self] == NSNotFound) {
         [self onBack];
     }
@@ -225,12 +226,16 @@
     //初始化页面
     CGFloat chatbarHeight = [EaseChatToolbar defaultHeight];
     self.chatToolbar = [[EaseChatToolbar alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - chatbarHeight, self.view.frame.size.width, chatbarHeight)];
-    [(EaseChatToolbar *)self.chatToolbar setDelegate:self];
-    self.chatBarMoreView = (EaseChatBarMoreView*)[(EaseChatToolbar *)self.chatToolbar moreView];
+    self.chatToolbar.delegate = self;
     if (!self.callEnabled) {
-        [self.chatBarMoreView removeItematIndex:3];
+        [self.chatToolbar setupSubviews:@{@(BUTTON_CALL_TAG):@(YES)}];
+    } else {
+        [self.chatToolbar setupSubviews:nil];
     }
-    self.recordView = (EaseRecordView*)[(EaseChatToolbar *)self.chatToolbar recordView];
+    EaseChatBarMoreView *chatBarMoreView = (EaseChatBarMoreView*)[(EaseChatToolbar *)self.chatToolbar moreView];
+    chatBarMoreView.delegate = self;
+    
+    self.recordView = [[EaseRecordView alloc] initWithFrame:CGRectMake(90, 130, 140, 140)];
     self.chatToolbar.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
     [self.view addSubview:self.chatToolbar];
     self.inputBar = self.chatToolbar;
@@ -392,6 +397,11 @@
     }
 }
 
+#pragma mark - Keyboard notifications
+- (void)handleKeyboardWillChangeFrame:(NSNotification *)notification{
+    NSLog(@"keyboard change frame");
+    [self.chatToolbar chatKeyboardWillChangeFrame:notification];
+}
 
 #pragma mark - UIGestureRecognizerDelegate
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
@@ -1205,17 +1215,12 @@
 /**
  *  按下录音按钮开始录音
  */
-- (void)didStartRecordingVoiceAction:(UIView *)recordView {
-    if ([self.recordView isKindOfClass:[EaseRecordView class]]) {
-        [(EaseRecordView *)self.recordView recordButtonTouchDown];
-    }
-
+- (void)didStartRecordingVoiceAction {
     if ([self _canRecord]) {
-        EaseRecordView *tmpView = (EaseRecordView *)recordView;
-        tmpView.center = self.view.center;
-        [self.view addSubview:tmpView];
-        [self.view bringSubviewToFront:recordView];
-        
+        self.recordView.center = self.view.center;
+        [self.view addSubview:self.recordView];
+        [self.view bringSubviewToFront:self.recordView];
+        [self.recordView recordButtonTouchDown];
         [self recordStart];
     }
 }
@@ -1223,7 +1228,7 @@
 /**
  *  手指向上滑动取消录音
  */
-- (void)didCancelRecordingVoiceAction:(UIView *)recordView {
+- (void)didCancelRecordingVoiceAction {
     [self.recordView removeFromSuperview];
     [self recordCancel];
 }
@@ -1231,12 +1236,12 @@
 /**
  *  松开手指完成录音
  */
-- (void)didFinishRecoingVoiceAction:(UIView *)recordView {
+- (void)didFinishRecoingVoiceAction {
     [self.recordView removeFromSuperview];
     [self recordEnd];
 }
 
-- (void)didDragInsideAction:(UIView *)recordView {
+- (void)didDragInsideAction {
     
     if ([self.recordView isKindOfClass:[EaseRecordView class]]) {
         [(EaseRecordView *)self.recordView recordButtonDragInside];
@@ -1244,7 +1249,7 @@
 
 }
 
-- (void)didDragOutsideAction:(UIView *)recordView {
+- (void)didDragOutsideAction {
     if ([self.recordView isKindOfClass:[EaseRecordView class]]) {
         [(EaseRecordView *)self.recordView recordButtonDragOutside];
     }
