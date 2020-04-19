@@ -27,6 +27,7 @@
 #define kMessageAudioViewHeight (kAudioHeight + kPaddingTop + kPaddingBottom + kMarginTop + kMarginBottom)
 #define kMessageVOIPViewHeight (kVOIPHeight + kPaddingTop + kPaddingBottom + kMarginTop + kMarginBottom)
 #define kMessageNotificationViewHeight (kNotificationHeight + kMiddlePaddingTop + kMiddlePaddingBottom + kMarginTop + kMarginBottom)
+#define kMessageClassroomViewHeight (kClassroomHeight + kPaddingTop + kPaddingBottom + kMarginTop + kMarginBottom)
 #define kMessageUnknowViewHeight (kUnknowHeight + kPaddingTop + kPaddingBottom + kMarginTop + kMarginBottom)
 
 

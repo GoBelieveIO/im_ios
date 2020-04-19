@@ -26,6 +26,7 @@
 #define MESSAGE_FILE 13
 #define MESSAGE_REVOKE 14
 #define MESSAGE_ACK 15
+#define MESSAGE_CLASSROOM 16 //群课堂
 
 #define MESSAGE_TIME_BASE  254 //虚拟的消息，不会存入磁盘
 #define MESSAGE_ATTACHMENT 255 //消息附件， 只存在本地磁盘

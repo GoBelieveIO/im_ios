@@ -44,6 +44,6 @@
 
 - (void)call;
 
-
+- (void)openClassroomViewController:(IMessage*)msg;
 
 @end

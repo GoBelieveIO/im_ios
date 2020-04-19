@@ -11,6 +11,7 @@
 #import "IMService.h"
 #import <MobileCoreServices/MobileCoreServices.h>
 #import <SDWebImage/SDWebImage.h>
+#import <SDWebImage/UIImageView+WebCache.h>
 #import <AVFoundation/AVFoundation.h>
 #import <AVKit/AVKit.h>
 
@@ -26,6 +27,7 @@
 #import "MessageVOIPView.h"
 #import "MessageFileView.h"
 #import "MessageVideoView.h"
+#import "MessageClassroomView.h"
 #import "MessageUnknownView.h"
 #import "MessageViewCell.h"
 #import "MessageNotificationCell.h"
@@ -53,10 +55,14 @@
 
 
 @interface MessageViewController()<LocationPickerControllerDelegate,
-                                    EMChatToolbarDelegate,
                                     EaseChatBarMoreViewDelegate,
+                                    EMChatToolbarDelegate,
                                     FileDownloadViewControllerDelegate,
                                     UIDocumentInteractionControllerDelegate>
+
+
+
+@property(strong, nonatomic) EaseChatBarMoreView *chatBarMoreView;
 @property(strong, nonatomic) EaseRecordView *recordView;
 
 @property (nonatomic,strong) UIImage *willSendImage;
@@ -100,7 +106,6 @@
 
 - (id)init {
     if (self = [super init]) {
-
     }
     return self;
 }
@@ -108,7 +113,6 @@
 #pragma mark - View lifecycle
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
     self.firstAppeared = NO;
     self.hasLateMore = self.messageID > 0 ;
     self.hasEarlierMore = YES;
@@ -234,7 +238,6 @@
     }
     EaseChatBarMoreView *chatBarMoreView = (EaseChatBarMoreView*)[(EaseChatToolbar *)self.chatToolbar moreView];
     chatBarMoreView.delegate = self;
-    
     self.recordView = [[EaseRecordView alloc] initWithFrame:CGRectMake(90, 130, 140, 140)];
     self.chatToolbar.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
     [self.view addSubview:self.chatToolbar];
@@ -288,6 +291,18 @@
     }
     return draft;
 }
+
+#pragma mark - View rotation
+- (BOOL)shouldAutorotate
+{
+    return NO;
+}
+
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations
+{
+    return UIInterfaceOrientationMaskPortrait;
+}
+
 
 #pragma mark -
 - (void) handlePanFrom:(UITapGestureRecognizer*)recognizer{
@@ -455,7 +470,7 @@
     }
     if (self.seconds < 1) {
         NSLog(@"record time too short");
-        [self.view makeToast:@"录音时间太短了" duration:0.7 position:@"bottom"];
+        [self.view makeToast:NSLocalizedString(@"message.recordTimeShort", nil) duration:0.7 position:@"bottom"];
         return;
     }
     
@@ -558,6 +573,8 @@
         [self handleTapVideoView:tap];
     } else if (message.type == MESSAGE_FILE) {
         [self handleTapFileView:tap];
+    } else if (message.type == MESSAGE_CLASSROOM) {
+        [self handleTapClassroomView:tap];
     }
 }
 
@@ -716,6 +733,20 @@
         ctrl.delegate = self;
         [self.navigationController pushViewController:ctrl animated:YES];
     }
+}
+
+-(void)handleTapClassroomView:(UITapGestureRecognizer*)tap {
+    int row = tap.view.tag & 0xffff;
+    int section = (int)(tap.view.tag >> 16);
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:section];
+    IMessage *message = [self messageForRowAtIndexPath:indexPath];
+    if (message == nil) {
+        return;
+    }
+    if (message.sender == self.currentUID) {
+        return;
+    }
+    [self openClassroomViewController:message];
 }
 
 -(void)fileDownloadSuccess:(NSString *)url message:(IMessage *)msg {
@@ -976,6 +1007,8 @@
             return kMessageFileViewHeight + nameHeight;
         case MESSAGE_VIDEO:
             return kMessageVideoViewHeight + nameHeight;
+        case MESSAGE_CLASSROOM:
+            return kMessageClassroomViewHeight + nameHeight;
         default:
             return kMessageUnknowViewHeight + nameHeight;
     }
@@ -1027,14 +1060,18 @@
     }
     
     [self stopPlayer];
-    
-    [[AVAudioSession sharedInstance] requestRecordPermission:^(BOOL granted) {
-        if (granted) {
-            [self startRecord];
-        } else {
-            [self.view makeToast:@"无法录音,请到设置-隐私-麦克风,允许程序访问"];
-        }
-    }];
+    AVAudioSessionRecordPermission recordPermission = [AVAudioSession sharedInstance].recordPermission;
+    if (recordPermission == AVAudioSessionRecordPermissionGranted) {
+           [self startRecord];
+    } else if (recordPermission == AVAudioSessionRecordPermissionUndetermined) {
+        [[AVAudioSession sharedInstance] requestRecordPermission:^(BOOL granted) {
+            if (granted) {
+                [self startRecord];
+            }
+        }];
+    } else if (recordPermission == AVAudioSessionRecordPermissionUndetermined) {
+        [self.view makeToast:NSLocalizedString(@"message.recordPermissionWarning", nil)];
+    }
 }
 
 - (void)recordCancel {
@@ -1113,17 +1150,17 @@
    
     NSMutableArray *menuItems = [NSMutableArray array];
     if (message.type == MESSAGE_TEXT) {
-        UIMenuItem *item = [[UIMenuItem alloc] initWithTitle:@"拷贝" action:@selector(copyText:)];
+        UIMenuItem *item = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"message.copy", nil) action:@selector(copyText:)];
         [menuItems addObject:item];
     }
     if (message.isFailure) {
-        UIMenuItem *item = [[UIMenuItem alloc] initWithTitle:@"重发" action:@selector(resend:)];
+        UIMenuItem *item = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"message.resend", nil) action:@selector(resend:)];
         [menuItems addObject:item];
     }
     
     int now = (int)time(NULL);
     if (now >= message.timestamp && (now - message.timestamp) < (REVOKE_EXPIRE - 10) && message.isOutgoing) {
-        UIMenuItem *item = [[UIMenuItem alloc] initWithTitle:@"撤回" action:@selector(revoke:)];
+        UIMenuItem *item = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"message.revoke", nil) action:@selector(revoke:)];
         [menuItems addObject:item];
     }
     
@@ -1144,21 +1181,6 @@
 }
 
 
-#pragma mark InterfaceOrientation
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation{
-    return YES;
-}
-
-- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration{
-    [super willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
-    [self.tableView reloadData];
-    [self.tableView setNeedsLayout];
-}
-
-- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
-    
-    
-}
 
 #pragma mark - EMChatToolbarDelegate
 - (void)chatToolbarDidChangeFrameToHeight:(CGFloat)toHeight {
@@ -1215,12 +1237,17 @@
 /**
  *  按下录音按钮开始录音
  */
-- (void)didStartRecordingVoiceAction {
+- (void)didStartRecordingVoiceAction:(UIView *)recordView {
+    if ([self.recordView isKindOfClass:[EaseRecordView class]]) {
+        [(EaseRecordView *)self.recordView recordButtonTouchDown];
+    }
+
     if ([self _canRecord]) {
-        self.recordView.center = self.view.center;
-        [self.view addSubview:self.recordView];
-        [self.view bringSubviewToFront:self.recordView];
-        [self.recordView recordButtonTouchDown];
+        EaseRecordView *tmpView = (EaseRecordView *)recordView;
+        tmpView.center = self.view.center;
+        [self.view addSubview:tmpView];
+        [self.view bringSubviewToFront:recordView];
+        
         [self recordStart];
     }
 }
@@ -1228,7 +1255,7 @@
 /**
  *  手指向上滑动取消录音
  */
-- (void)didCancelRecordingVoiceAction {
+- (void)didCancelRecordingVoiceAction:(UIView *)recordView {
     [self.recordView removeFromSuperview];
     [self recordCancel];
 }
@@ -1236,12 +1263,12 @@
 /**
  *  松开手指完成录音
  */
-- (void)didFinishRecoingVoiceAction {
+- (void)didFinishRecoingVoiceAction:(UIView *)recordView {
     [self.recordView removeFromSuperview];
     [self recordEnd];
 }
 
-- (void)didDragInsideAction {
+- (void)didDragInsideAction:(UIView *)recordView {
     
     if ([self.recordView isKindOfClass:[EaseRecordView class]]) {
         [(EaseRecordView *)self.recordView recordButtonDragInside];
@@ -1249,7 +1276,7 @@
 
 }
 
-- (void)didDragOutsideAction {
+- (void)didDragOutsideAction:(UIView *)recordView {
     if ([self.recordView isKindOfClass:[EaseRecordView class]]) {
         [(EaseRecordView *)self.recordView recordButtonDragOutside];
     }
@@ -1359,12 +1386,12 @@
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil
                                                                              message:nil
                                                                       preferredStyle:UIAlertControllerStyleActionSheet];
-    [alertController addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+    [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"cancel", nil) style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
         
 
     }]];
     
-    [alertController addAction:[UIAlertAction actionWithTitle:@"拍照" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+    [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"message.takePhoto", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 #if TARGET_IPHONE_SIMULATOR
         NSString *s = NSLocalizedString(@"message.simulatorNotSupportCamera", @"simulator does not support taking picture");
         [self.view makeToast:s];
@@ -1378,7 +1405,7 @@
 #endif
     }]];
     
-    [alertController addAction:[UIAlertAction actionWithTitle:@"录像" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+    [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"message.recordVideo", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 #if TARGET_IPHONE_SIMULATOR
         NSString *s = NSLocalizedString(@"message.simulatorNotSupportCamera", @"simulator does not support taking picture");
         [self.view makeToast:s];
@@ -1414,6 +1441,10 @@
 }
 
 - (void)recall:(BOOL)video {
+    
+}
+
+-(void)openClassroomViewController:(IMessage *)msg {
     
 }
 @end

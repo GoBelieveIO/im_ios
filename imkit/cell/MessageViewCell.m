@@ -19,6 +19,7 @@
 #import "MessageVOIPView.h"
 #import "MessageFileView.h"
 #import "MessageVideoView.h"
+#import "MessageClassroomView.h"
 #import "MessageUnknownView.h"
 #import <SDWebImage/UIImageView+WebCache.h>
 
@@ -118,6 +119,12 @@
             {
                 MessageVideoView *videoView = [[MessageVideoView alloc] initWithFrame:frame];
                 self.bubbleView = videoView;
+            }
+                break;
+            case MESSAGE_CLASSROOM:
+            {
+                MessageClassroomView *classroomView = [[MessageClassroomView alloc] initWithFrame:frame];
+                self.bubbleView = classroomView;
             }
                 break;
             default:
