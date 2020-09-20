@@ -10,4 +10,5 @@
 
 @interface WebViewController : UIViewController
 @property(nonatomic, copy) NSString *url;
+@property(nonatomic, assign) BOOL noCache;
 @end
