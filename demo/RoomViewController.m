@@ -77,28 +77,16 @@
     m.msgLocalID = self.msgID;
     m.rawContent = rm.content;
     m.timestamp = [[NSDate date] timeIntervalSince1970];
-    
     [self insertMessage:m];
 }
 
--(void)onRoomMessageACK:(RoomMessage*)rm {
-    NSNumber *k = [NSNumber numberWithLongLong:(long long)rm];
-    NSNumber *o = [self.msgs objectForKey:k];
-    int msgLocalID = [o intValue];
-    
-    IMessage *msg = [self getMessageWithID:msgLocalID];
-    msg.flags = msg.flags|MESSAGE_FLAG_ACK;
-}
 
--(void)onRoomMessageFailure:(RoomMessage*)rm {
-    NSNumber *k = [NSNumber numberWithLongLong:(long long)rm];
-    NSNumber *o = [self.msgs objectForKey:k];
-    int msgLocalID = [o longValue];
-    
-    IMessage *msg = [self getMessageWithID:msgLocalID];
-    msg.flags = msg.flags|MESSAGE_FLAG_FAILURE;
+-(IMessage*)newOutMessage {
+    IMessage *msg = [[IMessage alloc] init];
+    msg.sender = self.currentUID;
+    msg.receiver = self.roomID;
+    return msg;
 }
-
 
 -(BOOL)saveMessage:(IMessage*)msg {
     self.msgID = self.msgID + 1;
@@ -123,32 +111,15 @@
     return YES;
 }
 
--(void) sendTextMessage:(NSString*)text {
-    IMessage *msg = [[IMessage alloc] init];
-    
-    msg.sender = self.sender;
-    msg.receiver = self.receiver;
-    
-    MessageTextContent *content = [[MessageTextContent alloc] initWithText:text];
-    msg.rawContent = content.raw;
-    msg.timestamp = (int)time(NULL);
-    msg.isOutgoing = YES;
-    
-    [self saveMessage:msg];
-    
-    [self sendMessage:msg];
-    
-    [[self class] playMessageSentSound];
-    
-    [self insertMessage:msg];
-}
 
 - (void)sendMessage:(IMessage*)message {
     RoomMessage *im = [[RoomMessage alloc] init];
     im.sender = message.sender;
     im.receiver = message.receiver;
     im.content = message.rawContent;
-    [[IMService instance] sendRoomMessage:im];
+    [[IMService instance] sendRoomMessageAsync:im];
+    
+    message.flags = message.flags|MESSAGE_FLAG_ACK;
     
     NSNumber *o = [NSNumber numberWithLongLong:message.msgLocalID];
     NSNumber *k = [NSNumber numberWithLongLong:(long long)im];

@@ -7,9 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <gobelieve/TextMessageViewController.h>
+#import <gobelieve/MessageViewController.h>
 
-@interface RoomViewController : TextMessageViewController
+@interface RoomViewController : MessageViewController
 @property(nonatomic) int64_t uid;
 @property(nonatomic) int64_t roomID;
 @end

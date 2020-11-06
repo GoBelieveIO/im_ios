@@ -8,7 +8,6 @@
 
 #import "RoomLoginViewController.h"
 #import <gobelieve/IMService.h>
-#import <gobelieve/TextMessageViewController.h>
 #import <gobelieve/MessageViewController.h>
 #import <gobelieve/PeerMessageViewController.h>
 #import <gobelieve/IMHttpAPI.h>
