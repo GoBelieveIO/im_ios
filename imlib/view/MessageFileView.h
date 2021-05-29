@@ -18,5 +18,4 @@
 
 @interface MessageFileView : BubbleView
 @property (nonatomic) UIImageView *imageView;
-@property (nonatomic) UIActivityIndicatorView *downloadIndicatorView;
 @end

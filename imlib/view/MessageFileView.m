@@ -15,6 +15,8 @@
 @interface MessageFileView()
 @property(nonatomic) UILabel *titleLabel;
 @property(nonatomic) UILabel *contentLabel;
+@property(nonatomic) UIView *maskView;
+@property (nonatomic) UIActivityIndicatorView *uploadIndicatorView;
 @end
 
 @implementation MessageFileView
@@ -25,9 +27,7 @@
         self.imageView = [[UIImageView alloc] init];
         [self.imageView setUserInteractionEnabled:YES];
         [self addSubview:self.imageView];
-        
-        self.downloadIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-        [self addSubview:self.downloadIndicatorView];
+
         
         self.titleLabel = [[UILabel alloc] init];
         self.titleLabel.numberOfLines = 0;
@@ -37,6 +37,15 @@
         self.contentLabel = [[UILabel alloc] init];
         self.contentLabel.font = [UIFont systemFontOfSize:14];
         [self addSubview:self.contentLabel];
+        
+        self.maskView = [[UIView alloc] init];
+        self.maskView.backgroundColor = [UIColor blackColor];
+        self.maskView.alpha = 0.3;
+        self.maskView.hidden = YES;
+        [self addSubview:self.maskView];
+        
+        self.uploadIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        [self addSubview:self.uploadIndicatorView];
         
         
         [self.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -57,8 +66,22 @@
             make.centerY.equalTo(self).offset(15);
             make.size.mas_equalTo(CGSizeMake(160, 30));
         }];
+        
+        
+        [self.maskView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.edges.equalTo(self);
+        }];
+
+        [self.uploadIndicatorView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.center.equalTo(self);
+        }];
+        
     }
     return self;
+}
+
+- (void)dealloc {
+    [self.msg removeObserver:self forKeyPath:@"uploading"];
 }
 
 - (NSString*)formatSize:(int)size {
@@ -72,7 +95,9 @@
 }
 
 - (void)setMsg:(IMessage*)msg {
+    [self.msg removeObserver:self forKeyPath:@"uploading"];
     [super setMsg:msg];
+    [self.msg addObserver:self forKeyPath:@"uploading" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
     
     MessageFileContent *content = msg.fileContent;
     NSString *fileName = content.fileName;
@@ -88,6 +113,14 @@
 
     self.titleLabel.text = content.fileName;
     self.contentLabel.text = [self formatSize:content.fileSize];
+
+    if (self.msg.uploading) {
+        self.maskView.hidden = NO;
+        [self.uploadIndicatorView startAnimating];
+    } else {
+        self.maskView.hidden = YES;
+        [self.uploadIndicatorView stopAnimating];
+    }
     [self setNeedsLayout];
 }
 
@@ -96,8 +129,16 @@
                        change:(NSDictionary *)change
                       context:(void *)context {
     [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    if([keyPath isEqualToString:@"uploading"]) {
+        if (self.msg.uploading) {
+            self.maskView.hidden = NO;
+            [self.uploadIndicatorView startAnimating];
+        } else {
+            self.maskView.hidden = YES;
+            [self.uploadIndicatorView stopAnimating];
+        }
+    }
 }
-
 
 
 -(CGSize)bubbleSize {
@@ -105,7 +146,4 @@
     return bubbleSize;
 }
 
--(void)layoutSubviews {
-    [super layoutSubviews];
-}
 @end
