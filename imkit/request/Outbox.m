@@ -64,6 +64,14 @@
     msg.rawContent = old.raw;
 }
 
+-(void)sendFileMessage:(IMessage*)msg URL:(NSString*)url  {
+    MessageFileContent *old = msg.fileContent;
+    MessageFileContent *content = [old cloneWithURL:url];
+    msg.content = content;
+    [self sendMessage:msg];
+    msg.content = old;
+}
+
 -(void)sendMessage:(IMessage*)msg {
     NSAssert(NO, @"not implement");
 }
@@ -115,6 +123,19 @@
         [observer onVideoUploadFail:msg];
     }
 }
+
+-(void)onUploadFileSuccess:(IMessage*)msg URL:(NSString*)url {
+    for (id<OutboxObserver> observer in self.observers) {
+        [observer onFileUploadSuccess:msg URL:url];
+    }
+}
+
+-(void)onUploadFileFail:(IMessage*)msg {
+    for (id<OutboxObserver> observer in self.observers) {
+        [observer onFileUploadFail:msg];
+    }
+}
+
 
 //用服务器的url做为key对应本地的缓存
 -(void)saveAudio:(IMessage*)msg url:(NSString*)url {
@@ -295,6 +316,40 @@
 
 -(BOOL)uploadSecretVideo:(IMessage*)msg {
   
+    return NO;
+}
+
+-(BOOL)uploadFile:(IMessage*)msg {
+    FileCache *cache = [FileCache instance];
+    MessageFileContent *content = msg.fileContent;
+    NSString *path = [cache queryCacheForKey:content.fileURL];
+    [self.messages addObject:msg];
+    
+    NSData *data = [NSData dataWithContentsOfFile:path];
+    if (data == nil) {
+        return NO;
+    }
+    
+    [IMHttpAPI uploadFile:data
+                 filename:content.fileName
+                   success:^(NSString *url) {
+                       NSLog(@"upload audio success url:%@", url);
+                       [self.messages removeObject:msg];
+                       [[FileCache instance] moveFileAtKey:content.fileURL toKey:url];
+                       [self saveMessageAttachment:msg url:url];
+                       [self sendFileMessage:msg URL:url];
+                       [self onUploadFileSuccess:msg URL:url];
+                   }fail:^{
+                       NSLog(@"upload audio fail");
+                       [self.messages removeObject:msg];
+                       [self markMessageFailure:msg];
+                       [self onUploadFileFail:msg];
+                   }];
+    return YES;
+}
+
+
+-(BOOL)uploadSecretFile:(IMessage*)msg {
     return NO;
 }
 

@@ -20,7 +20,11 @@
 
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
-        [self setBackgroundColor:[UIColor whiteColor]];
+        if (@available(iOS 13.0,*)) {
+            [self setBackgroundColor:[UIColor systemBackgroundColor]];
+        } else {
+            [self setBackgroundColor:[UIColor whiteColor]];
+        }
 
         float w = self.height * 1.25;
         [self.sendButton setFrame:CGRectMake(self.width - w * 1.2, 0, w * 1.2, self.height)];

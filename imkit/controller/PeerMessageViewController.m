@@ -322,6 +322,13 @@
         } else {
             [[PeerOutbox instance] uploadVideo:message];
         }
+    } else if (message.type == MESSAGE_FILE) {
+        message.uploading = YES;
+        if (self.secret) {
+            [[PeerOutbox instance] uploadSecretFile:message];
+        } else {
+            [[PeerOutbox instance] uploadFile:message];
+        }
     } else {
         IMMessage *im = [[IMMessage alloc] init];
         im.sender = message.sender;

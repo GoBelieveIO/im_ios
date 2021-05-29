@@ -16,6 +16,7 @@
 #define BUTTON_CAMERA_TAG 2
 #define BUTTON_LOCATION_TAG 3
 #define BUTTON_CALL_TAG 4
+#define BUTTON_FILE_TAG 5
 
 @protocol EaseChatBarMoreViewDelegate;
 
@@ -73,7 +74,7 @@
 - (void)moreViewPhotoAction:(EaseChatBarMoreView *)moreView;
 - (void)moreViewLocationAction:(EaseChatBarMoreView *)moreView;
 - (void)moreViewVideoCallAction:(EaseChatBarMoreView *)moreView;
-
+- (void)moreViewFileAction:(EaseChatBarMoreView *)moreView;
 
 /*!
  @method

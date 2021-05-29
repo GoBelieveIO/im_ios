@@ -234,6 +234,13 @@
 "message.location1" = "[位置]";
 "message.voice1" = "[音频]";
 "message.video1" = "[视频]";
+
+"message.toolbar.location" = "位置";
+"message.toolbar.photo" = "照片";
+"message.toolbar.camera" = "拍摄";
+"message.toolbar.call" = "视频通话";
+"message.toolbar.file" = "文件";
+
 "message.beginReceiveOffine" = "开始接收离线消息";
 "message.endReceiveOffine" = "离线消息接收成功";
 "message.toolBar.inputPlaceHolder" = "输入新消息";

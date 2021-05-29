@@ -431,7 +431,7 @@
 					};
 					6DF54D8A1AB5862000197EBC = {
 						CreatedOnToolsVersion = 6.2;
-						DevelopmentTeam = HB5A8TLKYL;
+						DevelopmentTeam = TYB6UDG6YQ;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.Push = {
@@ -1031,13 +1031,13 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = HB5A8TLKYL;
+				DEVELOPMENT_TEAM = TYB6UDG6YQ;
 				ENABLE_BITCODE = YES;
 				GCC_PREFIX_HEADER = "demo/im_demo-prefix.pch";
 				INFOPLIST_FILE = demo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.beetle.im.demo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.beetle.demo;
 				PRODUCT_NAME = im_demo;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1053,7 +1053,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = HB5A8TLKYL;
+				DEVELOPMENT_TEAM = TYB6UDG6YQ;
 				ENABLE_BITCODE = YES;
 				GCC_PREFIX_HEADER = "demo/im_demo-prefix.pch";
 				INFOPLIST_FILE = demo/Info.plist;
@@ -1064,7 +1064,7 @@
 					"$(inherited)",
 					"-ObjC",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.beetle.im.demo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.beetle.demo;
 				PRODUCT_NAME = im_demo;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";

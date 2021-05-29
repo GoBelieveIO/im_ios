@@ -411,15 +411,13 @@
     CGRect toFrame = CGRectMake(fromFrame.origin.x, fromFrame.origin.y + (fromFrame.size.height - toHeight), fromFrame.size.width, toHeight);
     
     //如果需要将所有扩展页面都隐藏，而此时已经隐藏了所有扩展页面，则不进行任何操作
-    if(bottomHeight == 0 && self.frame.size.height == self.toolbarView.frame.size.height)
-    {
+    if(bottomHeight == 0 && self.frame.size.height == self.toolbarView.frame.size.height) {
         return;
     }
     
     if (bottomHeight == 0) {
         self.isShowButtomView = NO;
-    }
-    else{
+    } else{
         self.isShowButtomView = YES;
     }
     

@@ -963,6 +963,36 @@ static int uptime = 0;
     [self insertMessage:msg];
 }
 
+-(void)sendFileMessage:(NSURL*)url {
+    NSString *fileName = [url lastPathComponent];
+    NSString *filePath = [url absoluteString];
+    NSString *ext = [fileName pathExtension];
+    NSLog(@"file path:%@ ext:%@", filePath, ext);
+    
+    NSString *fileURL = [self localFileURL:ext];
+    NSString *cachePath = [[FileCache instance] cachePathForKey:fileURL];
+    NSURL *cacheURL = [NSURL fileURLWithPath:cachePath];
+
+    BOOL r = [[NSFileManager defaultManager] copyItemAtURL:url toURL:cacheURL error:nil];
+    if (!r) {
+        return;
+    }
+    
+    NSDictionary *attr = [[NSFileManager defaultManager] attributesOfItemAtPath:cachePath error:nil];
+    if (attr.fileSize == 0) {
+        return;
+    }
+    
+    MessageFileContent *content = [[MessageFileContent alloc] initWithFileURL:fileURL name:fileName size:(int)(attr.fileSize)];
+    IMessage *msg = [self newOutMessage];
+    msg.rawContent = content.raw;
+    msg.timestamp = (int)time(NULL);
+    msg.isOutgoing = YES;
+    [self loadSenderInfo:msg];
+    [self saveMessage:msg];
+    [self sendMessage:msg];
+    [self insertMessage:msg];
+}
 
 - (void)loadSenderInfo:(IMessage*)msg {
     msg.senderInfo = [self getUser:msg.sender];
@@ -1006,6 +1036,14 @@ static int uptime = 0;
 
 -(NSString*)localVideoURL {
     return [NSString stringWithFormat:@"http://localhost/videos/%@.mp4", [self guid]];
+}
+
+-(NSString*)localFileURL:(NSString*)ext {
+    if (ext.length > 0) {
+        return [NSString stringWithFormat:@"http://localhost/files/%@.%@", [self guid], ext];
+    } else {
+        return [NSString stringWithFormat:@"http://localhost/files/%@", [self guid]];
+    }
 }
 
 -(void)revokeMessage:(IMessage*)message {

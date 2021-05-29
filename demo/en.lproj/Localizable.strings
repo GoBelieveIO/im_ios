@@ -234,6 +234,13 @@
 "message.location1" = "[location]";
 "message.voice1" = "[audio]";
 "message.video1" = "[video]";
+
+"message.toolbar.location" = "Location";
+"message.toolbar.photo" = "Photo";
+"message.toolbar.camera" = "Record";
+"message.toolbar.call" = "Video Call";
+"message.toolbar.file" = "File";
+
 "message.beginReceiveOffine" = "begin to receive offline messages";
 "message.endReceiveOffine" = "end to receive offline messages";
 "message.toolBar.inputPlaceHolder" = "input a new message";

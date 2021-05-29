@@ -29,7 +29,11 @@
 
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
-        [self setBackgroundColor:DEFAULT_CHATBOX_COLOR];
+        if (@available(iOS 13.0,*)) {
+            self.backgroundColor = [UIColor systemBackgroundColor];
+        } else {
+            [self setBackgroundColor:DEFAULT_CHATBOX_COLOR];
+        }
         [self addSubview:self.topLine];
         [self addSubview:self.faceMenuView];
         [self addSubview:self.scrollView];
@@ -198,8 +202,11 @@
         [_scrollView setShowsVerticalScrollIndicator:NO];
         [_scrollView setDelegate:self];
         [_scrollView setPagingEnabled:YES];
-        _scrollView.backgroundColor = DEFAULT_SCROLLVIEW_COLOR;
-        
+        if (@available(iOS 13.0,*)) {
+            _scrollView.backgroundColor = [UIColor systemBackgroundColor];
+        } else {
+            _scrollView.backgroundColor = DEFAULT_SCROLLVIEW_COLOR;
+        }
     }
     return _scrollView;
 }

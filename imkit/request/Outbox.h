@@ -19,6 +19,9 @@
 
 -(void)onVideoUploadSuccess:(IMessage*)msg URL:(NSString*)url thumbnailURL:(NSString*)thumbURL;
 -(void)onVideoUploadFail:(IMessage*)msg;
+
+-(void)onFileUploadSuccess:(IMessage*)msg URL:(NSString*)url;
+-(void)onFileUploadFail:(IMessage*)msg;
 @end
 @interface Outbox : NSObject
 
@@ -28,12 +31,13 @@
 -(BOOL)uploadImage:(IMessage*)msg;
 -(BOOL)uploadImage:(IMessage*)msg withImage:(UIImage*)image;
 -(BOOL)uploadAudio:(IMessage*)msg;
+-(BOOL)uploadFile:(IMessage*)msg;
 
 -(BOOL)uploadSecretVideo:(IMessage*)msg;
 -(BOOL)uploadSecretImage:(IMessage*)msg;
 -(BOOL)uploadSecretImage:(IMessage*)msg withImage:(UIImage*)image;
 -(BOOL)uploadSecretAudio:(IMessage*)msg;
-
+-(BOOL)uploadSecretFile:(IMessage*)msg;
 
 -(void)addBoxObserver:(id<OutboxObserver>)ob;
 -(void)removeBoxObserver:(id<OutboxObserver>)ob;

@@ -97,6 +97,7 @@
 - (void)sendAudioMessage:(NSString*)path second:(int)second;
 - (void)sendLocationMessage:(CLLocationCoordinate2D)location address:(NSString*)address;
 - (void)sendVideoMessage:(NSURL*)url;
+- (void)sendFileMessage:(NSURL*)url;
 
 - (void)loadSenderInfo:(IMessage*)msg;
 - (void)loadSenderInfo:(NSArray*)messages count:(int)count;

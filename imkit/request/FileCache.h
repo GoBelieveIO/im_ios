@@ -18,6 +18,8 @@
 
 -(void)removeFileForKey:(NSString*)key;
 
+-(void)moveFileAtKey:(NSString*)key toKey:(NSString*)dest;
+
 -(NSString*)queryCacheForKey:(NSString*)key;
 
 -(NSString*)cachePathForKey:(NSString*)key;

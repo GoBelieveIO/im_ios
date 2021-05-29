@@ -219,6 +219,12 @@
     } else if (message.type == MESSAGE_IMAGE) {
         message.uploading = YES;
         [[GroupOutbox instance] uploadImage:message];
+    } else if (message.type == MESSAGE_VIDEO) {
+        message.uploading = YES;
+        [[GroupOutbox instance] uploadVideo:message];
+    } else if (message.type == MESSAGE_FILE) {
+        message.uploading = YES;
+        [[GroupOutbox instance] uploadFile:message];
     } else {
         IMMessage *im = [[IMMessage alloc] init];
         im.sender = message.sender;

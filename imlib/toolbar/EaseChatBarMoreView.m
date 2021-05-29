@@ -46,7 +46,11 @@
 {
     // UIAppearance Proxy Defaults
     EaseChatBarMoreView *moreView = [self appearance];
-    moreView.moreViewBackgroundColor = [UIColor whiteColor];
+    if (@available(iOS 13.0,*)) {
+        moreView.moreViewBackgroundColor = [UIColor systemBackgroundColor];
+    } else {
+        moreView.moreViewBackgroundColor = [UIColor whiteColor];
+    }
 }
 
 - (instancetype)initWithFrame:(CGRect)frame config:(NSDictionary*)config {
@@ -89,14 +93,14 @@
     if (!photoDisabled) {
         [self insertItemWithImage:[UIImage imageNamed:@"chatBar_colorMore_photo"]
                  highlightedImage:[UIImage imageNamed:@"chatBar_colorMore_photoSelected"]
-                            title:NSLocalizedString(@"message.photo", @"photo")
+                            title:NSLocalizedString(@"message.toolbar.photo", @"photo")
                               tag:BUTTON_PHOTO_TAG];
     }
     BOOL locationDisabled = [[config objectForKey:@(BUTTON_LOCATION_TAG)] boolValue];
     if (!locationDisabled) {
         [self insertItemWithImage:[UIImage imageNamed:@"chatBar_colorMore_location"]
                  highlightedImage:[UIImage imageNamed:@"chatBar_colorMore_locationSelected"]
-                            title:NSLocalizedString(@"message.location", @"location")
+                            title:NSLocalizedString(@"message.toolbar.location", @"location")
                               tag:BUTTON_LOCATION_TAG];
     }
     
@@ -104,7 +108,7 @@
     if (!cameraDisabled) {
         [self insertItemWithImage:[UIImage imageNamed:@"chatBar_colorMore_camera"]
                  highlightedImage:[UIImage imageNamed:@"chatBar_colorMore_cameraSelected"]
-                            title:NSLocalizedString(@"message.camera", @"camera")
+                            title:NSLocalizedString(@"message.toolbar.camera", @"camera")
                               tag:BUTTON_CAMERA_TAG];
     }
     
@@ -112,8 +116,16 @@
     if (!callDisabled) {
         [self insertItemWithImage:[UIImage imageNamed:@"chatBar_colorMore_videoCall"]
                  highlightedImage:[UIImage imageNamed:@"chatBar_colorMore_videoCallSelected"]
-                            title:NSLocalizedString(@"message.call", @"call")
+                            title:NSLocalizedString(@"message.toolbar.call", @"call")
                               tag:BUTTON_CALL_TAG];
+    }
+    
+    BOOL fileDisabled = [[config objectForKey:@(BUTTON_FILE_TAG)] boolValue];
+    if (!fileDisabled) {
+        [self insertItemWithImage:[UIImage imageNamed:@"chatBar_colorMore_file"]
+                 highlightedImage:[UIImage imageNamed:@"chatBar_colorMore_fileSelected"]
+                            title:NSLocalizedString(@"message.toolbar.file", @"file")
+                              tag:BUTTON_FILE_TAG];
     }
 }
 
@@ -127,7 +139,7 @@
     NSInteger col = _maxIndex%MOREVIEW_COL;
     
     UIButton *moreButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    CGRect buttonFrame = CGRectMake(page * CGRectGetWidth(self.frame) + insets * (col + 1) + CHAT_BUTTON_SIZE * col, INSETS + INSETS * 2 * row + CHAT_BUTTON_SIZE * row, CHAT_BUTTON_SIZE , CHAT_BUTTON_SIZE);
+    CGRect buttonFrame = CGRectMake(page * CGRectGetWidth(self.frame) + insets * (col + 1) + CHAT_BUTTON_SIZE * col, INSETS + (INSETS + CHAT_BUTTON_SIZE + 2 + 24) * row, CHAT_BUTTON_SIZE , CHAT_BUTTON_SIZE);
     [moreButton setFrame:buttonFrame];
     [moreButton setImage:image forState:UIControlStateNormal];
     [moreButton setImage:highLightedImage forState:UIControlStateHighlighted];
@@ -135,7 +147,7 @@
     moreButton.tag = tag;
     [_scrollview addSubview:moreButton];
     
-    CGRect f = CGRectMake(buttonFrame.origin.x - 10, buttonFrame.origin.y + CHAT_BUTTON_SIZE + 4, CHAT_BUTTON_SIZE + 20, 24);
+    CGRect f = CGRectMake(buttonFrame.origin.x - 10, buttonFrame.origin.y + CHAT_BUTTON_SIZE + 2, CHAT_BUTTON_SIZE + 20, 24);
     UILabel *label = [[UILabel alloc] initWithFrame:f];
     label.textAlignment = NSTextAlignmentCenter;
     label.text = title;
@@ -210,6 +222,12 @@
     }
 }
 
+-(void)fileAction {
+    if (_delegate && [_delegate respondsToSelector:@selector(moreViewFileAction:)]) {
+        [_delegate moreViewFileAction:self];
+    }
+}
+
 - (void)moreAction:(UIButton*)sender {
     UIButton *button = (UIButton*)sender;
     if (sender.tag == BUTTON_PHOTO_TAG) {
@@ -220,6 +238,8 @@
         [self locationAction];
     } else if (sender.tag == BUTTON_CALL_TAG) {
         [self callAction];
+    } else if (sender.tag == BUTTON_FILE_TAG) {
+        [self fileAction];
     } else if ([_delegate respondsToSelector:@selector(moreView:didItemInMoreViewAtIndex:)]) {
         [_delegate moreView:self didItemInMoreViewAtIndex:button.tag];
     }

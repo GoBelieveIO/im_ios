@@ -48,6 +48,7 @@
 
 #import "EaseChatToolbar.h"
 
+#define FILE_SIZE_LIMIT 16*1024*1024
 #define INPUT_HEIGHT 52.0f
 
 #define kTakePicActionSheetTag  101
@@ -58,6 +59,7 @@
                                     EaseChatBarMoreViewDelegate,
                                     EMChatToolbarDelegate,
                                     FileDownloadViewControllerDelegate,
+                                    UIDocumentPickerDelegate,
                                     UIDocumentInteractionControllerDelegate>
 
 
@@ -1032,6 +1034,41 @@
     [self sendLocationMessage:location address:address];
 }
 
+#pragma mark - UIDocumentPickerDelegate
+- (void)documentPicker:(UIDocumentPickerViewController *)controller didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls {
+    //获取授权
+    BOOL fileUrlAuthozied = [urls.firstObject startAccessingSecurityScopedResource];
+    if (fileUrlAuthozied) {
+        //通过文件协调工具来得到新的文件地址，以此得到文件保护功能
+        NSFileCoordinator *fileCoordinator = [[NSFileCoordinator alloc] init];
+        NSError *error;
+        
+        [fileCoordinator coordinateReadingItemAtURL:urls.firstObject options:0 error:&error byAccessor:^(NSURL *newURL) {
+            //读取文件
+            NSNumber *fileSizeValue = nil;
+            BOOL r = [newURL getResourceValue:&fileSizeValue
+                                       forKey:NSURLFileSizeKey
+                                        error:nil];
+            if (!r) {
+                [self.view makeToast:@"文件访问失败" duration:0.7 position:CSToastPositionBottom];
+                return;
+            }
+            
+            if ([fileSizeValue longLongValue] > FILE_SIZE_LIMIT) {
+                NSLog(@"file size too large");
+                NSString *warning = [NSString stringWithFormat:@"文件大小不能超过%dM", FILE_SIZE_LIMIT/(1024*1024)];
+                [self.view makeToast:warning duration:0.7 position:CSToastPositionBottom];
+                return;
+            }
+            [self sendFileMessage:newURL];
+            [self dismissViewControllerAnimated:YES completion:NULL];
+        }];
+        [urls.firstObject stopAccessingSecurityScopedResource];
+    } else {
+        //授权失败
+    }
+}
+
 #pragma mark - UIImagePickerControllerDelegate
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
 	NSLog(@"didFinishPickingMediaWithInfo  Details:  %@", info);
@@ -1350,6 +1387,17 @@
     }
 }
 
+- (void)onFileUploadSuccess:(IMessage*)msg URL:(NSString*)url {
+    IMessage *m = [self getMessageWithUUID:msg.uuid];
+    m.content = [m.fileContent cloneWithURL:url];
+    m.uploading = NO;
+}
+
+-(void)onFileUploadFail:(IMessage*)msg {
+    IMessage *m = [self getMessageWithUUID:msg.uuid];
+    m.flags = m.flags|MESSAGE_FLAG_FAILURE;
+    m.uploading = NO;
+}
 
 #pragma mark - Audio Downloader Observer
 - (void)onAudioDownloadSuccess:(IMessage*)msg {
@@ -1434,6 +1482,16 @@
 
 - (void)moreViewVideoCallAction:(EaseChatBarMoreView *)moreView {
     [self call];
+}
+
+- (void)moreViewFileAction:(EaseChatBarMoreView *)moreView {
+    NSArray *types = @[@"public.item"];
+    UIDocumentPickerViewController *documentPickerVC = [[UIDocumentPickerViewController alloc] initWithDocumentTypes:types inMode:UIDocumentPickerModeOpen];
+    //设置代理
+    documentPickerVC.delegate = self;
+    //设置模态弹出方式
+    documentPickerVC.modalPresentationStyle = UIModalPresentationFormSheet;
+    [self presentViewController:documentPickerVC animated:YES completion:nil];
 }
 
 - (void)call {

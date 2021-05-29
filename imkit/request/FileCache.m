@@ -52,8 +52,7 @@
     return [self cachePathForKey:key inPath:self.cachePath];
 }
 
-- (NSString *)cachedFileNameForKey:(NSString *)key
-{
+- (NSString *)cachedFileNameForKey:(NSString *)key {
     const char *str = [key UTF8String];
     if (str == NULL)
     {
@@ -73,6 +72,12 @@
 
 -(void)storeFile:(NSData*)data forKey:(NSString*)key {
     [self.fileManager createFileAtPath:[self defaultCachePathForKey:key] contents:data attributes:nil];
+}
+
+-(void)moveFileAtKey:(NSString*)key toKey:(NSString*)dest {
+    NSString *path = [self queryCacheForKey:key];
+    NSString *destPath = [self cachePathForKey:dest];
+    [self.fileManager moveItemAtPath:path toPath:destPath error:nil];
 }
 
 -(void)removeFileForKey:(NSString*)key {
