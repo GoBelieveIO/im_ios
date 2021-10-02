@@ -14,7 +14,7 @@
 #define STATE_CONNECTFAIL 3
 #define STATE_AUTHENTICATION_FAIL 4
 
-#define ENABLE_SSL
+//#define ENABLE_SSL
 
 #define HOST  @"imnode2.gobelieve.io"
 #ifdef ENABLE_SSL

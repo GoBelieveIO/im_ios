@@ -10,9 +10,8 @@
 #import "CustomerOutbox.h"
 #import "ICustomerMessage.h"
 #import "CustomerMessageDB.h"
-#import "UIView+Toast.h"
-
-#define PAGE_COUNT 10
+#import "IMHttpAPI.h"
+#import <Toast/UIView+Toast.h>
 
 @interface CustomerMessageViewController ()<OutboxObserver, CustomerMessageObserver, AudioDownloaderObserver>
 @end
@@ -26,13 +25,30 @@
 
 - (void)viewDidLoad {
     self.messageDB = [CustomerMessageDB instance];
-    self.conversationID = self.storeID;
-    
     self.callEnabled = NO;
+    self.isShowReaded = NO;
+    self.isShowUserName = YES;
     
     [super viewDidLoad];
-    if (self.peerName.length > 0) {
-        self.navigationItem.title = self.peerName;
+    if (self.storeName.length > 0) {
+        self.navigationItem.title = self.storeName;
+    }
+    
+    if (self.peerAppID == 0 && self.peerUID == 0) {
+        [self disableSend];
+        [IMHttpAPI getCustomerSupporter:self.storeID success:^(NSDictionary *resp) {
+            NSLog(@"resp:%@", resp);
+            self.peerAppID = [[resp objectForKey:@"appid"] longLongValue];
+            self.peerUID = [[resp objectForKey:@"id"] longLongValue];
+            self.peerName = [resp objectForKey:@"name"];
+            self.peerAppName = [resp objectForKey:@"appname"];
+            
+            if ([IMService instance].connectState == STATE_CONNECTED) {
+                [self enableSend];
+            }
+        } fail:^(NSString *err) {
+            NSLog(@"get customer supporter err:%@", err);
+        }];
     }
 }
 
@@ -58,80 +74,36 @@
                                                                userInfo:nil];
     [[NSNotificationCenter defaultCenter] postNotification:notification];
 }
+
 //同IM服务器连接的状态变更通知
 -(void)onConnectState:(int)state{
     if(state == STATE_CONNECTED){
-        [self enableSend];
+        if (self.peerAppID && self.peerUID) {
+            [self enableSend];
+        }
     } else {
         [self disableSend];
     }
 }
 
-
--(void)onCustomerSupportMessage:(CustomerMessage*)im {
-    if (self.storeID != im.storeID) {
-        return;
-    }
-    
-    NSLog(@"receive msg:%@",im);
-    ICustomerMessage *m = [[ICustomerMessage alloc] init];
-    m.customerAppID = im.customerAppID;
-    m.customerID = im.customerID;
-    m.storeID = im.storeID;
-    m.sellerID = im.sellerID;
-    m.sender = im.storeID;
-    m.receiver = im.customerID;
-    m.msgLocalID = im.msgLocalID;
-    m.rawContent = im.content;
-    m.timestamp = im.timestamp;
-    m.isSupport = YES;
-    m.isOutgoing = NO;
-    
-    if (m.uuid.length > 0 && [self getMessageWithUUID:m.uuid]) {
-        NSLog(@"receive repeat msg:%@", m.uuid);
-        return;
-    }
-    
-    int now = (int)time(NULL);
-    if (now - self.lastReceivedTimestamp > 1) {
-        [[self class] playMessageReceivedSound];
-        self.lastReceivedTimestamp = now;
-    }
-    [self loadSenderInfo:m];
-    [self downloadMessageContent:m];
-    [self updateNotificationDesc:m];
-    
-    if (m.type == MESSAGE_REVOKE) {
-        MessageRevoke *r = m.revokeContent;
-        IMessage *revokedMsg = [self getMessageWithUUID:r.msgid];
-        [self replaceMessage:revokedMsg dest:m];
-    } else {
-        [self insertMessage:m];
-    }
-}
-
 -(void)onCustomerMessage:(CustomerMessage*)im {
-    if (self.storeID != im.storeID) {
-        return;
-    }
-    
     NSLog(@"receive msg:%@",im);
     ICustomerMessage *m = [[ICustomerMessage alloc] init];
-    m.customerAppID = im.customerAppID;
-    m.customerID = im.customerID;
-    m.storeID = im.storeID;
-    m.sellerID = im.sellerID;
-    m.sender = im.customerID;
-    m.receiver = im.storeID;
-    m.msgLocalID = im.msgLocalID;
+    m.senderAppID = im.senderAppID;
+    m.sender = im.sender;
+    m.receiverAppID = im.receiverAppID;
+    m.receiver = im.receiver;
+    m.msgId = im.msgLocalID;
     m.rawContent = im.content;
     m.timestamp = im.timestamp;
-    m.isSupport = NO;
     
-    //必定自己发出的消息
-    m.isOutgoing = YES;
-    m.flags = m.flags | MESSAGE_FLAG_ACK;
-
+    
+    if (m.senderAppID == self.appid && m.sender == self.currentUID) {
+        m.isOutgoing = YES;
+        m.flags = m.flags | MESSAGE_FLAG_ACK;
+    } else {
+        m.isOutgoing = NO;
+    }
     
     if (m.uuid.length > 0 && [self getMessageWithUUID:m.uuid]) {
         NSLog(@"receive repeat msg:%@", m.uuid);
@@ -140,12 +112,6 @@
 
     if (im.isSelf) {
         return;
-    }
-    
-    int now = (int)time(NULL);
-    if (now - self.lastReceivedTimestamp > 1) {
-        [[self class] playMessageReceivedSound];
-        self.lastReceivedTimestamp = now;
     }
     
     [self loadSenderInfo:m];
@@ -163,9 +129,6 @@
 
 //服务器ack
 -(void)onCustomerMessageACK:(CustomerMessage*)cm {
-    if (self.storeID != cm.storeID) {
-        return;
-    }
     if (cm.msgLocalID > 0) {
         IMessage *msg = [self getMessageWithID:cm.msgLocalID];
         msg.flags = msg.flags|MESSAGE_FLAG_ACK;
@@ -187,18 +150,34 @@
 
 //消息发送失败
 - (void)onCustomerMessageFailure:(CustomerMessage*)cm {
-    if (self.storeID != cm.storeID) {
-        return;
-    }
     if (cm.msgLocalID > 0) {
-    IMessage *msg = [self getMessageWithID:cm.msgLocalID];
-    msg.flags = msg.flags|MESSAGE_FLAG_FAILURE;
+        IMessage *msg = [self getMessageWithID:cm.msgLocalID];
+        msg.flags = msg.flags|MESSAGE_FLAG_FAILURE;
     } else {
         MessageContent *content = [IMessage fromRaw:cm.content];
         if (content.type == MESSAGE_REVOKE) {
             [self.view makeToast:@"撤回失败" duration:0.7 position:@"bottom"];
         }
     }
+}
+
+-(BOOL)getMessageOutgoing:(IMessage*)msg {
+    ICustomerMessage *cm = (ICustomerMessage*)msg;
+    return (cm.senderAppID == self.appid && cm.sender == self.currentUID);
+}
+
+-(id<IMessageIterator>)newMessageIterator {
+    return [self.messageDB newMessageIterator: self.storeID];
+}
+
+//下拉刷新
+-(id<IMessageIterator>)newForwardMessageIterator:(int64_t)messageID {
+    return [self.messageDB newForwardMessageIterator:self.storeID messageID:messageID];
+}
+
+//上拉刷新
+-(id<IMessageIterator>)newBackwardMessageIterator:(int64_t)messageID {
+    return [self.messageDB newBackwardMessageIterator:self.storeID messageID:messageID];
 }
 
 - (void)sendMessage:(IMessage *)msg withImage:(UIImage*)image {
@@ -218,11 +197,11 @@
         [[CustomerOutbox instance] uploadImage:message];
     } else {
         CustomerMessage *im = [[CustomerMessage alloc] init];
-        im.customerAppID = msg.customerAppID;
-        im.customerID = msg.customerID;
-        im.storeID = msg.storeID;
-        im.sellerID = msg.sellerID;
-        im.msgLocalID = message.msgLocalID;
+        im.senderAppID = msg.senderAppID;
+        im.sender = msg.sender;
+        im.receiverAppID = msg.receiverAppID;
+        im.receiver = msg.receiver;
+        im.msgLocalID = message.msgId;
         im.content = message.rawContent;
         
         [[IMService instance] sendCustomerMessageAsync:im];
@@ -232,13 +211,24 @@
     [[NSNotificationCenter defaultCenter] postNotification:notification];
 }
 
--(IMessage*)newOutMessage {
+-(IMessage*)newOutMessage:(MessageContent*)content {
     ICustomerMessage *msg = [[ICustomerMessage alloc] init];
-    msg.customerID = self.currentUID;
-    msg.customerAppID = self.appID;
-    msg.storeID = self.storeID;
-    msg.sellerID = self.sellerID;
+    msg.senderAppID = self.appid;
+    msg.sender = self.currentUID;
+    msg.receiverAppID = self.peerAppID;
+    msg.receiver = self.peerUID;
+    msg.uuid = [[NSUUID UUID] UUIDString];
+
+    
+    content.name = self.name;
+    content.appName = self.appName;
+    content.storeId = self.storeID;
+    content.storeName = self.storeName;
+    content.sessionId = self.sessionID;
+    msg.content = content;
+    msg.timestamp = (int)time(NULL);
+    msg.isOutgoing = YES;
+    [msg generateRaw];
     return msg;
 }
-
 @end

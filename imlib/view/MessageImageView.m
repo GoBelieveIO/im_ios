@@ -9,7 +9,7 @@
 
 #import "MessageImageView.h"
 #import <SDWebImage/SDWebImage.h>
-
+#import <Masonry/Masonry.h>
 
 @interface MessageImageView()
 @property(nonatomic) UIView *maskView;
@@ -22,6 +22,7 @@
     if (self) {
         self.backgroundColor = [UIColor clearColor];
         self.imageView = [[UIImageView alloc] init];
+        self.imageView.contentMode = UIViewContentModeScaleAspectFit;
         [self addSubview:self.imageView];
         
         self.maskView = [[UIView alloc] init];
@@ -35,6 +36,25 @@
         
         self.downloadIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         [self addSubview:self.downloadIndicatorView];
+        
+        
+        [self.maskView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.edges.equalTo(self);
+        }];
+        
+        [self.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.edges.equalTo(self);
+        }];
+        
+        [self.uploadIndicatorView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.edges.equalTo(self);
+        }];
+        
+        [self.downloadIndicatorView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.edges.equalTo(self);
+        }];
+        
+        
     }
     return self;
 }
@@ -94,7 +114,7 @@
         [self.uploadIndicatorView stopAnimating];
     }
     
-    [self setNeedsDisplay];
+    [self setNeedsUpdateConstraints];
 }
 
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
@@ -133,7 +153,9 @@
     int w = self.msg.imageContent.width;
     int h = self.msg.imageContent.height;
     if (w > 0 && h > 0) {
-        CGSize size = CGSizeMake(kImageWidth, kImageWidth*(h*1.0/w));
+        //必须是整数，否则会出现约束警告
+        int height = kImageWidth*(h*1.0/w);
+        CGSize size = CGSizeMake(kImageWidth, height);
         return size;
     } else {
         CGSize size = CGSizeMake(kImageWidth, kImageHeight);
@@ -143,14 +165,14 @@
 
 -(void)layoutSubviews {
     [super layoutSubviews];
-    NSLog(@"w:%f h:%f", self.bounds.size.width, self.bounds.size.height);
-
-    CGRect imageFrame = self.bounds;
-    [self.imageView setFrame:imageFrame];
-    self.maskView.frame = imageFrame;
-    
-    [self.downloadIndicatorView setFrame:imageFrame];
-    [self.uploadIndicatorView setFrame:imageFrame];
-    
 }
+
+- (void)updateConstraints {
+    CGSize size = [self bubbleSize];
+    [self.imageView mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.size.mas_equalTo(size);
+    }];
+    [super updateConstraints];
+}
+
 @end

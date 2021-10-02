@@ -7,16 +7,19 @@
   LICENSE file in the root directory of this source tree. An additional grant
   of patent rights can be found in the PATENTS file in the same directory.
 */
-#import "IMService.h"
 #include <netdb.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
-#import "Message.h"
+#import "IMService.h"
 #import "AsyncTCP.h"
+#import "Message.h"
 #import "util.h"
 
 
 #define HEARTBEAT_HZ (180)
+
+#define HOST  @"imnode2.gobelieve.io"
+#define PORT 23000
 
 
 @interface GroupSync : NSObject
@@ -31,6 +34,14 @@
 @end
 
 @interface IMService()
+
+-(BOOL)sendPeerMessage:(IMMessage*)msg;
+-(BOOL)sendGroupMessage:(IMMessage*)msg;
+-(BOOL)sendRoomMessage:(RoomMessage*)msg;
+-(BOOL)sendCustomerMessage:(CustomerMessage*)im;
+-(BOOL)sendRTMessage:(RTMessage*)msg;
+
+
 @property(nonatomic)int seq;
 @property(nonatomic)int64_t roomID;
 @property(nonatomic)NSMutableArray *peerObservers;
@@ -120,7 +131,7 @@
         m = (IMMessage*)message.body;
     } else if (message.cmd == MSG_GROUP_IM) {
         m2 = (IMMessage*)message.body;
-    } else if (message.cmd == MSG_CUSTOMER || message.cmd == MSG_CUSTOMER_SUPPORT) {
+    } else if (message.cmd == MSG_CUSTOMER) {
         m4 = (CustomerMessage*)message.body;
     }
     
@@ -175,8 +186,19 @@
     [self.peerMessageHandler handleMessage:im];
     NSLog(@"peer message sender:%lld receiver:%lld content:%s", im.sender, im.receiver, [im.content UTF8String]);
     
+
     [self sendACK:msg.seq];
-    if (im.secret) {
+    
+    if (im.groupID > 0) {
+        im.receiver = im.groupID;
+        if (msg.flag & MSG_FLAG_PUSH) {
+            NSArray *array = @[im];
+            [self.groupMessageHandler handleMessages:array];
+            [self publishGroupMessages:array];
+        } else {
+            [self.receivedGroupMessages addObject:im];
+        }
+    } else if (im.secret) {
         [self publishPeerSecretMessage:im];
     } else {
         [self publishPeerMessage:im];
@@ -198,11 +220,10 @@
     }
 }
 
-
 -(void)handleGroupNotification:(Message*)msg {
     NSString *notification = (NSString*)msg.body;
     NSLog(@"group notification:%@", notification);
-    
+
     IMMessage *im = [[IMMessage alloc] init];
     im.content = notification;
     im.isGroupNotification = YES;
@@ -216,25 +237,13 @@
     [self sendACK:msg.seq];
 }
 
--(void)handleCustomerSupportMessage:(Message*)msg {
-    CustomerMessage *im = (CustomerMessage*)msg.body;
-    im.isSelf = msg.flag & MSG_FLAG_SELF;
-    [self.customerMessageHandler handleCustomerSupportMessage:im];
-    
-    NSLog(@"customer support message customer id:%lld customer appid:%lld store id:%lld seller id:%lld content:%s",
-          im.customerID, im.customerAppID, im.storeID, im.sellerID, [im.content UTF8String]);
-    
-    [self sendACK:msg.seq];
-    [self publishCustomerSupportMessage:im];
-}
-
 -(void)handleCustomerMessage:(Message*)msg {
     CustomerMessage *im = (CustomerMessage*)msg.body;
     im.isSelf = msg.flag & MSG_FLAG_SELF;
     [self.customerMessageHandler handleMessage:im];
     
-    NSLog(@"customer message customer id:%lld customer appid:%lld store id:%lld seller id:%lld content:%s",
-          im.customerID, im.customerAppID, im.storeID, im.sellerID, [im.content UTF8String]);
+    NSLog(@"customer message sender appid:%lld sender:%lld receiver appid:%lld receiver:%lld content:%s",
+          im.senderAppID, im.sender, im.receiverAppID, im.receiver, [im.content UTF8String]);
     
     [self sendACK:msg.seq];
     [self publishCustomerMessage:im];
@@ -262,7 +271,6 @@
     [self pong];
 }
 
-
 -(void)handleRoomMessage:(Message*)msg {
     RoomMessage *rm = (RoomMessage*)msg.body;
     [self publishRoomMessage:rm];
@@ -285,7 +293,7 @@
     if (self.receivedGroupMessages.count > 0) {
         [self.groupMessageHandler handleMessages:self.receivedGroupMessages];
         [self publishGroupMessages:self.receivedGroupMessages];
-        self.receivedGroupMessages = [NSMutableArray array];
+        [self.receivedGroupMessages removeAllObjects];
     }
     
 
@@ -335,7 +343,7 @@
     if (self.receivedGroupMessages.count > 0) {
         [self.groupMessageHandler handleMessages:self.receivedGroupMessages];
         [self publishGroupMessages:self.receivedGroupMessages];
-        self.receivedGroupMessages = [NSMutableArray array];
+        [self.receivedGroupMessages removeAllObjects];
     }
     
     GroupSync *s = [self.groupSyncKeys objectForKey:[NSNumber numberWithLongLong:groupSyncKey.groupID]];
@@ -508,16 +516,6 @@
 
 }
 
--(void)publishCustomerSupportMessage:(CustomerMessage*)msg {
-    [self runOnMainThread:^{
-        for (NSValue *value in self.customerServiceObservers) {
-            id<CustomerMessageObserver> ob = [value nonretainedObjectValue];
-            if ([ob respondsToSelector:@selector(onCustomerSupportMessage:)]) {
-                [ob onCustomerSupportMessage:msg];
-            }
-        }
-    }];
-}
 
 -(void)publishCustomerMessage:(CustomerMessage*)msg {
     [self runOnMainThread:^{
@@ -612,8 +610,6 @@
         [self handleSystemMessage:msg];
     } else if (msg.cmd == MSG_CUSTOMER) {
         [self handleCustomerMessage:msg];
-    } else if (msg.cmd == MSG_CUSTOMER_SUPPORT) {
-        [self handleCustomerSupportMessage:msg];
     } else if (msg.cmd == MSG_RT) {
         [self handleRTMessage:msg];
     } else if (msg.cmd == MSG_SYNC_NOTIFY) {
@@ -863,36 +859,6 @@
     return r;
 }
 
--(void)sendCustomerSupportMessageAsync:(CustomerMessage *)im {
-    dispatch_async(self.queue, ^{
-        BOOL r = [self sendCustomerSupportMessage:im];
-        if (!r) {
-            [self.customerMessageHandler handleMessageFailure:im];
-            [self publishCustomerMessageFailure:im];
-        }
-    });
-}
-
--(BOOL)sendCustomerSupportMessage:(CustomerMessage*)im {
-    [self assertWorkQueue];
-    Message *m = [[Message alloc] init];
-    m.cmd = MSG_CUSTOMER_SUPPORT;
-    m.body = im;
-    BOOL r = [self sendMessage:m];
-    
-    if (r) {
-        [self.messages addObject:m];
-        //在发送需要回执的消息时尽快发现socket已经断开的情况
-        [self ping];
-        return YES;
-    } else if (!self.suspended) {
-        m.failCount = 1;
-        [self.messages addObject:m];
-        return YES;
-    } else {
-        return NO;
-    }
-}
 
 -(void)sendCustomerMessageAsync:(CustomerMessage *)im {
     dispatch_async(self.queue, ^{
@@ -909,6 +875,9 @@
     Message *m = [[Message alloc] init];
     m.cmd = MSG_CUSTOMER;
     m.body = im;
+    if (im.isText) {
+        m.flag = MSG_FLAG_TEXT;
+    }
     BOOL r = [self sendMessage:m];
     
     if (r) {
@@ -1067,7 +1036,7 @@
                 [peerMessages addObject:m.body];
             } else if (m.cmd == MSG_GROUP_IM) {
                 [groupMessages addObject:m.body];
-            } else if (m.cmd == MSG_CUSTOMER || m.cmd == MSG_CUSTOMER_SUPPORT) {
+            } else if (m.cmd == MSG_CUSTOMER) {
                 [customerMessages addObject:m.body];
             }
         } else {

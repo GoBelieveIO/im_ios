@@ -15,6 +15,4 @@
 
 //当前登录的用户id
 @property(nonatomic, assign) int64_t uid;
-
-
 @end

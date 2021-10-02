@@ -28,7 +28,7 @@
         [self addSubview:self.label];
         
         self.imageView = [[UIImageView alloc] init];
-        self.imageView.image = [UIImage imageNamed:@"classroom"];
+
         [self addSubview:self.imageView];
     }
     return self;
@@ -37,7 +37,13 @@
 
 - (void)setMsg:(IMessage *)msg {
     [super setMsg:msg];
-    self.label.text = NSLocalizedString(@"message.view.classroom", nil);
+    if (msg.type == MESSAGE_CLASSROOM) {
+        self.imageView.image = [UIImage imageNamed:@"classroom"];
+        self.label.text = NSLocalizedString(@"message.view.classroom", nil);
+    } else {
+        self.imageView.image = [UIImage imageNamed:@"conference"];
+        self.label.text = NSLocalizedString(@"message.view.conference", nil);
+    }
     [self setNeedsDisplay];
 }
 

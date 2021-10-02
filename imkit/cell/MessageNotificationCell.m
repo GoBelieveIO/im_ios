@@ -26,12 +26,12 @@
         [imageLayer setCornerRadius:4];
         [self.contentView addSubview:self.containerView];
         
-        [self.contentView bringSubviewToFront:self.bubbleView];
+        [self.containerView addSubview:self.bubbleView];
         
         [self.containerView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.centerX.equalTo(self.contentView.mas_centerX);
-            make.centerY.equalTo(self.contentView.mas_centerY);
-            make.size.mas_equalTo(CGSizeMake(100, 30));
+            make.top.equalTo(self.contentView.mas_top).offset(4);
+            make.bottom.equalTo(self.contentView.mas_bottom).offset(-4);
         }];
         
         [self.bubbleView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -40,7 +40,6 @@
             make.left.equalTo(self.containerView.mas_left).offset(8);
             make.right.equalTo(self.containerView.mas_right).offset(-8);
         }];
-        
     }
     return self;
 }
@@ -49,21 +48,9 @@
 - (void)setMsg:(IMessage*)message {
     [super setMsg:message];
     self.bubbleView.msg = message;
-    [self setNeedsUpdateConstraints];
 }
 
 - (void)updateConstraints {
-    CGSize size = [self.bubbleView bubbleSize];
-    
-    size.width += 16;
-    size.height += 8;
-    
-    [self.containerView mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.centerX.equalTo(self.contentView.mas_centerX);
-        make.centerY.equalTo(self.contentView.mas_centerY);
-        make.size.mas_equalTo(size);
-    }];
-    
     [super updateConstraints];
 }
 

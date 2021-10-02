@@ -30,28 +30,6 @@
 
 @implementation MessageViewCell
 
-+ (CGFloat)cellHeightMessage:(IMessage*)msg {
-    if (msg.imageContent) {
-        int w = msg.imageContent.width;
-        int h = msg.imageContent.height;
-        
-        if (w > 0 && h > 0) {
-            CGFloat h1 = kImageWidth*(h*1.0/w) + kPaddingTop + kPaddingBottom + kMarginTop + kMarginBottom;
-            return h1;
-        } else {
-            return kImageHeight + kPaddingTop + kPaddingBottom + kMarginTop + kMarginBottom;
-        }
-    } else if (msg.textContent) {
-        UIFont *font = [MessageTextView font];
-        CGSize textSize = [MessageTextView textSizeForText:msg.textContent.text withFont:font];
-        CGFloat h = textSize.height + 16;
-        return MAX(h, 40) + kMarginTop + kMarginBottom;
-    } else {
-        return 0;
-    }
-}
-
-
 -(id)initWithType:(int)type reuseIdentifier:(NSString *)reuseIdentifier {
     self =  [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
     if (self) {
@@ -59,7 +37,6 @@
         self.selectionStyle = UITableViewCellSelectionStyleNone;
         
         CGRect frame = CGRectZero;
-        
         switch (type) {
             case MESSAGE_AUDIO:
             {
@@ -127,6 +104,12 @@
                 self.bubbleView = classroomView;
             }
                 break;
+            case MESSAGE_CONFERENCE:
+            {
+                MessageConferenceView *classroomView = [[MessageConferenceView alloc] initWithFrame:frame];
+                self.bubbleView = classroomView;
+            }
+                break;
             default:
             {
                 MessageUnknownView *unknownView = [[MessageUnknownView alloc] initWithFrame:frame];
@@ -134,16 +117,19 @@
             }
                 break;
         }
-        [self.contentView addSubview:self.bubbleView];
     }
     return self;
 }
+
 
 
 - (void)dealloc {
     [self.msg removeObserver:self forKeyPath:@"uploading"];
     [self.msg removeObserver:self forKeyPath:@"senderInfo"];
     [self.msg removeObserver:self forKeyPath:@"flags"];
+    [self.msg removeObserver:self forKeyPath:@"readerCount"];
+    [self.msg removeObserver:self forKeyPath:@"referenceCount"];
+    [self.msg removeObserver:self forKeyPath:@"tags"];
 }
 
 
@@ -151,11 +137,21 @@
     [self.msg removeObserver:self forKeyPath:@"uploading"];
     [self.msg removeObserver:self forKeyPath:@"flags"];
     [self.msg removeObserver:self forKeyPath:@"senderInfo"];
+    [self.msg removeObserver:self forKeyPath:@"readerCount"];
+    [self.msg removeObserver:self forKeyPath:@"referenceCount"];
+    [self.msg removeObserver:self forKeyPath:@"tags"];
     _msg = msg;
     [self.msg addObserver:self forKeyPath:@"senderInfo" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
     [self.msg addObserver:self forKeyPath:@"flags" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
     [self.msg addObserver:self forKeyPath:@"uploading" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
-    
+    [self.msg addObserver:self forKeyPath:@"readerCount" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
+    [self.msg addObserver:self forKeyPath:@"referenceCount" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
+    [self.msg addObserver:self forKeyPath:@"tags" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
 }
+
+- (CGSize)systemLayoutSizeFittingSize:(CGSize)targetSize withHorizontalFittingPriority:(UILayoutPriority)horizontalFittingPriority verticalFittingPriority:(UILayoutPriority)verticalFittingPriority {
+    return [super systemLayoutSizeFittingSize:targetSize withHorizontalFittingPriority:horizontalFittingPriority verticalFittingPriority:verticalFittingPriority];
+}
+
 
 @end

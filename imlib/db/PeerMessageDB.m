@@ -22,7 +22,7 @@
 
 -(void)saveMessageAttachment:(IMessage*)msg address:(NSString*)address {
     //以附件的形式存储，以免第二次查询
-    [self updateMessageContent:msg.msgLocalID content:msg.rawContent];
+    [self updateMessageContent:msg.msgId content:msg.rawContent];
 }
 
 -(BOOL)saveMessage:(IMessage*)msg {

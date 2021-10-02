@@ -10,14 +10,31 @@
 @implementation MessageLocation
 
 - (id)initWithLocation:(CLLocationCoordinate2D)location {
-    self = [super init];
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    NSDictionary *loc = @{
+        @"latitude":[NSNumber numberWithDouble:location.latitude],
+        @"longitude":[NSNumber numberWithDouble:location.longitude]
+    };
+    NSDictionary *dic = @{@"location":loc, @"uuid":uuid};
+    self = [super initWithDictionary:dic];
     if (self) {
-        NSString *uuid = [[NSUUID UUID] UUIDString];
-        NSDictionary *loc = @{@"latitude":[NSNumber numberWithDouble:location.latitude],
-                              @"longitude":[NSNumber numberWithDouble:location.longitude]};
-        NSDictionary *dic = @{@"location":loc, @"uuid":uuid};
-        NSString* newStr = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:dic options:0 error:nil] encoding:NSUTF8StringEncoding];
-        self.raw =  newStr;
+
+    }
+    return self;
+}
+
+- (id)initWithLocation:(CLLocationCoordinate2D)location address:(NSString*)address {
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    NSMutableDictionary *loc = [NSMutableDictionary dictionary];
+    [loc setObject:[NSNumber numberWithDouble:location.latitude] forKey:@"latitude"];
+    [loc setObject:[NSNumber numberWithDouble:location.longitude] forKey:@"longitude"];
+    if (address.length > 0) {
+        [loc setObject:address forKey:@"address"];
+    }
+    NSDictionary *dic = @{@"location":loc, @"uuid":uuid};
+    self = [super initWithDictionary:dic];
+    if (self) {
+
     }
     return self;
 }
@@ -38,19 +55,21 @@
     return t;
 }
 
--(void)setAddress:(NSString *)address {
-    _address = [address copy];
-    
-    CLLocationCoordinate2D location = self.location;
-    NSDictionary *loc = @{@"latitude":[NSNumber numberWithDouble:location.latitude],
-                          @"longitude":[NSNumber numberWithDouble:location.longitude],
-                          @"address":address};
-    NSDictionary *dic = @{@"location":loc, @"uuid":self.uuid};
-    NSString* newStr = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:dic options:0 error:nil] encoding:NSUTF8StringEncoding];
-    self.raw = newStr;
+-(NSString*)address {
+    return [[self.dict objectForKey:@"location"] objectForKey:@"address"];
 }
 
 -(int)type {
     return MESSAGE_LOCATION;
+}
+
+-(MessageLocation*)cloneWithAddress:(NSString*)address {
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:self.dict];
+    NSMutableDictionary *location = [NSMutableDictionary dictionaryWithDictionary:[dict objectForKey:@"location"]];
+    [location setObject:address forKey:@"address"];
+    [dict setObject:location forKey:@"location"];
+    
+    MessageLocation *newContent = [[MessageLocation alloc] initWithDictionary:dict];
+    return newContent;
 }
 @end

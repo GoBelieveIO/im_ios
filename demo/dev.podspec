@@ -35,7 +35,7 @@ Pod::Spec.new do |s|
     sp.preserve_paths   = 'imkit/amr/libopencore-amrnb.a'
     sp.library          = 'opencore-amrnb'
     sp.xcconfig         = { 'LIBRARY_SEARCH_PATHS' => '"${PODS_ROOT}/../imkit/amr"' }
-    sp.resources         = ['imkit/imKitRes/sounds/*.aiff', 'imkit/imKitRes/gobelieve.xcassets', 'imkit/imKitRes/Emoji.xcassets', 'imkit/imKitRes/gobelieve.db']
+    sp.resources         = ['imkit/imKitRes/sounds/*.aiff', 'imkit/imKitRes/gobelieve.xcassets', 'imkit/imKitRes/Emoji.xcassets']
     sp.dependency 'gobelieve/imsdk'
     sp.dependency 'gobelieve/imlib'    
     sp.dependency 'SDWebImage', '~> 5.1.0'

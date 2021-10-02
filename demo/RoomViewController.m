@@ -74,23 +74,24 @@
     m.sender = rm.sender;
     m.receiver = rm.receiver;
     self.msgID = self.msgID + 1;
-    m.msgLocalID = self.msgID;
+    m.msgId = self.msgID;
     m.rawContent = rm.content;
     m.timestamp = [[NSDate date] timeIntervalSince1970];
     [self insertMessage:m];
 }
 
 
--(IMessage*)newOutMessage {
+-(IMessage*)newOutMessage:(MessageContent*)content {
     IMessage *msg = [[IMessage alloc] init];
-    msg.sender = self.currentUID;
+    msg.sender = self.uid;
     msg.receiver = self.roomID;
+    msg.content = content;
     return msg;
 }
 
 -(BOOL)saveMessage:(IMessage*)msg {
     self.msgID = self.msgID + 1;
-    msg.msgLocalID = self.msgID;
+    msg.msgId = self.msgID;
     return YES;
 }
 
@@ -121,7 +122,7 @@
     
     message.flags = message.flags|MESSAGE_FLAG_ACK;
     
-    NSNumber *o = [NSNumber numberWithLongLong:message.msgLocalID];
+    NSNumber *o = [NSNumber numberWithLongLong:message.msgId];
     NSNumber *k = [NSNumber numberWithLongLong:(long long)im];
     [self.msgs setObject:o forKey:k];
 }

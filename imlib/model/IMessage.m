@@ -15,6 +15,13 @@
 /*
  raw format
  {
+    "uuid":"消息唯一id"
+    "group_id":"点对点消息发到群会话中，用于:已读"
+    "reference":"引用的消息id"
+    "at":"@的uid数组"
+    "at_name":"@的用户名数组，这些用户名包含在text文本字段中"
+ 
+ 
     "text":"文本",
     "image":"image url",
     "image2": {
@@ -28,13 +35,15 @@
     }
     "location":{
         "latitude":"纬度(浮点数)",
-        "longitude":"经度(浮点数)"
+        "longitude":"经度(浮点数)",
+        "address":"地址名称(可选字段)"
     }
     "notification":"群组通知内容"
     "link":{
         "image":"图片url",
         "url":"跳转url",
         "title":"标题"
+        "content":"正文"
     }
     "video":{
          "url":"视频url",
@@ -48,60 +57,87 @@
          "filename":"文件名称",
          "size":"文件大小"
      }
+     "classroom": {
+         "master_id": "群课堂发起人(整数)",
+         "channel_id": "频道id",
+         "server_id": "频道对应的服务器id(整数)"
+         "mic_mode": "麦克风模式"
+     }
+     "conference": {
+         "master_id": "会议发起人(整数)",
+         "channel_id": "频道id",
+         "server_id": "频道对应的服务器id(整数)"
+     }
      "revoke": {
         "msgid": "被撤回消息的uuid"
+     }
+     "readed":{
+        "msgid": "已读消息的uuid"
+     }
+     "tag":{
+        "msgid": "被打标签消息的uuid",
+        "add_tag": "添加的tag",
+        "delete_tag": "删除的tag(add_tag和delete_tag只能存在一个)",
      }
 }*/
 
 
 @implementation IMessage
++(MessageContent*)fromRawDict:(NSDictionary *)dict {
+    NSDictionary *classes = @{
+        @"text":[MessageTextContent class],
+        @"image":[MessageImageContent class],
+        @"image2":[MessageImageContent class],
+        @"location":[MessageLocation class],
+        @"audio":[MessageAudioContent class],
+        @"video":[MessageVideo class],
+        @"file":[MessageFile class],
+        @"notification":[MessageGroupNotificationContent class],
+        @"link":[MessageLinkContent class],
+        @"timestamp":[MessageHeadlineContent class],
+        @"headline":[MessageHeadline class],
+        @"voip":[MessageVOIPContent class],
+        @"group_voip":[MessageGroupVOIPContent class],
+        @"secret":[MessageSecret class],
+        @"revoke":[MessageRevoke class],
+        @"ack":[MessageACK class],
+        @"classroom":[MessageClassroom class],
+        @"conference":[MessageConference class],
+        @"readed":[MessageReaded class],
+        @"p2p_session":[MessageP2PSession class],
+        @"tag":[MessageTag class],
+    };
+
+    Class cls = nil;
+    NSArray *keys = [classes allKeys];
+    for (NSInteger i = 0; i < keys.count; i++) {
+        NSString *key = [keys objectAtIndex:i];
+        if ([dict objectForKey:key]) {
+            cls = [classes objectForKey:key];
+            break;
+        }
+    }
+    if (!cls) {
+        cls = [MessageContent class];
+    }
+    return [[cls alloc] initWithDictionary:dict];
+
+}
 +(MessageContent*)fromRaw:(NSString *)rawContent {
     const char *utf8 = [rawContent UTF8String];
     if (utf8 == nil) return nil;
     NSData *data = [NSData dataWithBytes:utf8 length:strlen(utf8)];
     NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil];
     
-    MessageContent *content = nil;
-    if ([dict objectForKey:@"text"] != nil) {
-        content = [[MessageTextContent alloc] initWithRaw:rawContent];
-    } else if ([dict objectForKey:@"image"] != nil ||
-               [dict objectForKey:@"image2"] != nil) {
-        content = [[MessageImageContent alloc] initWithRaw:rawContent];
-    } else if ([dict objectForKey:@"audio"] != nil) {
-        content = [[MessageAudioContent alloc] initWithRaw:rawContent];
-    } else if ([dict objectForKey:@"location"] != nil) {
-        content = [[MessageLocationContent alloc] initWithRaw:rawContent];
-    } else if ([dict objectForKey:@"notification"] != nil) {
-        content = [[MessageGroupNotificationContent alloc] initWithRaw:rawContent];
-    } else if ([dict objectForKey:@"link"]) {
-        content = [[MessageLinkContent alloc] initWithRaw:rawContent];
-    } else if ([dict objectForKey:@"attachment"] != nil) {
-        content = [[MessageAttachmentContent alloc] initWithRaw:rawContent];
-    } else if ([dict objectForKey:@"timestamp"] != nil) {
-        content = [[MessageTimeBaseContent alloc] initWithRaw:rawContent];
-    } else if ([dict objectForKey:@"headline"] != nil) {
-        content = [[MessageHeadlineContent alloc] initWithRaw:rawContent];
-    } else if ([dict objectForKey:@"voip"] != nil) {
-        content = [[MessageVOIPContent alloc] initWithRaw:rawContent];
-    } else if ([dict objectForKey:@"group_voip"] != nil) {
-        content = [[MessageGroupVOIPContent alloc] initWithRaw:rawContent];
-    } else if ([dict objectForKey:@"p2p_session"] != nil) {
-        content = [[MessageP2PSession alloc] initWithRaw:rawContent];
-    } else if ([dict objectForKey:@"secret"] != nil) {
-        content = [[MessageSecret alloc] initWithRaw:rawContent];
-    } else if ([dict objectForKey:@"voip"]) {
-        content = [[MessageVideo alloc] initWithRaw:rawContent];
-    } else if ([dict objectForKey:@"file"]) {
-        content = [[MessageFile alloc] initWithRaw:rawContent];
-    } else if ([dict objectForKey:@"video"]) {
-        content = [[MessageVideo alloc] initWithRaw:rawContent];
-    } else if ([dict objectForKey:@"revoke"]) {
-        content = [[MessageRevoke alloc] initWithRaw:rawContent];
-    } else if ([dict objectForKey:@"ack"]) {
-        content = [[MessageACK alloc] initWithRaw:rawContent];
+    return [self fromRawDict:dict];
+}
+
+-(id)init {
+    self = [super init];
+    if (self) {
+        self.tags = [NSArray array];
     }
-    
-    return content;
+    return self;
 }
 
 - (instancetype)copyWithZone:(NSZone *)zone {
@@ -112,7 +148,15 @@
     m.sender = self.sender;
     m.receiver = self.receiver;
     m.timestamp = self.timestamp;
+    
+    m.reference = self.reference;
+    m.referenceCount = self.referenceCount;
+    m.receiverCount = self.receiverCount;
+    m.readerCount = self.readerCount;
+    m.groupId = self.groupId;
+    
     m.content = self.content;
+    m.tags = self.tags;
     m.isOutgoing = self.isOutgoing;
     m.senderInfo = self.senderInfo;
     return m;
@@ -134,8 +178,12 @@
     return self.flags&MESSAGE_FLAG_FAILURE;
 }
 
--(BOOL)isListened{
+-(BOOL)isListened {
     return self.flags&MESSAGE_FLAG_LISTENED;
+}
+
+-(BOOL)isReaded {
+    return self.flags&MESSAGE_FLAG_READED;
 }
 
 -(BOOL)isIncomming {
@@ -144,20 +192,44 @@
 
 -(void)setContent:(MessageContent *)content {
     _content = content;
-    _rawContent = content.raw;
 }
 
 -(void)setRawContent:(NSString *)rawContent {
-    _rawContent = [rawContent copy];
     _content = [[self class] fromRaw:rawContent];
 }
 
 -(int)type {
     return self.content.type;
 }
+
 -(NSString*)uuid {
-    return [self.content uuid];
+    if (_uuid.length > 0) {
+        return _uuid;
+    } else {
+        return self.content.uuid;
+    }
 }
+
+-(NSString*)reference {
+    if (_reference.length > 0) {
+        return _reference;
+    } else {
+        return self.content.reference;
+    }
+}
+
+-(int64_t)groupId {
+    if (_groupId > 0) {
+        return _groupId;
+    } else {
+        return self.content.groupId;
+    }
+}
+
+-(NSString*)rawContent {
+    return self.content.raw;
+}
+
 -(MessageTextContent*)textContent {
     if (self.type == MESSAGE_TEXT) {
         return (MessageTextContent*)self.content;
@@ -280,6 +352,66 @@
         return (MessageACK*)self.content;
     }
     return nil;
+}
+
+-(MessageClassroom*)classroomContent {
+    if (self.type == MESSAGE_CLASSROOM) {
+        return (MessageClassroom*)self.content;
+    }
+    return nil;
+}
+
+-(MessageConference*)conferenceContent {
+    if (self.type == MESSAGE_CONFERENCE) {
+        return (MessageConference*)self.content;
+    }
+    return nil;
+}
+
+-(MessageReaded*)readedContent {
+    if (self.type == MESSAGE_READED) {
+        return (MessageReaded*)self.content;
+    }
+    return nil;
+}
+
+-(MessageTag*)tagContent {
+    if (self.type == MESSAGE_TAG) {
+        return (MessageTag*)self.content;
+    }
+    return nil;
+}
+
+-(void)generateRaw {
+    if (_uuid.length > 0) {
+        self.content.uuid = _uuid;
+    }
+    if (_reference.length > 0) {
+        self.content.reference = _reference;
+    }
+    if (self.groupId > 0) {
+        self.content.groupId = _groupId;
+    }
+    
+    [self.content generateRaw];
+}
+
+-(void)addTag:(NSString *)tag {
+    if ([self.tags containsObject:tag]) {
+        return;
+    }
+    NSMutableArray *arr = [NSMutableArray arrayWithArray:self.tags];
+    [arr addObject:tag];
+    self.tags = arr;
+}
+
+-(void)removeTag:(NSString *)tag {
+    if (![self.tags containsObject:tag]) {
+        return;
+    }
+    NSMutableArray *arr = [NSMutableArray arrayWithArray:self.tags];
+    [arr removeObject:tag];
+    self.tags = arr;
 }
 @end
 

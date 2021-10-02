@@ -10,32 +10,30 @@
 @implementation MessageFile
 
 - (id)initWithFileURL:(NSString *)fileURL name:(NSString*)name size:(int)size uuid:(NSString*)uuid {
-    self = [super init];
+    NSDictionary *file = @{@"url":fileURL,
+                           @"filename":name,
+                           @"size":@(size)};
+    
+    NSDictionary *dic = @{@"file":file,
+                          @"uuid":uuid};
+    self = [super initWithDictionary:dic];
     if (self) {
-        NSDictionary *file = @{@"url":fileURL,
-                               @"filename":name,
-                               @"size":@(size)};
-        
-        NSDictionary *dic = @{@"file":file,
-                              @"uuid":uuid};
-        NSString* newStr = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:dic options:0 error:nil] encoding:NSUTF8StringEncoding];
-        self.raw = newStr;
+
     }
     return self;
 }
 
 - (id)initWithFileURL:(NSString *)fileURL name:(NSString*)name size:(int)size {
-    self = [super init];
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    NSDictionary *file = @{@"url":fileURL,
+                            @"filename":name,
+                            @"size":@(size)};
+    
+    NSDictionary *dic = @{@"file":file,
+                          @"uuid":uuid};
+    self = [super initWithDictionary:dic];
     if (self) {
-        NSString *uuid = [[NSUUID UUID] UUIDString];
-        NSDictionary *file = @{@"url":fileURL,
-                                @"filename":name,
-                                @"size":@(size)};
-        
-        NSDictionary *dic = @{@"file":file,
-                              @"uuid":uuid};
-        NSString* newStr = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:dic options:0 error:nil] encoding:NSUTF8StringEncoding];
-        self.raw = newStr;
+
     }
     return self;
 }

@@ -16,10 +16,10 @@
 @property(nonatomic) NSString *url;
 
 //location
-- (id)initWithAttachment:(int)msgLocalID address:(NSString*)address;
+- (id)initWithAttachment:(int64_t)msgLocalID address:(NSString*)address;
 
 //image/audio
-- (id)initWithAttachment:(int)msgLocalID url:(NSString*)url;
+- (id)initWithAttachment:(int64_t)msgLocalID url:(NSString*)url;
 
 @end
 typedef MessageAttachment MessageAttachmentContent;

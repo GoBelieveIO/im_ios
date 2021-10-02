@@ -12,6 +12,7 @@
 #import "IMessage.h"
 #import "IMessageDB.h"
 #import "Outbox.h"
+#import "AudioDownloader.h"
 
 //消息撤回的时限
 #define REVOKE_EXPIRE 120
@@ -29,67 +30,70 @@
  将有可能是本地备注的用户名修改为群内昵称或用户名
 
  */
-@protocol MessageViewControllerUserDelegate <NSObject>
-//从本地获取用户信息, IUser的name字段为空时，显示identifier字段
-- (IUser*)getUser:(int64_t)uid;
-//从服务器获取用户信息
-- (void)asyncGetUser:(int64_t)uid cb:(void(^)(IUser*))cb;
-@end
+
 
 //基类处理tableview相关的数据
-@interface BaseMessageViewController : UIViewController
+@interface BaseMessageViewController : UIViewController<OutboxObserver, AudioDownloaderObserver>
 
 @property(nonatomic) id<IMessageDB> messageDB;
 
-@property(nonatomic, assign) int64_t currentUID;
-@property(nonatomic, assign) NSString *cid;
-
+@property(nonatomic, assign) int pageSize;
 @property(nonatomic, assign) int messageID;//加载此消息id前后的消息
-@property(nonatomic, assign) int64_t conversationID;
-
-@property(nonatomic, weak) id<MessageViewControllerUserDelegate> userDelegate;
 
 //protected
-@property(nonatomic, assign) BOOL hasLateMore;
+@property(nonatomic, assign) BOOL hasLaterMore;
 @property(nonatomic, assign) BOOL hasEarlierMore;
 @property(nonatomic) NSMutableArray *messages;
-@property(nonatomic) NSMutableDictionary *attachments;
-@property(nonatomic) int lastReceivedTimestamp;
 
 //protected overwrite by derived class
 //从本地获取用户信息, IUser的name字段为空时，显示identifier字段
 - (IUser*)getUser:(int64_t)uid;
 //从服务器获取用户信息
 - (void)asyncGetUser:(int64_t)uid cb:(void(^)(IUser*))cb;
+
 - (void)sendMessage:(IMessage *)msg withImage:(UIImage*)image;
 - (void)sendMessage:(IMessage*)message;
-- (IMessage*)newOutMessage;
+- (IMessage*)newOutMessage:(MessageContent*)content;
+- (BOOL)getMessageOutgoing:(IMessage*)msg;
+
+-(id<IMessageIterator>)newMessageIterator;
+//下拉刷新
+-(id<IMessageIterator>)newForwardMessageIterator:(int64_t)messageID;
+//上拉刷新
+-(id<IMessageIterator>)newBackwardMessageIterator:(int64_t)messageID;
 
 -(void)resendMessage:(IMessage*)message;
--(void)saveMessageAttachment:(IMessage*)msg address:(NSString*)address;
 -(BOOL)saveMessage:(IMessage*)msg;
 -(BOOL)removeMessage:(IMessage*)msg;
 -(BOOL)markMessageFailure:(IMessage*)msg;
 -(BOOL)markMesageListened:(IMessage*)msg;
+-(BOOL)markMessageReaded:(IMessage*)msg;
 -(BOOL)eraseMessageFailure:(IMessage*)msg;
 
 - (void)loadData;
 //返回新加载数据的最近一条消息的行号
 - (int)loadEarlierData;
 //返回新加载消息的条数
-- (int)loadLateData;
+- (int)loadLaterData;
 
+- (void)stopPlayer;
+- (void)playVideo:(NSString*)mpath;
+
+- (void)handleMesageClick:(IMessage*)message view:(UIView*)view;
+- (void)handleMessageDoubleClick:(IMessage*)message;
 
 //返回值表示是否添加了timebase
 - (BOOL)insertMessage:(IMessage*)msg;
 - (int)deleteMessage:(IMessage*)msg;
 - (int)replaceMessage:(IMessage*)msg dest:(IMessage*)other;
+- (void)clear;
 
 - (void)downloadMessageContent:(IMessage*)message;
-- (void)downloadMessageContent:(NSArray*)messages count:(int)count;
-
 - (void)checkAtName:(IMessage*)msg;
-- (void)checkAtName:(NSArray*)messages count:(int)count;
+- (void)loadSenderInfo:(IMessage*)msg;
+- (void)updateNotificationDesc:(IMessage*)message;
+- (void)sendReaded:(IMessage*)message;
+- (void)prepareMessage:(IMessage*)message;
 
 - (void)revokeMessage:(IMessage*)message;
 - (void)sendTextMessage:(NSString*)text at:(NSArray*)atUsers atNames:(NSArray*)atNames;
@@ -99,21 +103,12 @@
 - (void)sendVideoMessage:(NSURL*)url;
 - (void)sendFileMessage:(NSURL*)url;
 
-- (void)loadSenderInfo:(IMessage*)msg;
-- (void)loadSenderInfo:(NSArray*)messages count:(int)count;
-
-- (void)updateNotificationDesc:(IMessage*)message;
-- (void)updateNotificationDesc:(NSArray*)messages count:(int)count;
-
 - (NSString*)localImageURL;
 - (NSString*)localAudioURL;
 
-- (IMessage*)getMessageWithID:(int)msgLocalID;
+- (IMessage*)getMessageWithID:(int64_t)msgLocalID;
 - (IMessage*)getMessageWithUUID:(NSString*)uuid;
-
-- (IMessage*)messageForRowAtIndexPath:(NSIndexPath *)indexPath;
-
-+ (void)playMessageReceivedSound;
-+ (void)playMessageSentSound;
+- (IMessage*)getMessageWithUUID:(NSString*)uuid index:(int*)index;
+- (IMessage*)getMessageWithIndex:(NSInteger)index;
 
 @end

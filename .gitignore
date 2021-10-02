@@ -2,6 +2,7 @@
 xcshareddata
 .DS_Store
 Podfile.lock
+/dev.podspec
 im_demo.xcworkspace
 
 ## Build generated

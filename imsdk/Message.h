@@ -29,8 +29,8 @@
 #define MSG_SYSTEM 21
 #define MSG_UNREAD_COUNT 22
 
-#define MSG_CUSTOMER 24
-#define MSG_CUSTOMER_SUPPORT 25
+#define MSG_CUSTOMER_ 24
+#define MSG_CUSTOMER_SUPPORT_ 25
 
 
 //客户端->服务端
@@ -55,6 +55,8 @@
 
 #define MSG_METADATA 37
 
+#define MSG_CUSTOMER 64
+
 
 #define PLATFORM_IOS  1
 #define PLATFORM_ANDROID 2
@@ -73,20 +75,26 @@
 #define MSG_ACK_NOT_MY_FRIEND  1
 #define MSG_ACK_NOT_YOUR_FRIEND  2
 #define MSG_ACK_IN_YOUR_BLACKLIST  3
-#define MSg_ACK_NOT_GROUP_MEMBER  64
+#define MSG_ACK_NOT_GROUP_MEMBER  64
 
 @interface IMMessage : NSObject
 @property(nonatomic, assign)int64_t sender;
 @property(nonatomic, assign)int64_t receiver;
 @property(nonatomic, assign)int32_t timestamp;
-@property(nonatomic, assign)int32_t msgLocalID;
+@property(nonatomic, assign)int64_t msgLocalID;
 @property(nonatomic, copy)NSString *content;
 
-@property(nonatomic, copy)NSString *plainContent;
+@property(nonatomic)NSDictionary *dict;//content dict
+
 @property(nonatomic, assign)BOOL secret;
 
 //文本消息
 @property(nonatomic, assign) BOOL isText;
+//群组已读消息，通过点对点消息来发送
+@property(nonatomic, assign)int64_t groupID;
+
+//会话未读数减一
+@property(nonatomic, assign)BOOL decrementUnread;
 
 //消息由当前用户在当前设备发出
 @property(nonatomic, assign) BOOL isSelf;
@@ -94,19 +102,15 @@
 @property(nonatomic, assign) BOOL isGroupNotification;
 @end
 
-@interface CustomerMessage : NSObject
-//本地消息id 不会序列化传到服务器
-@property(nonatomic, assign)int32_t msgLocalID;
 
-@property(nonatomic, assign)int64_t customerAppID;
-@property(nonatomic, assign)int64_t customerID;
-@property(nonatomic, assign)int64_t storeID;
-@property(nonatomic, assign)int64_t sellerID;
-@property(nonatomic, assign)int32_t timestamp;
-@property(nonatomic, copy)NSString *content;
+typedef IMMessage GroupMessage;
+typedef IMMessage PeerMessage;
 
-//消息由当前用户在当前设备发出
-@property(nonatomic, assign) BOOL isSelf;
+
+
+@interface CustomerMessage : IMMessage
+@property(nonatomic, assign)int64_t senderAppID;
+@property(nonatomic, assign)int64_t receiverAppID;
 @end
 
 @interface RoomMessage : NSObject
@@ -147,6 +151,7 @@ typedef GroupSyncKey GroupSyncNotify;
 @property(nonatomic, assign) int64_t prevSyncKey;
 @end
 
+__attribute__((objc_runtime_name("GoBelieveMessage")))
 @interface Message : NSObject
 @property(nonatomic, assign)int cmd;
 @property(nonatomic, assign)int seq;

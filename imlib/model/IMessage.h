@@ -29,30 +29,43 @@
 #import "MessageFile.h"
 #import "MessageRevoke.h"
 #import "MessageACK.h"
+#import "MessageClassroom.h"
+#import "MessageConference.h"
+#import "MessageReaded.h"
+#import "MessageTag.h"
 
 //消息标志
-#define MESSAGE_FLAG_DELETE 1
-#define MESSAGE_FLAG_ACK 2
-//#define MESSAGE_FLAG_PEER_ACK 4
-#define MESSAGE_FLAG_FAILURE 8
-#define MESSAGE_FLAG_UPLOADING 16
-#define MESSAGE_FLAG_SENDING 32
-#define MESSAGE_FLAG_LISTENED 64
-
+#define MESSAGE_FLAG_DELETE 0x01
+#define MESSAGE_FLAG_ACK 0x02
+//#define MESSAGE_FLAG_PEER_ACK 0x04
+#define MESSAGE_FLAG_FAILURE 0x08
+#define MESSAGE_FLAG_UPLOADING 0x10
+#define MESSAGE_FLAG_SENDING 0x20
+#define MESSAGE_FLAG_LISTENED 0x40
+#define MESSAGE_FLAG_READED 0x80
 
 @interface IMessage : NSObject <NSCopying>
++(MessageContent*)fromRawDict:(NSDictionary *)dict;
 +(MessageContent*)fromRaw:(NSString*)raw;
 
 @property(nonatomic) int64_t msgId;
-@property(nonatomic) int msgLocalID;
 @property(nonatomic) int flags;
 @property(nonatomic) int64_t sender;
 @property(nonatomic) int64_t receiver;
 @property(nonatomic) BOOL secret;
-
-@property(nonatomic, copy) NSString *rawContent;
+@property(nonatomic) NSString *rawContent;
 @property(nonatomic, readonly) int type;
-@property(nonatomic, readonly) NSString *uuid;
+@property(nonatomic) NSString *uuid;
+@property(nonatomic) NSArray *tags;
+
+//点对点消息特有字段
+@property(nonatomic, assign) int64_t groupId;// 群内私聊消息&群消息已读
+
+//群组消息特有字段
+@property(nonatomic) int readerCount;//群组消息已读数量
+@property(nonatomic) int receiverCount;//群组消息接收者数量，未存储到数据库
+@property(nonatomic, copy) NSString *reference;//回复or引用消息的uuid
+@property(nonatomic, assign) int referenceCount;//回复数量 or 被引用次数
 
 @property(nonatomic) MessageContent *content;
 @property(nonatomic, readonly) MessageTextContent *textContent;
@@ -71,6 +84,10 @@
 @property(nonatomic, readonly) MessageFile *fileContent;
 @property(nonatomic, readonly) MessageRevoke *revokeContent;
 @property(nonatomic, readonly) MessageACK *ackContent;
+@property(nonatomic, readonly) MessageClassroom *classroomContent;
+@property(nonatomic, readonly) MessageConference *conferenceContent;
+@property(nonatomic, readonly) MessageReaded *readedContent;
+@property(nonatomic, readonly) MessageTag *tagContent;
 
 @property(nonatomic, readonly) MessageAttachmentContent *attachmentContent;
 
@@ -78,6 +95,7 @@
 @property(nonatomic, readonly) BOOL isACK;
 @property(nonatomic, readonly) BOOL isFailure;
 @property(nonatomic, readonly) BOOL isListened;
+@property(nonatomic, readonly) BOOL isReaded;
 
 //当前用户发出的消息
 @property(nonatomic) BOOL isOutgoing;
@@ -92,6 +110,10 @@
 
 @property(nonatomic) IUser *senderInfo;
 
+-(void)generateRaw;
+
+-(void)addTag:(NSString*)tag;
+-(void)removeTag:(NSString*)tag;
 @end
 
 

@@ -29,8 +29,6 @@
 
 - (void)viewDidLoad {
     self.messageDB = [GroupMessageDB instance];
-    self.conversationID = self.groupID;
-    
     [super viewDidLoad];
     
     self.navigationItem.title = self.groupName;
@@ -89,7 +87,7 @@
     IMessage *m = [[IMessage alloc] init];
     m.sender = im.sender;
     m.receiver = im.receiver;
-    m.msgLocalID = im.msgLocalID;
+    m.msgId = im.msgLocalID;
     m.rawContent = im.content;
     m.timestamp = im.timestamp;
     m.isOutgoing = (im.sender == self.currentUID);
@@ -111,14 +109,7 @@
     if (im.isSelf) {
         return;
     }
-    
-    NSLog(@"receive group msg");
-    int now = (int)time(NULL);
-    if (now - self.lastReceivedTimestamp > 1) {
-        [[self class] playMessageReceivedSound];
-        self.lastReceivedTimestamp = now;
-    }
-    
+
     [self loadSenderInfo:m];
     [self downloadMessageContent:m];
     [self updateNotificationDesc:m];
@@ -212,6 +203,26 @@
 }
 
 
+-(BOOL)getMessageOutgoing:(IMessage*)msg {
+    return (msg.sender == self.currentUID);
+}
+
+-(id<IMessageIterator>)newMessageIterator {
+    return [self.messageDB newMessageIterator: self.groupID];
+}
+
+//下拉刷新
+-(id<IMessageIterator>)newForwardMessageIterator:(int64_t)messageID {
+    return [self.messageDB newForwardMessageIterator:self.groupID messageID:messageID];
+}
+
+//上拉刷新
+-(id<IMessageIterator>)newBackwardMessageIterator:(int64_t)messageID {
+    return [self.messageDB newBackwardMessageIterator:self.groupID messageID:messageID];
+}
+
+
+
 - (void)sendMessage:(IMessage*)message {
     if (message.type == MESSAGE_AUDIO) {
         message.uploading = YES;
@@ -229,7 +240,7 @@
         IMMessage *im = [[IMMessage alloc] init];
         im.sender = message.sender;
         im.receiver = message.receiver;
-        im.msgLocalID = message.msgLocalID;
+        im.msgLocalID = message.msgId;
         im.isText = YES;
         im.content = message.rawContent;
         [[IMService instance] sendGroupMessageAsync:im];
@@ -251,10 +262,15 @@
     [[NSNotificationCenter defaultCenter] postNotification:notification];
 }
 
--(IMessage*)newOutMessage {
+-(IMessage*)newOutMessage:(MessageContent*)content {
     IMessage *msg = [[IMessage alloc] init];
     msg.sender = self.currentUID;
     msg.receiver = self.groupID;
+    msg.uuid = [[NSUUID UUID] UUIDString];
+    msg.content = content;
+    msg.timestamp = (int)time(NULL);
+    msg.isOutgoing = YES;
+    [msg generateRaw];
     return msg;
 }
 

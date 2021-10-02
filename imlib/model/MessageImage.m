@@ -9,45 +9,22 @@
 
 
 @implementation MessageImage
-- (id)initWithImageURL:(NSString *)imageURL width:(int)width height:(int)height uuid:(NSString*)uuid {
-    self = [super init];
-    if (self) {
-        NSDictionary *image = @{@"url":imageURL,
-                                @"width":[NSNumber numberWithInt:width],
-                                @"height":[NSNumber numberWithInt:height]};
-        
-        //保留key:image是为了兼容性
-        NSDictionary *dic = @{@"image2":image,
-                              @"image":imageURL,
-                              @"uuid":uuid};
-        NSString* newStr = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:dic options:0 error:nil] encoding:NSUTF8StringEncoding];
-        self.raw = newStr;
-    }
-    return self;
-}
 - (id)initWithImageURL:(NSString *)imageURL width:(int)width height:(int)height {
-    self = [super init];
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    NSDictionary *image = @{@"url":imageURL,
+                            @"width":[NSNumber numberWithInt:width],
+                            @"height":[NSNumber numberWithInt:height]};
+
+    NSDictionary *dic = @{@"image2":image,
+                          @"uuid":uuid};
+    self = [super initWithDictionary:dic];
     if (self) {
-        NSString *uuid = [[NSUUID UUID] UUIDString];
-        NSDictionary *image = @{@"url":imageURL,
-                                @"width":[NSNumber numberWithInt:width],
-                                @"height":[NSNumber numberWithInt:height]};
-        
-        //保留key:image是为了兼容性
-        NSDictionary *dic = @{@"image2":image,
-                              @"image":imageURL,
-                              @"uuid":uuid};
-        NSString* newStr = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:dic options:0 error:nil] encoding:NSUTF8StringEncoding];
-        self.raw = newStr;
+
+    
     }
     return self;
 }
 -(NSString*)imageURL {
-    NSString *url = [self.dict objectForKey:@"image"];
-    if (url != nil) {
-        return url;
-    }
-    
     NSDictionary *image = [self.dict objectForKey:@"image2"];
     return [image objectForKey:@"url"];
 }
@@ -69,7 +46,12 @@
 }
 
 -(MessageImageContent*)cloneWithURL:(NSString*)url {
-    MessageImageContent *newContent = [[MessageImageContent alloc] initWithImageURL:url width:self.width height:self.height uuid:self.uuid];
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:self.dict];
+    NSDictionary *image = @{@"url":url,
+                            @"width":@(self.width),
+                            @"height":@(self.height)};
+    [dict setObject:image forKey:@"image2"];
+    MessageImageContent *newContent = [[MessageImageContent alloc] initWithDictionary:dict];
     return newContent;
 }
 

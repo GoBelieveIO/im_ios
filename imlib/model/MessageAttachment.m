@@ -10,27 +10,25 @@
 
 @implementation MessageAttachment
 
-- (id)initWithAttachment:(int)msgLocalID address:(NSString*)address {
-    self = [super init];
+- (id)initWithAttachment:(int64_t)msgLocalID address:(NSString*)address {
+    NSDictionary *attachment = @{@"address":address,
+                                 @"msg_id":@(msgLocalID)};
+    NSDictionary *dic = @{@"attachment":attachment};
+    self = [super initWithDictionary:dic];
     if (self) {
-        NSDictionary *attachment = @{@"address":address,
-                                     @"msg_id":[NSNumber numberWithInt:msgLocalID]};
-        NSDictionary *dic = @{@"attachment":attachment};
-        NSString* newStr = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:dic options:0 error:nil] encoding:NSUTF8StringEncoding];
-        self.raw =  newStr;
+
     }
     return self;
     
 }
 
-- (id)initWithAttachment:(int)msgLocalID url:(NSString*)url {
-    self = [super init];
+- (id)initWithAttachment:(int64_t)msgLocalID url:(NSString*)url {
+    NSDictionary *attachment = @{@"url":url,
+                                 @"msg_id":@(msgLocalID)};
+    NSDictionary *dic = @{@"attachment":attachment};
+    self = [super initWithDictionary:dic];
     if (self) {
-        NSDictionary *attachment = @{@"url":url,
-                                     @"msg_id":[NSNumber numberWithInt:msgLocalID]};
-        NSDictionary *dic = @{@"attachment":attachment};
-        NSString* newStr = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:dic options:0 error:nil] encoding:NSUTF8StringEncoding];
-        self.raw =  newStr;
+
     }
     return self;
 }

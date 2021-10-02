@@ -9,43 +9,21 @@
 
 
 @implementation MessageVideo
-- (id)initWithVideoURL:(NSString *)videoURL
-             thumbnail:(NSString*)thumbnail
-                 width:(int)width
-                height:(int)height
-              duration:(int)duration
-                  size:(int)size
-                  uuid:(NSString*)uuid {
-    self = [super init];
-    if (self) {
-        NSDictionary *video = @{@"url":videoURL,
-                                @"thumbnail":thumbnail,
-                                @"duration":@(duration),
-                                @"width":[NSNumber numberWithInt:width],
-                                @"height":[NSNumber numberWithInt:height]};
-
-        NSDictionary *dic = @{@"video":video,
-                              @"uuid":uuid};
-        NSString* newStr = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:dic options:0 error:nil] encoding:NSUTF8StringEncoding];
-        self.raw = newStr;
-    }
-    return self;
-}
 - (id)initWithVideoURL:(NSString *)videoURL thumbnail:(NSString*)thumbnail width:(int)width height:(int)height duration:(int)duration size:(int)size {
-    self = [super init];
-    if (self) {
-        NSString *uuid = [[NSUUID UUID] UUIDString];
-        NSDictionary *video = @{@"url":videoURL,
-                                @"thumbnail":thumbnail,
-                                @"duration":@(duration),
-                                @"width":[NSNumber numberWithInt:width],
-                                @"height":[NSNumber numberWithInt:height],
-                                @"size":[NSNumber numberWithInt:size]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    NSDictionary *video = @{@"url":videoURL,
+                            @"thumbnail":thumbnail,
+                            @"duration":@(duration),
+                            @"width":[NSNumber numberWithInt:width],
+                            @"height":[NSNumber numberWithInt:height],
+                            @"size":[NSNumber numberWithInt:size]};
 
-        NSDictionary *dic = @{@"video":video,
-                              @"uuid":uuid};
-        NSString* newStr = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:dic options:0 error:nil] encoding:NSUTF8StringEncoding];
-        self.raw = newStr;
+    NSDictionary *dic = @{@"video":video,
+                          @"uuid":uuid};
+    
+    self = [super initWithDictionary:dic];
+    if (self) {
+
     }
     return self;
 }
@@ -80,20 +58,21 @@
     return [[video objectForKey:@"size"] intValue];
 }
 
--(MessageVideo*)cloneWithURL:(NSString*)url thumbnail:(NSString *)thumbnail {
-    MessageVideo *newContent = [[MessageVideo alloc] initWithVideoURL:url
-                                                            thumbnail:thumbnail
-                                                                width:self.width
-                                                               height:self.height
-                                                             duration:self.duration
-                                                                 size:self.size
-                                                                 uuid:self.uuid];
-    return newContent;
-}
-
 -(int)type {
     return MESSAGE_VIDEO;
 }
+
+
+-(MessageVideo*)cloneWithURL:(NSString*)url thumbnail:(NSString *)thumbnail {
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:self.dict];
+    NSMutableDictionary *video = [NSMutableDictionary dictionaryWithDictionary:[dict objectForKey:@"video"]];
+    [video setObject:url forKey:@"url"];
+    [video setObject:thumbnail forKey:@"thumbnail"];
+    [dict setObject:video forKey:@"video"];
+    MessageVideo *newContent = [[MessageVideo alloc] initWithDictionary:dict];
+    return newContent;
+}
+
 @end
 
 

@@ -59,6 +59,7 @@
         
         
         [self.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.size.mas_greaterThanOrEqualTo(CGSizeMake(kLocationWidth, kLocationHeight));
             make.edges.equalTo(self);
         }];
         

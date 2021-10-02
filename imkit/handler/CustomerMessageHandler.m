@@ -27,51 +27,37 @@
 -(void)repairFailureMessage:(NSString*)uuid {
     CustomerMessageDB *db = [CustomerMessageDB instance];
     if (uuid.length > 0) {
-        int msgId = [db getMessageId:uuid];
+        int64_t msgId = [db getMessageId:uuid];
         IMessage *mm = [db getMessage:msgId];
         if (mm != nil) {
             if ((mm.flags & MESSAGE_FLAG_FAILURE) != 0 || (mm.flags & MESSAGE_FLAG_ACK) == 0) {
                 mm.flags = mm.flags & (~MESSAGE_FLAG_FAILURE);
                 mm.flags = mm.flags | MESSAGE_FLAG_ACK;
-                [db updateFlags:mm.msgLocalID flags:mm.flags];
+                [db updateFlags:mm.msgId flags:mm.flags];
             }
         }
     }
 }
 
--(BOOL)handleCustomerSupportMessage:(CustomerMessage*)msg {
-    ICustomerMessage *m = [[ICustomerMessage alloc] init];
-    m.customerAppID = msg.customerAppID;
-    m.customerID = msg.customerID;
-    m.storeID = msg.storeID;
-    m.sellerID = msg.sellerID;
-    m.isSupport = YES;
-    m.sender = msg.customerID;
-    m.receiver = msg.storeID;
-    m.rawContent = msg.content;
-    m.timestamp = msg.timestamp;
-
-    BOOL r = [[CustomerMessageDB instance] insertMessage:m];
-    if (r) {
-        msg.msgLocalID = m.msgLocalID;
-    }
-    
-    return r;
-}
-
 -(BOOL)handleMessage:(CustomerMessage*)msg {
+    int64_t peerAppId;
+    int64_t peer;
     ICustomerMessage *m = [[ICustomerMessage alloc] init];
-    m.customerAppID = msg.customerAppID;
-    m.customerID = msg.customerID;
-    m.storeID = msg.storeID;
-    m.sellerID = msg.sellerID;
-    m.isSupport = NO;
-    m.sender = msg.customerID;
-    m.receiver = msg.storeID;
+    m.senderAppID = msg.senderAppID;
+    m.sender = msg.sender;
+    m.receiverAppID = msg.receiverAppID;
+    m.receiver = msg.receiver;
     m.rawContent = msg.content;
     m.timestamp = msg.timestamp;
-    if (self.uid == msg.customerID) {
+    if (self.uid == msg.sender && self.appid == msg.senderAppID) {
+        peerAppId = msg.receiverAppID;
+        peer = msg.receiver;
         m.flags = m.flags | MESSAGE_FLAG_ACK;
+        m.isOutgoing = YES;
+    } else {
+        peerAppId = msg.senderAppID;
+        peer = msg.sender;
+        m.isOutgoing = NO;
     }
     
     if (msg.isSelf) {
@@ -80,16 +66,16 @@
     } else if (m.type == MESSAGE_REVOKE) {
         BOOL r = YES;
         MessageRevoke *revoke = m.revokeContent;
-        int msgId = [[CustomerMessageDB instance] getMessageId:revoke.msgid];
+        int64_t msgId = [[CustomerMessageDB instance] getMessageId:revoke.msgid];
         if (msgId > 0) {
             r = [[CustomerMessageDB instance] updateMessageContent:msgId content:msg.content];
             [[CustomerMessageDB instance] removeMessageIndex:msgId];
         }
         return r;
     } else {
-        BOOL r = [[CustomerMessageDB instance] insertMessage:m];
+        BOOL r = [[CustomerMessageDB instance] insertMessage:m uid:peer appid:peerAppId];
         if (r) {
-            msg.msgLocalID = m.msgLocalID;
+            msg.msgLocalID = m.msgId;
         }
         return r;
     }
@@ -102,7 +88,7 @@
         MessageContent *content = [IMessage fromRaw:msg.content];
         if (content.type == MESSAGE_REVOKE) {
             MessageRevoke *revoke = (MessageRevoke*)content;
-            int revokedMsgId = [[CustomerMessageDB instance] getMessageId:revoke.msgid];
+            int64_t revokedMsgId = [[CustomerMessageDB instance] getMessageId:revoke.msgid];
             if (revokedMsgId > 0) {
                 [[CustomerMessageDB instance]  updateMessageContent:revokedMsgId content:msg.content];
                 [[CustomerMessageDB instance] removeMessageIndex:revokedMsgId];

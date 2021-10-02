@@ -9,11 +9,10 @@
 
 @implementation MessageACK
 -(id)initWithError:(int)err {
-    self = [super init];
+    NSDictionary *dic = @{@"ack":@{@"error":[NSNumber numberWithInt:err]}};
+    self = [super initWithDictionary:dic];
     if (self) {
-        NSDictionary *dic = @{@"ack":@{@"error":[NSNumber numberWithInt:err]}};
-        NSString* newStr = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:dic options:0 error:nil] encoding:NSUTF8StringEncoding];
-        self.raw =  newStr;
+
     }
     return self;
 }

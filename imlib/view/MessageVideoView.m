@@ -69,6 +69,7 @@
         [self.uploadIndicatorView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.edges.equalTo(self);
         }];
+        
         [self.downloadIndicatorView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.edges.equalTo(self);
         }];
@@ -139,7 +140,7 @@
         [self.uploadIndicatorView stopAnimating];
     }
     
-    [self setNeedsDisplay];
+    [self updateConstraints];
 }
 
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
@@ -179,7 +180,8 @@
     int w = self.msg.imageContent.width;
     int h = self.msg.imageContent.height;
     if (w > 0 && h > 0) {
-        CGSize size = CGSizeMake(kVideoWidth, kVideoWidth*(h*1.0/w));
+        int height = kVideoWidth*(h*1.0/w);
+        CGSize size = CGSizeMake(kVideoWidth, height);
         return size;
     } else {
         CGSize size = CGSizeMake(kVideoWidth, kVideoHeight);
@@ -189,6 +191,14 @@
 
 -(void)layoutSubviews {
     [super layoutSubviews];
+}
+
+- (void)updateConstraints {
+    CGSize size = [self bubbleSize];
+    [self mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.size.mas_equalTo(size);
+    }];
+    [super updateConstraints];
 }
 
 @end

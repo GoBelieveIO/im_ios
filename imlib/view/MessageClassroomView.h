@@ -15,4 +15,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+typedef MessageClassroomView MessageConferenceView ;
+
 NS_ASSUME_NONNULL_END

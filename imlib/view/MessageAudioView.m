@@ -69,8 +69,9 @@
         [self.progressView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.equalTo(self.playBtn.mas_right);
             make.centerY.equalTo(self);
-            make.right.equalTo(self.mas_right).with.offset(-8);
             make.height.mas_equalTo(kProgressViewHeight);
+
+            make.right.equalTo(self.mas_right).with.offset(-8);
         }];
         
         [self.timeLengthLabel mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -91,6 +92,11 @@
         
         [self.downloadIndicatorView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.edges.equalTo(self);
+        }];
+        
+        CGSize bubbleSize = CGSizeMake(kAudioWidth, kAudioHeight);
+        [self mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.size.mas_equalTo(bubbleSize);
         }];
     }
     return self;
@@ -193,6 +199,7 @@
     CGSize bubbleSize = CGSizeMake(kAudioWidth, kAudioHeight);
     return bubbleSize;
 }
+
 
 -(void)layoutSubviews {
     [super layoutSubviews];

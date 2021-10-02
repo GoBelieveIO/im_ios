@@ -5,7 +5,7 @@
 
 -(SQLPeerMessageIterator*)initWithDB:(FMDatabase*)db peer:(int64_t)peer secret:(BOOL)secret;
 
--(SQLPeerMessageIterator*)initWithDB:(FMDatabase*)db peer:(int64_t)peer position:(int)msgID secret:(BOOL)secret;
+-(SQLPeerMessageIterator*)initWithDB:(FMDatabase*)db peer:(int64_t)peer position:(int64_t)msgID secret:(BOOL)secret;
 
 @property(nonatomic, strong) FMResultSet *rs;
 @end
@@ -27,7 +27,7 @@
     return self;
 }
 
--(SQLPeerMessageIterator*)initWithDB:(FMDatabase*)db peer:(int64_t)peer position:(int)msgID secret:(BOOL)secret {
+-(SQLPeerMessageIterator*)initWithDB:(FMDatabase*)db peer:(int64_t)peer position:(int64_t)msgID secret:(BOOL)secret {
     self = [super init];
     if (self) {
         int s = secret ? 1 : 0;
@@ -37,7 +37,7 @@
     return self;
 }
 
--(SQLPeerMessageIterator*)initWithDB:(FMDatabase*)db peer:(int64_t)peer middle:(int)msgID secret:(BOOL)secret {
+-(SQLPeerMessageIterator*)initWithDB:(FMDatabase*)db peer:(int64_t)peer middle:(int64_t)msgID secret:(BOOL)secret {
     self = [super init];
     if (self) {
         int s = secret ? 1 : 0;
@@ -48,7 +48,7 @@
 }
 
 //上拉刷新
--(SQLPeerMessageIterator*)initWithDB:(FMDatabase*)db peer:(int64_t)peer last:(int)msgID secret:(BOOL)secret {
+-(SQLPeerMessageIterator*)initWithDB:(FMDatabase*)db peer:(int64_t)peer last:(int64_t)msgID secret:(BOOL)secret {
     self = [super init];
     if (self) {
         int s = secret ? 1 : 0;
@@ -71,7 +71,7 @@
     msg.flags = [self.rs intForColumn:@"flags"];
     msg.secret = [self.rs intForColumn:@"secret"] == 1;
     msg.rawContent = [self.rs stringForColumn:@"content"];
-    msg.msgLocalID = [self.rs intForColumn:@"id"];
+    msg.msgId = [self.rs intForColumn:@"id"];
     return msg;
 }
 
@@ -87,7 +87,7 @@
     
     [db beginTransaction];
     int secret = self.secret ? 1 : 0;
-    NSString *uuid = msg.uuid ? msg.uuid : @"";
+    NSString *uuid = msg.uuid ? msg.uuid : nil;
     BOOL r = [db executeUpdate:@"INSERT INTO peer_message (peer, sender, receiver, timestamp, secret, flags, uuid, content) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
               @(uid), @(msg.sender), @(msg.receiver), @(msg.timestamp), @(secret), @(msg.flags), uuid, msg.rawContent];
     if (!r) {
@@ -108,7 +108,7 @@
     return r;
 }
 
--(BOOL)removeMessage:(int)msgLocalID {
+-(BOOL)removeMessage:(int64_t)msgLocalID {
     FMDatabase *db = self.db;
     BOOL r = [db executeUpdate:@"DELETE FROM peer_message WHERE id=?", @(msgLocalID)];
     if (!r) {
@@ -124,7 +124,7 @@
     return YES;
 }
 
--(BOOL)removeMessageIndex:(int)msgLocalID {
+-(BOOL)removeMessageIndex:(int64_t)msgLocalID {
     FMDatabase *db = self.db;
     BOOL r = [db executeUpdate:@"DELETE FROM peer_message_fts WHERE rowid=?", @(msgLocalID)];
     if (!r) {
@@ -155,7 +155,7 @@
     return YES;
 }
 
--(BOOL)updateMessageContent:(int)msgLocalID content:(NSString*)content {
+-(BOOL)updateMessageContent:(int64_t)msgLocalID content:(NSString*)content {
     FMDatabase *db = self.db;
     
     BOOL r = [db executeUpdate:@"UPDATE peer_message SET content=? WHERE id=?", content, @(msgLocalID)];
@@ -199,7 +199,7 @@
         msg.flags = [rs intForColumn:@"flags"];
         msg.secret = [rs intForColumn:@"secret"] == 1;
         msg.rawContent = [rs stringForColumn:@"content"];
-        msg.msgLocalID = [rs intForColumn:@"id"];
+        msg.msgId = [rs longLongIntForColumn:@"id"];
         [rs close];
         return msg;
     }
@@ -207,10 +207,10 @@
     return nil;
 }
 
--(int)getMessageId:(NSString*)uuid {
+-(int64_t)getMessageId:(NSString*)uuid {
     FMResultSet *rs = [self.db executeQuery:@"SELECT id FROM peer_message WHERE uuid=?", uuid];
     if ([rs next]) {
-        int msgId = (int)[rs longLongIntForColumn:@"id"];
+        int64_t msgId = (int)[rs longLongIntForColumn:@"id"];
         [rs close];
         return msgId;
     }
@@ -228,49 +228,57 @@
         msg.flags = [rs intForColumn:@"flags"];
         msg.secret = [rs intForColumn:@"secret"] == 1;
         msg.rawContent = [rs stringForColumn:@"content"];
-        msg.msgLocalID = [rs intForColumn:@"id"];
+        msg.msgId = [rs longLongIntForColumn:@"id"];
         return msg;
     }
     return nil;
     
 }
 
--(BOOL)acknowledgeMessage:(int)msgLocalID{
+-(int)acknowledgeMessage:(int64_t)msgLocalID{
     return [self addFlag:msgLocalID flag:MESSAGE_FLAG_ACK];
 }
 
--(BOOL)markMessageFailure:(int)msgLocalID {
+-(int)markMessageFailure:(int64_t)msgLocalID {
     return [self addFlag:msgLocalID flag:MESSAGE_FLAG_FAILURE];
 }
 
--(BOOL)markMesageListened:(int)msgLocalID {
+-(int)markMesageListened:(int64_t)msgLocalID {
     return [self addFlag:msgLocalID  flag:MESSAGE_FLAG_LISTENED];
 }
 
--(BOOL)addFlag:(int)msgLocalID flag:(int)f {
+-(int)markMessageReaded:(int64_t)msgLocalID {
+    return [self addFlag:msgLocalID  flag:MESSAGE_FLAG_READED];
+}
+
+-(int)addFlag:(int64_t)msgLocalID flag:(int)f {
     FMDatabase *db = self.db;
     FMResultSet *rs = [db executeQuery:@"SELECT flags FROM peer_message WHERE id=?", @(msgLocalID)];
     if (!rs) {
         return NO;
     }
+    int changes = 0;
     if ([rs next]) {
         int flags = [rs intForColumn:@"flags"];
-        flags |= f;
-        
-        
-        BOOL r = [db executeUpdate:@"UPDATE peer_message SET flags= ? WHERE id= ?", @(flags), @(msgLocalID)];
-        if (!r) {
-            NSLog(@"error = %@", [db lastErrorMessage]);
-            return NO;
+        if ((flags & f) == 0) {
+            flags |= f;
+            
+            
+            BOOL r = [db executeUpdate:@"UPDATE peer_message SET flags= ? WHERE id= ?", @(flags), @(msgLocalID)];
+            if (!r) {
+                NSLog(@"error = %@", [db lastErrorMessage]);
+                return 0;
+            }
+            changes = [db changes];
         }
     }
     
     [rs close];
-    return YES;
+    return changes;
 }
 
 
--(BOOL)eraseMessageFailure:(int)msgLocalID {
+-(BOOL)eraseMessageFailure:(int64_t)msgLocalID {
     FMDatabase *db = self.db;
     FMResultSet *rs = [db executeQuery:@"SELECT flags FROM peer_message WHERE id=?", @(msgLocalID)];
     if (!rs) {
@@ -294,7 +302,7 @@
     
 }
 
--(BOOL)updateFlags:(int)msgLocalID flags:(int)flags {
+-(BOOL)updateFlags:(int64_t)msgLocalID flags:(int)flags {
     FMDatabase *db = self.db;
     
     BOOL r = [db executeUpdate:@"UPDATE peer_message SET flags= ? WHERE id= ?", @(flags), @(msgLocalID)];
@@ -311,14 +319,14 @@
     return [[SQLPeerMessageIterator alloc] initWithDB:self.db peer:uid secret:self.secret];
 }
 
--(id<IMessageIterator>)newForwardMessageIterator:(int64_t)uid last:(int)lastMsgID {
+-(id<IMessageIterator>)newForwardMessageIterator:(int64_t)uid messageID:(int64_t)lastMsgID {
     return [[SQLPeerMessageIterator alloc] initWithDB:self.db peer:uid position:lastMsgID secret:self.secret];
 }
--(id<IMessageIterator>)newMiddleMessageIterator:(int64_t)uid messageID:(int)messageID {
+-(id<IMessageIterator>)newMiddleMessageIterator:(int64_t)uid messageID:(int64_t)messageID {
     return [[SQLPeerMessageIterator alloc] initWithDB:self.db peer:uid middle:messageID secret:self.secret];
 }
 
--(id<IMessageIterator>)newBackwardMessageIterator:(int64_t)uid messageID:(int)messageID {
+-(id<IMessageIterator>)newBackwardMessageIterator:(int64_t)uid messageID:(int64_t)messageID {
     return [[SQLPeerMessageIterator alloc] initWithDB:self.db peer:uid last:messageID secret:self.secret];
 }
 

@@ -9,6 +9,14 @@
 
 
 @implementation MessageGroupNotification
+- (id)initWithDictionary:(NSDictionary*)dict {
+    self = [super initWithDictionary:dict];
+    if (self) {
+        NSString *notification = [self.dict objectForKey:@"notification"];
+        self.rawNotification = notification;
+    }
+    return self;
+}
 
 - (id)initWithRaw:(NSString *)raw {
     self = [super initWithRaw:raw];
@@ -20,15 +28,10 @@
 }
 
 - (id)initWithNotification:(NSString*)notification {
-    self = [super init];
+    NSDictionary *dic = @{@"notification":notification};
+    self = [super initWithDictionary:dic];
     if (self) {
-        NSDictionary *dic = @{@"notification":notification};
-        NSString* newStr = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:dic options:0 error:nil] encoding:NSUTF8StringEncoding];
-        self.raw =  newStr;
-        
         self.rawNotification = notification;
-        
-        
     }
     return self;
 }

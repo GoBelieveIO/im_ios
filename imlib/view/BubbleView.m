@@ -28,6 +28,7 @@
 }
 
 -(void)setMsg:(IMessage *)msg {
+    [self invalidateIntrinsicContentSize];
     [self.msg removeObserver:self forKeyPath:@"flags"];
     _msg = msg;
     [self.msg addObserver:self forKeyPath:@"flags" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
@@ -35,4 +36,10 @@
 
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
 }
+
+//在bubbleview的子view也使用了约束的情况下， 此方法在自适应tableview的情况下是无效的
+-(CGSize)intrinsicContentSize {
+    return [self bubbleSize];
+}
+
 @end

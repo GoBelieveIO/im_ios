@@ -12,11 +12,10 @@
 
 @implementation MessageGroupVOIP
 -(id)initWithInitiator:(int64_t)initiator finished:(BOOL)finished {
-    self = [super init];
+    NSDictionary *dic = @{@"group_voip":@{@"initiator":@(initiator), @"finished":@(finished)}};
+    self = [super initWithDictionary:dic];
     if (self) {
-        NSDictionary *dic = @{@"group_voip":@{@"initiator":@(initiator), @"finished":@(finished)}};
-        NSString* newStr = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:dic options:0 error:nil] encoding:NSUTF8StringEncoding];
-        self.raw =  newStr;
+
     }
     return self;
 }

@@ -344,4 +344,37 @@ static NSString * AFCreateMultipartFormBoundary() {
     return request;
 }
 
+
++(NSOperation*)getCustomerSupporter:(int64_t)storeId
+                            success:(void (^)(NSDictionary *resp))success
+                               fail:(void (^)(NSString *err))fail {
+    IMHttpOperation *request = [IMHttpOperation httpOperationWithTimeoutInterval:60];
+    request.targetURL = [[IMHttpAPI instance].apiURL stringByAppendingString:@"/supporters"];
+    
+    NSMutableDictionary *headers = [NSMutableDictionary dictionaryWithObject:@"application/json" forKey:@"Content-Type"];
+    NSString *auth = [NSString stringWithFormat:@"Bearer %@", [IMHttpAPI instance].accessToken];
+    [headers setObject:auth forKey:@"Authorization"];
+    request.headers = headers;
+    request.method = @"GET";
+    request.successCB = ^(IMHttpOperation*commObj, NSURLResponse *response, NSData *data) {
+        NSInteger statusCode = [(NSHTTPURLResponse*)response statusCode];
+        if (statusCode != 200) {
+            NSDictionary *resp = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil];
+            NSLog(@"request err:%@", resp);
+            fail(@"request error");
+            return;
+        }
+        
+        NSDictionary *resp = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil];
+        NSDictionary *dict = [resp objectForKey:@"data"];
+        success(dict);
+    };
+    request.failCB = ^(IMHttpOperation*commObj, IMHttpOperationError error) {
+        NSLog(@"create group fail");
+        fail(@"network error");
+    };
+    [[NSOperationQueue mainQueue] addOperation:request];
+    return request;
+}
+
 @end

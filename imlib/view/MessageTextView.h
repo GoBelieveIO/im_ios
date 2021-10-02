@@ -13,8 +13,4 @@
 @class KILabel;
 @interface MessageTextView : BubbleView
 @property(nonatomic, strong) KILabel *label;
-
-+ (UIFont *)font;
-+ (CGSize)textSizeForText:(NSString *)txt withFont:(UIFont*)font;
-
 @end

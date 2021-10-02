@@ -9,9 +9,9 @@
 #import "IMessage.h"
 
 @interface ICustomerMessage : IMessage
-@property(nonatomic) int64_t customerAppID;
-@property(nonatomic) int64_t customerID;
-@property(nonatomic) int64_t storeID;
-@property(nonatomic) int64_t sellerID;
-@property(nonatomic) BOOL  isSupport;
+@property(nonatomic) int64_t senderAppID;
+@property(nonatomic) int64_t receiverAppID;
+//@property(nonatomic) int64_t storeID;
+//@property(nonatomic) int64_t sellerID;
+//@property(nonatomic) BOOL  isSupport;
 @end

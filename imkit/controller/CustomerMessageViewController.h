@@ -16,9 +16,19 @@
 
 @interface CustomerMessageViewController : MessageViewController<TCPConnectionObserver>
 
-@property(nonatomic, copy) NSString *peerName;
+
+@property(nonatomic, assign) int64_t appid;
+@property(nonatomic, assign) int64_t currentUID;
+@property(nonatomic, assign) int64_t peerAppID;
+@property(nonatomic, assign) int64_t peerUID;
 @property(nonatomic, assign) int64_t storeID;
-@property(nonatomic, assign) int64_t sellerID;
-@property(nonatomic, assign) int64_t appID;
+
+@property(nonatomic, copy) NSString *sessionID;
+
+@property(nonatomic, copy) NSString *name;
+@property(nonatomic, copy) NSString *appName;
+@property(nonatomic, copy) NSString *peerName;
+@property(nonatomic, copy) NSString *peerAppName;
+@property(nonatomic, copy) NSString *storeName;
 
 @end

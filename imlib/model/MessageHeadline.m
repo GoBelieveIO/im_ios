@@ -10,11 +10,10 @@
 
 @implementation MessageHeadline
 -(id)initWithHeadline:(NSString*)headline {
-    self = [super init];
+    NSDictionary *dic = @{@"headline":headline};
+    self = [super initWithDictionary:dic];
     if (self) {
-        NSDictionary *dic = @{@"headline":headline};
-        NSString* newStr = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:dic options:0 error:nil] encoding:NSUTF8StringEncoding];
-        self.raw =  newStr;
+
     }
     return self;
 }

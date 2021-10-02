@@ -13,6 +13,8 @@
 #import <gobelieve/MessageViewController.h>
 #import <gobelieve/IMHttpAPI.h>
 #import <gobelieve/PeerMessageViewController.h>
+#import <gobelieve/GroupMessageViewController.h>
+#import <gobelieve/CustomerMessageViewController.h>
 #import <gobelieve/PeerMessageDB.h>
 #import <gobelieve/GroupMessageDB.h>
 #import <gobelieve/CustomerMessageDB.h>
@@ -20,15 +22,19 @@
 #import <gobelieve/PeerMessageHandler.h>
 #import <gobelieve/GroupMessageHandler.h>
 #import <gobelieve/CustomerMessageHandler.h>
-
-#import "MessageListViewController.h"
-#import "Conversation.h"
+#import "RoomViewController.h"
 #import <FMDB/FMDB.h>
-#import <sqlite3.h>
+#import "Database.h"
+
+#define TEST_PEER
+//#define TEST_GROUP
+//#define TEST_CUSTOMER
+//#define TEST_ROOM
+
+#define APPID 7
 
 
-@interface MainViewController ()<MessageViewControllerUserDelegate,
-    MessageListViewControllerGroupDelegate>{
+@interface MainViewController (){
     UITextField *tfSender;
     UITextField *tfReceiver;
 }
@@ -73,7 +79,15 @@
     tfReceiver = [[UITextField alloc] initWithFrame:CGRectMake(52, startHeight + 4, 180, 37)];
     tfReceiver.textColor = [UIColor whiteColor];
     tfReceiver.font = [UIFont systemFontOfSize:18];
+#ifdef TEST_PEER
     tfReceiver.placeholder = @"接收用户id";
+#elif defined TEST_GROUP
+    tfReceiver.placeholder = @"群组id(15)";
+#elif defined TEST_CUSTOMER
+    tfReceiver.placeholder = @"商店id(7)";
+#elif defined TEST_ROOM
+    tfReceiver.placeholder = @"房间id";
+#endif
     tfReceiver.keyboardType = UIKeyboardTypeNumberPad;
     [self.view addSubview:tfReceiver];
     
@@ -125,7 +139,7 @@
 }
 
 - (void)actionChat {
-    if (!tfSender.text.length) {
+    if (!tfSender.text.length || !tfSender.text.length) {
         NSLog(@"invalid input");
         return;
     }
@@ -147,20 +161,9 @@
             NSLog(@"login success");
             NSString *path = [self getDocumentPath];
             NSString *dbPath = [NSString stringWithFormat:@"%@/gobelieve_%lld.db", path, [tfSender.text longLongValue]];
-
-            //检查数据库文件是否已经存在
-            NSFileManager *fileManager = [NSFileManager defaultManager];
-            if (![fileManager fileExistsAtPath:dbPath]) {
-                NSString *p = [[NSBundle mainBundle] pathForResource:@"gobelieve" ofType:@"db"];
-                [fileManager copyItemAtPath:p toPath:dbPath error:nil];
-            }
-            FMDatabase *db = [[FMDatabase alloc] initWithPath:dbPath];
-            BOOL r = [db openWithFlags:SQLITE_OPEN_READWRITE|SQLITE_OPEN_WAL vfs:nil];
-            if (!r) {
-                NSLog(@"open database error:%@", [db lastError]);
-                db = nil;
-                NSAssert(NO, @"");
-            }
+            dbPath = [NSString stringWithFormat:@"%@/gobelieve.db", path];
+            NSLog(@"open message db:%@", dbPath);
+            FMDatabase *db = [Database openMessageDB:dbPath];
 
             [PeerMessageDB instance].db = db;
             [GroupMessageDB instance].db = db;
@@ -169,6 +172,7 @@
             [PeerMessageHandler instance].uid = [tfSender.text longLongValue];
             [GroupMessageHandler instance].uid = [tfSender.text longLongValue];
             [CustomerMessageHandler instance].uid = [tfSender.text longLongValue];
+            [CustomerMessageHandler instance].appid = APPID;
             
             [IMHttpAPI instance].accessToken = token;
             [IMService instance].token = token;
@@ -205,23 +209,52 @@
                                           NSLog(@"bind device token fail");
                                       }];
             }
-
-            if (tfReceiver.text.length > 0) {
-                PeerMessageViewController *msgController = [[PeerMessageViewController alloc] init];
-                msgController.currentUID = [tfSender.text longLongValue];
-                msgController.peerUID = [tfReceiver.text longLongValue];
-                msgController.peerName = @"测试";
-                msgController.userDelegate = self;
-                self.navigationController.navigationBarHidden = NO;
-                [self.navigationController pushViewController:msgController animated:YES];
-            } else {
-                MessageListViewController *ctrl = [[MessageListViewController alloc] init];
-                ctrl.currentUID = [tfSender.text longLongValue];
-                ctrl.userDelegate = self;
-                ctrl.groupDelegate = self;
-                self.navigationController.navigationBarHidden = NO;
-                [self.navigationController pushViewController:ctrl animated:YES];
-            }
+            
+#ifdef TEST_PEER
+            PeerMessageViewController *msgController = [[PeerMessageViewController alloc] init];
+            msgController.currentUID = [tfSender.text longLongValue];
+            msgController.peerUID = [tfReceiver.text longLongValue];
+            msgController.peerName = @"测试";
+            self.navigationController.navigationBarHidden = NO;
+            [self.navigationController pushViewController:msgController animated:YES];
+#elif defined TEST_GROUP
+            GroupMessageViewController *msgController = [[GroupMessageViewController alloc] init];
+            msgController.currentUID = [tfSender.text longLongValue];
+            msgController.groupID = [tfReceiver.text longLongValue];
+            msgController.groupName = @"测试群";
+            msgController.isShowUserName = YES;
+            self.navigationController.navigationBarHidden = NO;
+            [self.navigationController pushViewController:msgController animated:YES];
+#elif defined TEST_CUSTOMER
+            CustomerMessageViewController *msgController = [[CustomerMessageViewController alloc] init];
+            msgController.currentUID = [tfSender.text longLongValue];
+            msgController.appid = APPID;
+            msgController.peerUID = 0;
+            msgController.peerAppID = 0;
+            msgController.storeID = [tfReceiver.text longLongValue];
+            msgController.name = @"测试";
+            msgController.appName = @"demo";
+            msgController.storeName = @"测试商店";
+            msgController.peerName = @"";
+            msgController.peerAppName = @"";
+            msgController.isShowUserName = YES;
+            self.navigationController.navigationBarHidden = NO;
+            [self.navigationController pushViewController:msgController animated:YES];
+#elif defined TEST_ROOM
+            RoomViewController *msgController = [[RoomViewController alloc] init];
+            msgController.uid = [tfSender.text longLongValue];
+            msgController.roomID = [tfReceiver.text longLongValue];
+            
+            self.navigationController.navigationBarHidden = NO;
+            [self.navigationController pushViewController:msgController animated:YES];
+#endif
+            
+#if 0
+            MessageListViewController *ctrl = [[MessageListViewController alloc] init];
+            ctrl.currentUID = [tfSender.text longLongValue];
+            self.navigationController.navigationBarHidden = NO;
+            [self.navigationController pushViewController:ctrl animated:YES];
+#endif
         });
     });
 }
@@ -298,50 +331,4 @@
     }
 }
 
-#pragma mark - MessageViewControllerUserDelegate
-//从本地获取用户信息, IUser的name字段为空时，显示identifier字段
-- (IUser*)getUser:(int64_t)uid {
-    IUser *u = [[IUser alloc] init];
-    u.uid = uid;
-    u.name = @"";
-    u.avatarURL = @"http://api.gobelieve.io/images/e837c4c84f706a7988d43d62d190e2a1.png";
-    u.identifier = [NSString stringWithFormat:@"uid:%lld", uid];
-    return u;
-}
-//从服务器获取用户信息
-- (void)asyncGetUser:(int64_t)uid cb:(void(^)(IUser*))cb {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        IUser *u = [[IUser alloc] init];
-        u.uid = uid;
-        u.name = [NSString stringWithFormat:@"name:%lld", uid];
-        u.avatarURL = @"http://api.gobelieve.io/images/e837c4c84f706a7988d43d62d190e2a1.png";
-        u.identifier = [NSString stringWithFormat:@"uid:%lld", uid];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            cb(u);
-        });
-    });
-}
-#pragma mark - MessageListViewControllerGroupDelegate
-//从本地获取群组信息
-- (IGroup*)getGroup:(int64_t)gid {
-    IGroup *g = [[IGroup alloc] init];
-    g.gid = gid;
-    g.name = @"";
-    g.avatarURL = @"";
-    g.identifier = [NSString stringWithFormat:@"gid:%lld", gid];
-    return g;
-}
-//从服务器获取用户信息
-- (void)asyncGetGroup:(int64_t)gid cb:(void(^)(IGroup*))cb {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        IGroup *g = [[IGroup alloc] init];
-        g.gid = gid;
-        g.name = [NSString stringWithFormat:@"gname:%lld", gid];
-        g.avatarURL = @"";
-        g.identifier = [NSString stringWithFormat:@"gid:%lld", gid];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            cb(g);
-        });
-    });
-}
 @end

@@ -39,7 +39,7 @@
     IMMessage *im = [[IMMessage alloc] init];
     im.sender = msg.sender;
     im.receiver = msg.receiver;
-    im.msgLocalID = msg.msgLocalID;
+    im.msgLocalID = msg.msgId;
     
     im.content = msg.rawContent;
 
@@ -49,22 +49,25 @@
 
 //override
 -(void)markMessageFailure:(IMessage*)msg {
-    [[GroupMessageDB instance] markMessageFailure:msg.msgLocalID];
+    [[GroupMessageDB instance] markMessageFailure:msg.msgId];
 }
 
 -(void)saveMessageAttachment:(IMessage*)msg url:(NSString*)url {
     if (msg.audioContent) {
         MessageAudioContent *audioContent = [msg.audioContent cloneWithURL:url];
-        [[GroupMessageDB instance] updateMessageContent:msg.msgLocalID content:audioContent.raw];
+        [[GroupMessageDB instance] updateMessageContent:msg.msgId content:audioContent.raw];
     } else if (msg.imageContent) {
         MessageImageContent *imageContent = [msg.imageContent cloneWithURL:url];
-        [[GroupMessageDB instance] updateMessageContent:msg.msgLocalID content:imageContent.raw];
+        [[GroupMessageDB instance] updateMessageContent:msg.msgId content:imageContent.raw];
+    } else if (msg.fileContent) {
+        MessageFileContent *fileContent = [msg.fileContent cloneWithURL:url];
+        [[GroupMessageDB instance] updateMessageContent:msg.msgId content:fileContent.raw];
     }
 }
 
 -(void)saveMessageAttachment:(IMessage*)msg url:(NSString*)url thumbnail:(NSString*)thumbnail {
     MessageVideoContent *videoContent = [msg.videoContent cloneWithURL:url thumbnail:thumbnail];
-    [[GroupMessageDB instance] updateMessageContent:msg.msgLocalID content:videoContent.raw];
+    [[GroupMessageDB instance] updateMessageContent:msg.msgId content:videoContent.raw];
 }
 
 @end

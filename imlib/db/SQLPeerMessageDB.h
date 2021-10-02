@@ -22,28 +22,30 @@
 
 -(id<IMessageIterator>)newMessageIterator:(int64_t)uid;
 //下拉刷新
--(id<IMessageIterator>)newForwardMessageIterator:(int64_t)uid last:(int)lastMsgID;
+-(id<IMessageIterator>)newForwardMessageIterator:(int64_t)uid messageID:(int64_t)lastMsgID;
 
--(id<IMessageIterator>)newMiddleMessageIterator:(int64_t)uid messageID:(int)messageID;
+-(id<IMessageIterator>)newMiddleMessageIterator:(int64_t)uid messageID:(int64_t)messageID;
 
 //上拉刷新
--(id<IMessageIterator>)newBackwardMessageIterator:(int64_t)uid messageID:(int)messageID;
+-(id<IMessageIterator>)newBackwardMessageIterator:(int64_t)uid messageID:(int64_t)messageID;
 
 
 //获取最新的消息
 -(IMessage*)getLastMessage:(int64_t)uid;
 -(IMessage*)getMessage:(int64_t)msgID;
--(int)getMessageId:(NSString*)uuid;
+-(int64_t)getMessageId:(NSString*)uuid;
 -(BOOL)insertMessage:(IMessage*)msg uid:(int64_t)uid;
--(BOOL)removeMessage:(int)msgLocalID;
--(BOOL)removeMessageIndex:(int)msgLocalID;
+-(BOOL)removeMessage:(int64_t)msgLocalID;
+//删除全文搜索索引
+-(BOOL)removeMessageIndex:(int64_t)msgLocalID;
 -(BOOL)clearConversation:(int64_t)uid;
 -(BOOL)clear;
 -(NSArray*)search:(NSString*)key;
--(BOOL)updateMessageContent:(int)msgLocalID content:(NSString*)content;
--(BOOL)acknowledgeMessage:(int)msgLocalID;
--(BOOL)markMessageFailure:(int)msgLocalID;
--(BOOL)markMesageListened:(int)msgLocalID;
--(BOOL)eraseMessageFailure:(int)msgLocalID;
--(BOOL)updateFlags:(int)msgLocalID flags:(int)flags;
+-(BOOL)updateMessageContent:(int64_t)msgLocalID content:(NSString*)content;
+-(int)acknowledgeMessage:(int64_t)msgLocalID;
+-(int)markMessageFailure:(int64_t)msgLocalID;
+-(int)markMesageListened:(int64_t)msgLocalID;
+-(int)markMessageReaded:(int64_t)msgLocalID;
+-(BOOL)eraseMessageFailure:(int64_t)msgLocalID;
+-(BOOL)updateFlags:(int64_t)msgLocalID flags:(int)flags;
 @end

@@ -8,25 +8,13 @@
 #import "MessageAudio.h"
 
 @implementation MessageAudio
-- (id)initWithAudio:(NSString*)url duration:(int)duration uuid:(NSString*)uuid {
-    self = [super init];
-    if (self) {
-        NSNumber *d = [NSNumber numberWithInteger:duration];
-        NSDictionary *dic = @{@"audio":@{@"url":url, @"duration":d}, @"uuid":uuid};
-        NSString* newStr = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:dic options:0 error:nil] encoding:NSUTF8StringEncoding];
-        self.raw =  newStr;
-    }
-    return self;
-}
-
 - (id)initWithAudio:(NSString*)url duration:(int)duration {
-    self = [super init];
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    NSNumber *d = [NSNumber numberWithInteger:duration];
+    NSDictionary *dic = @{@"audio":@{@"url":url, @"duration":d}, @"uuid":uuid};
+    self = [super initWithDictionary:dic];
     if (self) {
-        NSString *uuid = [[NSUUID UUID] UUIDString];
-        NSNumber *d = [NSNumber numberWithInteger:duration];
-        NSDictionary *dic = @{@"audio":@{@"url":url, @"duration":d}, @"uuid":uuid};
-        NSString* newStr = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:dic options:0 error:nil] encoding:NSUTF8StringEncoding];
-        self.raw =  newStr;
+
     }
     return self;
 }
@@ -40,7 +28,11 @@
 }
 
 -(MessageAudioContent*)cloneWithURL:(NSString*)url {
-    MessageAudioContent *newContent = [[MessageAudioContent alloc] initWithAudio:url duration:self.duration uuid:self.uuid];
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:self.dict];
+    NSMutableDictionary *audio = [NSMutableDictionary dictionaryWithDictionary:[dict objectForKey:@"audio"]];
+    [audio setObject:url forKey:@"url"];
+    [dict setObject:audio forKey:@"audio"];
+    MessageAudioContent *newContent = [[MessageAudioContent alloc] initWithDictionary:dict];
     return newContent;
 }
 

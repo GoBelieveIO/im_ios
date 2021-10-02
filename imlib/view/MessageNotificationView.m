@@ -46,7 +46,7 @@
 }
 
 - (CGSize)bubbleSize {
-    CGFloat width = [UIScreen mainScreen].applicationFrame.size.width * 0.75f;
+    CGFloat width = [UIScreen mainScreen].bounds.size.width * 0.75f;
     CGRect bounds = CGRectMake(0, 0, width, 44);
     
     CGRect r = [self.label textRectForBounds:bounds limitedToNumberOfLines:1];

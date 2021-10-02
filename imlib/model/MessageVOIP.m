@@ -9,11 +9,10 @@
 
 @implementation MessageVOIP
 -(id)initWithFlag:(int)flag duration:(int)duration videoEnabled:(BOOL)videoEnabled {
-    self = [super init];
+    NSDictionary *dic = @{@"voip":@{@"flag":@(flag), @"duration":@(duration), @"video_enabled":@(videoEnabled)}};
+    self = [super initWithDictionary:dic];
     if (self) {
-        NSDictionary *dic = @{@"voip":@{@"flag":@(flag), @"duration":@(duration), @"video_enabled":@(videoEnabled)}};
-        NSString* newStr = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:dic options:0 error:nil] encoding:NSUTF8StringEncoding];
-        self.raw =  newStr;
+        
     }
     return self;
 }

@@ -11,7 +11,7 @@
 @interface MessageRevoke : MessageNotificationContent
 - (id)initWithMsgId:(NSString*)msgid;
 
-@property(nonatomic, readonly) NSString* msgid;
+@property(nonatomic, readonly) NSString* msgid;//撤回消息的uuid
 @end
 
 typedef MessageRevoke MessageRevokeContent;

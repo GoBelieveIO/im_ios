@@ -33,7 +33,7 @@
     for (IMessage *message in self.messages) {
         if (message.receiver == msg.receiver &&
             message.sender == msg.sender &&
-            message.msgLocalID == msg.msgLocalID) {
+            message.msgId == msg.msgId) {
             return YES;
         }
     }

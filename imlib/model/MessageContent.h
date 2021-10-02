@@ -27,17 +27,39 @@
 #define MESSAGE_REVOKE 14
 #define MESSAGE_ACK 15
 #define MESSAGE_CLASSROOM 16 //群课堂
+#define MESSAGE_READED 17 //消息已读
+#define MESSAGE_TAG 18 //消息已读
+#define MESSAGE_CONFERENCE 19 //视频会议
 
 #define MESSAGE_TIME_BASE  254 //虚拟的消息，不会存入磁盘
 #define MESSAGE_ATTACHMENT 255 //消息附件， 只存在本地磁盘
 
 @interface MessageContent : NSObject
-@property(nonatomic, copy) NSString *raw;
-@property(nonatomic, readonly) NSString *uuid;
 @property(nonatomic, readonly) int type;
+@property(nonatomic, readonly) NSString *raw;
+
+@property(nonatomic) NSString *uuid;
+@property(nonatomic) NSString *reference;
+@property(nonatomic) int64_t groupId;//点对点消息包含此字段, 群内私聊消息&群消息已读
+
+
+
 
 //protected
-@property(nonatomic)NSDictionary *dict;
+@property(nonatomic, readonly) NSDictionary *dict;
 
 - (id)initWithRaw:(NSString*)raw;
+- (id)initWithDictionary:(NSDictionary*)dict;
+
+-(void)generateRaw;
+@end
+
+
+@interface MessageContent(Customer)
+//客服消息
+@property(nonatomic) int64_t storeId;
+@property(nonatomic) NSString *name;//用户昵称
+@property(nonatomic) NSString *appName;
+@property(nonatomic) NSString *storeName;
+@property(nonatomic) NSString *sessionId;
 @end

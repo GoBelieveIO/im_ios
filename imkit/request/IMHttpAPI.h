@@ -50,18 +50,14 @@
  */
 +(NSOperation*)unbindDeviceToken:(NSString*)deviceToken
                     pushKitToken:(NSString*)pushKitToken
-                         success:(void (^)())success
-                            fail:(void (^)())fail;
+                         success:(void (^)(void))success
+                            fail:(void (^)(void))fail;
 
 
-+(NSOperation*)openGroupNotification:(int64_t)group_id success:(void (^)())success fail:(void (^)())fail;
-+(NSOperation*)closeGroupNotification:(int64_t)group_id success:(void (^)())success fail:(void (^)())fail;
-/**
- * 创建群组
- * @param groupName 群组名称
- * @param master 群主ID
- * @param members 群组成员的ID数组
- */
-+(NSOperation*)createGroup:(NSString*)groupName master:(int64_t)master members:(NSArray*)members success:(void (^)(int64_t))success fail:(void (^)())fail;
+
+
++(NSOperation*)getCustomerSupporter:(int64_t)storeId
+                            success:(void (^)(NSDictionary *resp))success
+                               fail:(void (^)(NSString *err))fail;
 
 @end

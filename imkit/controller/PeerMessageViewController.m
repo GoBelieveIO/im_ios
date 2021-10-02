@@ -34,8 +34,6 @@
     } else {
         self.messageDB = [PeerMessageDB instance];
     }
-    self.conversationID = self.peerUID;
-
     [super viewDidLoad];
     
     // Do any additional setup after loading the view.
@@ -110,7 +108,7 @@
     m.sender = im.sender;
     m.receiver = im.receiver;
     m.secret = NO;
-    m.msgLocalID = im.msgLocalID;
+    m.msgId = im.msgLocalID;
     m.rawContent = im.content;
     m.timestamp = im.timestamp;
     m.isOutgoing = (im.sender == self.currentUID);
@@ -134,13 +132,7 @@
     if (im.isSelf) {
         return;
     }
-    
-    int now = (int)time(NULL);
-    if (now - self.lastReceivedTimestamp > 1) {
-        [[self class] playMessageReceivedSound];
-        self.lastReceivedTimestamp = now;
-    }
-    
+
     [self loadSenderInfo:m];
     [self downloadMessageContent:m];
     [self updateNotificationDesc:m];
@@ -166,7 +158,7 @@
     m.sender = im.sender;
     m.receiver = im.receiver;
     m.secret = YES;
-    m.msgLocalID = im.msgLocalID;
+    m.msgId = im.msgLocalID;
     m.rawContent = im.content;
     m.timestamp = im.timestamp;
     m.isOutgoing = (im.sender == self.currentUID);
@@ -176,12 +168,6 @@
     //判断消息是否重复
     if (m.uuid.length > 0 && [self getMessageWithUUID:m.uuid]) {
         return;
-    }
-    
-    int now = (int)time(NULL);
-    if (now - self.lastReceivedTimestamp > 1) {
-        [[self class] playMessageReceivedSound];
-        self.lastReceivedTimestamp = now;
     }
     
     if (m.type == MESSAGE_P2P_SESSION) {
@@ -204,7 +190,7 @@
 
 //服务器ack
 - (void)onPeerMessageACK:(IMMessage*)im error:(int)error {
-    int msgLocalID = im.msgLocalID;
+    int64_t msgLocalID = im.msgLocalID;
     int64_t uid = im.receiver;
     
     if (uid != self.peerUID) {
@@ -216,7 +202,7 @@
             IMessage *msg = [self getMessageWithID:msgLocalID];
             msg.flags = msg.flags|MESSAGE_FLAG_ACK;
         } else {
-            MessageContent *content = [IMessage fromRaw:im.plainContent];
+            MessageContent *content = [IMessage fromRawDict:im.dict];
             if (content.type == MESSAGE_REVOKE) {
                 MessageRevoke *r = (MessageRevoke*)content;
                 IMessage *revokedMsg = [self getMessageWithUUID:r.msgid];
@@ -252,7 +238,7 @@
 }
 
 - (void)onPeerMessageFailure:(IMMessage*)im {
-    int msgLocalID = im.msgLocalID;
+    int64_t msgLocalID = im.msgLocalID;
     int64_t uid = im.receiver;
     
     if (uid != self.peerUID) {
@@ -279,6 +265,22 @@
     }
 }
 
+-(BOOL)getMessageOutgoing:(IMessage*)msg {
+    return (msg.sender == self.currentUID);
+}
+
+-(id<IMessageIterator>)newMessageIterator {
+    return [self.messageDB newMessageIterator: self.peerUID];
+}
+
+//下拉刷新
+-(id<IMessageIterator>)newForwardMessageIterator:(int64_t)messageID {
+    return [self.messageDB newForwardMessageIterator:self.peerUID messageID:messageID];
+}
+//上拉刷新
+-(id<IMessageIterator>)newBackwardMessageIterator:(int64_t)messageID {
+    return [self.messageDB newBackwardMessageIterator:self.peerUID messageID:messageID];
+}
 
 - (void)sendMessage:(IMessage *)msg withImage:(UIImage*)image {
     msg.uploading = YES;
@@ -333,10 +335,9 @@
         IMMessage *im = [[IMMessage alloc] init];
         im.sender = message.sender;
         im.receiver = message.receiver;
-        im.msgLocalID = message.msgLocalID;
-        im.isText = YES;
+        im.msgLocalID = message.msgId;
         im.content = message.rawContent;
-        im.plainContent = message.rawContent;
+        im.dict = message.content.dict;
         
         BOOL r = YES;
         if (self.secret) {
@@ -357,11 +358,15 @@
 
 }
 
--(IMessage*)newOutMessage {
+-(IMessage*)newOutMessage:(MessageContent*)content {
     IMessage *msg = [[IMessage alloc] init];
     msg.sender = self.currentUID;
     msg.receiver = self.peerUID;
     msg.secret = self.secret;
+    msg.uuid = [[NSUUID UUID] UUIDString];
+    msg.content = content;
+    msg.timestamp = (int)time(NULL);
+    msg.isOutgoing = YES;
     return msg;
 }
 

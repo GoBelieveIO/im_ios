@@ -17,6 +17,7 @@
 #define CLEAR_GROUP_NEW_MESSAGE @"clear_group_single_conv_new_message_notify"
 
 @interface GroupMessageViewController : MessageViewController<GroupMessageObserver, TCPConnectionObserver>
+@property(nonatomic, assign) int64_t currentUID;
 @property(nonatomic) int64_t groupID;
 @property(nonatomic, copy) NSString *groupName;
 @property(nonatomic) BOOL disbanded;

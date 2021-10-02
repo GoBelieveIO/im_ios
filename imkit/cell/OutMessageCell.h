@@ -11,9 +11,22 @@
 
 #import "MessageViewCell.h"
 
-@interface OutMessageCell : MessageViewCell
-@property (strong, nonatomic) UILabel *nameLabel;
-@property (strong, nonatomic) UIImageView *headView;
-@property (nonatomic, strong) UIButton *msgSendErrorBtn;
+#define READED_LABEL_HEIGHT 20
 
+#ifdef ENABLE_TAG
+@class TTGTextTagCollectionView;
+#endif
+
+@interface OutMessageCell : MessageViewCell
+@property (nonatomic) UILabel *nameLabel;
+@property (nonatomic) UIImageView *headView;
+@property (nonatomic) UIButton *msgSendErrorBtn;
+@property (nonatomic, weak) UIButton *readedButton;//已读/未读
+#ifdef ENABLE_TAG
+@property (nonatomic, weak) TTGTextTagCollectionView *tagsView;
+#else
+@property (nonatomic, weak) UIView *tagsView;
+#endif
+
+-(id)initWithType:(int)type showReply:(BOOL)showReply showReaded:(BOOL)showReaded reuseIdentifier:(NSString *)reuseIdentifier;
 @end

@@ -11,7 +11,6 @@
 #import "IMService.h"
 #import "PeerMessageDB.h"
 
-
 @implementation PeerOutbox
 +(PeerOutbox*)instance {
     static PeerOutbox *box;
@@ -33,36 +32,37 @@
 }
 
 
-
-
 - (void)sendMessage:(IMessage*)msg{
  
     IMMessage *im = [[IMMessage alloc] init];
     im.sender = msg.sender;
     im.receiver = msg.receiver;
-    im.msgLocalID = msg.msgLocalID;
-    
+    im.msgLocalID = msg.msgId;
     im.content = msg.rawContent;
+    im.dict = msg.content.dict;
 
     [[IMService instance] sendPeerMessageAsync:im];
 }
 
 -(void)markMessageFailure:(IMessage*)msg {
-    [[PeerMessageDB instance] markMessageFailure:msg.msgLocalID];
+    [[PeerMessageDB instance] markMessageFailure:msg.msgId];
 }
 
 -(void)saveMessageAttachment:(IMessage*)msg url:(NSString*)url {
     if (msg.audioContent) {
         MessageAudioContent *audioContent = [msg.audioContent cloneWithURL:url];
-        [[PeerMessageDB instance] updateMessageContent:msg.msgLocalID content:audioContent.raw];
+        [[PeerMessageDB instance] updateMessageContent:msg.msgId content:audioContent.raw];
     } else if (msg.imageContent) {
         MessageImageContent *imageContent = [msg.imageContent cloneWithURL:url];
-        [[PeerMessageDB instance] updateMessageContent:msg.msgLocalID content:imageContent.raw];
+        [[PeerMessageDB instance] updateMessageContent:msg.msgId content:imageContent.raw];
+    } else if (msg.fileContent) {
+        MessageFileContent *fileContent = [msg.fileContent cloneWithURL:url];
+        [[PeerMessageDB instance] updateMessageContent:msg.msgId content:fileContent.raw];
     }
 }
 
 -(void)saveMessageAttachment:(IMessage*)msg url:(NSString*)url thumbnail:(NSString*)thumbnail {
     MessageVideoContent *videoContent = [msg.videoContent cloneWithURL:url thumbnail:thumbnail];
-    [[PeerMessageDB instance] updateMessageContent:msg.msgLocalID content:videoContent.raw];
+    [[PeerMessageDB instance] updateMessageContent:msg.msgId content:videoContent.raw];
 }
 @end

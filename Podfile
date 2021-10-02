@@ -12,18 +12,3 @@ target 'im_demo' do
   shared_pods
 end
 
-target 'group_demo' do
-  use_frameworks!    
-  shared_pods
-end
-
-target 'room_demo' do
-  use_frameworks!    
-  shared_pods
-end
-
-target 'customer_demo' do
-  use_frameworks!    
-  shared_pods
-end
-

@@ -10,11 +10,10 @@
 @implementation MessageTimeBase
 
 -(id)initWithTimestamp:(int)ts {
-    self = [super init];
+    NSDictionary *dic = @{@"timestamp":[NSNumber numberWithInt:ts]};
+    self = [super initWithDictionary:dic];
     if (self) {
-        NSDictionary *dic = @{@"timestamp":[NSNumber numberWithInt:ts]};
-        NSString* newStr = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:dic options:0 error:nil] encoding:NSUTF8StringEncoding];
-        self.raw =  newStr;
+
     }
     return self;
 }

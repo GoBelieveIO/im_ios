@@ -62,7 +62,8 @@
 }
 
 + (CGSize)textSizeForText:(NSString *)txt withFont:(UIFont*)font{
-    CGFloat width = [UIScreen mainScreen].applicationFrame.size.width * 0.75f;
+    CGSize screenSize = [UIScreen mainScreen].bounds.size;
+    CGFloat width = screenSize.width * 0.75f;
     CGFloat height = MAX([MessageTextView numberOfLinesForMessage:txt],
                          [txt numberOfLines]) *  30.0f;
     
@@ -88,7 +89,5 @@
 
     self.label.frame = bubbleFrame;
 }
-
-
 
 @end

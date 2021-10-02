@@ -9,11 +9,10 @@
 
 @implementation MessageRevoke
 -(id)initWithMsgId:(NSString*)msgid {
-    self = [super init];
+    NSDictionary *dic = @{@"revoke":@{@"msgid":msgid}};
+    self = [super initWithDictionary:dic];
     if (self) {
-        NSDictionary *dic = @{@"revoke":@{@"msgid":msgid}};
-        NSString* newStr = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:dic options:0 error:nil] encoding:NSUTF8StringEncoding];
-        self.raw =  newStr;
+
     }
     return self;
 }

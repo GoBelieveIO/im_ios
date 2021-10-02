@@ -22,10 +22,10 @@
 -(BOOL)handleMessages:(NSArray*)msgs;
 -(BOOL)handleMessageACK:(IMMessage*)msg error:(int)error;
 -(BOOL)handleMessageFailure:(IMMessage*)msg;
+-(BOOL)handleGroupNotification:(NSString*)notification;
 @end
 
 @protocol IMCustomerMessageHandler <NSObject>
--(BOOL)handleCustomerSupportMessage:(CustomerMessage*)msg;
 -(BOOL)handleMessage:(CustomerMessage*)msg;
 -(BOOL)handleMessageACK:(CustomerMessage*)msg;
 -(BOOL)handleMessageFailure:(CustomerMessage*)msg;
@@ -38,47 +38,42 @@
 @end
 
 @protocol PeerMessageObserver <NSObject>
-@optional
 -(void)onPeerMessage:(IMMessage*)msg;
+
+@optional
 -(void)onPeerSecretMessage:(IMMessage*)msg;
 //服务器ack
 -(void)onPeerMessageACK:(IMMessage*)msg error:(int)error;
 //消息发送失败
 -(void)onPeerMessageFailure:(IMMessage*)msg;
-
 @end
 
 @protocol GroupMessageObserver <NSObject>
-@optional
 -(void)onGroupMessages:(NSArray*)msgs;
+
+@optional
 -(void)onGroupMessageACK:(IMMessage*)msg error:(int)error;
 -(void)onGroupMessageFailure:(IMMessage*)msg;
+
+//-(void)onGroupNotification:(NSString*)notification;
 @end
 
 @protocol RoomMessageObserver <NSObject>
-@optional
 -(void)onRoomMessage:(RoomMessage*)rm;
-
 @end
 
 @protocol RTMessageObserver <NSObject>
-
-@optional
 -(void)onRTMessage:(RTMessage*)rt;
-
 @end
 
 @protocol SystemMessageObserver <NSObject>
-@optional
 -(void)onSystemMessage:(NSString*)sm;
-
 @end
 
 @protocol CustomerMessageObserver <NSObject>
-@optional
 -(void)onCustomerMessage:(CustomerMessage*)msg;
--(void)onCustomerSupportMessage:(CustomerMessage*)msg;
 
+@optional
 //服务器ack
 -(void)onCustomerMessageACK:(CustomerMessage*)msg;
 //消息发送失败
@@ -91,7 +86,6 @@
  *2.上线之后，自动同步所有离线消息
  *3.收到同步消息的通知后，同步新消息
 */
-__attribute__((objc_runtime_name("GoBelieveIMService")))
 @interface IMService : TCPConnection
 @property(nonatomic, copy) NSString *deviceID;
 @property(nonatomic, copy) NSString *token;
@@ -117,20 +111,10 @@ __attribute__((objc_runtime_name("GoBelieveIMService")))
 -(void)sendPeerMessageAsync:(IMMessage*)msg;
 -(void)sendGroupMessageAsync:(IMMessage*)msg;
 -(void)sendRoomMessageAsync:(RoomMessage*)msg;
-//顾客->客服
 -(void)sendCustomerMessageAsync:(CustomerMessage*)im;
-//客服->顾客
--(void)sendCustomerSupportMessageAsync:(CustomerMessage*)im;
 -(void)sendRTMessageAsync:(RTMessage*)msg;
 
--(BOOL)sendPeerMessage:(IMMessage*)msg;
--(BOOL)sendGroupMessage:(IMMessage*)msg;
--(BOOL)sendRoomMessage:(RoomMessage*)msg;
-//顾客->客服
--(BOOL)sendCustomerMessage:(CustomerMessage*)im;
-//客服->顾客
--(BOOL)sendCustomerSupportMessage:(CustomerMessage*)im;
--(BOOL)sendRTMessage:(RTMessage*)msg;
+
 
 -(void)enterRoom:(int64_t)roomID;
 -(void)leaveRoom:(int64_t)roomID;
