@@ -26,8 +26,8 @@
 #import <FMDB/FMDB.h>
 #import "Database.h"
 
-#define TEST_PEER
-//#define TEST_GROUP
+//#define TEST_PEER
+#define TEST_GROUP
 //#define TEST_CUSTOMER
 //#define TEST_ROOM
 

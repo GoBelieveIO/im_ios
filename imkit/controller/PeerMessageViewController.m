@@ -34,6 +34,9 @@
     } else {
         self.messageDB = [PeerMessageDB instance];
     }
+    self.callEnabled = NO;
+    self.isShowReaded = NO;
+    self.isShowUserName = NO;
     [super viewDidLoad];
     
     // Do any additional setup after loading the view.

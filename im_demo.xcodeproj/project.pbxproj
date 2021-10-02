@@ -14,7 +14,6 @@
 		6D9C46C91BEB09DC0053066A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C46CB1BEB09DC0053066A /* InfoPlist.strings */; };
 		6D9C46D41BEB0A940053066A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6D9C46D61BEB0A940053066A /* Localizable.strings */; };
 		6DAC24DF212543820000C067 /* GOReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DAC24DE212543820000C067 /* GOReachability.m */; };
-		6DB25E7B24432B1500E297F6 /* gobelieve.db in Resources */ = {isa = PBXBuildFile; fileRef = 6DB25E7824432B1500E297F6 /* gobelieve.db */; };
 		6DB25E7C24432B1500E297F6 /* gobelieve.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6DB25E7924432B1500E297F6 /* gobelieve.xcassets */; };
 		6DB25E7D24432B1500E297F6 /* Emoji.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6DB25E7A24432B1500E297F6 /* Emoji.xcassets */; };
 		6DBB2CC11DBB34C300BC545A /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF54E561AB588C700197EBC /* MainViewController.m */; };
@@ -49,12 +48,10 @@
 		6D9C46D81BEB0ABB0053066A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		6DAC24DD212543820000C067 /* GOReachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GOReachability.h; sourceTree = "<group>"; };
 		6DAC24DE212543820000C067 /* GOReachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GOReachability.m; sourceTree = "<group>"; };
-		6DB25E7824432B1500E297F6 /* gobelieve.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = gobelieve.db; path = imkit/imKitRes/gobelieve.db; sourceTree = "<group>"; };
 		6DB25E7924432B1500E297F6 /* gobelieve.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = gobelieve.xcassets; path = imkit/imKitRes/gobelieve.xcassets; sourceTree = "<group>"; };
 		6DB25E7A24432B1500E297F6 /* Emoji.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Emoji.xcassets; path = imkit/imKitRes/Emoji.xcassets; sourceTree = "<group>"; };
 		6DB34CAC1C4E83BC006D78D4 /* customer-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "customer-Info.plist"; sourceTree = "<group>"; };
 		6DBB2CC61DBBBDD600BC545A /* im_demo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = im_demo.entitlements; sourceTree = "<group>"; };
-		6DBB2CC71DBBBE4200BC545A /* customer_demo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = customer_demo.entitlements; sourceTree = "<group>"; };
 		6DF54D8B1AB5862000197EBC /* im_demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = im_demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6DF54D8F1AB5862000197EBC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6DF54D901AB5862000197EBC /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -120,9 +117,7 @@
 			isa = PBXGroup;
 			children = (
 				6DB25E7A24432B1500E297F6 /* Emoji.xcassets */,
-				6DB25E7824432B1500E297F6 /* gobelieve.db */,
 				6DB25E7924432B1500E297F6 /* gobelieve.xcassets */,
-				6DBB2CC71DBBBE4200BC545A /* customer_demo.entitlements */,
 				6DBB2CC61DBBBDD600BC545A /* im_demo.entitlements */,
 				6DF54D8D1AB5862000197EBC /* demo */,
 				6DF54DA71AB5862000197EBC /* demoTests */,
@@ -281,7 +276,6 @@
 				6D9C46C91BEB09DC0053066A /* InfoPlist.strings in Resources */,
 				6D69BD921B444B79008EAA8A /* room-Info.plist in Resources */,
 				6D8E72E61B750B04004E069E /* group-Info.plist in Resources */,
-				6DB25E7B24432B1500E297F6 /* gobelieve.db in Resources */,
 				6D9C46D41BEB0A940053066A /* Localizable.strings in Resources */,
 				6DB25E7D24432B1500E297F6 /* Emoji.xcassets in Resources */,
 				6DF54D9C1AB5862000197EBC /* Images.xcassets in Resources */,

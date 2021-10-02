@@ -128,8 +128,11 @@
     if (utf8 == nil) return nil;
     NSData *data = [NSData dataWithBytes:utf8 length:strlen(utf8)];
     NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil];
-    
-    return [self fromRawDict:dict];
+    if (dict) {
+        return [self fromRawDict:dict];
+    } else {
+        return [self fromRawDict:@{}];
+    }
 }
 
 -(id)init {

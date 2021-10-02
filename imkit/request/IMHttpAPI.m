@@ -366,8 +366,7 @@ static NSString * AFCreateMultipartFormBoundary() {
         }
         
         NSDictionary *resp = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil];
-        NSDictionary *dict = [resp objectForKey:@"data"];
-        success(dict);
+        success(resp);
     };
     request.failCB = ^(IMHttpOperation*commObj, IMHttpOperationError error) {
         NSLog(@"create group fail");

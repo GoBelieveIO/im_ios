@@ -19,7 +19,6 @@
 #import "GroupMessageDB.h"
 #import "UIView+Toast.h"
 
-#define PAGE_COUNT 10
 
 @interface GroupMessageViewController ()
 
@@ -29,6 +28,9 @@
 
 - (void)viewDidLoad {
     self.messageDB = [GroupMessageDB instance];
+    self.callEnabled = NO;
+    self.isShowReaded = NO;
+    self.isShowUserName = YES;
     [super viewDidLoad];
     
     self.navigationItem.title = self.groupName;

@@ -1272,7 +1272,7 @@ static int uptime = 0;
 }
 
 - (void)asyncGetUser:(int64_t)uid cb:(void(^)(IUser*))cb {
-     NSLog(@"not implement");
+     NSLog(@"async get user not implement");
 }
 
 @end
