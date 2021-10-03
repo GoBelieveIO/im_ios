@@ -52,11 +52,25 @@
         IMessage *m = [[IMessage alloc] init];
         m.sender = im.sender;
         m.receiver = im.receiver;
-        m.rawContent = im.content;
         m.timestamp = im.timestamp;
         if (self.uid == im.sender) {
             m.flags = m.flags | MESSAGE_FLAG_ACK;
             m.isOutgoing = YES;
+        }
+        if (im.isGroupNotification) {
+            MessageGroupNotificationContent *obj = [[MessageGroupNotificationContent alloc] initWithNotification:im.content];
+            im.receiver = obj.groupID;
+            im.timestamp = obj.timestamp;
+
+            m.rawContent = obj.raw;
+            m.receiver = obj.groupID;
+            if (obj.timestamp > 0) {
+                m.timestamp = obj.timestamp;
+            } else {
+                m.timestamp = (int)time(NULL);
+            }
+        } else {
+            m.rawContent = im.content;
         }
 
         //improve json searialize performance
