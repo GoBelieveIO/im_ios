@@ -17,8 +17,7 @@
     m.receiver = self.receiver;
 
     m.senderAppID = self.senderAppID;
-    m.receiverAppID = self.senderAppID;
-
+    m.receiverAppID = self.receiverAppID;
     
     m.timestamp = self.timestamp;
     m.content = self.content;

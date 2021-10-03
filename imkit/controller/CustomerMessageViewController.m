@@ -231,4 +231,13 @@
     [msg generateRaw];
     return msg;
 }
+
+- (void)loadSenderInfo:(IMessage*)msg {
+    IUser *u = [[IUser alloc] init];
+    u.name = msg.content.name;
+    if (u.name.length == 0) {
+        u.name = [NSString stringWithFormat:@"%lld", msg.sender];
+    }
+    msg.senderInfo = u;
+}
 @end

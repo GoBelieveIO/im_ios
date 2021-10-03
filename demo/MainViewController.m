@@ -27,8 +27,8 @@
 #import "Database.h"
 
 //#define TEST_PEER
-#define TEST_GROUP
-//#define TEST_CUSTOMER
+//#define TEST_GROUP
+#define TEST_CUSTOMER
 //#define TEST_ROOM
 
 #define APPID 7
