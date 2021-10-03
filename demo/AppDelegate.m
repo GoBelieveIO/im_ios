@@ -41,7 +41,7 @@
     NSLog(@"remote notification:%@", [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey]);
 
     //app可以单独部署服务器，给予第三方应用更多的灵活性
-    [IMHttpAPI instance].apiURL = @"http://api.gobelieve.io";
+    [IMHttpAPI instance].apiURL = @"https://api.gobelieve.io/v2";
     [IMService instance].host = @"imnode2.gobelieve.io";
 
   

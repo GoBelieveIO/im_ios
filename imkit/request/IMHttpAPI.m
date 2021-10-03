@@ -10,7 +10,7 @@
 #import "IMHttpAPI.h"
 #import "TAHttpOperation.h"
 
-#define API_URL @"https://api.gobelieve.io"
+#define API_URL @"https://api.gobelieve.io/v2"
 @implementation IMHttpAPI
 
 
