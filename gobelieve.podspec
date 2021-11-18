@@ -39,7 +39,7 @@ Pod::Spec.new do |s|
     sp.dependency 'gobelieve/imlib'
     sp.dependency 'SDWebImage', '~> 5.1.0'
     sp.dependency 'Toast', '~> 4.0.0'
-    sp.dependency 'MBProgressHUD', '~> 0.9.1'
+    sp.dependency 'MBProgressHUD', '~> 1.2.0'
     sp.dependency 'FMDB', '~> 2.7.0'
     sp.dependency 'Masonry', '~>1.1.0'
     sp.pod_target_xcconfig = { 'ENABLE_BITCODE' => 'YES' }    

@@ -97,8 +97,8 @@
 
     self.hub = [[MBProgressHUD alloc] initWithView:self.view];
     [self.view addSubview:self.hub];
-    self.hub.labelText = NSLocalizedString(@"location.ongoning", @"locating...");
-    [self.hub show:YES];
+    self.hub.label.text = NSLocalizedString(@"location.ongoning", @"locating...");
+    [self.hub showAnimated:YES];
     
     [self startLocation];
 }
@@ -155,7 +155,7 @@
         self.locating = NO;
         MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(userLocation.coordinate, 300, 500);
         [lmapView setRegion:region animated:NO];
-        [self.hub hide:YES];
+        [self.hub hideAnimated:YES];
     }
     
     self.userCoordinate = userLocation.coordinate;
@@ -165,9 +165,9 @@
 - (void)mapView:(MKMapView *)mapView didFailToLocateUserWithError:(NSError *)error {
     NSLog(@"locate error:%@", error);
     
-    self.hub.labelText = @"定位失败";
+    self.hub.label.text = @"定位失败";
     
-    [self.hub hide:YES];
+    [self.hub hideAnimated:YES];
 }
 
 
