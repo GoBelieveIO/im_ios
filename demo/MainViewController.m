@@ -26,9 +26,9 @@
 #import <FMDB/FMDB.h>
 #import "Database.h"
 
-//#define TEST_PEER
+#define TEST_PEER
 //#define TEST_GROUP
-#define TEST_CUSTOMER
+//#define TEST_CUSTOMER
 //#define TEST_ROOM
 
 #define APPID 7
@@ -232,7 +232,7 @@
             msgController.peerUID = 0;
             msgController.peerAppID = 0;
             msgController.storeID = [tfReceiver.text longLongValue];
-            msgController.name = @"测试";
+            msgController.name = @"测试用户";
             msgController.appName = @"demo";
             msgController.storeName = @"测试商店";
             msgController.peerName = @"";
